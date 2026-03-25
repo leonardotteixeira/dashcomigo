@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
-import { 
-  ArrowRightLeft, 
-  Tag, 
-  TrendingUp, 
+import {
+  ArrowRightLeft,
+  Tag,
+  TrendingUp,
   FileText,
   AlertCircle,
   CheckCircle,
@@ -18,10 +18,13 @@ import { Button } from "../components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Badge } from "../components/ui/badge";
 import { useAuth } from "../contexts/AuthContext";
+import { useCashFlow } from "../contexts/CashFlowContext";
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { summary, insights, getLimitStatus } = useCashFlow();
+  const limitStatus = getLimitStatus();
 
   const tools = [
     {
@@ -71,34 +74,36 @@ export function Dashboard() {
     }
   ];
 
+  const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
+
   const quickMetrics = [
     {
-      label: "Lucro estimado/mês",
-      value: "R$ 4.850",
-      change: "+12%",
+      label: "Lucro do mês",
+      value: fmt(summary.lucro),
+      change: summary.lucro >= 0 ? "positivo" : "negativo",
+      trend: summary.lucro >= 0 ? "up" as const : "down" as const,
+      color: summary.lucro >= 0 ? "text-green-600" : "text-red-600"
+    },
+    {
+      label: "Margem de lucro",
+      value: `${summary.margemLucro.toFixed(1)}%`,
+      change: summary.margemLucro >= 20 ? "saudável" : "baixa",
+      trend: summary.margemLucro >= 20 ? "up" as const : "down" as const,
+      color: summary.margemLucro >= 20 ? "text-blue-600" : "text-red-600"
+    },
+    {
+      label: "Total de entradas",
+      value: fmt(summary.totalEntradas),
+      change: "receita total",
       trend: "up" as const,
       color: "text-green-600"
     },
     {
-      label: "Margem média",
-      value: "42%",
-      change: "+3%",
-      trend: "up" as const,
-      color: "text-blue-600"
-    },
-    {
-      label: "Impostos/mês",
-      value: "R$ 680",
-      change: "-8%",
-      trend: "down" as const,
-      color: "text-purple-600"
-    },
-    {
-      label: "Próximo do limite MEI",
-      value: "85%",
-      change: "Atenção",
-      trend: "warning" as const,
-      color: "text-orange-600"
+      label: "Lançamentos este mês",
+      value: user?.plan === "pro" ? `${limitStatus.used}` : `${limitStatus.used}/${limitStatus.limit}`,
+      change: user?.plan === "pro" ? "ilimitado" : limitStatus.percentage > 80 ? "Atenção" : "disponível",
+      trend: limitStatus.percentage > 80 ? "warning" as const : "up" as const,
+      color: limitStatus.percentage > 80 ? "text-orange-600" : "text-purple-600"
     }
   ];
 
@@ -114,42 +119,50 @@ export function Dashboard() {
         </p>
       </div>
 
-      {/* Alerts */}
-      <div className="grid gap-4">
-        <Alert className="bg-orange-50 border-2 border-orange-300">
-          <AlertCircle className="h-5 w-5 text-orange-600" />
-          <AlertTitle className="text-orange-900 font-bold">
-            Você está próximo do limite do MEI!
-          </AlertTitle>
-          <AlertDescription className="text-orange-800">
-            Seu faturamento está em 85% do limite anual. Considere simular a migração para ME.
-            <Button 
-              variant="link" 
-              className="text-orange-900 font-bold p-0 h-auto ml-2"
-              onClick={() => navigate("/app/mei-me")}
+      {/* Alerts — insights reais do CashFlowContext */}
+      {insights.length > 0 && (
+        <div className="grid gap-4">
+          {insights.map((insight) => (
+            <Alert
+              key={insight.id}
+              className={`border-2 ${
+                insight.tipo === "alerta"
+                  ? "bg-red-50 border-red-300"
+                  : insight.tipo === "sucesso"
+                  ? "bg-green-50 border-green-300"
+                  : "bg-blue-50 border-blue-300"
+              }`}
             >
-              Simular agora →
-            </Button>
-          </AlertDescription>
-        </Alert>
-
-        <Alert className="bg-green-50 border-2 border-green-300">
-          <CheckCircle className="h-5 w-5 text-green-600" />
-          <AlertTitle className="text-green-900 font-bold">
-            Oportunidade identificada!
-          </AlertTitle>
-          <AlertDescription className="text-green-800">
-            Ajustando seus preços, você pode aumentar sua margem em até 15%.
-            <Button 
-              variant="link" 
-              className="text-green-900 font-bold p-0 h-auto ml-2"
-              onClick={() => navigate("/app/preco")}
-            >
-              Ver simulação →
-            </Button>
-          </AlertDescription>
-        </Alert>
-      </div>
+              {insight.tipo === "sucesso" ? (
+                <CheckCircle className={`h-5 w-5 text-green-600`} />
+              ) : (
+                <AlertCircle className={`h-5 w-5 ${
+                  insight.tipo === "alerta" ? "text-red-600" : "text-blue-600"
+                }`} />
+              )}
+              <AlertDescription className={
+                insight.tipo === "alerta"
+                  ? "text-red-900"
+                  : insight.tipo === "sucesso"
+                  ? "text-green-900"
+                  : "text-blue-900"
+              }>
+                <span className="mr-2">{insight.icone}</span>
+                {insight.mensagem}
+                {insight.id === "limite-mei" && (
+                  <Button
+                    variant="link"
+                    className="text-blue-900 font-bold p-0 h-auto ml-2"
+                    onClick={() => navigate("/app/mei-me")}
+                  >
+                    Simular agora →
+                  </Button>
+                )}
+              </AlertDescription>
+            </Alert>
+          ))}
+        </div>
+      )}
 
       {/* Quick Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

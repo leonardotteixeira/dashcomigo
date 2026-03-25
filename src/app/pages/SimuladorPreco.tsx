@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calculator, TrendingUp, Info, ArrowRight, Tag } from "lucide-react";
+import { Calculator, TrendingUp, Info, ArrowRight, Tag, Lock, Crown } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -7,8 +7,37 @@ import { Slider } from "../components/ui/slider";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router";
 
 export function SimuladorPreco() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  if (user?.plan !== "pro") {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <Lock className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Disponível no plano PRO</h2>
+          <p className="text-slate-600 mb-6">
+            O Simulador de Preço Ideal está disponível apenas para assinantes PRO.
+            Calcule o preço perfeito para seus produtos e serviços.
+          </p>
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+            onClick={() => navigate("/pricing")}
+          >
+            <Crown className="w-4 h-4 mr-2" />
+            Ver Planos PRO
+          </Button>
+        </div>
+      </div>
+    );
+  }
   const [custo, setCusto] = useState(100);
   const [margemDesejada, setMargemDesejada] = useState(40);
   const [tempoHoras, setTempoHoras] = useState(0);

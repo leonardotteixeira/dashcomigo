@@ -25,7 +25,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogDescription,
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -52,6 +52,7 @@ export function FluxoCaixa() {
   } = useCashFlow();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [limitDialogOpen, setLimitDialogOpen] = useState(false);
   const [periodo, setPeriodo] = useState<"dia" | "semana" | "mes" | "ano">("mes");
   const [transactionType, setTransactionType] = useState<TransactionType>("entrada");
   
@@ -69,12 +70,13 @@ export function FluxoCaixa() {
     e.preventDefault();
     
     if (!canAddTransaction()) {
-      alert("Limite de lançamentos atingido! Faça upgrade para PRO.");
+      setDialogOpen(false);
+      setLimitDialogOpen(true);
       return;
     }
 
     try {
-      addTransaction({
+      await addTransaction({
         valor: parseFloat(formValor),
         tipo: transactionType,
         categoria: formCategoria,
@@ -89,11 +91,17 @@ export function FluxoCaixa() {
       setFormDescricao("");
       setDialogOpen(false);
     } catch (error) {
-      alert("Erro ao adicionar lançamento");
+      // limite atingido pode ser lançado pelo context também
+      setDialogOpen(false);
+      setLimitDialogOpen(true);
     }
   };
 
   const openDialog = (tipo: TransactionType) => {
+    if (!canAddTransaction()) {
+      setLimitDialogOpen(true);
+      return;
+    }
     setTransactionType(tipo);
     setDialogOpen(true);
   };
@@ -436,6 +444,44 @@ export function FluxoCaixa() {
           )}
         </Card>
       )}
+
+      {/* Dialog de limite atingido */}
+      <Dialog open={limitDialogOpen} onOpenChange={setLimitDialogOpen}>
+        <DialogContent className="max-w-md text-center">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
+                <Crown className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <DialogTitle className="text-2xl font-bold text-slate-900">
+              Limite atingido!
+            </DialogTitle>
+            <DialogDescription className="text-slate-600 mt-2">
+              Você usou todos os {limitStatus.limit} lançamentos do plano gratuito este mês.
+              Faça upgrade para o PRO e tenha lançamentos ilimitados!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button
+              size="lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+              onClick={() => { setLimitDialogOpen(false); navigate("/pricing"); }}
+            >
+              <Crown className="w-4 h-4 mr-2" />
+              Ver Planos PRO
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full"
+              onClick={() => setLimitDialogOpen(false)}
+            >
+              Fechar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Upgrade CTA */}
       {user?.plan !== "pro" && limitStatus.percentage > 70 && (

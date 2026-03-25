@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TrendingUp, AlertCircle, ArrowRight, Info } from "lucide-react";
+import { TrendingUp, AlertCircle, ArrowRight, Info, Lock, Crown } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -7,8 +7,37 @@ import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from "recharts";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router";
 
 export function SimuladorLucro() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  if (user?.plan !== "pro") {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <Lock className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Disponível no plano PRO</h2>
+          <p className="text-slate-600 mb-6">
+            O Simulador de Lucro está disponível apenas para assinantes PRO.
+            Projete receitas, custos e descubra seu ponto de equilíbrio.
+          </p>
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+            onClick={() => navigate("/pricing")}
+          >
+            <Crown className="w-4 h-4 mr-2" />
+            Ver Planos PRO
+          </Button>
+        </div>
+      </div>
+    );
+  }
   const [receitaMensal, setReceitaMensal] = useState(10000);
   const [custosFixos, setCustosFixos] = useState(2500);
   const [custosVariaveis, setCustosVariaveis] = useState(3000);

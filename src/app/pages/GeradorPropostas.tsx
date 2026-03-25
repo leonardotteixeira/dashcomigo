@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText, Download, Send, Eye, Info } from "lucide-react";
+import { FileText, Download, Send, Eye, Info, Crown, Lock } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -8,8 +8,16 @@ import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Separator } from "../components/ui/separator";
+import { Badge } from "../components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import html2pdf from "html2pdf.js";
 
 export function GeradorPropostas() {
+  const { user, incrementProposalUsage } = useAuth();
+  const navigate = useNavigate();
   const [nomeCliente, setNomeCliente] = useState("");
   const [emailCliente, setEmailCliente] = useState("");
   const [nomeServico, setNomeServico] = useState("");
@@ -18,6 +26,12 @@ export function GeradorPropostas() {
   const [prazo, setPrazo] = useState("");
   const [condicoesPagamento, setCondicoesPagamento] = useState("50-50");
   const [validade, setValidade] = useState(7);
+  const [limitDialogOpen, setLimitDialogOpen] = useState(false);
+
+  const FREE_LIMIT = 2;
+  const limite = user?.plan === "pro" ? Infinity : FREE_LIMIT;
+  const usageCount = user?.proposalUsageToday ?? 0;
+  const limitReached = usageCount >= limite;
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -43,6 +57,50 @@ export function GeradorPropostas() {
     return valor;
   };
 
+  const checkLimitAndRun = async (action: () => void) => {
+    if (limitReached) {
+      setLimitDialogOpen(true);
+      return;
+    }
+    action();
+    await incrementProposalUsage();
+  };
+
+  const handleDownloadPDF = () => {
+    checkLimitAndRun(() => {
+      const el = document.getElementById("proposal-preview");
+      if (!el) return;
+      html2pdf(el, {
+        margin: 10,
+        filename: `proposta-${nomeCliente || "cliente"}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      });
+      toast.success("PDF gerado com sucesso!");
+    });
+  };
+
+  const handleSendEmail = () => {
+    checkLimitAndRun(() => {
+      const pagamento =
+        condicoesPagamento === "integral"
+          ? `À vista: ${formatCurrency(valor)}`
+          : condicoesPagamento === "50-50"
+          ? `50%/50%: ${formatCurrency(valor / 2)} entrada + ${formatCurrency(valor / 2)} na entrega`
+          : condicoesPagamento === "30-70"
+          ? `30%/70%: ${formatCurrency(valor * 0.3)} entrada + ${formatCurrency(valor * 0.7)} na entrega`
+          : `3x de ${formatCurrency(valor / 3)} sem juros`;
+
+      const body = `Olá, ${nomeCliente}!\n\nSegue nossa proposta comercial:\n\nServiço: ${nomeServico}\n\n${descricao}\n\nValor total: ${formatCurrency(valor)}\nCondições: ${pagamento}\nPrazo de entrega: ${prazo}\nVálida até: ${formatDate(validade)}\n\nEstamos à disposição para esclarecer dúvidas.\n\nAtenciosamente,\nHub do Empreendedor`;
+
+      window.open(
+        `mailto:${emailCliente}?subject=${encodeURIComponent(`Proposta Comercial - ${nomeServico}`)}&body=${encodeURIComponent(body)}`
+      );
+      toast.success("Cliente de email aberto!");
+    });
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
@@ -58,14 +116,57 @@ export function GeradorPropostas() {
         </p>
       </div>
 
-      {/* Info Alert */}
-      <Alert className="bg-blue-50 border-2 border-blue-200">
-        <Info className="h-5 w-5 text-blue-600" />
-        <AlertDescription className="text-blue-900">
-          Preencha os campos ao lado e veja sua proposta sendo gerada em tempo real. 
-          Você pode baixar em PDF ou enviar diretamente por email.
-        </AlertDescription>
-      </Alert>
+      {/* Info Alert + contador */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <Alert className="bg-blue-50 border-2 border-blue-200 flex-1">
+          <Info className="h-5 w-5 text-blue-600" />
+          <AlertDescription className="text-blue-900">
+            Preencha os campos ao lado e veja sua proposta sendo gerada em tempo real.
+            Você pode baixar em PDF ou enviar diretamente por email.
+          </AlertDescription>
+        </Alert>
+        {user?.plan !== "pro" && (
+          <Badge
+            variant="outline"
+            className={`whitespace-nowrap ${limitReached ? "bg-red-50 text-red-700 border-red-300" : "bg-blue-50 text-blue-700 border-blue-300"}`}
+          >
+            {usageCount}/{FREE_LIMIT} propostas hoje
+          </Badge>
+        )}
+      </div>
+
+      {/* Dialog de limite */}
+      <Dialog open={limitDialogOpen} onOpenChange={setLimitDialogOpen}>
+        <DialogContent className="max-w-md text-center">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
+                <Crown className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <DialogTitle className="text-2xl font-bold text-slate-900">
+              Limite diário atingido!
+            </DialogTitle>
+            <DialogDescription className="text-slate-600 mt-2">
+              Você usou todas as {FREE_LIMIT} propostas gratuitas de hoje.
+              Faça upgrade para o PRO e gere propostas ilimitadas!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button
+              size="lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+              onClick={() => { setLimitDialogOpen(false); navigate("/pricing"); }}
+            >
+              <Crown className="w-4 h-4 mr-2" />
+              Ver Planos PRO
+            </Button>
+            <Button size="lg" variant="outline" className="w-full" onClick={() => setLimitDialogOpen(false)}>
+              Fechar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Form */}
@@ -184,18 +285,22 @@ export function GeradorPropostas() {
           </Card>
 
           <div className="flex gap-4">
-            <Button 
+            <Button
               size="lg"
               className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white"
+              onClick={handleDownloadPDF}
+              disabled={!nomeCliente || !nomeServico}
             >
               <Download className="w-5 h-5 mr-2" />
               Baixar PDF
             </Button>
-            
-            <Button 
+
+            <Button
               size="lg"
               variant="outline"
               className="flex-1 border-2"
+              onClick={handleSendEmail}
+              disabled={!emailCliente || !nomeServico}
             >
               <Send className="w-5 h-5 mr-2" />
               Enviar Email
@@ -215,7 +320,7 @@ export function GeradorPropostas() {
 
             <div className="p-8 bg-white min-h-[600px]">
               {/* Document Preview */}
-              <div className="space-y-6">
+              <div id="proposal-preview" className="space-y-6">
                 {/* Header */}
                 <div className="text-center pb-6 border-b-2 border-slate-200">
                   <h1 className="text-3xl font-bold text-slate-900 mb-2">
