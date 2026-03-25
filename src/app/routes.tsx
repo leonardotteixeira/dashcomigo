@@ -3,6 +3,8 @@ import { DashboardLayout } from "./layouts/DashboardLayout";
 import { LandingPage } from "./pages/LandingPage";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
+import { ForgotPassword } from "./pages/ForgotPassword";
+import { ResetPassword } from "./pages/ResetPassword";
 import { Pricing } from "./pages/Pricing";
 import { Checkout } from "./pages/Checkout";
 import { CheckoutSuccess } from "./pages/CheckoutSuccess";
@@ -12,6 +14,7 @@ import { SimuladorMEI } from "./pages/SimuladorMEI";
 import { SimuladorPreco } from "./pages/SimuladorPreco";
 import { SimuladorLucro } from "./pages/SimuladorLucro";
 import { GeradorPropostas } from "./pages/GeradorPropostas";
+import { AuthCallback } from "./pages/AuthCallback";
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +40,18 @@ export const router = createBrowserRouter([
   {
     path: "/checkout/success",
     Component: CheckoutSuccess,
+  },
+  {
+    path: "/auth/callback",
+    Component: AuthCallback,
+  },
+  {
+    path: "/forgot-password",
+    Component: ForgotPassword,
+  },
+  {
+    path: "/auth/reset-password",
+    Component: ResetPassword,
   },
   {
     path: "/app",
