@@ -10,6 +10,7 @@ const app = express();
 app.use(cors({
   origin: [
     "https://bubuya.com.br",
+    "https://www.bubuya.com.br",
     "https://simulador-financeiro-saas.vercel.app",
     "http://localhost:5173"
   ]
