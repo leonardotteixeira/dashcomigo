@@ -13,7 +13,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import html2pdf from "html2pdf.js";
 
 export function GeradorPropostas() {
   const { user, incrementProposalUsage } = useAuth();
@@ -72,16 +71,11 @@ export function GeradorPropostas() {
 
   const handleDownloadPDF = () => {
     checkLimitAndRun(() => {
-      const el = document.getElementById("proposal-preview");
-      if (!el) return;
-      html2pdf(el, {
-        margin: 10,
-        filename: `proposta-${nomeCliente || "cliente"}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      });
-      toast.success("PDF gerado com sucesso!");
+      // Adiciona classe no body para ocultar tudo exceto a proposta ao imprimir
+      document.body.classList.add("printing-proposal");
+      window.print();
+      document.body.classList.remove("printing-proposal");
+      toast.success("Use Ctrl+P → Salvar como PDF para baixar!");
     });
   };
 
