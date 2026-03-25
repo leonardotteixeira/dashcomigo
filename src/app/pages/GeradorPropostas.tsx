@@ -63,7 +63,11 @@ export function GeradorPropostas() {
       return;
     }
     action();
-    await incrementProposalUsage();
+    try {
+      await incrementProposalUsage();
+    } catch {
+      // não bloqueia a ação principal se o contador falhar
+    }
   };
 
   const handleDownloadPDF = () => {
