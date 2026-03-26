@@ -65,8 +65,12 @@ router.post("/", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Erro no checkout:", error?.response?.data || error.message);
-    return res.status(500).json({ error: "Erro ao criar cobrança" });
+    const detail = error?.response?.data || error.message;
+    console.error("Erro no checkout:", JSON.stringify(detail, null, 2));
+    return res.status(500).json({
+      error: "Erro ao criar cobrança",
+      detail: typeof detail === "object" ? detail : { message: detail }
+    });
   }
 });
 
