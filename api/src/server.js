@@ -7,14 +7,20 @@ const webhookRouter = require("./routes/webhook");
 
 const app = express();
 
-app.use(cors({
+const corsOptions = {
   origin: [
     "https://bubuya.com.br",
     "https://www.bubuya.com.br",
     "https://simulador-financeiro-saas.vercel.app",
     "http://localhost:5173"
-  ]
-}));
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // habilita preflight para todas as rotas
 
 app.use(express.json());
 
