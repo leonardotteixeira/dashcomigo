@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 import { LogIn, Mail, Lock, ArrowLeft } from "lucide-react";
 import { Card } from "../components/ui/card";
@@ -7,22 +7,40 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import { useAuth } from "../contexts/AuthContext";
+import { toast } from "sonner";
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, loginWithGoogle } = useAuth();
+  const { user, login, loginWithGoogle } = useAuth();
+
+  // Quando user ficar disponível (via onAuthStateChange), redireciona
+  useEffect(() => {
+    if (user) {
+      toast.success("Login realizado com sucesso!");
+      navigate("/app");
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       await login(email, password);
-      navigate("/app");
-    } catch (error) {
-      console.error(error);
+      // Navegação acontece via useEffect quando user é setado pelo onAuthStateChange
+    } catch (error: any) {
+      const msg = error?.message || "";
+      if (msg.includes("Invalid login credentials") || msg.includes("invalid_credentials")) {
+        toast.error("Email ou senha incorretos. Tente novamente.");
+      } else if (msg.includes("Email not confirmed")) {
+        toast.error("Confirme seu email antes de entrar. Verifique sua caixa de entrada.");
+      } else if (msg.includes("Too many requests")) {
+        toast.error("Muitas tentativas. Aguarde alguns minutos e tente novamente.");
+      } else {
+        toast.error("Erro ao entrar. Tente novamente.");
+      }
     } finally {
       setLoading(false);
     }
@@ -32,10 +50,9 @@ export function Login() {
     setLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/app");
-    } catch (error) {
-      console.error(error);
-    } finally {
+      // O redirecionamento acontece automaticamente via OAuth
+    } catch (error: any) {
+      toast.error("Erro ao entrar com Google. Tente novamente.");
       setLoading(false);
     }
   };
@@ -44,7 +61,7 @@ export function Login() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         {/* Back to home */}
-        <Link 
+        <Link
           to="/"
           className="inline-flex items-center text-slate-600 hover:text-slate-900 mb-8 transition-colors"
         >
@@ -80,6 +97,7 @@ export function Login() {
                 placeholder="seu@email.com"
                 required
                 className="h-12"
+                autoComplete="email"
               />
             </div>
 
@@ -89,7 +107,7 @@ export function Login() {
                   <Lock className="w-4 h-4" />
                   Senha
                 </Label>
-                <Link 
+                <Link
                   to="/forgot-password"
                   className="text-sm text-purple-600 hover:text-purple-700"
                 >
@@ -104,6 +122,7 @@ export function Login() {
                 placeholder="••••••••"
                 required
                 className="h-12"
+                autoComplete="current-password"
               />
             </div>
 
