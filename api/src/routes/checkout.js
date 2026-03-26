@@ -22,23 +22,23 @@ router.post("/", async (req, res) => {
 
     let customerId = profile?.asaas_customer_id;
 
-    // 2. Criar cliente no Asaas se não existir
+    // 2. Criar ou atualizar cliente no Asaas
     if (!customerId) {
-      const customerData = {
+      const { data: customer } = await asaas.post("/customers", {
         name,
         email,
         cpfCnpj,
         notificationDisabled: false,
-      };
-
-      const { data: customer } = await asaas.post("/customers", customerData);
+      });
       customerId = customer.id;
 
-      // Salvar customer_id no perfil
       await supabase
         .from("profiles")
         .update({ asaas_customer_id: customerId })
         .eq("id", userId);
+    } else {
+      // Atualizar CPF/CNPJ do cliente existente
+      await asaas.put(`/customers/${customerId}`, { cpfCnpj });
     }
 
     // 3. Criar cobrança de R$ 9,90 (primeiro mês)
