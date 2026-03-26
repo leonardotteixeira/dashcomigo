@@ -35,8 +35,10 @@ export function Checkout() {
           }),
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Erro ao criar cobrança");
+        const text = await res.text();
+        if (!text) throw new Error(`Servidor retornou resposta vazia (status ${res.status}). Verifique VITE_API_URL: ${API_URL}`);
+        const data = JSON.parse(text);
+        if (!res.ok) throw new Error(data.error || `Erro ao criar cobrança (status ${res.status})`);
 
         // Redireciona para a página de pagamento do Asaas
         window.location.href = data.paymentUrl;
