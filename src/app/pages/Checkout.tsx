@@ -19,6 +19,11 @@ export function Checkout() {
     if (user.plan === "pro") { navigate("/app"); return; }
 
     async function createPayment() {
+      if (!API_URL) {
+        setError("URL da API de pagamentos não configurada. Verifique as variáveis de ambiente no Vercel (VITE_API_URL).");
+        setLoading(false);
+        return;
+      }
       try {
         const res = await fetch(`${API_URL}/checkout`, {
           method: "POST",
