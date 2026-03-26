@@ -19,7 +19,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
+  signup: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
   incrementProposalUsage: () => Promise<void>;
@@ -89,18 +89,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/app` },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
     if (error) throw new Error(error.message);
   };
 
-  const signup = async (name: string, email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
+  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { name } },
     });
     if (error) throw new Error(error.message);
+    return !!data.session; // true = login imediato (sem confirmação de email)
   };
 
   const logout = async () => {

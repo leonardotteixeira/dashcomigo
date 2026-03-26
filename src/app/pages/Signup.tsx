@@ -1,29 +1,48 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router";
-import { UserPlus, Mail, Lock, User, ArrowLeft, Check } from "lucide-react";
+import { UserPlus, Mail, Lock, User, ArrowLeft, Check, MailCheck } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import { useAuth } from "../contexts/AuthContext";
+import { toast } from "sonner";
 
 export function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const navigate = useNavigate();
   const { signup, loginWithGoogle } = useAuth();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password.length < 8) {
+      toast.error("A senha deve ter pelo menos 8 caracteres.");
+      return;
+    }
     setLoading(true);
     try {
-      await signup(name, email, password);
-      navigate("/app");
-    } catch (error) {
-      console.error(error);
+      const loggedIn = await signup(name, email, password);
+      if (loggedIn) {
+        navigate("/app");
+      } else {
+        setEmailSent(true);
+      }
+    } catch (error: any) {
+      const msg = error?.message || "";
+      if (msg.includes("already registered") || msg.includes("User already registered")) {
+        toast.error("Este email já está cadastrado. Faça login ou use outro email.");
+      } else if (msg.includes("invalid email") || msg.includes("Invalid email")) {
+        toast.error("Email inválido. Verifique o endereço digitado.");
+      } else if (msg.includes("password")) {
+        toast.error("Senha muito fraca. Use pelo menos 8 caracteres com letras e números.");
+      } else {
+        toast.error("Erro ao criar conta. Tente novamente.");
+      }
     } finally {
       setLoading(false);
     }
@@ -33,13 +52,50 @@ export function Signup() {
     setLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/app");
-    } catch (error) {
-      console.error(error);
-    } finally {
+      // O redirecionamento acontece automaticamente via OAuth
+    } catch (error: any) {
+      toast.error("Erro ao continuar com Google. Tente novamente.");
       setLoading(false);
     }
   };
+
+  // Tela de confirmação de email
+  if (emailSent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+        <div className="w-full max-w-md text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg mb-6">
+            <MailCheck className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-3">
+            Verifique seu email!
+          </h1>
+          <p className="text-slate-600 mb-2 text-lg">
+            Enviamos um link de confirmação para:
+          </p>
+          <p className="font-bold text-purple-700 text-lg mb-6">{email}</p>
+          <p className="text-slate-500 mb-8">
+            Clique no link do email para ativar sua conta e acessar todas as ferramentas.
+          </p>
+          <Card className="p-6 border-2 border-slate-200 shadow-lg text-left mb-6">
+            <p className="text-sm font-bold text-slate-700 mb-3">Não recebeu o email?</p>
+            <ul className="text-sm text-slate-600 space-y-2">
+              <li>• Verifique a pasta de <strong>spam/lixo eletrônico</strong></li>
+              <li>• Aguarde alguns minutos</li>
+              <li>• Certifique-se de que o email está correto</li>
+            </ul>
+          </Card>
+          <Button
+            variant="outline"
+            className="w-full h-12 border-2"
+            onClick={() => navigate("/login")}
+          >
+            Já confirmei meu email — Fazer login
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
@@ -85,7 +141,7 @@ export function Signup() {
 
         {/* Right side - Signup form */}
         <div>
-          <Link 
+          <Link
             to="/"
             className="inline-flex items-center text-slate-600 hover:text-slate-900 mb-6 transition-colors lg:hidden"
           >
@@ -120,6 +176,7 @@ export function Signup() {
                   placeholder="João Silva"
                   required
                   className="h-12"
+                  autoComplete="name"
                 />
               </div>
 
@@ -136,6 +193,7 @@ export function Signup() {
                   placeholder="seu@email.com"
                   required
                   className="h-12"
+                  autoComplete="email"
                 />
               </div>
 
@@ -153,6 +211,7 @@ export function Signup() {
                   required
                   minLength={8}
                   className="h-12"
+                  autoComplete="new-password"
                 />
               </div>
 
