@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Crown, Check, ArrowLeft, Loader2 } from "lucide-react";
 import { Card } from "../components/ui/card";
@@ -8,50 +8,70 @@ import { useAuth } from "../contexts/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+function formatCpfCnpj(value: string) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length <= 11) {
+    return digits
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+  return digits
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+}
+
 export function Checkout() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [cpfCnpj, setCpfCnpj] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!user) { navigate("/login"); return; }
-    if (user.plan === "pro") { navigate("/app"); return; }
+  if (!user) { navigate("/login"); return null; }
+  if (user.plan === "pro") { navigate("/app"); return null; }
 
-    async function createPayment() {
-      if (!API_URL) {
-        setError("URL da API de pagamentos não configurada. Verifique as variáveis de ambiente no Vercel (VITE_API_URL).");
-        setLoading(false);
-        return;
-      }
-      try {
-        const res = await fetch(`${API_URL}/checkout`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user!.id,
-            name: user!.name,
-            email: user!.email,
-          }),
-        });
-
-        const text = await res.text();
-        if (!text) throw new Error(`Servidor retornou resposta vazia (status ${res.status}). Verifique VITE_API_URL: ${API_URL}`);
-        const data = JSON.parse(text);
-        if (!res.ok) throw new Error(data.error || `Erro ao criar cobrança (status ${res.status})`);
-
-        // Redireciona para a página de pagamento do Asaas
-        window.location.href = data.paymentUrl;
-      } catch (err: any) {
-        setError(err.message || "Erro ao conectar com o servidor de pagamentos.");
-        setLoading(false);
-      }
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const digits = cpfCnpj.replace(/\D/g, "");
+    if (digits.length !== 11 && digits.length !== 14) {
+      setError("CPF deve ter 11 digitos ou CNPJ 14 digitos.");
+      return;
     }
 
-    createPayment();
-  }, [user, navigate]);
+    if (!API_URL) {
+      setError("URL da API de pagamentos nao configurada.");
+      return;
+    }
 
-  if (!user) return null;
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${API_URL}/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user!.id,
+          name: user!.name,
+          email: user!.email,
+          cpfCnpj: digits,
+        }),
+      });
+
+      const text = await res.text();
+      if (!text) throw new Error("Servidor retornou resposta vazia.");
+      const data = JSON.parse(text);
+      if (!res.ok) throw new Error(data.error || "Erro ao criar cobranca");
+
+      window.location.href = data.paymentUrl;
+    } catch (err: any) {
+      setError(err.message || "Erro ao conectar com o servidor de pagamentos.");
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
@@ -68,32 +88,45 @@ export function Checkout() {
 
           <h1 className="text-2xl font-bold text-slate-900 mb-2">Upgrade para PRO</h1>
 
-          {loading && !error && (
-            <>
-              <p className="text-slate-600 mb-6">Preparando seu pagamento...</p>
-              <Loader2 className="w-10 h-10 animate-spin text-purple-600 mx-auto mb-6" />
-              <p className="text-sm text-slate-500">
-                Você será redirecionado para a página de pagamento segura do Asaas.
-              </p>
-            </>
-          )}
+          <form onSubmit={handleSubmit} className="mt-4">
+            <label className="block text-sm font-medium text-slate-700 text-left mb-1">
+              CPF ou CNPJ
+            </label>
+            <input
+              type="text"
+              value={cpfCnpj}
+              onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
+              placeholder="000.000.000-00"
+              maxLength={18}
+              className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-slate-900 focus:border-purple-500 focus:outline-none transition-colors mb-4"
+              disabled={loading}
+              required
+            />
 
-          {error && (
-            <>
-              <Alert className="bg-red-50 border-2 border-red-200 text-left mb-6">
+            {error && (
+              <Alert className="bg-red-50 border-2 border-red-200 text-left mb-4">
                 <AlertDescription className="text-red-900">
                   {error}
                 </AlertDescription>
               </Alert>
-              <Button
-                size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                onClick={() => window.location.reload()}
-              >
-                Tentar novamente
-              </Button>
-            </>
-          )}
+            )}
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  Processando...
+                </>
+              ) : (
+                "Continuar para pagamento"
+              )}
+            </Button>
+          </form>
 
           <div className="mt-6 space-y-2 text-sm text-slate-600 text-left">
             {[

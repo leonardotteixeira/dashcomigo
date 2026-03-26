@@ -8,8 +8,8 @@ const supabase = require("../lib/supabase");
 router.post("/", async (req, res) => {
   const { userId, name, email, cpfCnpj } = req.body;
 
-  if (!userId || !name || !email) {
-    return res.status(400).json({ error: "userId, name e email são obrigatórios" });
+  if (!userId || !name || !email || !cpfCnpj) {
+    return res.status(400).json({ error: "userId, name, email e cpfCnpj são obrigatórios" });
   }
 
   try {
@@ -27,9 +27,9 @@ router.post("/", async (req, res) => {
       const customerData = {
         name,
         email,
+        cpfCnpj,
         notificationDisabled: false,
       };
-      if (cpfCnpj) customerData.cpfCnpj = cpfCnpj;
 
       const { data: customer } = await asaas.post("/customers", customerData);
       customerId = customer.id;
