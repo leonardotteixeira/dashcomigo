@@ -29,7 +29,10 @@ export function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      // Navegação acontece via useEffect quando user é setado pelo onAuthStateChange
+      // Login já buscou o profile, redireciona imediatamente
+      toast.success("Login realizado com sucesso!");
+      navigate("/app");
+      return;
     } catch (error: any) {
       const msg = error?.message || "";
       if (msg.includes("Invalid login credentials") || msg.includes("invalid_credentials")) {

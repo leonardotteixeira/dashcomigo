@@ -65,12 +65,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    // Escuta mudanças de auth
+    // Escuta mudanças de auth (evita refetch duplicado)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        if (session?.user) {
-          await fetchProfile(session.user);
+      async (_event, newSession) => {
+        setSession(newSession);
+        if (newSession?.user) {
+          // Só busca profile se o user mudou (evita double-fetch no login)
+          setUser((currentUser) => {
+            if (currentUser?.id === newSession.user.id) return currentUser;
+            // Se é um user novo, busca profile em background
+            fetchProfile(newSession.user);
+            return currentUser;
+          });
         } else {
           setUser(null);
         }
@@ -82,8 +88,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
+    // Já temos o user, busca o profile imediatamente sem esperar onAuthStateChange
+    if (data.user) {
+      await fetchProfile(data.user);
+      setSession(data.session);
+    }
   };
 
   const loginWithGoogle = async () => {
