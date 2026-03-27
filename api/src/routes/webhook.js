@@ -8,8 +8,12 @@ function verifyWebhookToken(req, res, next) {
   const token = req.headers["asaas-access-token"];
   const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN;
 
-  // Se o token estiver configurado, valida
-  if (expectedToken && token !== expectedToken) {
+  if (!expectedToken) {
+    console.error("ASAAS_WEBHOOK_TOKEN não configurado no servidor");
+    return res.status(500).json({ error: "Webhook token not configured" });
+  }
+
+  if (token !== expectedToken) {
     console.warn("Webhook rejeitado: token inválido");
     return res.status(401).json({ error: "Token inválido" });
   }

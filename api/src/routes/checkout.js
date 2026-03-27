@@ -4,12 +4,32 @@ const asaas = require("../lib/asaas");
 const supabase = require("../lib/supabase");
 
 // POST /checkout
-// Body: { userId, name, email, cpfCnpj (opcional) }
+// Body: { userId, name, email, cpfCnpj }
 router.post("/", async (req, res) => {
   const { userId, name, email, cpfCnpj } = req.body;
 
   if (!userId || !name || !email || !cpfCnpj) {
     return res.status(400).json({ error: "userId, name, email e cpfCnpj são obrigatórios" });
+  }
+
+  // Validação de formato
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(userId)) {
+    return res.status(400).json({ error: "userId inválido" });
+  }
+
+  if (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 200) {
+    return res.status(400).json({ error: "Nome deve ter entre 2 e 200 caracteres" });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: "Formato de email inválido" });
+  }
+
+  const digits = cpfCnpj.replace(/\D/g, "");
+  if (digits.length !== 11 && digits.length !== 14) {
+    return res.status(400).json({ error: "CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos" });
   }
 
   try {
