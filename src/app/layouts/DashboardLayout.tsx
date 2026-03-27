@@ -86,7 +86,7 @@ export function DashboardLayout() {
               className="flex items-center cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
+              <img src="/logo.png" alt="Hub do Empreendedor" className="h-23 w-auto" />
             </div>
             <button
               className="lg:hidden p-2 text-[#A1A1A1] hover:text-white"

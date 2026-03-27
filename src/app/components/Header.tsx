@@ -19,7 +19,7 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
+            <img src="/logo.png" alt="Hub do Empreendedor" className="h-23 w-auto" />
             <span className="text-lg font-bold text-white hidden sm:inline">
               Hub do Empreendedor
             </span>

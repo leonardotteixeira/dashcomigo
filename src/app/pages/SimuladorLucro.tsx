@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TrendingUp, AlertCircle, ArrowRight, Info, Lock, Crown } from "lucide-react";
+import { TrendingUp, AlertCircle, ArrowRight, Info, Lock, Crown, BarChart3, Target } from "lucide-react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -321,7 +321,9 @@ export function SimuladorLucro() {
 
         <div className="mt-8 grid md:grid-cols-3 gap-6 bg-[#141414] rounded-2xl p-6 border border-white/5">
           <div className="text-center">
-            <div className="text-3xl mb-2">📊</div>
+            <div className="flex justify-center mb-2">
+              <BarChart3 className="w-8 h-8 text-[#2DDB81]" />
+            </div>
             <div className="text-2xl font-bold text-white">
               {formatCurrency(projecaoData[11]?.lucroAcumulado || 0)}
             </div>
@@ -329,7 +331,9 @@ export function SimuladorLucro() {
           </div>
 
           <div className="text-center">
-            <div className="text-3xl mb-2">📈</div>
+            <div className="flex justify-center mb-2">
+              <TrendingUp className="w-8 h-8 text-[#2DDB81]" />
+            </div>
             <div className="text-2xl font-bold text-white">
               {formatCurrency(projecaoData[11]?.receita || 0)}
             </div>
@@ -337,7 +341,9 @@ export function SimuladorLucro() {
           </div>
 
           <div className="text-center">
-            <div className="text-3xl mb-2">🎯</div>
+            <div className="flex justify-center mb-2">
+              <Target className="w-8 h-8 text-[#2DDB81]" />
+            </div>
             <div className="text-2xl font-bold text-white">
               {((projecaoData[11]?.lucro || 0) / (projecaoData[11]?.receita || 1) * 100).toFixed(1)}%
             </div>

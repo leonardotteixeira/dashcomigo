@@ -6,7 +6,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
+              <img src="/logo.png" alt="Hub do Empreendedor" className="h-23 w-auto" />
               <span className="text-lg font-bold text-white">Hub do Empreendedor</span>
             </div>
             <p className="text-[#868898] leading-relaxed max-w-md text-sm">
