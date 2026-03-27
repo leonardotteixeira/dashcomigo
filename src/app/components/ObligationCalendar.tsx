@@ -39,41 +39,76 @@ export function ObligationCalendar() {
   return (
     <div className="space-y-4">
       {/* Calendário - apenas desktop */}
-      <div className="hidden lg:block bg-[#1B1B1B] rounded-2xl border border-white/5 p-4">
-        <Calendar
-          mode="single"
-          selected={selectedDate}
-          onSelect={(date) => date && setSelectedDate(date)}
-          locale={ptBR}
-          disabled={(date) => date.getFullYear() < new Date().getFullYear()}
-          classNames={{
-            day_selected: "bg-[#28A263] text-white hover:bg-[#28A263] hover:text-white",
-            day_today: "bg-white/10 text-white",
-          }}
-        />
-        <div className="mt-4 text-xs text-[#686F6F]">
-          <p>🟢 Data com obrigações</p>
+      <div className="hidden lg:block bg-[#1B1B1B] rounded-2xl border border-white/10 p-6">
+        <style>{`
+          .calendar-container .rdp {
+            --rdp-cell-size: 40px;
+            --rdp-accent-color: #28A263;
+            --rdp-background-color: #28A263;
+            margin: 0;
+          }
+          .calendar-container .rdp_head_cell {
+            color: #A1A1A1;
+            font-weight: 600;
+          }
+          .calendar-container .rdp_cell {
+            padding: 2px;
+          }
+          .calendar-container .rdp_button {
+            color: #C8C9D0;
+            border-radius: 8px;
+            font-weight: 500;
+          }
+          .calendar-container .rdp_button:hover:not([disabled]) {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+          }
+          .calendar-container .rdp_button[aria-selected="true"] {
+            background-color: #28A263;
+            color: white;
+            font-weight: bold;
+          }
+          .calendar-container .rdp_button[aria-disabled="true"] {
+            color: #686F6F;
+            opacity: 0.5;
+          }
+        `}</style>
+        <div className="calendar-container">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => date && setSelectedDate(date)}
+            locale={ptBR}
+            disabled={(date) => date.getFullYear() < new Date().getFullYear()}
+            classNames={{
+              day_selected: "bg-[#28A263] text-white hover:bg-[#28A263] hover:text-white",
+              day_today: "bg-white/10 text-white",
+            }}
+          />
+        </div>
+        <div className="mt-4 text-xs text-[#2DDB81] font-medium">
+          <p>● Data com obrigações</p>
         </div>
       </div>
 
       {/* Data selecionada + navegação (mobile) */}
-      <div className="lg:hidden flex items-center justify-between bg-[#1B1B1B] rounded-2xl border border-white/5 p-4">
-        <button onClick={goToPreviousDay} className="p-2 hover:bg-white/10 rounded-lg">
-          <ChevronLeft className="w-5 h-5 text-[#A1A1A1]" />
+      <div className="lg:hidden flex items-center justify-between bg-[#28A263]/10 border border-[#28A263]/30 rounded-2xl p-4">
+        <button onClick={goToPreviousDay} className="p-2 hover:bg-[#28A263]/20 rounded-lg transition-colors">
+          <ChevronLeft className="w-5 h-5 text-[#2DDB81]" />
         </button>
         <div className="text-center">
-          <p className="text-white font-bold">
+          <p className="text-[#2DDB81] font-bold text-sm md:text-base">
             {format(selectedDate, "dd MMM yyyy", { locale: ptBR })}
           </p>
         </div>
-        <button onClick={goToNextDay} className="p-2 hover:bg-white/10 rounded-lg">
-          <ChevronRight className="w-5 h-5 text-[#A1A1A1]" />
+        <button onClick={goToNextDay} className="p-2 hover:bg-[#28A263]/20 rounded-lg transition-colors">
+          <ChevronRight className="w-5 h-5 text-[#2DDB81]" />
         </button>
       </div>
 
       {/* Obrigações do dia selecionado */}
-      <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-6">
-        <h3 className="text-lg font-bold text-white mb-4">
+      <div className="bg-[#1B1B1B] rounded-2xl border border-white/10 p-6">
+        <h3 className="text-lg md:text-xl font-bold text-white mb-4">
           {format(selectedDate, "dd 'de' MMMM", { locale: ptBR })}
         </h3>
 
@@ -84,12 +119,12 @@ export function ObligationCalendar() {
             {dayObligations.map((ob) => (
               <div
                 key={ob.id}
-                className={`p-4 rounded-xl border ${
+                className={`p-4 rounded-xl border transition-colors ${
                   ob.isFixture
-                    ? "bg-[#1B1B1B] border-[#686F6F]/20"
+                    ? "bg-[#141414] border-[#686F6F]/30 hover:border-[#686F6F]/50"
                     : ob.status === "completa"
-                    ? "bg-[#28A263]/10 border-[#28A263]/30"
-                    : "bg-white/5 border-white/10"
+                    ? "bg-[#28A263]/15 border-[#28A263]/50"
+                    : "bg-[#1A2F1F] border-[#28A263]/40 hover:border-[#28A263]/60"
                 }`}
               >
                 <div className="flex items-start gap-3">
