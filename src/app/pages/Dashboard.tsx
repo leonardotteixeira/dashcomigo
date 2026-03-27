@@ -23,6 +23,8 @@ import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
+import { ObligationsProvider } from "../contexts/ObligationsContext";
+import { ObligationsSection } from "../components/ObligationsSection";
 import {
   AreaChart,
   Area,
@@ -138,32 +140,6 @@ function buildAcoes(meiPct: number, margemLucro: number, totalSaidas: number, to
   return acoes;
 }
 
-function buildProximasObrigacoes() {
-  const today = new Date();
-  const obrigacoes: { titulo: string; data: string; valor: string; status: string }[] = [];
-
-  for (let i = 0; i < 3; i++) {
-    const d = new Date(today.getFullYear(), today.getMonth() + i, 20);
-    const isPast = today > d;
-    if (i === 0 && isPast) continue;
-    obrigacoes.push({
-      titulo: `DAS — ${d.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}`,
-      data: `20/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`,
-      valor: "R$ 71,00",
-      status: i === 0 ? "pendente" : "futura",
-    });
-  }
-
-  const dasnYear = today.getMonth() >= 4 ? today.getFullYear() + 1 : today.getFullYear();
-  obrigacoes.push({
-    titulo: `Declaração Anual MEI (DASN) ${dasnYear}`,
-    data: `31/05/${dasnYear}`,
-    valor: "—",
-    status: today.getMonth() >= 4 && dasnYear === today.getFullYear() ? "pendente" : "futura",
-  });
-
-  return obrigacoes;
-}
 
 const chartStyle = {
   cartesian: "#2A2A2A",
@@ -210,8 +186,6 @@ export function Dashboard() {
     [meiPercentage, summary]
   );
 
-  const proximasObrigacoes = useMemo(() => buildProximasObrigacoes(), []);
-
   const progressoAcoes = Math.round(
     (Object.values(acoesChecked).filter(Boolean).length + acoes.filter((a) => a.concluido).length)
     / Math.max(acoes.length, 1) * 100
@@ -237,7 +211,8 @@ export function Dashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <ObligationsProvider>
+      <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-white mb-1">
@@ -601,27 +576,7 @@ export function Dashboard() {
 
           {/* Próximas Obrigações */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}>
-            <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
-              <div className="flex items-center gap-2 mb-4">
-                <Calendar className="h-5 w-5 text-[#A1A1A1]" />
-                <h3 className="font-bold text-white">Próximas Obrigações</h3>
-              </div>
-              <div className="space-y-2">
-                {proximasObrigacoes.map((ob, i) => (
-                  <div key={i} className="p-3 bg-[#141414] rounded-xl">
-                    <div className="flex items-start justify-between mb-1">
-                      <p className="text-sm font-medium text-white leading-tight pr-2">{ob.titulo}</p>
-                      <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${ob.status === "pendente" ? "bg-orange-500" : "bg-[#686F6F]"}`} />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-[#686F6F]">{ob.data}</span>
-                      <span className="text-xs font-medium text-[#A1A1A1]">{ob.valor}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-[#686F6F] mt-3">Valores de referência para MEI — consulte seu contador para valores exatos.</p>
-            </div>
+            <ObligationsSection />
           </motion.div>
 
           {/* Quick value props */}
@@ -648,6 +603,7 @@ export function Dashboard() {
 
         </div>
       </div>
-    </div>
+      </div>
+    </ObligationsProvider>
   );
 }
