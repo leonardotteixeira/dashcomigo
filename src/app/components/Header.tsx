@@ -14,62 +14,60 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
   const { isAuthenticated } = useAuth();
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-slate-200 z-50 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 bg-black/80 backdrop-blur-md border-b border-white/5 z-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Calculator className="w-6 h-6 text-white" />
+            <div className="w-9 h-9 bg-[#2DDB81] rounded-xl flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-bold text-slate-900">
+            <span className="text-lg font-bold text-white">
               Hub do Empreendedor
             </span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a
-              href="#simulador"
-              className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
+          <nav className="hidden md:flex items-center gap-2">
+            <button
+              className="px-4 py-1.5 text-white font-medium transition-colors hover:text-[#C0F497]"
               onClick={(e) => {
                 e.preventDefault();
                 onScrollToSimulator();
               }}
             >
-              Simulador
-            </a>
-            <a
-              href="#beneficios"
-              className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
+              Ferramentas
+            </button>
+            <button
+              className="px-4 py-1.5 text-white font-medium transition-colors hover:text-[#C0F497]"
             >
               Benefícios
-            </a>
+            </button>
             <button
-              className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
+              className="px-4 py-1.5 text-white font-medium transition-colors hover:text-[#C0F497]"
               onClick={() => navigate("/pricing")}
             >
               Planos
             </button>
-            
+
             {isAuthenticated ? (
               <Button
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                className="ml-4 bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg"
                 onClick={() => navigate("/app")}
               >
                 Acessar Dashboard
               </Button>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 ml-4">
                 <Button
                   variant="ghost"
+                  className="text-[#C0F497] border border-[#C0F497] hover:bg-[#C0F497]/10 rounded-lg"
                   onClick={() => navigate("/login")}
                 >
-                  <LogIn className="w-4 h-4 mr-2" />
                   Entrar
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                  className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg"
                   onClick={() => navigate("/signup")}
                 >
                   Criar Conta
@@ -80,7 +78,7 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-slate-600 hover:text-slate-900"
+            className="md:hidden p-2 text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -89,28 +87,25 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-slate-200">
+          <div className="md:hidden py-4 border-t border-white/10">
             <nav className="flex flex-col gap-4">
-              <a
-                href="#simulador"
-                className="text-slate-600 hover:text-slate-900 font-medium transition-colors py-2"
-                onClick={(e) => {
-                  e.preventDefault();
+              <button
+                className="text-white hover:text-[#C0F497] font-medium transition-colors py-2 text-left"
+                onClick={() => {
                   onScrollToSimulator();
                   setMobileMenuOpen(false);
                 }}
               >
-                Simulador
-              </a>
-              <a
-                href="#beneficios"
-                className="text-slate-600 hover:text-slate-900 font-medium transition-colors py-2"
+                Ferramentas
+              </button>
+              <button
+                className="text-white hover:text-[#C0F497] font-medium transition-colors py-2 text-left"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Benefícios
-              </a>
+              </button>
               <button
-                className="text-slate-600 hover:text-slate-900 font-medium transition-colors py-2 text-left"
+                className="text-white hover:text-[#C0F497] font-medium transition-colors py-2 text-left"
                 onClick={() => {
                   navigate("/pricing");
                   setMobileMenuOpen(false);
@@ -118,10 +113,10 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
               >
                 Planos
               </button>
-              
+
               {isAuthenticated ? (
                 <Button
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white w-full mt-2"
+                  className="bg-[#28A263] hover:bg-[#2DDB81] text-white w-full mt-2 rounded-lg"
                   onClick={() => {
                     navigate("/app");
                     setMobileMenuOpen(false);
@@ -133,7 +128,7 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
                 <div className="flex flex-col gap-2 mt-2">
                   <Button
                     variant="outline"
-                    className="w-full"
+                    className="w-full border-[#C0F497] text-[#C0F497] hover:bg-[#C0F497]/10 rounded-lg"
                     onClick={() => {
                       navigate("/login");
                       setMobileMenuOpen(false);
@@ -143,7 +138,7 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
                     Entrar
                   </Button>
                   <Button
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white w-full"
+                    className="bg-[#28A263] hover:bg-[#2DDB81] text-white w-full rounded-lg"
                     onClick={() => {
                       navigate("/signup");
                       setMobileMenuOpen(false);
