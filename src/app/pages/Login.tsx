@@ -61,12 +61,12 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         {/* Back to home */}
         <Link
           to="/"
-          className="inline-flex items-center text-slate-600 hover:text-slate-900 mb-8 transition-colors"
+          className="inline-flex items-center text-[#686F6F] hover:text-[#A1A1A1] mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar para o início
@@ -74,21 +74,21 @@ export function Login() {
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-lg mb-4">
-            <LogIn className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
+            <LogIn className="w-8 h-8 text-[#2DDB81]" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             Bem-vindo de volta!
           </h1>
-          <p className="text-slate-600">
+          <p className="text-[#A1A1A1]">
             Entre para acessar suas ferramentas
           </p>
         </div>
 
-        <Card className="p-8 border-2 border-slate-200 shadow-xl">
+        <Card className="p-8 border border-white/10 bg-[#1B1B1B] shadow-xl">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <Label htmlFor="email" className="flex items-center gap-2 mb-2">
+              <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-white">
                 <Mail className="w-4 h-4" />
                 Email
               </Label>
@@ -99,20 +99,20 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="h-12"
+                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                 autoComplete="email"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <Label htmlFor="password" className="flex items-center gap-2">
+                <Label htmlFor="password" className="flex items-center gap-2 text-white">
                   <Lock className="w-4 h-4" />
                   Senha
                 </Label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-purple-600 hover:text-purple-700"
+                  className="text-sm text-[#2DDB81] hover:text-[#28A263] transition-colors"
                 >
                   Esqueceu?
                 </Link>
@@ -124,7 +124,7 @@ export function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="h-12"
+                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                 autoComplete="current-password"
               />
             </div>
@@ -132,7 +132,7 @@ export function Login() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12"
+              className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-12 font-semibold"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
@@ -141,8 +141,8 @@ export function Login() {
 
           <div className="my-6">
             <div className="relative">
-              <Separator />
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-sm text-slate-500">
+              <Separator className="bg-white/10" />
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1B1B1B] px-3 text-sm text-[#686F6F]">
                 ou continue com
               </span>
             </div>
@@ -150,9 +150,8 @@ export function Login() {
 
           <Button
             type="button"
-            variant="outline"
             size="lg"
-            className="w-full h-12 border-2"
+            className="w-full h-12 border border-white/10 bg-[#1B1B1B] text-white hover:bg-white/5"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
@@ -165,15 +164,15 @@ export function Login() {
             Entrar com Google
           </Button>
 
-          <div className="mt-6 text-center text-sm text-slate-600">
+          <div className="mt-6 text-center text-sm text-[#A1A1A1]">
             Não tem uma conta?{" "}
-            <Link to="/signup" className="text-purple-600 hover:text-purple-700 font-semibold">
+            <Link to="/signup" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
               Cadastre-se grátis
             </Link>
           </div>
         </Card>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
+        <p className="text-center text-sm text-[#686F6F] mt-6">
           Ao entrar, você concorda com nossos Termos de Uso
         </p>
       </div>

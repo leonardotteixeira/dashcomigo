@@ -48,20 +48,20 @@ export function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-lg mb-4">
-            <KeyRound className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
+            <KeyRound className="w-8 h-8 text-[#2DDB81]" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Nova senha</h1>
-          <p className="text-slate-600">Digite sua nova senha abaixo.</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Nova senha</h1>
+          <p className="text-[#A1A1A1]">Digite sua nova senha abaixo.</p>
         </div>
 
-        <Card className="p-8 border-2 border-slate-200 shadow-xl">
+        <Card className="p-8 border border-white/10 bg-[#1B1B1B] shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="password" className="flex items-center gap-2 mb-2">
+              <Label htmlFor="password" className="flex items-center gap-2 mb-2 text-white">
                 <Lock className="w-4 h-4" />
                 Nova senha
               </Label>
@@ -73,13 +73,13 @@ export function ResetPassword() {
                 placeholder="Mínimo 8 caracteres"
                 required
                 minLength={8}
-                className="h-12"
+                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                 autoComplete="new-password"
               />
             </div>
 
             <div>
-              <Label htmlFor="confirm" className="flex items-center gap-2 mb-2">
+              <Label htmlFor="confirm" className="flex items-center gap-2 mb-2 text-white">
                 <Lock className="w-4 h-4" />
                 Confirmar senha
               </Label>
@@ -91,7 +91,7 @@ export function ResetPassword() {
                 placeholder="Repita a senha"
                 required
                 minLength={8}
-                className="h-12"
+                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                 autoComplete="new-password"
               />
             </div>
@@ -99,7 +99,7 @@ export function ResetPassword() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12"
+              className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-12 font-semibold"
               disabled={loading}
             >
               {loading ? "Salvando..." : "Salvar nova senha"}
