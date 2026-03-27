@@ -62,32 +62,31 @@ export function Signup() {
   // Tela de confirmação de email
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
         <div className="w-full max-w-md text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg mb-6">
-            <MailCheck className="w-10 h-10 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-[#28A263]/20 rounded-2xl shadow-lg mb-6">
+            <MailCheck className="w-10 h-10 text-[#2DDB81]" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">
+          <h1 className="text-3xl font-bold text-white mb-3">
             Verifique seu email!
           </h1>
-          <p className="text-slate-600 mb-2 text-lg">
+          <p className="text-[#A1A1A1] mb-2 text-lg">
             Enviamos um link de confirmação para:
           </p>
-          <p className="font-bold text-purple-700 text-lg mb-6">{email}</p>
-          <p className="text-slate-500 mb-8">
+          <p className="font-bold text-[#2DDB81] text-lg mb-6">{email}</p>
+          <p className="text-[#686F6F] mb-8">
             Clique no link do email para ativar sua conta e acessar todas as ferramentas.
           </p>
-          <Card className="p-6 border-2 border-slate-200 shadow-lg text-left mb-6">
-            <p className="text-sm font-bold text-slate-700 mb-3">Não recebeu o email?</p>
-            <ul className="text-sm text-slate-600 space-y-2">
+          <Card className="p-6 border border-white/10 bg-[#1B1B1B] shadow-lg text-left mb-6">
+            <p className="text-sm font-bold text-[#A1A1A1] mb-3">Não recebeu o email?</p>
+            <ul className="text-sm text-[#686F6F] space-y-2">
               <li>• Verifique a pasta de <strong>spam/lixo eletrônico</strong></li>
               <li>• Aguarde alguns minutos</li>
               <li>• Certifique-se de que o email está correto</li>
             </ul>
           </Card>
           <Button
-            variant="outline"
-            className="w-full h-12 border-2"
+            className="w-full h-12 border border-white/10 bg-[#1B1B1B] text-white hover:bg-white/5"
             onClick={() => navigate("/login")}
           >
             Já confirmei meu email — Fazer login
@@ -98,16 +97,16 @@ export function Signup() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
       <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
         {/* Left side - Value proposition */}
         <div className="hidden lg:block">
           <div className="space-y-6">
             <div>
-              <h2 className="text-4xl font-bold text-slate-900 mb-4">
+              <h2 className="text-4xl font-bold text-white mb-4">
                 Comece a tomar decisões mais inteligentes
               </h2>
-              <p className="text-lg text-slate-600">
+              <p className="text-lg text-[#A1A1A1]">
                 Junte-se a milhares de empreendedores que já usam o Hub do Empreendedor
               </p>
             </div>
@@ -120,17 +119,17 @@ export function Signup() {
                 "Gere propostas profissionais em minutos"
               ].map((benefit, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-[#28A263] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <Check className="w-4 h-4 text-white" />
                   </div>
-                  <p className="text-slate-700">{benefit}</p>
+                  <p className="text-[#A1A1A1]">{benefit}</p>
                 </div>
               ))}
             </div>
 
-            <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl p-6 border-2 border-purple-200">
-              <p className="text-sm font-bold text-purple-900 mb-2">🎉 Plano Gratuito Inclui:</p>
-              <ul className="text-sm text-purple-800 space-y-1">
+            <div className="bg-[#28A263]/10 rounded-2xl p-6 border border-[#28A263]/20">
+              <p className="text-sm font-bold text-[#2DDB81] mb-2">✨ Plano Gratuito Inclui:</p>
+              <ul className="text-sm text-[#A1A1A1] space-y-1">
                 <li>✓ Simulador MEI → ME ilimitado</li>
                 <li>✓ 2 propostas comerciais por dia</li>
                 <li>✓ Acesso ao dashboard</li>
@@ -143,28 +142,28 @@ export function Signup() {
         <div>
           <Link
             to="/"
-            className="inline-flex items-center text-slate-600 hover:text-slate-900 mb-6 transition-colors lg:hidden"
+            className="inline-flex items-center text-[#686F6F] hover:text-[#A1A1A1] mb-6 transition-colors lg:hidden"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar para o início
           </Link>
 
           <div className="text-center mb-6 lg:text-left">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-lg mb-4">
-              <UserPlus className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
+              <UserPlus className="w-8 h-8 text-[#2DDB81]" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               Crie sua conta grátis
             </h1>
-            <p className="text-slate-600">
+            <p className="text-[#A1A1A1]">
               Sem cartão de crédito. Comece agora!
             </p>
           </div>
 
-          <Card className="p-8 border-2 border-slate-200 shadow-xl">
+          <Card className="p-8 border border-white/10 bg-[#1B1B1B] shadow-xl">
             <form onSubmit={handleSignup} className="space-y-5">
               <div>
-                <Label htmlFor="name" className="flex items-center gap-2 mb-2">
+                <Label htmlFor="name" className="flex items-center gap-2 mb-2 text-white">
                   <User className="w-4 h-4" />
                   Nome completo
                 </Label>
@@ -175,13 +174,13 @@ export function Signup() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="João Silva"
                   required
-                  className="h-12"
+                  className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                   autoComplete="name"
                 />
               </div>
 
               <div>
-                <Label htmlFor="email" className="flex items-center gap-2 mb-2">
+                <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-white">
                   <Mail className="w-4 h-4" />
                   Email
                 </Label>
@@ -192,13 +191,13 @@ export function Signup() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
-                  className="h-12"
+                  className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                   autoComplete="email"
                 />
               </div>
 
               <div>
-                <Label htmlFor="password" className="flex items-center gap-2 mb-2">
+                <Label htmlFor="password" className="flex items-center gap-2 mb-2 text-white">
                   <Lock className="w-4 h-4" />
                   Senha
                 </Label>
@@ -210,7 +209,7 @@ export function Signup() {
                   placeholder="Mínimo 8 caracteres"
                   required
                   minLength={8}
-                  className="h-12"
+                  className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
                   autoComplete="new-password"
                 />
               </div>
@@ -218,7 +217,7 @@ export function Signup() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12"
+                className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-12 font-semibold"
                 disabled={loading}
               >
                 {loading ? "Criando conta..." : "Criar conta grátis"}
@@ -227,8 +226,8 @@ export function Signup() {
 
             <div className="my-5">
               <div className="relative">
-                <Separator />
-                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-sm text-slate-500">
+                <Separator className="bg-white/10" />
+                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1B1B1B] px-3 text-sm text-[#686F6F]">
                   ou
                 </span>
               </div>
@@ -236,9 +235,8 @@ export function Signup() {
 
             <Button
               type="button"
-              variant="outline"
               size="lg"
-              className="w-full h-12 border-2"
+              className="w-full h-12 border border-white/10 bg-[#1B1B1B] text-white hover:bg-white/5"
               onClick={handleGoogleSignup}
               disabled={loading}
             >
@@ -251,15 +249,15 @@ export function Signup() {
               Continuar com Google
             </Button>
 
-            <div className="mt-6 text-center text-sm text-slate-600">
+            <div className="mt-6 text-center text-sm text-[#A1A1A1]">
               Já tem uma conta?{" "}
-              <Link to="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+              <Link to="/login" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
                 Fazer login
               </Link>
             </div>
           </Card>
 
-          <p className="text-center text-xs text-slate-500 mt-4">
+          <p className="text-center text-xs text-[#686F6F] mt-4">
             Ao criar uma conta, você concorda com nossos Termos de Uso e Política de Privacidade
           </p>
         </div>
