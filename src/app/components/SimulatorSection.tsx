@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Calculator, TrendingUp, DollarSign } from "lucide-react";
-import { Card } from "./ui/card";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Slider } from "./ui/slider";
@@ -30,15 +29,11 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
   const [resultado, setResultado] = useState<SimulationResult | null>(null);
 
   const calcularImpostos = () => {
-    // Valores MEI 2026 (aproximados)
-    const meiValorFixo = tipoAtividade === "servicos" ? 75 : 
+    const meiValorFixo = tipoAtividade === "servicos" ? 75 :
                          tipoAtividade === "comercio" ? 71 : 76;
-    
-    // Simples Nacional - ME (aproximação simplificada)
-    // Para serviços: Anexo III (16% a 22%)
-    // Para comércio: Anexo I (4% a 19%)
+
     let aliquotaSimples = 0;
-    
+
     if (tipoAtividade === "servicos") {
       if (faturamento <= 5000) aliquotaSimples = 0.06;
       else if (faturamento <= 10000) aliquotaSimples = 0.09;
@@ -49,28 +44,28 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
       else if (faturamento <= 10000) aliquotaSimples = 0.06;
       else if (faturamento <= 20000) aliquotaSimples = 0.08;
       else aliquotaSimples = 0.10;
-    } else { // industria
+    } else {
       if (faturamento <= 5000) aliquotaSimples = 0.045;
       else if (faturamento <= 10000) aliquotaSimples = 0.07;
       else if (faturamento <= 20000) aliquotaSimples = 0.09;
       else aliquotaSimples = 0.11;
     }
-    
+
     const meiImposto = meiValorFixo;
     const meImposto = faturamento * aliquotaSimples;
-    
+
     const meiLucro = faturamento - despesas - meiImposto;
     const meLucro = faturamento - despesas - meImposto;
-    
+
     const economia = meiImposto - meImposto;
-    
+
     let recomendacao: "MEI" | "ME" | "Limite" = "MEI";
     if (faturamento > 81000 / 12) {
       recomendacao = "Limite";
     } else if (meLucro > meiLucro) {
       recomendacao = "ME";
     }
-    
+
     const result: SimulationResult = {
       faturamento,
       tipoAtividade,
@@ -82,7 +77,7 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
       economia,
       recomendacao
     };
-    
+
     setResultado(result);
     onSimulate(result);
   };
@@ -95,34 +90,34 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
   };
 
   return (
-    <section id="simulador" className="py-20 bg-white">
+    <section id="simulador" className="py-12">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
-            <Calculator className="w-4 h-4" />
-            Simulador gratuito
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#28A263]/20 border border-[#28A263]/20 rounded-full text-sm font-medium mb-4">
+            <Calculator className="w-4 h-4 text-[#2DDB81]" />
+            <span className="text-[#2DDB81]">Simulador gratuito</span>
           </div>
-          
-          <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
+
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
             Compare MEI vs Microempresa
           </h2>
-          
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+
+          <p className="text-lg text-[#A1A1A1] max-w-2xl mx-auto">
             Insira seus dados e descubra qual regime tributário é mais vantajoso para o seu negócio
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Input Card */}
-          <Card className="p-8 shadow-xl border-2 border-slate-200">
+          <div className="p-8 bg-[#1B1B1B] rounded-2xl border border-white/5">
             <div className="space-y-6">
               <div>
-                <Label htmlFor="faturamento" className="text-base font-semibold text-slate-900 mb-3 block">
+                <Label htmlFor="faturamento" className="text-base font-semibold text-white mb-3 block">
                   Faturamento mensal
                 </Label>
-                
+
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 font-medium">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A1A1A1] font-medium">
                     R$
                   </span>
                   <Input
@@ -130,12 +125,12 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
                     type="number"
                     value={faturamento}
                     onChange={(e) => setFaturamento(Number(e.target.value))}
-                    className="pl-12 text-2xl font-bold h-14 text-slate-900"
+                    className="pl-12 text-2xl font-bold h-14 bg-[#141414] border-white/10 text-white rounded-xl"
                     min={0}
                     max={30000}
                   />
                 </div>
-                
+
                 <div className="mt-4">
                   <Slider
                     value={[faturamento]}
@@ -146,23 +141,23 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
                     className="py-4"
                   />
                 </div>
-                
-                <div className="flex justify-between text-sm text-slate-600 mt-2">
+
+                <div className="flex justify-between text-sm text-[#A1A1A1] mt-2">
                   <span>R$ 1.000</span>
-                  <span className="font-medium text-purple-600">Limite MEI: R$ 6.750/mês</span>
+                  <span className="font-medium text-[#2DDB81]">Limite MEI: R$ 6.750/mês</span>
                   <span>R$ 30.000</span>
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="atividade" className="text-base font-semibold text-slate-900 mb-3 block">
+                <Label htmlFor="atividade" className="text-base font-semibold text-white mb-3 block">
                   Tipo de atividade
                 </Label>
                 <Select value={tipoAtividade} onValueChange={setTipoAtividade}>
-                  <SelectTrigger id="atividade" className="h-12 text-base">
+                  <SelectTrigger id="atividade" className="h-12 text-base bg-[#141414] border-white/10 text-white rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#1B1B1B] border-white/10 text-white">
                     <SelectItem value="servicos">Serviços</SelectItem>
                     <SelectItem value="comercio">Comércio</SelectItem>
                     <SelectItem value="industria">Indústria</SelectItem>
@@ -171,11 +166,11 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
               </div>
 
               <div>
-                <Label htmlFor="despesas" className="text-base font-semibold text-slate-900 mb-3 block">
+                <Label htmlFor="despesas" className="text-base font-semibold text-white mb-3 block">
                   Despesas mensais (opcional)
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A1A1A1]">
                     R$
                   </span>
                   <Input
@@ -183,7 +178,7 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
                     type="number"
                     value={despesas}
                     onChange={(e) => setDespesas(Number(e.target.value))}
-                    className="pl-12 h-12 text-base"
+                    className="pl-12 h-12 text-base bg-[#141414] border-white/10 text-white rounded-xl"
                     min={0}
                   />
                 </div>
@@ -191,61 +186,65 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
 
               <Button
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-14 text-lg font-semibold"
+                className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-black h-14 text-lg font-semibold rounded-xl"
                 onClick={calcularImpostos}
               >
                 <Calculator className="mr-2 w-5 h-5" />
                 Calcular comparação
               </Button>
             </div>
-          </Card>
+          </div>
 
           {/* Results Card */}
           <div className="space-y-6">
             {resultado ? (
               <>
-                <Card className={`p-8 border-2 ${resultado.recomendacao === 'MEI' ? 'border-green-300 bg-green-50' : resultado.recomendacao === 'ME' ? 'border-blue-300 bg-blue-50' : 'border-orange-300 bg-orange-50'}`}>
+                <div className={`p-8 rounded-2xl border-2 ${
+                  resultado.recomendacao === 'MEI' ? 'border-[#28A263]/50 bg-[#28A263]/10' :
+                  resultado.recomendacao === 'ME' ? 'border-blue-500/50 bg-blue-500/10' :
+                  'border-orange-500/50 bg-orange-500/10'
+                }`}>
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-2xl font-bold text-slate-900">Resultado</h3>
+                      <h3 className="text-2xl font-bold text-white">Resultado</h3>
                       <div className={`px-4 py-2 rounded-full text-sm font-bold ${
-                        resultado.recomendacao === 'MEI' ? 'bg-green-200 text-green-800' :
-                        resultado.recomendacao === 'ME' ? 'bg-blue-200 text-blue-800' :
-                        'bg-orange-200 text-orange-800'
+                        resultado.recomendacao === 'MEI' ? 'bg-[#28A263]/20 text-[#2DDB81]' :
+                        resultado.recomendacao === 'ME' ? 'bg-blue-500/20 text-blue-400' :
+                        'bg-orange-500/20 text-orange-400'
                       }`}>
                         {resultado.recomendacao === 'Limite' ? '⚠️ Atenção!' : `✓ Recomendado: ${resultado.recomendacao}`}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-                        <div className="text-sm text-slate-600 mb-1">MEI - Impostos</div>
-                        <div className="text-2xl font-bold text-slate-900">{formatCurrency(resultado.meiImposto)}</div>
-                        <div className="text-xs text-slate-500 mt-1">por mês</div>
+                      <div className="bg-[#141414] rounded-xl p-4 border border-white/5">
+                        <div className="text-sm text-[#A1A1A1] mb-1">MEI - Impostos</div>
+                        <div className="text-2xl font-bold text-white">{formatCurrency(resultado.meiImposto)}</div>
+                        <div className="text-xs text-[#686F6F] mt-1">por mês</div>
                       </div>
 
-                      <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-                        <div className="text-sm text-slate-600 mb-1">ME - Impostos</div>
-                        <div className="text-2xl font-bold text-slate-900">{formatCurrency(resultado.meImposto)}</div>
-                        <div className="text-xs text-slate-500 mt-1">por mês</div>
+                      <div className="bg-[#141414] rounded-xl p-4 border border-white/5">
+                        <div className="text-sm text-[#A1A1A1] mb-1">ME - Impostos</div>
+                        <div className="text-2xl font-bold text-white">{formatCurrency(resultado.meImposto)}</div>
+                        <div className="text-xs text-[#686F6F] mt-1">por mês</div>
                       </div>
                     </div>
 
-                    <div className="border-t pt-4">
+                    <div className="border-t border-white/10 pt-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <div className="text-sm text-slate-600 mb-1">MEI - Lucro líquido</div>
-                          <div className="text-xl font-bold text-slate-900">{formatCurrency(resultado.meiLucro)}</div>
+                          <div className="text-sm text-[#A1A1A1] mb-1">MEI - Lucro líquido</div>
+                          <div className="text-xl font-bold text-white">{formatCurrency(resultado.meiLucro)}</div>
                         </div>
 
                         <div>
-                          <div className="text-sm text-slate-600 mb-1">ME - Lucro líquido</div>
-                          <div className="text-xl font-bold text-slate-900">{formatCurrency(resultado.meLucro)}</div>
+                          <div className="text-sm text-[#A1A1A1] mb-1">ME - Lucro líquido</div>
+                          <div className="text-xl font-bold text-white">{formatCurrency(resultado.meLucro)}</div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white">
+                    <div className="bg-gradient-to-r from-[#28A263] to-[#2DDB81] rounded-xl p-6 text-black">
                       <div className="flex items-center gap-3 mb-2">
                         <DollarSign className="w-6 h-6" />
                         <span className="font-semibold">
@@ -258,34 +257,34 @@ export function SimulatorSection({ onSimulate }: SimulatorSectionProps) {
                       </div>
                     </div>
                   </div>
-                </Card>
+                </div>
 
                 {resultado.recomendacao === 'Limite' && (
-                  <Card className="p-6 bg-orange-50 border-2 border-orange-300">
+                  <div className="p-6 bg-orange-500/10 rounded-2xl border-2 border-orange-500/30">
                     <div className="flex items-start gap-3">
                       <div className="text-3xl">⚠️</div>
                       <div>
-                        <h4 className="font-bold text-orange-900 mb-1">Você está próximo do limite do MEI!</h4>
-                        <p className="text-sm text-orange-800">
+                        <h4 className="font-bold text-orange-400 mb-1">Você está próximo do limite do MEI!</h4>
+                        <p className="text-sm text-orange-300">
                           O limite anual do MEI é R$ 81.000 (R$ 6.750/mês). Com esse faturamento, você deve considerar migrar para ME imediatamente.
                         </p>
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 )}
               </>
             ) : (
-              <Card className="p-8 border-2 border-dashed border-slate-300 bg-slate-50">
+              <div className="p-8 rounded-2xl border-2 border-dashed border-white/10 bg-white/5">
                 <div className="text-center py-12">
-                  <TrendingUp className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-slate-600 mb-2">
+                  <TrendingUp className="w-16 h-16 text-[#686F6F] mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">
                     Preencha os dados ao lado
                   </h3>
-                  <p className="text-slate-500">
+                  <p className="text-[#A1A1A1]">
                     Os resultados aparecerão aqui após o cálculo
                   </p>
                 </div>
-              </Card>
+              </div>
             )}
           </div>
         </div>
