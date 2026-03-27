@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   TrendingUp,
-  TrendingDown,
   DollarSign,
   PlusCircle,
   Filter,
@@ -11,7 +10,8 @@ import {
   Crown,
   ArrowUpRight,
   ArrowDownRight,
-  Zap
+  Zap,
+  FileSpreadsheet
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useCashFlow, TransactionType, CATEGORIAS_ENTRADA, CATEGORIAS_SAIDA } from "../contexts/CashFlowContext";
@@ -32,6 +32,58 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { ExportButton, ExportIcons } from "../components/ui/ExportButton";
+import {
+  exportCashFlowToExcel,
+  exportCashFlowToCSV,
+  type CashFlowTransaction,
+} from "../utils/export";
+
+// Build last-6-months grouped data from all transactions
+function buildMonthlyData(transactions: { data: string; valor: number; tipo: string }[]) {
+  const months: { key: string; label: string; entradas: number; saidas: number }[] = [];
+  const now = new Date();
+
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const label = d.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "");
+    months.push({ key, label, entradas: 0, saidas: 0 });
+  }
+
+  transactions.forEach((t) => {
+    const monthKey = t.data.slice(0, 7);
+    const bucket = months.find((m) => m.key === monthKey);
+    if (!bucket) return;
+    if (t.tipo === "entrada") bucket.entradas += t.valor;
+    else bucket.saidas += t.valor;
+  });
+
+  return months;
+}
+
+// Find the category with the highest total expenses
+function getTopExpenseCategory(transactions: { tipo: string; categoria: string; valor: number }[]) {
+  const map: Record<string, number> = {};
+  transactions.forEach((t) => {
+    if (t.tipo === "saida") {
+      map[t.categoria] = (map[t.categoria] ?? 0) + t.valor;
+    }
+  });
+  const entries = Object.entries(map);
+  if (!entries.length) return null;
+  entries.sort((a, b) => b[1] - a[1]);
+  return { categoria: entries[0][0], valor: entries[0][1] };
+}
 
 export function FluxoCaixa() {
   const { user } = useAuth();
@@ -62,6 +114,41 @@ export function FluxoCaixa() {
   const isEmpty = transactions.length === 0;
 
   const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
+
+  // Monthly chart data (last 6 months from all transactions)
+  const monthlyData = useMemo(() => buildMonthlyData(transactions), [transactions]);
+  const topExpense = useMemo(() => getTopExpenseCategory(transactions), [transactions]);
+
+  // Build export-compatible transaction list from filtered period
+  const exportableTransactions: CashFlowTransaction[] = filteredTransactions.map((t) => ({
+    date: new Date(t.data).toLocaleDateString("pt-BR"),
+    description: t.descricao ?? "",
+    category: t.categoria,
+    type: t.tipo as "entrada" | "saida",
+    amount: t.valor,
+  }));
+
+  const periodoLabel = {
+    dia: "hoje",
+    semana: "7dias",
+    mes: "30dias",
+    ano: "1ano",
+  }[periodo];
+
+  const exportOptions = [
+    {
+      label: "Exportar Excel",
+      format: "xlsx" as const,
+      icon: ExportIcons.excel,
+      onExport: () => exportCashFlowToExcel(exportableTransactions, periodoLabel),
+    },
+    {
+      label: "Exportar CSV",
+      format: "csv" as const,
+      icon: ExportIcons.csv,
+      onExport: () => exportCashFlowToCSV(exportableTransactions, periodoLabel),
+    },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,9 +290,104 @@ export function FluxoCaixa() {
         </div>
       </div>
 
-      {/* Action Buttons + Filters */}
+      {/* Monthly Chart — entradas vs saídas */}
+      {!isEmpty && (
+        <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
+          <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
+            <div>
+              <h3 className="font-bold text-white text-lg">Entradas vs Saídas</h3>
+              <p className="text-sm text-[#A1A1A1]">Últimos 6 meses</p>
+            </div>
+            {topExpense && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-[#FF4F3D]/10 border border-[#FF4F3D]/20 rounded-xl">
+                <FileSpreadsheet className="w-4 h-4 text-[#FF4F3D]" />
+                <span className="text-xs text-[#FF4F3D] font-medium">
+                  Maior gasto: {topExpense.categoria} — {fmt(topExpense.valor)}/histórico
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Legend */}
+          <div className="flex items-center gap-6 mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#28A263]" />
+              <span className="text-xs text-[#A1A1A1]">Entradas</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#FF4F3D]" />
+              <span className="text-xs text-[#A1A1A1]">Saídas</span>
+            </div>
+          </div>
+
+          <ResponsiveContainer width="100%" height={220}>
+            <AreaChart data={monthlyData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#28A263" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#28A263" stopOpacity={0.0} />
+                </linearGradient>
+                <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#FF4F3D" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#FF4F3D" stopOpacity={0.0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false} />
+              <XAxis
+                dataKey="label"
+                tick={{ fill: "#686F6F", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#686F6F", fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) =>
+                  v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`
+                }
+                width={55}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#1B1B1B",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  fontSize: "13px",
+                }}
+                formatter={(value: number, name: string) => [
+                  fmt(value),
+                  name === "entradas" ? "Entradas" : "Saídas",
+                ]}
+                labelStyle={{ color: "#A1A1A1", marginBottom: 4 }}
+              />
+              <Area
+                type="monotone"
+                dataKey="entradas"
+                stroke="#28A263"
+                strokeWidth={2}
+                fill="url(#gradEntradas)"
+                dot={false}
+                activeDot={{ r: 4, fill: "#28A263" }}
+              />
+              <Area
+                type="monotone"
+                dataKey="saidas"
+                stroke="#FF4F3D"
+                strokeWidth={2}
+                fill="url(#gradSaidas)"
+                dot={false}
+                activeDot={{ r: 4, fill: "#FF4F3D" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Action Buttons + Filters + Export */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <Button
             size="lg"
             className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl"
@@ -225,6 +407,8 @@ export function FluxoCaixa() {
             <PlusCircle className="w-5 h-5 mr-2" />
             Nova Saída
           </Button>
+
+          {!isEmpty && <ExportButton options={exportOptions} size="lg" />}
         </div>
 
         <div className="flex items-center gap-2">
@@ -352,7 +536,12 @@ export function FluxoCaixa() {
       {/* Transactions List */}
       {!isEmpty && (
         <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
-          <h3 className="font-bold text-white mb-4">Lançamentos Recentes</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-white">Lançamentos Recentes</h3>
+            <span className="text-xs text-[#686F6F]">
+              {filteredTransactions.length} lançamento{filteredTransactions.length !== 1 ? "s" : ""} no período
+            </span>
+          </div>
 
           <div className="space-y-2">
             {filteredTransactions.slice(0, 10).map(transaction => (

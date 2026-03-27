@@ -10,6 +10,7 @@ export interface User {
   email: string;
   plan: UserPlan;
   proposalUsageToday: number;
+  onboardingCompleted: boolean;
 }
 
 interface AuthContextType {
@@ -25,6 +26,12 @@ interface AuthContextType {
   incrementProposalUsage: () => Promise<void>;
   resetProposalUsage: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  completeOnboarding: (data: {
+    cpfCnpj?: string;
+    tipoNegocio?: string;
+    faturamentoMensal?: number;
+    objetivo?: string;
+  }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,6 +43,7 @@ function mapProfile(supabaseUser: SupabaseUser, profile: any): User {
     email: supabaseUser.email ?? "",
     plan: profile?.plan ?? "free",
     proposalUsageToday: profile?.proposal_usage_today ?? 0,
+    onboardingCompleted: profile?.onboarding_completed ?? false,
   };
 }
 
@@ -158,6 +166,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (supabaseUser) await fetchProfile(supabaseUser);
   };
 
+  const completeOnboarding = async (data: {
+    cpfCnpj?: string;
+    tipoNegocio?: string;
+    faturamentoMensal?: number;
+    objetivo?: string;
+  }) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        cpf_cnpj: data.cpfCnpj ?? null,
+        tipo_negocio: data.tipoNegocio ?? null,
+        faturamento_mensal: data.faturamentoMensal ?? null,
+        objetivo: data.objetivo ?? null,
+        onboarding_completed: true,
+      })
+      .eq("id", user.id);
+    if (error) throw new Error(error.message);
+    setUser({ ...user, onboardingCompleted: true });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -173,6 +202,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         incrementProposalUsage,
         resetProposalUsage,
         refreshUser,
+        completeOnboarding,
       }}
     >
       {children}

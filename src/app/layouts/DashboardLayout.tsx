@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate, Navigate } from "react-router";
+import { Outlet, NavLink, useNavigate, Navigate, useLocation } from "react-router";
 import {
   LayoutDashboard,
   ArrowRightLeft,
@@ -21,14 +21,15 @@ import { useAuth } from "../contexts/AuthContext";
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user, loading, logout } = useAuth();
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#141414] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#28A263] rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4 animate-pulse">
-            <LayoutDashboard className="w-8 h-8 text-white" />
+          <div className="flex items-center justify-center mb-4 animate-pulse">
+            <img src="/logo.png" alt="Hub do Empreendedor" className="h-12 w-auto" />
           </div>
           <p className="text-[#A1A1A1] font-medium">Carregando...</p>
         </div>
@@ -38,6 +39,10 @@ export function DashboardLayout() {
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!user.onboardingCompleted && pathname !== "/app/onboarding") {
+    return <Navigate to="/app/onboarding" replace />;
   }
 
   const navigation = [
@@ -77,16 +82,10 @@ export function DashboardLayout() {
           {/* Logo */}
           <div className="flex items-center justify-between px-6 py-5">
             <div
-              className="flex items-center gap-3 cursor-pointer"
+              className="flex items-center cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <div className="w-8 h-8 bg-[#28A263] rounded-lg flex items-center justify-center">
-                <LayoutDashboard className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <span className="text-white font-bold text-base leading-tight block">Hub do</span>
-                <span className="text-[#A1A1A1] text-xs">Empreendedor</span>
-              </div>
+              <img src="/logo.png" alt="Hub do Empreendedor" className="h-9 w-auto" />
             </div>
             <button
               className="lg:hidden p-2 text-[#A1A1A1] hover:text-white"
