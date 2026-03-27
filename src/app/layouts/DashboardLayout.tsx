@@ -1,20 +1,21 @@
 import { Outlet, NavLink, useNavigate, Navigate } from "react-router";
-import { 
-  LayoutDashboard, 
-  ArrowRightLeft, 
-  Tag, 
-  TrendingUp, 
+import {
+  LayoutDashboard,
+  ArrowRightLeft,
+  Tag,
+  TrendingUp,
   FileText,
   Menu,
   X,
   LogOut,
   Crown,
   User,
-  Wallet
+  Wallet,
+  Bell,
+  Search
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
 import { useAuth } from "../contexts/AuthContext";
 
 export function DashboardLayout() {
@@ -22,28 +23,26 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
 
-  // Show loading spinner while auth state is being determined
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#141414] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4 animate-pulse">
+          <div className="w-16 h-16 bg-[#28A263] rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4 animate-pulse">
             <LayoutDashboard className="w-8 h-8 text-white" />
           </div>
-          <p className="text-slate-600 font-medium">Carregando...</p>
+          <p className="text-[#A1A1A1] font-medium">Carregando...</p>
         </div>
       </div>
     );
   }
 
-  // Redirect to login if not authenticated
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
   const navigation = [
+    { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
     { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
-    { name: "Ferramentas", href: "/app/dashboard", icon: LayoutDashboard },
     { name: "MEI → ME", href: "/app/mei-me", icon: ArrowRightLeft },
     { name: "Preço Ideal", href: "/app/preco", icon: Tag, isPro: true },
     { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
@@ -56,35 +55,41 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#141414]">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/70 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 left-0 z-50 h-full w-[266px] bg-[#1B1B1B] transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
+        {/* Green left accent bar */}
+        <div className="absolute left-0 top-[100px] bottom-[100px] w-1 bg-[#28A263] rounded-r-full" />
+
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between p-6 border-b border-slate-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <LayoutDashboard className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between px-6 py-5">
+            <div
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <div className="w-8 h-8 bg-[#28A263] rounded-lg flex items-center justify-center">
+                <LayoutDashboard className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-slate-900">Hub do</h1>
-                <p className="text-sm text-slate-600 -mt-1">Empreendedor</p>
+                <span className="text-white font-bold text-base leading-tight block">Hub do</span>
+                <span className="text-[#A1A1A1] text-xs">Empreendedor</span>
               </div>
             </div>
             <button
-              className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
+              className="lg:hidden p-2 text-[#A1A1A1] hover:text-white"
               onClick={() => setSidebarOpen(false)}
             >
               <X className="w-5 h-5" />
@@ -92,7 +97,7 @@ export function DashboardLayout() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
@@ -101,28 +106,22 @@ export function DashboardLayout() {
                   to={item.href}
                   end={item.end}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                    `flex items-center gap-3 px-4 py-2.5 rounded-full font-medium transition-all text-sm ${
                       isActive
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        ? "bg-[#28A263]/15 text-[#28A263]"
+                        : "text-[#A1A1A1] hover:text-white hover:bg-white/5"
                     }`
                   }
                   onClick={() => setSidebarOpen(false)}
                 >
                   {({ isActive }) => (
                     <>
-                      <Icon className="w-5 h-5" />
-                      <span>{item.name}</span>
-                      {isActive && (
-                        <div className="ml-auto w-2 h-2 bg-white rounded-full" />
-                      )}
+                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-[#28A263]" : ""}`} />
+                      <span className="flex-1">{item.name}</span>
                       {item.isPro && (
-                        <Badge
-                          variant="outline"
-                          className="ml-2"
-                        >
-                          Pro
-                        </Badge>
+                        <span className="text-[9px] px-1.5 py-0.5 bg-[#28A263]/20 text-[#2DDB81] rounded-full font-semibold">
+                          PRO
+                        </span>
                       )}
                     </>
                   )}
@@ -132,93 +131,97 @@ export function DashboardLayout() {
           </nav>
 
           {/* User section */}
-          <div className="p-4 border-t border-slate-200">
+          <div className="px-4 pb-4">
             {/* Plan upgrade CTA */}
             {user.plan === "free" && (
-              <div className="mb-3 p-4 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-xl">
+              <div className="mb-3 p-4 bg-[#28A263]/10 border border-[#28A263]/20 rounded-2xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <Crown className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm font-bold text-purple-900">Upgrade para PRO</span>
+                  <Crown className="w-4 h-4 text-[#2DDB81]" />
+                  <span className="text-sm font-bold text-[#2DDB81]">Upgrade para PRO</span>
                 </div>
-                <p className="text-xs text-purple-700 mb-3">
+                <p className="text-xs text-[#868898] mb-3">
                   Desbloqueie todos os recursos
                 </p>
                 <Button
                   size="sm"
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-8 text-xs"
-                  onClick={() => navigate("/pricing")}
+                  className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-8 text-xs rounded-xl"
+                  onClick={() => navigate("/checkout")}
                 >
                   Ver Planos
                 </Button>
               </div>
             )}
 
-            <div className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 ${
-              user.plan === "pro" 
-                ? "bg-gradient-to-br from-purple-100 to-blue-100 border-2 border-purple-200" 
-                : "bg-slate-50"
-            }`}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
-                user.plan === "pro"
-                  ? "bg-gradient-to-br from-purple-600 to-blue-600"
-                  : "bg-slate-400"
-              }`}>
+            {/* User info */}
+            <div className="flex items-center gap-3 px-3 py-3 rounded-2xl mb-2">
+              <div className="w-9 h-9 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center text-[#A1A1A1]">
                 {user.plan === "pro" ? (
-                  <Crown className="w-5 h-5" />
+                  <Crown className="w-4 h-4 text-[#2DDB81]" />
                 ) : (
-                  <User className="w-5 h-5" />
+                  <User className="w-4 h-4" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-900 truncate">{user.name}</p>
-                <div className="flex items-center gap-1">
-                  {user.plan === "pro" && (
-                    <Crown className="w-3 h-3 text-purple-600" />
-                  )}
-                  <p className={`text-xs truncate ${
-                    user.plan === "pro" ? "text-purple-700 font-bold" : "text-slate-600"
-                  }`}>
-                    {user.plan === "pro" ? "Plano PRO" : "Plano Gratuito"}
-                  </p>
-                </div>
+                <p className="text-sm font-medium text-[#A1A1A1] truncate">{user.name}</p>
+                <p className="text-xs text-white truncate">{user.email}</p>
               </div>
             </div>
-            
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-slate-600 hover:text-slate-900"
+
+            <button
+              className="w-full flex items-center gap-3 px-3 py-2.5 text-[#A1A1A1] hover:text-white transition-colors text-sm rounded-xl hover:bg-white/5"
               onClick={handleLogout}
             >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sair
-            </Button>
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-72">
+      <div className="lg:pl-[266px]">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between px-6 py-4">
+        <header className="sticky top-0 z-30 bg-[#141414]/90 backdrop-blur-sm border-b border-white/5">
+          <div className="flex items-center justify-between px-6 py-3 gap-4">
             <button
-              className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
+              className="lg:hidden p-2 text-[#A1A1A1] hover:text-white"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="w-6 h-6" />
             </button>
-            
-            <div className="flex-1 lg:flex-none">
-              <h2 className="text-xl font-bold text-slate-900">
-                Bem-vindo ao seu Hub
-              </h2>
+
+            {/* Welcome text */}
+            <div className="hidden lg:block">
+              <p className="text-white font-semibold text-base">
+                Bem-vindo de volta, <span className="capitalize">{user.name.split(" ")[0]}</span>
+              </p>
+              <p className="text-[#A1A1A1] text-xs">Hey {user.name.split(" ")[0]}, o que está acontecendo!</p>
             </div>
 
-            <Button
-              className="hidden lg:flex bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-            >
-              Nova Simulação
-            </Button>
+            {/* Search bar */}
+            <div className="flex-1 max-w-sm mx-auto lg:mx-0">
+              <div className="flex items-center gap-2 bg-[#1D1D1D] rounded-lg px-3 py-2 border border-white/5">
+                <Search className="w-4 h-4 text-[#A1A1A1]" />
+                <input
+                  type="text"
+                  placeholder="Pesquise algo..."
+                  className="bg-transparent text-[#A1A1A1] text-sm outline-none w-full placeholder:text-[#A1A1A1]"
+                />
+              </div>
+            </div>
+
+            {/* Right icons */}
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <button className="p-2 text-[#A1A1A1] hover:text-white transition-colors bg-[#1B1B1B] rounded-lg border border-white/5">
+                  <Bell className="w-5 h-5 text-[#28A263]" />
+                </button>
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#FF4F3D] rounded-full text-[9px] text-white flex items-center justify-center font-bold">2</span>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center">
+                <User className="w-4 h-4 text-[#A1A1A1]" />
+              </div>
+            </div>
           </div>
         </header>
 

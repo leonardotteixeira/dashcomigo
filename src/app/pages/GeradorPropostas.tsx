@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { FileText, Download, Send, Eye, Info, Crown, Lock } from "lucide-react";
-import { Card } from "../components/ui/card";
+import { FileText, Download, Send, Eye, Info, Crown } from "lucide-react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Alert, AlertDescription } from "../components/ui/alert";
 import { Separator } from "../components/ui/separator";
-import { Badge } from "../components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
@@ -32,21 +29,13 @@ export function GeradorPropostas() {
   const usageCount = user?.proposalUsageToday ?? 0;
   const limitReached = usageCount >= limite;
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
   const formatDate = (daysFromNow: number) => {
     const date = new Date();
     date.setDate(date.getDate() + daysFromNow);
-    return date.toLocaleDateString('pt-BR', { 
-      day: '2-digit', 
-      month: 'long', 
-      year: 'numeric' 
-    });
+    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
   };
 
   const getValorParcela = () => {
@@ -71,7 +60,6 @@ export function GeradorPropostas() {
 
   const handleDownloadPDF = () => {
     checkLimitAndRun(() => {
-      // Adiciona classe no body para ocultar tudo exceto a proposta ao imprimir
       document.body.classList.add("printing-proposal");
       window.print();
       document.body.classList.remove("printing-proposal");
@@ -99,53 +87,56 @@ export function GeradorPropostas() {
     });
   };
 
+  const inputClass = "bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F] rounded-xl focus:border-[#28A263]";
+
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <FileText className="w-6 h-6 text-white" />
+        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <div className="w-12 h-12 bg-[#2DDB81]/20 rounded-2xl flex items-center justify-center">
+            <FileText className="w-6 h-6 text-[#2DDB81]" />
           </div>
           Gerador de Propostas Comerciais
         </h1>
-        <p className="text-lg text-slate-600">
+        <p className="text-[#A1A1A1]">
           Crie propostas profissionais em minutos com preview em tempo real
         </p>
       </div>
 
-      {/* Info Alert + contador */}
+      {/* Info Alert + counter */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-        <Alert className="bg-blue-50 border-2 border-blue-200 flex-1">
-          <Info className="h-5 w-5 text-blue-600" />
-          <AlertDescription className="text-blue-900">
+        <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex-1">
+          <Info className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-blue-300">
             Preencha os campos ao lado e veja sua proposta sendo gerada em tempo real.
             Você pode baixar em PDF ou enviar diretamente por email.
-          </AlertDescription>
-        </Alert>
+          </p>
+        </div>
         {user?.plan !== "pro" && (
-          <Badge
-            variant="outline"
-            className={`whitespace-nowrap ${limitReached ? "bg-red-50 text-red-700 border-red-300" : "bg-blue-50 text-blue-700 border-blue-300"}`}
-          >
+          <span className={`whitespace-nowrap text-xs px-3 py-1.5 rounded-full border font-medium ${
+            limitReached
+              ? "bg-red-500/10 text-red-400 border-red-500/20"
+              : "bg-[#28A263]/10 text-[#2DDB81] border-[#28A263]/20"
+          }`}>
             {usageCount}/{FREE_LIMIT} propostas hoje
-          </Badge>
+          </span>
         )}
       </div>
 
-      {/* Dialog de limite */}
+      {/* Dialog - Limit */}
       <Dialog open={limitDialogOpen} onOpenChange={setLimitDialogOpen}>
-        <DialogContent className="max-w-md text-center">
+        <DialogContent className="max-w-md text-center bg-[#1B1B1B] border-white/10">
           <DialogHeader>
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
-                <Crown className="w-8 h-8 text-white" />
+            <div className="flex justify-center mb-4 mt-2">
+              <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center">
+                <Crown className="w-8 h-8 text-[#2DDB81]" />
               </div>
             </div>
-            <DialogTitle className="text-2xl font-bold text-slate-900">
+            <DialogTitle className="text-2xl font-bold text-white">
               Limite diário atingido!
             </DialogTitle>
-            <DialogDescription className="text-slate-600 mt-2">
+            <DialogDescription className="text-[#A1A1A1] mt-2">
               Você usou todas as {FREE_LIMIT} propostas gratuitas de hoje.
               Faça upgrade para o PRO e gere propostas ilimitadas!
             </DialogDescription>
@@ -153,13 +144,17 @@ export function GeradorPropostas() {
           <div className="flex flex-col gap-3 mt-4">
             <Button
               size="lg"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-              onClick={() => { setLimitDialogOpen(false); navigate("/pricing"); }}
+              className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl"
+              onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}
             >
               <Crown className="w-4 h-4 mr-2" />
               Ver Planos PRO
             </Button>
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setLimitDialogOpen(false)}>
+            <Button
+              size="lg"
+              className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl"
+              onClick={() => setLimitDialogOpen(false)}
+            >
               Fechar
             </Button>
           </div>
@@ -169,96 +164,88 @@ export function GeradorPropostas() {
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Form */}
         <div className="space-y-6">
-          <Card className="p-6 border-2 border-slate-200">
-            <h3 className="text-lg font-bold text-slate-900 mb-6">Dados do Cliente</h3>
-            
+          <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
+            <h3 className="text-lg font-bold text-white mb-6">Dados do Cliente</h3>
+
             <div className="space-y-4">
               <div>
-                <Label htmlFor="nomeCliente">Nome do Cliente</Label>
+                <Label className="text-[#A1A1A1] mb-2 block">Nome do Cliente</Label>
                 <Input
-                  id="nomeCliente"
                   value={nomeCliente}
                   onChange={(e) => setNomeCliente(e.target.value)}
                   placeholder="Ex: João Silva"
-                  className="mt-2"
+                  className={inputClass}
                 />
               </div>
-
               <div>
-                <Label htmlFor="emailCliente">Email do Cliente</Label>
+                <Label className="text-[#A1A1A1] mb-2 block">Email do Cliente</Label>
                 <Input
-                  id="emailCliente"
                   type="email"
                   value={emailCliente}
                   onChange={(e) => setEmailCliente(e.target.value)}
                   placeholder="cliente@email.com"
-                  className="mt-2"
+                  className={inputClass}
                 />
               </div>
             </div>
-          </Card>
+          </div>
 
-          <Card className="p-6 border-2 border-slate-200">
-            <h3 className="text-lg font-bold text-slate-900 mb-6">Dados do Serviço</h3>
-            
+          <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
+            <h3 className="text-lg font-bold text-white mb-6">Dados do Serviço</h3>
+
             <div className="space-y-4">
               <div>
-                <Label htmlFor="nomeServico">Nome do Serviço/Projeto</Label>
+                <Label className="text-[#A1A1A1] mb-2 block">Nome do Serviço/Projeto</Label>
                 <Input
-                  id="nomeServico"
                   value={nomeServico}
                   onChange={(e) => setNomeServico(e.target.value)}
                   placeholder="Ex: Desenvolvimento de Website Institucional"
-                  className="mt-2"
+                  className={inputClass}
                 />
               </div>
 
               <div>
-                <Label htmlFor="descricao">Descrição Detalhada</Label>
+                <Label className="text-[#A1A1A1] mb-2 block">Descrição Detalhada</Label>
                 <Textarea
-                  id="descricao"
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Descreva o escopo do projeto, entregas, benefícios..."
-                  className="mt-2 min-h-[120px]"
+                  className={`min-h-[120px] ${inputClass}`}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="valor">Valor Total</Label>
-                  <div className="relative mt-2">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600">R$</span>
+                  <Label className="text-[#A1A1A1] mb-2 block">Valor Total</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1A1]">R$</span>
                     <Input
-                      id="valor"
                       type="number"
                       value={valor}
                       onChange={(e) => setValor(Number(e.target.value))}
-                      className="pl-10"
+                      className={`pl-10 ${inputClass}`}
                       min={0}
                     />
                   </div>
                 </div>
-
                 <div>
-                  <Label htmlFor="prazo">Prazo de Entrega</Label>
+                  <Label className="text-[#A1A1A1] mb-2 block">Prazo de Entrega</Label>
                   <Input
-                    id="prazo"
                     value={prazo}
                     onChange={(e) => setPrazo(e.target.value)}
                     placeholder="Ex: 30 dias"
-                    className="mt-2"
+                    className={inputClass}
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="pagamento">Condições de Pagamento</Label>
+                <Label className="text-[#A1A1A1] mb-2 block">Condições de Pagamento</Label>
                 <Select value={condicoesPagamento} onValueChange={setCondicoesPagamento}>
-                  <SelectTrigger id="pagamento" className="mt-2">
+                  <SelectTrigger className="bg-[#141414] border-white/10 text-white rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#1B1B1B] border-white/10 text-white">
                     <SelectItem value="integral">À vista (integral)</SelectItem>
                     <SelectItem value="50-50">50% entrada + 50% entrega</SelectItem>
                     <SelectItem value="30-70">30% entrada + 70% entrega</SelectItem>
@@ -268,24 +255,23 @@ export function GeradorPropostas() {
               </div>
 
               <div>
-                <Label htmlFor="validade">Validade da Proposta (dias)</Label>
+                <Label className="text-[#A1A1A1] mb-2 block">Validade da Proposta (dias)</Label>
                 <Input
-                  id="validade"
                   type="number"
                   value={validade}
                   onChange={(e) => setValidade(Number(e.target.value))}
-                  className="mt-2"
+                  className={inputClass}
                   min={1}
                   max={90}
                 />
               </div>
             </div>
-          </Card>
+          </div>
 
           <div className="flex gap-4">
             <Button
               size="lg"
-              className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white"
+              className="flex-1 bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl"
               onClick={handleDownloadPDF}
               disabled={!nomeCliente || !nomeServico}
             >
@@ -295,8 +281,7 @@ export function GeradorPropostas() {
 
             <Button
               size="lg"
-              variant="outline"
-              className="flex-1 border-2"
+              className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl"
               onClick={handleSendEmail}
               disabled={!emailCliente || !nomeServico}
             >
@@ -308,51 +293,39 @@ export function GeradorPropostas() {
 
         {/* Preview */}
         <div className="lg:sticky lg:top-6 lg:self-start">
-          <Card className="border-2 border-slate-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Eye className="w-5 h-5" />
-                <span className="font-bold">Preview da Proposta</span>
-              </div>
+          <div className="rounded-2xl border border-white/5 overflow-hidden">
+            <div className="bg-[#1D1D1D] text-white px-6 py-4 flex items-center gap-2 border-b border-white/5">
+              <Eye className="w-5 h-5 text-[#2DDB81]" />
+              <span className="font-bold text-white">Preview da Proposta</span>
             </div>
 
+            {/* Document Preview - white background for print */}
             <div className="p-8 bg-white min-h-[600px]">
-              {/* Document Preview */}
               <div id="proposal-preview" className="space-y-6">
                 {/* Header */}
                 <div className="text-center pb-6 border-b-2 border-slate-200">
-                  <h1 className="text-3xl font-bold text-slate-900 mb-2">
-                    Proposta Comercial
-                  </h1>
+                  <h1 className="text-3xl font-bold text-slate-900 mb-2">Proposta Comercial</h1>
                   <p className="text-slate-600">
-                    {new Date().toLocaleDateString('pt-BR', { 
-                      day: '2-digit', 
-                      month: 'long', 
-                      year: 'numeric' 
+                    {new Date().toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
                     })}
                   </p>
                 </div>
 
                 {/* Client Info */}
                 <div>
-                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">
-                    Cliente
-                  </h2>
+                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Cliente</h2>
                   <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <p className="font-bold text-slate-900 text-lg">
-                      {nomeCliente || "[Nome do Cliente]"}
-                    </p>
-                    <p className="text-slate-600 text-sm mt-1">
-                      {emailCliente || "[email@cliente.com]"}
-                    </p>
+                    <p className="font-bold text-slate-900 text-lg">{nomeCliente || "[Nome do Cliente]"}</p>
+                    <p className="text-slate-600 text-sm mt-1">{emailCliente || "[email@cliente.com]"}</p>
                   </div>
                 </div>
 
                 {/* Service Details */}
                 <div>
-                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">
-                    Projeto
-                  </h2>
+                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Projeto</h2>
                   <div className="space-y-3">
                     <div>
                       <p className="text-xs text-slate-500 mb-1">Nome do Serviço</p>
@@ -360,7 +333,6 @@ export function GeradorPropostas() {
                         {nomeServico || "[Nome do Serviço/Projeto]"}
                       </p>
                     </div>
-                    
                     <div>
                       <p className="text-xs text-slate-500 mb-1">Descrição</p>
                       <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
@@ -374,20 +346,16 @@ export function GeradorPropostas() {
 
                 {/* Investment */}
                 <div>
-                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">
-                    Investimento
-                  </h2>
-                  
-                  <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200">
+                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Investimento</h2>
+
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
                     <div className="text-center mb-4">
                       <p className="text-sm text-slate-600 mb-1">Valor Total</p>
-                      <p className="text-4xl font-bold text-slate-900">
-                        {formatCurrency(valor)}
-                      </p>
+                      <p className="text-4xl font-bold text-slate-900">{formatCurrency(valor)}</p>
                     </div>
 
                     {condicoesPagamento !== "integral" && (
-                      <div className="pt-4 border-t border-orange-200">
+                      <div className="pt-4 border-t border-green-200">
                         <p className="text-sm font-bold text-slate-700 mb-2">Condições de Pagamento:</p>
                         {condicoesPagamento === "50-50" && (
                           <div className="space-y-1 text-sm text-slate-700">
@@ -416,16 +384,11 @@ export function GeradorPropostas() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                     <p className="text-xs text-slate-500 mb-1">Prazo de Entrega</p>
-                    <p className="font-bold text-slate-900">
-                      {prazo || "[Prazo]"}
-                    </p>
+                    <p className="font-bold text-slate-900">{prazo || "[Prazo]"}</p>
                   </div>
-                  
                   <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                     <p className="text-xs text-slate-500 mb-1">Válida até</p>
-                    <p className="font-bold text-slate-900">
-                      {formatDate(validade)}
-                    </p>
+                    <p className="font-bold text-slate-900">{formatDate(validade)}</p>
                   </div>
                 </div>
 
@@ -443,7 +406,7 @@ export function GeradorPropostas() {
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </div>
