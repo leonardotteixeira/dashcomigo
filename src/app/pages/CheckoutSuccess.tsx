@@ -19,9 +19,9 @@ export function CheckoutSuccess() {
   if (!user || user.plan !== "pro") return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
       <div className="max-w-2xl w-full">
-        <Card className="p-12 border-2 border-purple-300 bg-white text-center relative overflow-hidden">
+        <Card className="p-12 border border-white/10 bg-[#1B1B1B] text-center relative overflow-hidden">
           {/* Confetti effect background */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-10 left-10 text-6xl animate-bounce">🎉</div>
@@ -32,40 +32,40 @@ export function CheckoutSuccess() {
 
           <div className="relative z-10">
             {/* Crown icon with animation */}
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl shadow-2xl mb-6 animate-bounce">
-              <Crown className="w-12 h-12 text-white" />
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-[#28A263]/20 rounded-3xl shadow-2xl mb-6 animate-bounce">
+              <Crown className="w-12 h-12 text-[#2DDB81]" />
             </div>
 
             {/* Success message */}
             <div className="mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#28A263]/20 text-[#2DDB81] rounded-full text-sm font-bold mb-4">
                 <Check className="w-4 h-4" />
                 Pagamento Confirmado
               </div>
-              
-              <h1 className="text-4xl font-bold text-slate-900 mb-4">
+
+              <h1 className="text-4xl font-bold text-white mb-4">
                 Bem-vindo ao PRO! 🎉
               </h1>
-              
-              <p className="text-lg text-slate-600 mb-2">
+
+              <p className="text-lg text-[#A1A1A1] mb-2">
                 Sua conta foi atualizada com sucesso
               </p>
-              
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-blue-100 border-2 border-purple-200 rounded-xl">
-                <Crown className="w-5 h-5 text-purple-600" />
-                <span className="font-bold text-purple-900">
+
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#28A263]/10 border border-[#28A263]/20 rounded-xl">
+                <Crown className="w-5 h-5 text-[#2DDB81]" />
+                <span className="font-bold text-[#2DDB81]">
                   {user.name} • Plano PRO
                 </span>
               </div>
             </div>
 
             {/* Benefits unlocked */}
-            <Card className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 mb-8">
+            <Card className="p-6 bg-[#141414] border border-white/5 mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5 text-purple-600" />
-                <h3 className="font-bold text-slate-900">Recursos Desbloqueados:</h3>
+                <Sparkles className="w-5 h-5 text-[#2DDB81]" />
+                <h3 className="font-bold text-white">Recursos Desbloqueados:</h3>
               </div>
-              
+
               <div className="grid md:grid-cols-2 gap-3 text-left">
                 {[
                   "Simulador de Preço Ideal",
@@ -78,8 +78,8 @@ export function CheckoutSuccess() {
                   "Novos recursos"
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
-                    <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
-                    <span className="text-slate-700">{feature}</span>
+                    <Check className="w-4 h-4 text-[#2DDB81] flex-shrink-0" />
+                    <span className="text-[#A1A1A1]">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -89,17 +89,16 @@ export function CheckoutSuccess() {
             <div className="space-y-3">
               <Button
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-14 text-lg"
+                className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-14 text-lg font-semibold"
                 onClick={() => navigate("/app")}
               >
                 Explorar todos os recursos
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              
+
               <Button
                 size="lg"
-                variant="outline"
-                className="w-full border-2"
+                className="w-full border border-white/10 bg-[#1B1B1B] text-white hover:bg-white/5"
                 onClick={() => navigate("/app/preco")}
               >
                 Testar Simulador de Preço
@@ -107,8 +106,8 @@ export function CheckoutSuccess() {
             </div>
 
             {/* Thank you message */}
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              <p className="text-sm text-slate-600">
+            <div className="mt-8 pt-8 border-t border-white/5">
+              <p className="text-sm text-[#A1A1A1]">
                 Obrigado por confiar no <strong>Hub do Empreendedor</strong>! 💜<br />
                 Estamos aqui para ajudar seu negócio a crescer.
               </p>
@@ -118,9 +117,9 @@ export function CheckoutSuccess() {
 
         {/* Support info */}
         <div className="mt-6 text-center">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-[#A1A1A1]">
             Precisa de ajuda? Entre em contato pelo{" "}
-            <a href="mailto:suporte@hubempreendedor.com" className="text-purple-600 hover:text-purple-700 font-semibold">
+            <a href="mailto:suporte@hubempreendedor.com" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
               suporte@hubempreendedor.com
             </a>
           </p>
