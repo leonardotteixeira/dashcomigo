@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Crown, Check, ArrowLeft, Loader2 } from "lucide-react";
-import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useAuth } from "../contexts/AuthContext";
@@ -74,22 +73,27 @@ export function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        <Button variant="ghost" onClick={() => navigate("/pricing")} className="mb-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/pricing")}
+          className="mb-6 text-[#A1A1A1] hover:text-white hover:bg-white/5 rounded-xl"
+        >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar aos planos
         </Button>
 
-        <Card className="p-8 border-2 border-slate-200 shadow-xl text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-lg mb-4">
-            <Crown className="w-8 h-8 text-white" />
+        <div className="p-8 bg-[#1B1B1B] rounded-3xl border border-white/5 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl mb-4">
+            <Crown className="w-8 h-8 text-[#2DDB81]" />
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">Upgrade para PRO</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Upgrade para PRO</h1>
+          <p className="text-[#A1A1A1] mb-6">Desbloqueie todas as funcionalidades</p>
 
-          <form onSubmit={handleSubmit} className="mt-4">
-            <label className="block text-sm font-medium text-slate-700 text-left mb-1">
+          <form onSubmit={handleSubmit} className="mt-6">
+            <label className="block text-sm font-medium text-[#A1A1A1] text-left mb-2">
               CPF ou CNPJ
             </label>
             <input
@@ -98,54 +102,66 @@ export function Checkout() {
               onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
               placeholder="000.000.000-00"
               maxLength={18}
-              className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-slate-900 focus:border-purple-500 focus:outline-none transition-colors mb-4"
+              className="w-full px-4 py-3 bg-[#141414] border border-white/10 text-white placeholder:text-[#686F6F] rounded-xl focus:border-[#28A263] focus:outline-none transition-colors mb-4"
               disabled={loading}
               required
             />
 
             {error && (
-              <Alert className="bg-red-50 border-2 border-red-200 text-left mb-4">
-                <AlertDescription className="text-red-900">
+              <Alert className="bg-red-500/10 border border-red-500/20 text-left mb-4">
+                <AlertDescription className="text-red-300">
                   {error}
                 </AlertDescription>
               </Alert>
             )}
 
-            <Button
+            <button
               type="submit"
-              size="lg"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
               disabled={loading}
+              className="w-full py-3 bg-[#28A263] hover:bg-[#2DDB81] text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  <Loader2 className="w-5 h-5 animate-spin mr-2 inline" />
                   Processando...
                 </>
               ) : (
                 "Continuar para pagamento"
               )}
-            </Button>
+            </button>
           </form>
 
-          <div className="mt-6 space-y-2 text-sm text-slate-600 text-left">
+          {/* Price highlight */}
+          <div className="mb-6 p-4 bg-[#28A263]/10 border border-[#28A263]/20 rounded-2xl">
+            <div className="flex items-baseline justify-center gap-2 mb-2">
+              <span className="text-4xl font-bold text-[#2DDB81]">R$ 9,90</span>
+              <span className="text-[#A1A1A1]">/mês</span>
+            </div>
+            <p className="text-xs text-[#A1A1A1]">Apenas no 1º mês • Depois R$ 29,90/mês</p>
+          </div>
+
+          {/* Benefits list */}
+          <div className="space-y-3 text-left">
             {[
-              "1º mês por R$ 9,90",
-              "A partir do 2º mês: R$ 29,90/mês",
+              "Fluxo de caixa: lançamentos ilimitados",
+              "Simulador de Preço Ideal (PRO)",
+              "Simulador de Lucro com projeções (PRO)",
+              "Propostas comerciais ilimitadas",
+              "Relatórios e exportações completos",
               "PIX, boleto ou cartão",
               "Cancele quando quiser",
             ].map((item) => (
-              <div key={item} className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                <span>{item}</span>
+              <div key={item} className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-[#A1A1A1]">{item}</span>
               </div>
             ))}
           </div>
 
-          <p className="text-xs text-slate-500 mt-6">
+          <p className="text-xs text-[#686F6F] mt-6">
             🔒 Pagamento 100% seguro processado pela <strong>Asaas</strong>
           </p>
-        </Card>
+        </div>
       </div>
     </div>
   );
