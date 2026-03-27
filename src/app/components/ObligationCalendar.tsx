@@ -39,38 +39,50 @@ export function ObligationCalendar() {
   return (
     <div className="space-y-4">
       {/* Calendário - apenas desktop */}
-      <div className="hidden lg:block bg-[#1B1B1B] rounded-2xl border border-white/10 p-6">
+      <div className="hidden lg:block bg-[#0F2818] rounded-2xl border border-[#28A263]/40 p-6">
         <style>{`
           .calendar-container .rdp {
-            --rdp-cell-size: 40px;
-            --rdp-accent-color: #28A263;
-            --rdp-background-color: #28A263;
+            --rdp-cell-size: 42px;
+            --rdp-accent-color: #2DDB81;
+            --rdp-background-color: #2DDB81;
             margin: 0;
           }
+          .calendar-container .rdp_caption {
+            color: #2DDB81;
+            font-weight: bold;
+            font-size: 1.1rem;
+          }
           .calendar-container .rdp_head_cell {
-            color: #A1A1A1;
-            font-weight: 600;
+            color: #2DDB81;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
           }
           .calendar-container .rdp_cell {
-            padding: 2px;
+            padding: 3px;
           }
           .calendar-container .rdp_button {
-            color: #C8C9D0;
+            color: #FFFFFF;
             border-radius: 8px;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background-color: transparent;
+            border: 1px solid transparent;
           }
           .calendar-container .rdp_button:hover:not([disabled]) {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(45, 219, 129, 0.2);
             color: #fff;
+            border-color: rgba(45, 219, 129, 0.4);
           }
           .calendar-container .rdp_button[aria-selected="true"] {
-            background-color: #28A263;
-            color: white;
+            background-color: #2DDB81;
+            color: #0F2818;
             font-weight: bold;
+            border-color: #2DDB81;
           }
           .calendar-container .rdp_button[aria-disabled="true"] {
-            color: #686F6F;
-            opacity: 0.5;
+            color: #5A7A68;
+            opacity: 0.4;
           }
         `}</style>
         <div className="calendar-container">
@@ -81,13 +93,13 @@ export function ObligationCalendar() {
             locale={ptBR}
             disabled={(date) => date.getFullYear() < new Date().getFullYear()}
             classNames={{
-              day_selected: "bg-[#28A263] text-white hover:bg-[#28A263] hover:text-white",
-              day_today: "bg-white/10 text-white",
+              day_selected: "bg-[#2DDB81] text-[#0F2818]",
+              day_today: "bg-[#28A263]/30 text-white",
             }}
           />
         </div>
-        <div className="mt-4 text-xs text-[#2DDB81] font-medium">
-          <p>● Data com obrigações</p>
+        <div className="mt-4 text-xs text-[#2DDB81] font-bold">
+          ● = Data com obrigações
         </div>
       </div>
 
