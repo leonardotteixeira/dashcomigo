@@ -289,7 +289,7 @@ export function SimuladorPreco() {
               {margemDesejada < 30 && (
                 <div className="p-3 rounded-xl bg-[#FF4F3D]/10 border border-[#FF4F3D]/20">
                   <p className="text-sm text-red-300">
-                    ⚠️ Margem muito baixa! Você pode estar deixando dinheiro na mesa.
+                    Margem muito baixa! Você pode estar deixando dinheiro na mesa.
                   </p>
                 </div>
               )}
@@ -297,7 +297,7 @@ export function SimuladorPreco() {
               {margemDesejada >= 40 && margemDesejada <= 60 && (
                 <div className="p-3 rounded-xl bg-[#28A263]/10 border border-[#28A263]/20">
                   <p className="text-sm text-[#C0F497]">
-                    ✅ Margem ideal! Seu preço está competitivo e lucrativo.
+                    Margem ideal! Seu preço está competitivo e lucrativo.
                   </p>
                 </div>
               )}

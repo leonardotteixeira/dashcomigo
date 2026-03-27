@@ -256,7 +256,7 @@ export function Dashboard() {
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="h-5 w-5 animate-pulse" />
                 <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full">
-                  {meiPercentage > 100 ? "🔴 Alerta Crítico" : "🟡 Atenção"}
+                  {meiPercentage > 100 ? "Alerta Crítico" : "Atenção"}
                 </span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-3">
@@ -294,7 +294,7 @@ export function Dashboard() {
               score: Math.round(saudeScore),
               progressClass: "[&>div]:bg-[#2DDB81]",
               scoreColor: saudeScore >= 60 ? "text-[#2DDB81]" : saudeScore >= 40 ? "text-yellow-400" : "text-[#FF4F3D]",
-              verdict: saudeScore >= 60 ? "✓ Sim, está saudável" : saudeScore >= 40 ? "⚠️ Pode melhorar" : "⚠️ Margem baixa",
+              verdict: saudeScore >= 60 ? "Sim, está saudável" : saudeScore >= 40 ? "Pode melhorar" : "Margem baixa",
               sub: saudeScore >= 60 ? "Continue assim para crescer" : "Revise preços e custos",
               icon: saudeScore >= 60 ? CheckCircle2 : AlertCircle,
               iconColor: saudeScore >= 60 ? "text-[#2DDB81]" : "text-[#FF973E]",
@@ -305,7 +305,7 @@ export function Dashboard() {
               score: Math.round(tributacaoScore),
               progressClass: tributacaoScore >= 60 ? "[&>div]:bg-[#2DDB81]" : tributacaoScore >= 40 ? "[&>div]:bg-orange-500" : "[&>div]:bg-[#FF4F3D]",
               scoreColor: tributacaoScore >= 60 ? "text-[#2DDB81]" : tributacaoScore >= 40 ? "text-[#FF973E]" : "text-[#FF4F3D]",
-              verdict: tributacaoScore >= 60 ? "✓ Não, está eficiente" : tributacaoScore >= 40 ? "⚠️ Fique atento" : "⚠️ Sim, pode reduzir!",
+              verdict: tributacaoScore >= 60 ? "Não, está eficiente" : tributacaoScore >= 40 ? "Fique atento" : "Sim, pode reduzir!",
               sub: tributacaoScore >= 60 ? "Tributação dentro do ideal" : "Use o Simulador MEI→ME",
               icon: tributacaoScore >= 60 ? CheckCircle2 : AlertCircle,
               iconColor: tributacaoScore >= 60 ? "text-[#2DDB81]" : "text-[#FF973E]",
@@ -316,7 +316,7 @@ export function Dashboard() {
               score: Math.round(crescimentoScore),
               progressClass: "[&>div]:bg-blue-400",
               scoreColor: "text-blue-400",
-              verdict: crescimentoScore >= 70 ? "✓ Sim, muito potencial!" : crescimentoScore >= 50 ? "📈 Potencial moderado" : "📊 Adicione mais dados",
+              verdict: crescimentoScore >= 70 ? "Sim, muito potencial!" : crescimentoScore >= 50 ? "Potencial moderado" : "Adicione mais dados",
               sub: crescimentoScore >= 70 ? "Projeção de crescimento positiva" : "Continue registrando lançamentos",
               icon: TrendingUp,
               iconColor: "text-blue-400",
@@ -358,8 +358,8 @@ export function Dashboard() {
               const badgeClass = insight.tipo === "alerta" ? "bg-red-500/20 text-red-300"
                 : insight.tipo === "sucesso" ? "bg-[#28A263]/20 text-[#2DDB81]"
                 : "bg-blue-500/20 text-blue-300";
-              const badgeLabel = insight.tipo === "alerta" ? "🔴 Urgente"
-                : insight.tipo === "sucesso" ? "🟢 Oportunidade" : "🟡 Atenção";
+              const badgeLabel = insight.tipo === "alerta" ? "Urgente"
+                : insight.tipo === "sucesso" ? "Oportunidade" : "Atenção";
               const textColor = insight.tipo === "alerta" ? "text-red-300"
                 : insight.tipo === "sucesso" ? "text-[#C0F497]" : "text-blue-300";
 

@@ -498,7 +498,7 @@ export function GeradorPropostas() {
                         "Entrega final e suporte inicial",
                       ].map((item) => (
                         <li key={item} className="flex items-start gap-2 text-sm text-slate-700">
-                          <span className="text-green-500 font-bold mt-0.5">✓</span>
+                          <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
                           {item}
                         </li>
                       ))}

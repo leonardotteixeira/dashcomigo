@@ -128,7 +128,7 @@ export function Signup() {
             </div>
 
             <div className="bg-[#28A263]/10 rounded-2xl p-6 border border-[#28A263]/20">
-              <p className="text-sm font-bold text-[#2DDB81] mb-2">✨ Plano Gratuito Inclui:</p>
+              <p className="text-sm font-bold text-[#2DDB81] mb-2">Plano Gratuito Inclui:</p>
               <ul className="text-sm text-[#A1A1A1] space-y-1">
                 <li>✓ Simulador MEI → ME ilimitado</li>
                 <li>✓ 2 propostas comerciais por dia</li>

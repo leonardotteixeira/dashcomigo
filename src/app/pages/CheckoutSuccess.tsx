@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { Crown, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Crown, Check, ArrowRight, Sparkles, Zap, Gift } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
@@ -22,12 +22,12 @@ export function CheckoutSuccess() {
     <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
       <div className="max-w-2xl w-full">
         <Card className="p-12 border border-white/10 bg-[#1B1B1B] text-center relative overflow-hidden">
-          {/* Confetti effect background */}
+          {/* Celebration effects background */}
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 text-6xl animate-bounce">🎉</div>
-            <div className="absolute top-20 right-10 text-4xl animate-pulse">✨</div>
-            <div className="absolute bottom-20 left-20 text-5xl animate-bounce delay-100">🎊</div>
-            <div className="absolute bottom-10 right-20 text-4xl animate-pulse delay-200">⭐</div>
+            <div className="absolute top-10 left-10 text-6xl animate-bounce"><Zap className="w-12 h-12 text-[#28A263]" /></div>
+            <div className="absolute top-20 right-10 text-4xl animate-pulse"><Sparkles className="w-10 h-10 text-[#28A263]" /></div>
+            <div className="absolute bottom-20 left-20 text-5xl animate-bounce delay-100"><Gift className="w-12 h-12 text-[#28A263]" /></div>
+            <div className="absolute bottom-10 right-20 text-4xl animate-pulse delay-200"><Check className="w-10 h-10 text-[#28A263]" /></div>
           </div>
 
           <div className="relative z-10">
@@ -44,7 +44,7 @@ export function CheckoutSuccess() {
               </div>
 
               <h1 className="text-4xl font-bold text-white mb-4">
-                Bem-vindo ao PRO! 🎉
+                Bem-vindo ao PRO!
               </h1>
 
               <p className="text-lg text-[#A1A1A1] mb-2">
@@ -108,7 +108,7 @@ export function CheckoutSuccess() {
             {/* Thank you message */}
             <div className="mt-8 pt-8 border-t border-white/5">
               <p className="text-sm text-[#A1A1A1]">
-                Obrigado por confiar no <strong>Hub do Empreendedor</strong>! 💜<br />
+                Obrigado por confiar no <strong>Hub do Empreendedor</strong>!<br />
                 Estamos aqui para ajudar seu negócio a crescer.
               </p>
             </div>

@@ -114,7 +114,7 @@ export function Onboarding() {
       <div className="w-full max-w-lg">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <img src="/logo.png" alt="Hub do Empreendedor" className="h-10 w-auto" />
+          <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
         </div>
 
         {/* Progress bar */}

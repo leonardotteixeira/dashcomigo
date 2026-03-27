@@ -30,7 +30,7 @@ export function DashboardLayout() {
       <div className="min-h-screen bg-[#141414] flex items-center justify-center">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4 animate-pulse">
-            <img src="/logo.png" alt="Hub do Empreendedor" className="h-12 w-auto" />
+            <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
           </div>
           <p className="text-[#A1A1A1] font-medium">Carregando...</p>
         </div>
@@ -86,7 +86,7 @@ export function DashboardLayout() {
               className="flex items-center cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <img src="/logo.png" alt="Hub do Empreendedor" className="h-10 w-auto" />
+              <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
             </div>
             <button
               className="lg:hidden p-2 text-[#A1A1A1] hover:text-white"
