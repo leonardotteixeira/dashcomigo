@@ -22,19 +22,19 @@ export function Footer() {
             <h3 className="text-[#DEDFE3] font-bold mb-4">Recursos</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#simulador" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
+                <Link to="/app/mei-me" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
                   Simulador
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#beneficios" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
+                <Link to="/#beneficios" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
                   Benefícios
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#depoimentos" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
+                <Link to="/#depoimentos" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
                   Depoimentos
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
