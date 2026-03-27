@@ -3,7 +3,7 @@ import { Calendar } from "./ui/calendar";
 import { useObligations } from "../contexts/ObligationsContext";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, ChevronLeft, ChevronRight } from "lucide-react";
 
 export function ObligationCalendar() {
   const { obligations } = useObligations();
@@ -23,86 +23,103 @@ export function ObligationCalendar() {
   const dateStr = format(selectedDate, "yyyy-MM-dd");
   const dayObligations = obligationsByDate.get(dateStr) || [];
 
-  // Função para destacar datas com obrigações
-  const getDayClassname = (date: Date) => {
-    const dateKey = format(date, "yyyy-MM-dd");
-    if (obligationsByDate.has(dateKey)) {
-      return "bg-[#28A263]/20 font-bold text-[#2DDB81]";
-    }
-    return "";
+  // Navegação de data manual
+  const goToPreviousDay = () => {
+    const prev = new Date(selectedDate);
+    prev.setDate(prev.getDate() - 1);
+    setSelectedDate(prev);
+  };
+
+  const goToNextDay = () => {
+    const next = new Date(selectedDate);
+    next.setDate(next.getDate() + 1);
+    setSelectedDate(next);
   };
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Calendário */}
-        <div className="lg:col-span-1 bg-[#1B1B1B] rounded-2xl border border-white/5 p-4 h-fit">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={(date) => date && setSelectedDate(date)}
-            locale={ptBR}
-            disabled={(date) => date.getFullYear() < new Date().getFullYear()}
-            className="w-full [&_.rdp]:w-full [&_.rdp_head_cell]:w-8 [&_.rdp_cell]:w-8 [&_.rdp_button]:w-8 [&_.rdp_button]:h-8"
-            modifiersClassNames={{
-              selected: "bg-[#28A263] text-white",
-            }}
-          />
-          <div className="mt-4 text-xs text-[#686F6F] space-y-1">
-            <p>🟢 Data com obrigações</p>
-          </div>
+      {/* Calendário - apenas desktop */}
+      <div className="hidden lg:block bg-[#1B1B1B] rounded-2xl border border-white/5 p-4">
+        <Calendar
+          mode="single"
+          selected={selectedDate}
+          onSelect={(date) => date && setSelectedDate(date)}
+          locale={ptBR}
+          disabled={(date) => date.getFullYear() < new Date().getFullYear()}
+          classNames={{
+            day_selected: "bg-[#28A263] text-white hover:bg-[#28A263] hover:text-white",
+            day_today: "bg-white/10 text-white",
+          }}
+        />
+        <div className="mt-4 text-xs text-[#686F6F]">
+          <p>🟢 Data com obrigações</p>
         </div>
+      </div>
 
-        {/* Obrigações do dia selecionado */}
-        <div className="lg:col-span-2 bg-[#1B1B1B] rounded-2xl border border-white/5 p-6">
-          <h3 className="text-lg font-bold text-white mb-4">
-            {format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-          </h3>
+      {/* Data selecionada + navegação (mobile) */}
+      <div className="lg:hidden flex items-center justify-between bg-[#1B1B1B] rounded-2xl border border-white/5 p-4">
+        <button onClick={goToPreviousDay} className="p-2 hover:bg-white/10 rounded-lg">
+          <ChevronLeft className="w-5 h-5 text-[#A1A1A1]" />
+        </button>
+        <div className="text-center">
+          <p className="text-white font-bold">
+            {format(selectedDate, "dd MMM yyyy", { locale: ptBR })}
+          </p>
+        </div>
+        <button onClick={goToNextDay} className="p-2 hover:bg-white/10 rounded-lg">
+          <ChevronRight className="w-5 h-5 text-[#A1A1A1]" />
+        </button>
+      </div>
 
-          {dayObligations.length === 0 ? (
-            <p className="text-[#686F6F]">Nenhuma obrigação neste dia</p>
-          ) : (
-            <div className="space-y-3">
-              {dayObligations.map((ob) => (
-                <div
-                  key={ob.id}
-                  className={`p-4 rounded-xl border ${
-                    ob.isFixture
-                      ? "bg-[#1B1B1B] border-[#686F6F]/20"
-                      : ob.status === "completa"
-                      ? "bg-[#28A263]/10 border-[#28A263]/30"
-                      : "bg-white/5 border-white/10"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    {ob.isFixture ? (
-                      <Lock className="w-5 h-5 text-[#686F6F] flex-shrink-0 mt-0.5" />
-                    ) : ob.status === "completa" ? (
-                      <Check className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
-                    ) : (
-                      <div className="w-2 h-2 rounded-full bg-yellow-400 flex-shrink-0 mt-2.5" />
+      {/* Obrigações do dia selecionado */}
+      <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-6">
+        <h3 className="text-lg font-bold text-white mb-4">
+          {format(selectedDate, "dd 'de' MMMM", { locale: ptBR })}
+        </h3>
+
+        {dayObligations.length === 0 ? (
+          <p className="text-[#686F6F]">Nenhuma obrigação neste dia</p>
+        ) : (
+          <div className="space-y-3">
+            {dayObligations.map((ob) => (
+              <div
+                key={ob.id}
+                className={`p-4 rounded-xl border ${
+                  ob.isFixture
+                    ? "bg-[#1B1B1B] border-[#686F6F]/20"
+                    : ob.status === "completa"
+                    ? "bg-[#28A263]/10 border-[#28A263]/30"
+                    : "bg-white/5 border-white/10"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  {ob.isFixture ? (
+                    <Lock className="w-5 h-5 text-[#686F6F] flex-shrink-0 mt-0.5" />
+                  ) : ob.status === "completa" ? (
+                    <Check className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <div className="w-2 h-2 rounded-full bg-yellow-400 flex-shrink-0 mt-2.5" />
+                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-white text-sm md:text-base">{ob.titulo}</p>
+                    {ob.categoria && (
+                      <p className="text-xs text-[#A1A1A1]">{ob.categoria}</p>
                     )}
-
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-white">{ob.titulo}</p>
-                      {ob.categoria && (
-                        <p className="text-xs text-[#A1A1A1]">{ob.categoria}</p>
-                      )}
-                      {ob.valor && (
-                        <p className="text-sm text-[#2DDB81] font-medium">R$ {ob.valor.toFixed(2)}</p>
-                      )}
-                      {ob.anotacoes && (
-                        <p className="text-xs text-[#C8C9D0] mt-2 bg-black/30 p-2 rounded">
-                          {ob.anotacoes}
-                        </p>
-                      )}
-                    </div>
+                    {ob.valor && (
+                      <p className="text-sm text-[#2DDB81] font-medium">R$ {ob.valor.toFixed(2)}</p>
+                    )}
+                    {ob.anotacoes && (
+                      <p className="text-xs text-[#C8C9D0] mt-2 bg-black/30 p-2 rounded">
+                        {ob.anotacoes}
+                      </p>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
