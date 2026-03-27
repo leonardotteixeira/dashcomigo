@@ -3,9 +3,23 @@ const router = express.Router();
 const asaas = require("../lib/asaas");
 const supabase = require("../lib/supabase");
 
+// Middleware de verificação do token do webhook Asaas
+function verifyWebhookToken(req, res, next) {
+  const token = req.headers["asaas-access-token"];
+  const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN;
+
+  // Se o token estiver configurado, valida
+  if (expectedToken && token !== expectedToken) {
+    console.warn("Webhook rejeitado: token inválido");
+    return res.status(401).json({ error: "Token inválido" });
+  }
+
+  next();
+}
+
 // POST /webhook/asaas
 // Recebe notificações do Asaas sobre pagamentos
-router.post("/asaas", async (req, res) => {
+router.post("/asaas", verifyWebhookToken, async (req, res) => {
   const { event, payment } = req.body;
 
   console.log("Webhook Asaas:", event, payment?.id);
@@ -77,7 +91,7 @@ router.post("/asaas", async (req, res) => {
 
 // POST /webhook/asaas/cancel
 // Chamado quando assinatura é cancelada ou pagamento falha
-router.post("/asaas/cancel", async (req, res) => {
+router.post("/asaas/cancel", verifyWebhookToken, async (req, res) => {
   const { event, payment, subscription } = req.body;
 
   const cancelEvents = [

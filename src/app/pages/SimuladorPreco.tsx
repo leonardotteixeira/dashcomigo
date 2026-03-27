@@ -329,13 +329,6 @@ export function SimuladorPreco() {
             </div>
           </div>
 
-          <Button
-            size="lg"
-            className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-14 text-lg rounded-xl"
-          >
-            Salvar Simulação
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
         </div>
       </div>
     </div>

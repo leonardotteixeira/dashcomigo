@@ -352,13 +352,6 @@ export function SimuladorLucro() {
         </div>
       </div>
 
-      <Button
-        size="lg"
-        className="w-full max-w-md mx-auto flex bg-[#28A263] hover:bg-[#2DDB81] text-white h-14 text-lg rounded-xl"
-      >
-        Salvar Projeção
-        <ArrowRight className="ml-2 w-5 h-5" />
-      </Button>
     </div>
   );
 }

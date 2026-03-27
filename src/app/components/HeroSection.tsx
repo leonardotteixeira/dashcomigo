@@ -55,12 +55,12 @@ export function HeroSection({ onScrollToSimulator }: HeroSectionProps) {
 
           {/* Visual Element - Dashboard Preview */}
           <div className="relative hidden lg:block">
-            <div className="bg-[#141414] rounded-2xl overflow-hidden shadow-2xl border border-white/5">
+            <div className="bg-[#141414] rounded-2xl overflow-hidden shadow-2xl border border-white/5 scale-105">
               {/* Sidebar mock */}
               <div className="flex">
-                <div className="w-[200px] bg-[#1B1B1B] p-6 min-h-[400px]">
-                  <div className="flex items-center gap-2 mb-8">
-                    <div className="w-7 h-7 bg-[#28A263] rounded-lg flex items-center justify-center">
+                <div className="w-[220px] bg-[#1B1B1B] p-8 min-h-[520px]">
+                  <div className="flex items-center gap-2 mb-10">
+                    <div className="w-8 h-8 bg-[#28A263] rounded-lg flex items-center justify-center">
                       <Calculator className="w-4 h-4 text-white" />
                     </div>
                     <span className="text-white text-sm font-bold">Hub</span>
@@ -79,22 +79,32 @@ export function HeroSection({ onScrollToSimulator }: HeroSectionProps) {
                   </div>
                 </div>
                 {/* Main content mock */}
-                <div className="flex-1 p-6">
-                  <div className="text-white text-sm font-semibold mb-1">Bem-vindo de volta!</div>
+                <div className="flex-1 p-8">
+                  <div className="text-white text-base font-semibold mb-1">Bem-vindo de volta!</div>
                   <div className="text-[#A1A1A1] text-xs mb-6">Seu painel financeiro</div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#1B1B1B] rounded-lg p-4">
+                    <div className="bg-[#1B1B1B] rounded-lg p-5">
                       <div className="text-[#A1A1A1] text-xs mb-2">Receitas</div>
-                      <div className="text-[#2DDB81] text-lg font-bold">R$ 12.450</div>
+                      <div className="text-[#2DDB81] text-2xl font-bold">R$ 12.450</div>
                     </div>
-                    <div className="bg-[#1D1D1D] rounded-lg p-4">
+                    <div className="bg-[#1D1D1D] rounded-lg p-5">
                       <div className="text-[#A1A1A1] text-xs mb-2">Despesas</div>
-                      <div className="text-red-400 text-lg font-bold">R$ 4.280</div>
+                      <div className="text-red-400 text-2xl font-bold">R$ 4.280</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="bg-[#1B1B1B] rounded-lg p-4">
+                      <div className="text-[#A1A1A1] text-xs mb-1">Saldo</div>
+                      <div className="text-white text-lg font-bold">R$ 8.170</div>
+                    </div>
+                    <div className="bg-[#1B1B1B] rounded-lg p-4">
+                      <div className="text-[#A1A1A1] text-xs mb-1">Margem</div>
+                      <div className="text-[#C0F497] text-lg font-bold">65,6%</div>
                     </div>
                   </div>
                   {/* Chart mock */}
-                  <div className="mt-4 bg-[#1D1D1D] rounded-lg p-4 h-[140px] flex items-end gap-2">
-                    {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85].map((h, i) => (
+                  <div className="mt-4 bg-[#1D1D1D] rounded-lg p-4 h-[200px] flex items-end gap-2">
+                    {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85, 68, 92].map((h, i) => (
                       <div
                         key={i}
                         className="flex-1 bg-[#28A263] rounded-t-sm opacity-70"
@@ -104,6 +114,12 @@ export function HeroSection({ onScrollToSimulator }: HeroSectionProps) {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Floating Element */}
+            <div className="absolute -bottom-4 -left-4 bg-[#28A263] rounded-2xl shadow-lg p-4 text-white transform -rotate-3">
+              <div className="text-xs opacity-90">Crescimento</div>
+              <div className="text-xl font-bold">+25%</div>
             </div>
           </div>
         </div>
