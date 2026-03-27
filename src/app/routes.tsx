@@ -18,6 +18,9 @@ import { Onboarding } from "./pages/Onboarding";
 import { AuthCallback } from "./pages/AuthCallback";
 import { TermosDeUso } from "./pages/TermosDeUso";
 import { Privacidade } from "./pages/Privacidade";
+import { SobreOMEI } from "./pages/SobreOMEI";
+import { ComoMigrar } from "./pages/ComoMigrar";
+import { FAQ } from "./pages/FAQ";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +66,18 @@ export const router = createBrowserRouter([
   {
     path: "/privacidade",
     Component: Privacidade,
+  },
+  {
+    path: "/sobre-o-mei",
+    Component: SobreOMEI,
+  },
+  {
+    path: "/como-migrar",
+    Component: ComoMigrar,
+  },
+  {
+    path: "/faq",
+    Component: FAQ,
   },
   {
     path: "/app",

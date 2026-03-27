@@ -44,19 +44,19 @@ export function Footer() {
             <h3 className="text-[#DEDFE3] font-bold mb-4">Informações</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
+                <Link to="/sobre-o-mei" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
                   Sobre o MEI
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
+                <Link to="/como-migrar" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
                   Como migrar
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
+                <Link to="/faq" className="text-[#868898] hover:text-[#2DDB81] transition-colors text-sm">
                   FAQ
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
