@@ -40,13 +40,13 @@ const FEATURES = [
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { label: "Simulador MEI", icon: "📊", color: "bg-emerald-500/20" },
-            { label: "Fluxo de Caixa", icon: "💰", color: "bg-blue-500/20" },
-            { label: "Propostas", icon: "📄", color: "bg-purple-500/20" },
-            { label: "Dashboard", icon: "📈", color: "bg-orange-500/20" },
+            { label: "Simulador MEI", Icon: Calculator, color: "bg-emerald-500/20", iconColor: "text-emerald-400" },
+            { label: "Fluxo de Caixa", Icon: BarChart3, color: "bg-blue-500/20", iconColor: "text-blue-400" },
+            { label: "Propostas", Icon: FileText, color: "bg-purple-500/20", iconColor: "text-purple-400" },
+            { label: "Dashboard", Icon: PieChart, color: "bg-orange-500/20", iconColor: "text-orange-400" },
           ].map((item) => (
             <div key={item.label} className={`${item.color} rounded-xl p-3 text-center`}>
-              <span className="text-2xl block mb-1">{item.icon}</span>
+              <item.Icon className={`w-6 h-6 mx-auto mb-1 ${item.iconColor}`} />
               <span className="text-xs text-white/80 font-medium">{item.label}</span>
             </div>
           ))}
