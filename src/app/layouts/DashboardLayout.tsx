@@ -20,6 +20,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, loading, logout } = useAuth();
@@ -85,7 +86,7 @@ export function DashboardLayout() {
               className="flex items-center cursor-pointer"
               onClick={() => navigate("/")}
             >
-              <img src="/logo.png" alt="Hub do Empreendedor" className="h-9 w-auto" />
+              <img src="/logo.png" alt="Hub do Empreendedor" className="h-10 w-auto" />
             </div>
             <button
               className="lg:hidden p-2 text-[#A1A1A1] hover:text-white"
@@ -212,10 +213,44 @@ export function DashboardLayout() {
             {/* Right icons */}
             <div className="flex items-center gap-2">
               <div className="relative">
-                <button className="p-2 text-[#A1A1A1] hover:text-white transition-colors bg-[#1B1B1B] rounded-lg border border-white/5">
+                <button
+                  onClick={() => setNotificationsOpen(!notificationsOpen)}
+                  className="p-2 text-[#A1A1A1] hover:text-white transition-colors bg-[#1B1B1B] rounded-lg border border-white/5"
+                >
                   <Bell className="w-5 h-5 text-[#28A263]" />
                 </button>
                 <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#FF4F3D] rounded-full text-[9px] text-white flex items-center justify-center font-bold">2</span>
+
+                {/* Notifications Dropdown */}
+                {notificationsOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-80 bg-[#1B1B1B] rounded-2xl border border-white/10 shadow-xl z-50 overflow-hidden">
+                    <div className="p-4 border-b border-white/5">
+                      <h3 className="text-white font-bold text-sm">Notificações</h3>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {[
+                        { title: "Limite de lançamentos próximo", desc: "Você usou 28/30 lançamentos este mês", time: "2h atrás", icon: "⚠️" },
+                        { title: "MEI atingiu 80% do limite", desc: "Seu faturamento é R$ 65.000 de R$ 81.000", time: "1d atrás", icon: "🔴" },
+                      ].map((notif, idx) => (
+                        <div key={idx} className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <span className="text-lg">{notif.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-white">{notif.title}</p>
+                              <p className="text-xs text-[#686F6F] mt-0.5">{notif.desc}</p>
+                              <p className="text-xs text-[#686F6F] mt-1">{notif.time}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-3 border-t border-white/5">
+                      <button className="w-full text-xs text-[#2DDB81] hover:text-white transition-colors font-medium">
+                        Ver todas as notificações
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="w-8 h-8 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center">
                 <User className="w-4 h-4 text-[#A1A1A1]" />
