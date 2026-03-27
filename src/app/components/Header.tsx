@@ -1,4 +1,4 @@
-import { Calculator, Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -19,10 +19,8 @@ export function Header({ onScrollToSimulator }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-9 h-9 bg-[#2DDB81] rounded-xl flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-black" />
-            </div>
-            <span className="text-lg font-bold text-white">
+            <img src="/logo.png" alt="Hub do Empreendedor" className="h-9 w-auto" />
+            <span className="text-lg font-bold text-white hidden sm:inline">
               Hub do Empreendedor
             </span>
           </div>
