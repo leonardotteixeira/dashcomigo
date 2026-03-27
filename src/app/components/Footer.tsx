@@ -72,9 +72,9 @@ export function Footer() {
             <Link to="/termos-de-uso" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Termos de Uso
             </Link>
-            <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
+            <Link to="/privacidade" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Privacidade
-            </a>
+            </Link>
             <a href="mailto:suporte@hubempreendedor.com" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Contato
             </a>

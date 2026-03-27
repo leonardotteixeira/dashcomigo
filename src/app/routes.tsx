@@ -17,6 +17,7 @@ import { GeradorPropostas } from "./pages/GeradorPropostas";
 import { Onboarding } from "./pages/Onboarding";
 import { AuthCallback } from "./pages/AuthCallback";
 import { TermosDeUso } from "./pages/TermosDeUso";
+import { Privacidade } from "./pages/Privacidade";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ export const router = createBrowserRouter([
   {
     path: "/termos-de-uso",
     Component: TermosDeUso,
+  },
+  {
+    path: "/privacidade",
+    Component: Privacidade,
   },
   {
     path: "/app",
