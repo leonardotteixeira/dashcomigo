@@ -16,6 +16,7 @@ import { SimuladorLucro } from "./pages/SimuladorLucro";
 import { GeradorPropostas } from "./pages/GeradorPropostas";
 import { Onboarding } from "./pages/Onboarding";
 import { AuthCallback } from "./pages/AuthCallback";
+import { TermosDeUso } from "./pages/TermosDeUso";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
   {
     path: "/auth/reset-password",
     Component: ResetPassword,
+  },
+  {
+    path: "/termos-de-uso",
+    Component: TermosDeUso,
   },
   {
     path: "/app",

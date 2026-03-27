@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export function Footer() {
   return (
     <footer className="bg-[#111218] text-[#9C9EAB] py-12 border-t border-white/5">
@@ -67,13 +69,13 @@ export function Footer() {
           </p>
 
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
+            <Link to="/termos-de-uso" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Termos de Uso
-            </a>
+            </Link>
             <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Privacidade
             </a>
-            <a href="#" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
+            <a href="mailto:suporte@hubempreendedor.com" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Contato
             </a>
           </div>
