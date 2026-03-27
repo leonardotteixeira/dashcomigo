@@ -39,49 +39,49 @@ export function ObligationCalendar() {
   return (
     <div className="space-y-4">
       {/* Calendário - apenas desktop */}
-      <div className="hidden lg:block bg-[#0F2818] rounded-2xl border border-[#28A263]/40 p-6">
+      <div className="hidden lg:block bg-[#1B1B1B] rounded-2xl border border-white/10 p-6">
         <style>{`
           .calendar-container .rdp {
             --rdp-cell-size: 42px;
-            --rdp-accent-color: #2DDB81;
-            --rdp-background-color: #2DDB81;
+            --rdp-accent-color: transparent;
+            --rdp-background-color: transparent;
             margin: 0;
           }
           .calendar-container .rdp_caption {
-            color: #2DDB81;
-            font-weight: bold;
-            font-size: 1.1rem;
+            color: #C8C9D0;
+            font-weight: 600;
+            font-size: 1rem;
           }
           .calendar-container .rdp_head_cell {
-            color: #2DDB81;
-            font-weight: 700;
-            font-size: 0.9rem;
+            color: #A1A1A1;
+            font-weight: 600;
+            font-size: 0.85rem;
             text-transform: uppercase;
           }
           .calendar-container .rdp_cell {
             padding: 3px;
           }
           .calendar-container .rdp_button {
-            color: #FFFFFF;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
+            color: #C8C9D0;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
             background-color: transparent;
             border: 1px solid transparent;
           }
           .calendar-container .rdp_button:hover:not([disabled]) {
-            background-color: rgba(45, 219, 129, 0.2);
-            color: #fff;
-            border-color: rgba(45, 219, 129, 0.4);
+            background-color: rgba(200, 201, 208, 0.05);
+            color: #FFFFFF;
+            border-color: transparent;
           }
           .calendar-container .rdp_button[aria-selected="true"] {
-            background-color: #2DDB81;
-            color: #0F2818;
-            font-weight: bold;
-            border-color: #2DDB81;
+            background-color: rgba(200, 201, 208, 0.15);
+            color: #FFFFFF;
+            font-weight: 600;
+            border-color: rgba(200, 201, 208, 0.3);
           }
           .calendar-container .rdp_button[aria-disabled="true"] {
-            color: #5A7A68;
+            color: #686F6F;
             opacity: 0.4;
           }
         `}</style>
@@ -93,28 +93,28 @@ export function ObligationCalendar() {
             locale={ptBR}
             disabled={(date) => date.getFullYear() < new Date().getFullYear()}
             classNames={{
-              day_selected: "bg-[#2DDB81] text-[#0F2818]",
-              day_today: "bg-[#28A263]/30 text-white",
+              day_selected: "text-white",
+              day_today: "text-white",
             }}
           />
         </div>
-        <div className="mt-4 text-xs text-[#2DDB81] font-bold">
+        <div className="mt-4 text-xs text-[#686F6F] font-medium">
           ● = Data com obrigações
         </div>
       </div>
 
       {/* Data selecionada + navegação (mobile) */}
-      <div className="lg:hidden flex items-center justify-between bg-[#28A263]/10 border border-[#28A263]/30 rounded-2xl p-4">
-        <button onClick={goToPreviousDay} className="p-2 hover:bg-[#28A263]/20 rounded-lg transition-colors">
-          <ChevronLeft className="w-5 h-5 text-[#2DDB81]" />
+      <div className="lg:hidden flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-4">
+        <button onClick={goToPreviousDay} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <ChevronLeft className="w-5 h-5 text-[#A1A1A1] hover:text-white" />
         </button>
         <div className="text-center">
-          <p className="text-[#2DDB81] font-bold text-sm md:text-base">
+          <p className="text-white font-medium text-sm md:text-base">
             {format(selectedDate, "dd MMM yyyy", { locale: ptBR })}
           </p>
         </div>
-        <button onClick={goToNextDay} className="p-2 hover:bg-[#28A263]/20 rounded-lg transition-colors">
-          <ChevronRight className="w-5 h-5 text-[#2DDB81]" />
+        <button onClick={goToNextDay} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <ChevronRight className="w-5 h-5 text-[#A1A1A1] hover:text-white" />
         </button>
       </div>
 

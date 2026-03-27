@@ -11,6 +11,10 @@ export interface User {
   plan: UserPlan;
   proposalUsageToday: number;
   onboardingCompleted: boolean;
+  avatarUrl?: string;
+  phone?: string;
+  company?: string;
+  bio?: string;
 }
 
 interface AuthContextType {
@@ -32,6 +36,9 @@ interface AuthContextType {
     faturamentoMensal?: number;
     objetivo?: string;
   }) => Promise<void>;
+  updateProfile: (updates: { name?: string; phone?: string; company?: string; bio?: string }) => Promise<void>;
+  uploadAvatar: (file: File) => Promise<string>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,6 +51,10 @@ function mapProfile(supabaseUser: SupabaseUser, profile: any): User {
     plan: profile?.plan ?? "free",
     proposalUsageToday: profile?.proposal_usage_today ?? 0,
     onboardingCompleted: profile?.onboarding_completed ?? false,
+    avatarUrl: profile?.avatar_url,
+    phone: profile?.phone,
+    company: profile?.company,
+    bio: profile?.bio,
   };
 }
 
@@ -187,6 +198,94 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser({ ...user, onboardingCompleted: true });
   };
 
+  const updateProfile = async (updates: { name?: string; phone?: string; company?: string; bio?: string }) => {
+    if (!user) return;
+
+    // Update name in auth if provided
+    if (updates.name) {
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { name: updates.name }
+      });
+      if (updateError) throw new Error(updateError.message);
+    }
+
+    // Update profile in database
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        name: updates.name ?? undefined,
+        phone: updates.phone ?? undefined,
+        company: updates.company ?? undefined,
+        bio: updates.bio ?? undefined,
+      })
+      .eq("id", user.id);
+    if (error) throw new Error(error.message);
+
+    setUser({
+      ...user,
+      name: updates.name ?? user.name,
+      phone: updates.phone ?? user.phone,
+      company: updates.company ?? user.company,
+      bio: updates.bio ?? user.bio,
+    });
+  };
+
+  const uploadAvatar = async (file: File): Promise<string> => {
+    if (!user) throw new Error("User not authenticated");
+
+    // Validate file
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      throw new Error("Apenas imagens JPG, PNG ou WebP são permitidas");
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("Arquivo não pode ser maior que 5MB");
+    }
+
+    // Upload to storage
+    const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+    const { error: uploadError, data } = await supabase.storage
+      .from("avatars")
+      .upload(fileName, file, { upsert: true });
+
+    if (uploadError) throw new Error(uploadError.message);
+
+    // Get public URL
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
+    const avatarUrl = urlData.publicUrl;
+
+    // Update profile with avatar URL
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", user.id);
+
+    if (updateError) throw new Error(updateError.message);
+
+    setUser({ ...user, avatarUrl });
+    return avatarUrl;
+  };
+
+  const changePassword = async (currentPassword: string, newPassword: string) => {
+    if (!session?.user?.email) throw new Error("User not authenticated");
+
+    // Re-authenticate with current password
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: session.user.email,
+      password: currentPassword,
+    });
+    if (authError) throw new Error("Senha atual está incorreta");
+
+    // Update password
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+    if (updateError) throw new Error(updateError.message);
+
+    // Auto-logout after password change
+    await logout();
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -203,6 +302,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetProposalUsage,
         refreshUser,
         completeOnboarding,
+        updateProfile,
+        uploadAvatar,
+        changePassword,
       }}
     >
       {children}

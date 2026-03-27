@@ -12,7 +12,8 @@ import {
   User,
   Wallet,
   Bell,
-  Search
+  Search,
+  Settings
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -166,6 +167,17 @@ export function DashboardLayout() {
                 <p className="text-xs text-white truncate">{user.email}</p>
               </div>
             </div>
+
+            <button
+              className="w-full flex items-center gap-3 px-3 py-2.5 text-[#A1A1A1] hover:text-white transition-colors text-sm rounded-xl hover:bg-white/5 mb-2"
+              onClick={() => {
+                navigate("/app/profile");
+                setSidebarOpen(false);
+              }}
+            >
+              <Settings className="w-4 h-4" />
+              Meu Perfil
+            </button>
 
             <button
               className="w-full flex items-center gap-3 px-3 py-2.5 text-[#A1A1A1] hover:text-white transition-colors text-sm rounded-xl hover:bg-white/5"

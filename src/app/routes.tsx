@@ -15,6 +15,7 @@ import { SimuladorPreco } from "./pages/SimuladorPreco";
 import { SimuladorLucro } from "./pages/SimuladorLucro";
 import { GeradorPropostas } from "./pages/GeradorPropostas";
 import { Onboarding } from "./pages/Onboarding";
+import { Profile } from "./pages/Profile";
 import { AuthCallback } from "./pages/AuthCallback";
 import { TermosDeUso } from "./pages/TermosDeUso";
 import { Privacidade } from "./pages/Privacidade";
@@ -110,6 +111,10 @@ export const router = createBrowserRouter([
       {
         path: "onboarding",
         Component: Onboarding,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
     ],
   },

@@ -19,6 +19,10 @@ export interface Database {
           proposal_reset_date: string;
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
+          avatar_url: string | null;
+          phone: string | null;
+          company: string | null;
+          bio: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -31,6 +35,10 @@ export interface Database {
           proposal_reset_date?: string;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
+          avatar_url?: string | null;
+          phone?: string | null;
+          company?: string | null;
+          bio?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -43,6 +51,10 @@ export interface Database {
           proposal_reset_date?: string;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
+          avatar_url?: string | null;
+          phone?: string | null;
+          company?: string | null;
+          bio?: string | null;
           updated_at?: string;
         };
       };
