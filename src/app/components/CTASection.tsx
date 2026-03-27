@@ -67,57 +67,56 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
             </div>
           </div>
 
-          {/* Right - Dashboard Preview (dark mockup) */}
+          {/* Right - MEI Simulator Preview */}
           <div className="relative hidden lg:block">
-            <div className="bg-[#141414] rounded-2xl overflow-hidden shadow-2xl border border-white/5">
-              {/* Sidebar mock */}
-              <div className="flex">
-                <div className="w-[200px] bg-[#1B1B1B] p-6 min-h-[400px]">
-                  <div className="flex items-center gap-2 mb-8">
-                    <div className="w-7 h-7 bg-[#28A263] rounded-lg flex items-center justify-center">
-                      <Calculator className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-white text-sm font-bold">Hub</span>
+            <div className="relative bg-[#1B1B1B] rounded-3xl p-8 shadow-2xl border border-white/5">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-[#A1A1A1]">Seu faturamento</span>
+                  <span className="text-2xl font-bold text-white">R$ 8.500</span>
+                </div>
+
+                <div className="h-2 bg-[#22242F] rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#28A263] to-[#2DDB81] rounded-full" style={{ width: '65%' }} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#22242F] rounded-2xl p-4 border border-white/5">
+                    <div className="text-xs text-red-400 font-medium mb-1">MEI</div>
+                    <div className="text-2xl font-bold text-red-400">R$ 810</div>
+                    <div className="text-xs text-[#9C9EAB] mt-1">impostos/mês</div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 bg-[#28A263]/10 rounded-full px-4 py-2">
-                      <div className="w-2 h-2 bg-[#28A263] rounded-full" />
-                      <span className="text-[#28A263] text-xs font-semibold">Dashboard</span>
+
+                  <div className="bg-[#22242F] rounded-2xl p-4 border border-[#28A263]/30 relative">
+                    <div className="absolute -top-2 -right-2 bg-[#28A263] text-white text-xs px-2 py-1 rounded-full font-medium">
+                      Melhor
                     </div>
-                    {["Simuladores", "Propostas", "Fluxo de Caixa", "Relatórios", "Configurações"].map((item) => (
-                      <div key={item} className="flex items-center gap-3 px-4 py-2">
-                        <div className="w-2 h-2 bg-[#A1A1A1] rounded-full opacity-30" />
-                        <span className="text-[#A1A1A1] text-xs">{item}</span>
-                      </div>
-                    ))}
+                    <div className="text-xs text-[#2DDB81] font-medium mb-1">ME</div>
+                    <div className="text-2xl font-bold text-[#2DDB81]">R$ 520</div>
+                    <div className="text-xs text-[#9C9EAB] mt-1">impostos/mês</div>
                   </div>
                 </div>
-                {/* Main content mock */}
-                <div className="flex-1 p-6">
-                  <div className="text-white text-sm font-semibold mb-1">Bem-vindo de volta!</div>
-                  <div className="text-[#A1A1A1] text-xs mb-6">Seu painel financeiro</div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#1B1B1B] rounded-lg p-4">
-                      <div className="text-[#A1A1A1] text-xs mb-2">Receitas</div>
-                      <div className="text-[#2DDB81] text-lg font-bold">R$ 12.450</div>
-                    </div>
-                    <div className="bg-[#1D1D1D] rounded-lg p-4">
-                      <div className="text-[#A1A1A1] text-xs mb-2">Despesas</div>
-                      <div className="text-red-400 text-lg font-bold">R$ 4.280</div>
-                    </div>
+
+                <div className="bg-gradient-to-r from-[#28A263]/20 to-[#2DDB81]/10 rounded-2xl p-4 border border-[#28A263]/20">
+                  <div className="text-sm font-medium text-[#C0F497]">
+                    Economia anual projetada
                   </div>
-                  {/* Chart mock */}
-                  <div className="mt-4 bg-[#1D1D1D] rounded-lg p-4 h-[140px] flex items-end gap-2">
-                    {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85].map((h, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 bg-[#28A263] rounded-t-sm opacity-70"
-                        style={{ height: `${h}%` }}
-                      />
-                    ))}
+                  <div className="text-3xl font-bold text-[#2DDB81] mt-2">
+                    R$ 3.480
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Floating Elements */}
+            <div className="absolute -top-4 -right-4 bg-[#22242F] rounded-2xl shadow-lg p-4 border border-white/5 transform rotate-3">
+              <div className="text-xs text-[#9C9EAB]">Tempo até o limite</div>
+              <div className="text-xl font-bold text-white">8 meses</div>
+            </div>
+
+            <div className="absolute -bottom-4 -left-4 bg-[#28A263] rounded-2xl shadow-lg p-4 text-white transform -rotate-3">
+              <div className="text-xs opacity-90">Crescimento</div>
+              <div className="text-xl font-bold">+25%</div>
             </div>
           </div>
         </div>
