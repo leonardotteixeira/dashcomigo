@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, Briefcase, Package, ShoppingBag, Sparkles, TrendingDown, Rocket, BarChart3, Target } from "lucide-react";
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 interface FormData {
@@ -40,17 +40,17 @@ function formatBRL(value: string) {
 
 // ─── Dados das opções de seleção ─────────────────────────────────────────────
 const TIPOS_NEGOCIO = [
-  { id: "servicos", label: "Serviços", emoji: "💼" },
-  { id: "produtos", label: "Produtos", emoji: "📦" },
-  { id: "comercio", label: "Comércio", emoji: "🛍️" },
-  { id: "outros", label: "Outros", emoji: "✨" },
+  { id: "servicos", label: "Serviços", icon: Briefcase },
+  { id: "produtos", label: "Produtos", icon: Package },
+  { id: "comercio", label: "Comércio", icon: ShoppingBag },
+  { id: "outros", label: "Outros", icon: Sparkles },
 ];
 
 const OBJETIVOS = [
-  { id: "reduzir-impostos", label: "Reduzir impostos", emoji: "📉" },
-  { id: "crescer-negocio", label: "Crescer o negócio", emoji: "🚀" },
-  { id: "organizar-financas", label: "Organizar finanças", emoji: "📊" },
-  { id: "outros", label: "Outros", emoji: "🎯" },
+  { id: "reduzir-impostos", label: "Reduzir impostos", icon: TrendingDown },
+  { id: "crescer-negocio", label: "Crescer o negócio", icon: Rocket },
+  { id: "organizar-financas", label: "Organizar finanças", icon: BarChart3 },
+  { id: "outros", label: "Outros", icon: Target },
 ];
 
 const TOTAL_STEPS = 5;
@@ -150,7 +150,7 @@ export function Onboarding() {
                       <CheckCircle2 className="w-8 h-8 text-[#2DDB81]" />
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-2">
-                      Bem-vindo, {user?.name.split(" ")[0]}! 👋
+                      Bem-vindo, {user?.name.split(" ")[0]}!
                     </h2>
                     <p className="text-[#A1A1A1] text-sm leading-relaxed">
                       Vamos configurar seu perfil em menos de 2 minutos para personalizar sua experiência.
@@ -211,22 +211,25 @@ export function Onboarding() {
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    {TIPOS_NEGOCIO.map((tipo) => (
-                      <button
-                        key={tipo.id}
-                        onClick={() => setForm((f) => ({ ...f, tipoNegocio: tipo.id }))}
-                        className={`p-4 rounded-2xl border text-left transition-all ${
-                          form.tipoNegocio === tipo.id
-                            ? "border-[#28A263] bg-[#28A263]/10"
-                            : "border-white/10 bg-[#141414] hover:border-white/20"
-                        }`}
-                      >
-                        <span className="text-2xl mb-2 block">{tipo.emoji}</span>
-                        <p className={`font-bold text-sm ${form.tipoNegocio === tipo.id ? "text-[#2DDB81]" : "text-white"}`}>
-                          {tipo.label}
-                        </p>
-                      </button>
-                    ))}
+                    {TIPOS_NEGOCIO.map((tipo) => {
+                      const Icon = tipo.icon;
+                      return (
+                        <button
+                          key={tipo.id}
+                          onClick={() => setForm((f) => ({ ...f, tipoNegocio: tipo.id }))}
+                          className={`p-4 rounded-2xl border text-left transition-all ${
+                            form.tipoNegocio === tipo.id
+                              ? "border-[#28A263] bg-[#28A263]/10"
+                              : "border-white/10 bg-[#141414] hover:border-white/20"
+                          }`}
+                        >
+                          <Icon className={`w-6 h-6 mb-2 ${form.tipoNegocio === tipo.id ? "text-[#2DDB81]" : "text-[#A1A1A1]"}`} />
+                          <p className={`font-bold text-sm ${form.tipoNegocio === tipo.id ? "text-[#2DDB81]" : "text-white"}`}>
+                            {tipo.label}
+                          </p>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -266,22 +269,25 @@ export function Onboarding() {
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    {OBJETIVOS.map((obj) => (
-                      <button
-                        key={obj.id}
-                        onClick={() => setForm((f) => ({ ...f, objetivo: obj.id }))}
-                        className={`p-4 rounded-2xl border text-left transition-all ${
-                          form.objetivo === obj.id
-                            ? "border-[#28A263] bg-[#28A263]/10"
-                            : "border-white/10 bg-[#141414] hover:border-white/20"
-                        }`}
-                      >
-                        <span className="text-2xl mb-2 block">{obj.emoji}</span>
-                        <p className={`font-bold text-sm ${form.objetivo === obj.id ? "text-[#2DDB81]" : "text-white"}`}>
-                          {obj.label}
-                        </p>
-                      </button>
-                    ))}
+                    {OBJETIVOS.map((obj) => {
+                      const Icon = obj.icon;
+                      return (
+                        <button
+                          key={obj.id}
+                          onClick={() => setForm((f) => ({ ...f, objetivo: obj.id }))}
+                          className={`p-4 rounded-2xl border text-left transition-all ${
+                            form.objetivo === obj.id
+                              ? "border-[#28A263] bg-[#28A263]/10"
+                              : "border-white/10 bg-[#141414] hover:border-white/20"
+                          }`}
+                        >
+                          <Icon className={`w-6 h-6 mb-2 ${form.objetivo === obj.id ? "text-[#2DDB81]" : "text-[#A1A1A1]"}`} />
+                          <p className={`font-bold text-sm ${form.objetivo === obj.id ? "text-[#2DDB81]" : "text-white"}`}>
+                            {obj.label}
+                          </p>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

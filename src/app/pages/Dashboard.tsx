@@ -626,14 +626,23 @@ export function Dashboard() {
 
           {/* Quick value props */}
           <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
-            <div className="space-y-4 text-center">
-              {[{ emoji: "📊", title: "Análise Completa", desc: "Combine todas as ferramentas para uma visão 360°" }, { emoji: "⚡", title: "Decisões Rápidas", desc: "Resultados em tempo real para decidir com confiança" }, { emoji: "🎯", title: "Metas Claras", desc: "Saiba exatamente o que fazer para crescer" }].map((item) => (
-                <div key={item.title}>
-                  <div className="text-2xl mb-1">{item.emoji}</div>
-                  <h4 className="font-bold text-white text-sm">{item.title}</h4>
-                  <p className="text-xs text-[#A1A1A1]">{item.desc}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-3 gap-6">
+              {[
+                { icon: TrendingUp, title: "Análise Completa", desc: "Combine todas as ferramentas para uma visão 360°" },
+                { icon: Zap, title: "Decisões Rápidas", desc: "Resultados em tempo real para decidir com confiança" },
+                { icon: Target, title: "Metas Claras", desc: "Saiba exatamente o que fazer para crescer" }
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.title} className="text-center">
+                    <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <Icon className="w-5 h-5 text-[#2DDB81]" />
+                    </div>
+                    <h4 className="font-bold text-white text-sm">{item.title}</h4>
+                    <p className="text-xs text-[#A1A1A1] mt-1">{item.desc}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
