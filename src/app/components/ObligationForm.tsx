@@ -67,51 +67,51 @@ export function ObligationForm({ open, onOpenChange, obligation }: ObligationFor
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label className="text-[#A1A1A1]">Título</Label>
+            <Label className="text-sm text-[#C8C9D0] mb-2 block">Título *</Label>
             <Input
               value={form.titulo}
               onChange={(e) => setForm({ ...form, titulo: e.target.value })}
               placeholder="Ex: Consulta com contador"
-              className="bg-[#141414] border-white/10 text-white"
+              className="bg-[#141414] border border-white/10 text-white placeholder:text-[#686F6F] text-sm rounded-xl"
               required
             />
           </div>
 
           <div>
-            <Label className="text-[#A1A1A1]">Data</Label>
+            <Label className="text-sm text-[#C8C9D0] mb-2 block">Data *</Label>
             <Input
               type="date"
               value={form.data}
               onChange={(e) => setForm({ ...form, data: e.target.value })}
-              className="bg-[#141414] border-white/10 text-white"
+              className="bg-[#141414] border border-white/10 text-white text-sm rounded-xl"
               required
             />
           </div>
 
           <div>
-            <Label className="text-[#A1A1A1]">Valor (opcional)</Label>
+            <Label className="text-sm text-[#C8C9D0] mb-2 block">Valor (opcional)</Label>
             <Input
               type="number"
               step="0.01"
               value={form.valor}
               onChange={(e) => setForm({ ...form, valor: e.target.value })}
               placeholder="0,00"
-              className="bg-[#141414] border-white/10 text-white"
+              className="bg-[#141414] border border-white/10 text-white placeholder:text-[#686F6F] text-sm rounded-xl"
             />
           </div>
 
           <div>
-            <Label className="text-[#A1A1A1]">Categoria</Label>
+            <Label className="text-sm text-[#C8C9D0] mb-2 block">Categoria</Label>
             <Input
               value={form.categoria}
               onChange={(e) => setForm({ ...form, categoria: e.target.value })}
               placeholder="Ex: Financeiro, Pessoal"
-              className="bg-[#141414] border-white/10 text-white"
+              className="bg-[#141414] border border-white/10 text-white placeholder:text-[#686F6F] text-sm rounded-xl"
             />
           </div>
 
           <div>
-            <Label className="text-[#A1A1A1]">Anotações</Label>
+            <Label className="text-sm text-[#C8C9D0] mb-2 block">Anotações</Label>
             <textarea
               value={form.anotacoes}
               onChange={(e) => setForm({ ...form, anotacoes: e.target.value })}

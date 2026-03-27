@@ -34,16 +34,16 @@ export function ObligationCalendar() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Calendário */}
-        <div className="md:col-span-1 bg-[#1B1B1B] rounded-2xl border border-white/5 p-4">
+        <div className="lg:col-span-1 bg-[#1B1B1B] rounded-2xl border border-white/5 p-4 h-fit">
           <Calendar
             mode="single"
             selected={selectedDate}
             onSelect={(date) => date && setSelectedDate(date)}
             locale={ptBR}
             disabled={(date) => date.getFullYear() < new Date().getFullYear()}
-            className="w-full"
+            className="w-full [&_.rdp]:w-full [&_.rdp_head_cell]:w-8 [&_.rdp_cell]:w-8 [&_.rdp_button]:w-8 [&_.rdp_button]:h-8"
             modifiersClassNames={{
               selected: "bg-[#28A263] text-white",
             }}
@@ -54,7 +54,7 @@ export function ObligationCalendar() {
         </div>
 
         {/* Obrigações do dia selecionado */}
-        <div className="md:col-span-2 bg-[#1B1B1B] rounded-2xl border border-white/5 p-6">
+        <div className="lg:col-span-2 bg-[#1B1B1B] rounded-2xl border border-white/5 p-6">
           <h3 className="text-lg font-bold text-white mb-4">
             {format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
           </h3>
@@ -92,7 +92,7 @@ export function ObligationCalendar() {
                         <p className="text-sm text-[#2DDB81] font-medium">R$ {ob.valor.toFixed(2)}</p>
                       )}
                       {ob.anotacoes && (
-                        <p className="text-xs text-[#C8C9D0] mt-2 bg-black/30 p-2 rounded mt-2">
+                        <p className="text-xs text-[#C8C9D0] mt-2 bg-black/30 p-2 rounded">
                           {ob.anotacoes}
                         </p>
                       )}
