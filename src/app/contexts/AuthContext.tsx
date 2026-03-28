@@ -173,7 +173,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const incrementProposalUsage = async () => {
     if (!user) return;
     try {
-      const newUsage = user.proposalUsageToday + 1;
+      // Fetch current profile to get latest proposal_usage_today
+      const currentRecord = await pb.collection("profiles").getOne(user.id);
+      const newUsage = (currentRecord.proposal_usage_today ?? 0) + 1;
       const record = await pb.collection("profiles").update(user.id, {
         proposal_usage_today: newUsage,
       });
