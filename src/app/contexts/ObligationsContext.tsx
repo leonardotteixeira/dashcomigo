@@ -36,7 +36,19 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
         sort: "data",
       });
 
-      setObligations(records.items as Obligation[]);
+      setObligations(records.items.map(r => ({
+        id: r.id,
+        user_id: r.user_id,
+        titulo: r.titulo,
+        data: r.data?.split(" ")[0] ?? r.data,
+        valor: r.valor ?? 0,
+        status: r.status ?? "pendente",
+        categoria: r.categoria ?? "",
+        anotacoes: r.anotacoes ?? "",
+        isFixture: r.isFixture ?? false,
+        created_at: r.created,
+        updated_at: r.updated,
+      })));
     } catch (error) {
       console.error("Erro ao buscar obrigações:", error);
     } finally {
@@ -48,8 +60,14 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     try {
       const record = await pb.collection("obligations").create({
-        ...ob,
         user_id: user.id,
+        titulo: ob.titulo,
+        data: ob.data,
+        valor: ob.valor ?? 0,
+        status: ob.status ?? "pendente",
+        categoria: ob.categoria ?? "",
+        anotacoes: ob.anotacoes ?? "",
+        isFixture: ob.isFixture ?? false,
       });
 
       setObligations([...obligations, record as Obligation]);

@@ -93,9 +93,9 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
             valor: Number(t.valor),
             tipo: t.tipo as TransactionType,
             categoria: t.categoria,
-            data: t.data,
+            data: t.data?.split(" ")[0] ?? t.data,
             descricao: t.descricao ?? undefined,
-            createdAt: new Date(t.created_at),
+            createdAt: new Date(t.created),
           }))
         );
       } catch (error) {
@@ -265,9 +265,9 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         valor: Number(record.valor),
         tipo: record.tipo as TransactionType,
         categoria: record.categoria,
-        data: record.data,
+        data: record.data?.split(" ")[0] ?? record.data,
         descricao: record.descricao ?? undefined,
-        createdAt: new Date(record.created_at),
+        createdAt: new Date(record.created),
       };
 
       setTransactions((prev) => [newTransaction, ...prev]);

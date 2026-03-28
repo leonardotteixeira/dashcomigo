@@ -237,26 +237,36 @@ export function GeradorPropostas() {
       setLimitDialogOpen(true);
       return;
     }
-    if (!nomeCliente || !nomeServico || valor <= 0) {
-      toast.error("Preencha ao menos: nome do cliente, serviço e valor.");
+    if (!nomeCliente || !nomeServico) {
+      toast.error("Preencha ao menos o nome do cliente e do serviço.");
+      return;
+    }
+
+    // Validar email se preenchido
+    if (emailCliente && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailCliente)) {
+      toast.error("E-mail do cliente inválido.");
       return;
     }
 
     setSaving(true);
+    const validadeDate = validade
+      ? new Date(new Date().setDate(new Date().getDate() + Number(validade))).toISOString().split("T")[0]
+      : null;
+
     try {
       await pb.collection("proposals").create({
         user_id: user!.id,
-        tipo,
+        tipo: tipo || "orcamento",
         status: "aguardando",
         nome_cliente: nomeCliente,
-        email_cliente: emailCliente || "",
+        email_cliente: emailCliente || null,
         nome_servico: nomeServico,
-        descricao: descricao || "",
+        descricao: descricao || null,
         valor: parseFloat(String(valor)) || 0,
-        prazo: prazo || "",
-        condicoes_pagamento: condicoesPagamento,
-        validade: validade ? new Date(new Date().setDate(new Date().getDate() + validade)).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
-        template,
+        prazo: prazo || null,
+        condicoes_pagamento: condicoesPagamento || null,
+        validade: validadeDate,
+        template: template || "basico",
       });
 
       toast.success("Proposta criada com sucesso!");
