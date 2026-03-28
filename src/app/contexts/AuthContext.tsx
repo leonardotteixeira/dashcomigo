@@ -53,7 +53,7 @@ function mapProfile(pbRecord: RecordModel): User {
     proposalUsageToday: pbRecord.proposal_usage_today ?? 0,
     transactionsUsageToday: pbRecord.transactions_usage_today ?? 0,
     onboardingCompleted: pbRecord.onboarding_completed ?? false,
-    avatarUrl: pbRecord.avatar_url ? pb.getFileUrl(pbRecord, pbRecord.avatar_url) : undefined,
+    avatarUrl: pbRecord.avatar_url ? pb.files.getUrl(pbRecord, pbRecord.avatar_url) : undefined,
     phone: pbRecord.phone,
     company: pbRecord.company,
     bio: pbRecord.bio,
@@ -313,7 +313,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const record = await pb.collection("profiles").update(user.id, formData);
 
       // Get avatar URL
-      const avatarUrl = pb.getFileUrl(record, record.avatar_url);
+      const avatarUrl = pb.files.getUrl(record, record.avatar_url);
 
       setUser(mapProfile(record));
       return avatarUrl;

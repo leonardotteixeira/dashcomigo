@@ -43,7 +43,17 @@ export function exportCashFlowToExcel(
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Fluxo de Caixa");
 
-  XLSX.writeFile(wb, `hub_fluxo-caixa_${periodText}.xlsx`);
+  // Use blob approach for better browser compatibility
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([wbout], { type: "application/octet-stream" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `hub_fluxo-caixa_${periodText}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 export function exportCashFlowToCSV(
