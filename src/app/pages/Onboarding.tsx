@@ -341,9 +341,13 @@ export function Onboarding() {
     setSaving(true);
     try {
       await completeOnboarding({});
-    } catch {
-      // Se falhar, navega mesmo assim
-      navigate("/app");
+      // Aguarda o state ser atualizado via useEffect
+    } catch (error) {
+      console.error("Erro ao completar onboarding:", error);
+      // Força navegação mesmo se falhar, mas loga o erro
+      navigate("/app/dashboard");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -351,8 +355,11 @@ export function Onboarding() {
     setSaving(true);
     try {
       await completeOnboarding({});
-    } catch {
-      navigate("/app");
+    } catch (error) {
+      console.error("Erro ao pular onboarding:", error);
+      navigate("/app/dashboard");
+    } finally {
+      setSaving(false);
     }
   };
 
