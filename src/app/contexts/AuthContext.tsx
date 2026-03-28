@@ -10,6 +10,7 @@ export interface User {
   email: string;
   plan: UserPlan;
   proposalUsageToday: number;
+  transactionsUsageToday: number;
   onboardingCompleted: boolean;
   avatarUrl?: string;
   phone?: string;
@@ -27,6 +28,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
   incrementProposalUsage: () => Promise<void>;
+  incrementTransactionUsage: () => Promise<void>;
   resetProposalUsage: () => Promise<void>;
   refreshUser: () => Promise<void>;
   completeOnboarding: (data: {
@@ -48,7 +50,8 @@ function mapProfile(pbRecord: RecordModel): User {
     name: pbRecord.name ?? pbRecord.email?.split("@")[0] ?? "Usuário",
     email: pbRecord.email ?? "",
     plan: pbRecord.plan ?? "free",
-    proposalUsageToday: pbRecord.proposal_usage_today ?? 0,
+    proposalUsageToday: pbRecord.proposals_usage_today ?? 0,
+    transactionsUsageToday: pbRecord.transactions_usage_today ?? 0,
     onboardingCompleted: pbRecord.onboarding_completed ?? false,
     avatarUrl: pbRecord.avatar_url ? pb.getFileUrl(pbRecord, pbRecord.avatar_url) : undefined,
     phone: pbRecord.phone,
@@ -173,11 +176,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const incrementProposalUsage = async () => {
     if (!user) return;
     try {
-      // Fetch current profile to get latest proposal_usage_today
       const currentRecord = await pb.collection("profiles").getOne(user.id);
-      const newUsage = (currentRecord.proposal_usage_today ?? 0) + 1;
+      const today = new Date().toISOString().split("T")[0];
+      const lastResetDate = currentRecord.proposals_reset_date;
+
+      // Se o último reset foi ontem ou mais cedo, reseta para 1
+      let newUsage = 1;
+      if (lastResetDate === today) {
+        newUsage = (currentRecord.proposals_usage_today ?? 0) + 1;
+      }
+
       const record = await pb.collection("profiles").update(user.id, {
-        proposal_usage_today: newUsage,
+        proposals_usage_today: newUsage,
+        proposals_reset_date: today,
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Update failed");
+    }
+  };
+
+  const incrementTransactionUsage = async () => {
+    if (!user) return;
+    try {
+      const currentRecord = await pb.collection("profiles").getOne(user.id);
+      const today = new Date();
+      const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+      const lastResetDate = currentRecord.transactions_reset_date || "";
+      const lastResetMonth = lastResetDate.slice(0, 7);
+
+      // Se o mês mudou, reseta para 1
+      let newUsage = 1;
+      if (lastResetMonth === currentMonth) {
+        newUsage = (currentRecord.transactions_usage_today ?? 0) + 1;
+      }
+
+      const resetDate = `${currentMonth}-01`;
+      const record = await pb.collection("profiles").update(user.id, {
+        transactions_usage_today: newUsage,
+        transactions_reset_date: resetDate,
       });
       setUser(mapProfile(record));
     } catch (error) {
@@ -189,8 +226,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     try {
       const record = await pb.collection("profiles").update(user.id, {
-        proposal_usage_today: 0,
-        proposal_reset_date: new Date().toISOString().split("T")[0],
+        proposals_usage_today: 0,
+        proposals_reset_date: new Date().toISOString().split("T")[0],
       });
       setUser(mapProfile(record));
     } catch (error) {
@@ -309,6 +346,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         upgradeToPro,
         incrementProposalUsage,
+        incrementTransactionUsage,
         resetProposalUsage,
         refreshUser,
         completeOnboarding,

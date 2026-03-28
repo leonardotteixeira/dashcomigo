@@ -86,7 +86,7 @@ function getTopExpenseCategory(transactions: { tipo: string; categoria: string; 
 }
 
 export function FluxoCaixa() {
-  const { user } = useAuth();
+  const { user, incrementTransactionUsage } = useAuth();
   const navigate = useNavigate();
   const {
     transactions,
@@ -167,6 +167,11 @@ export function FluxoCaixa() {
         data: formData,
         descricao: formDescricao
       });
+
+      // Incrementar contador de lançamentos se estiver no plano FREE
+      if (user?.plan === "free") {
+        try { await incrementTransactionUsage(); } catch {}
+      }
 
       setFormValor("");
       setFormCategoria("");
