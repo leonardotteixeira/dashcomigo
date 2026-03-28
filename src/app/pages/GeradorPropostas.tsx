@@ -237,8 +237,8 @@ export function GeradorPropostas() {
       setLimitDialogOpen(true);
       return;
     }
-    if (!nomeCliente || !nomeServico) {
-      toast.error("Preencha ao menos o nome do cliente e do serviço.");
+    if (!nomeCliente || !nomeServico || valor <= 0) {
+      toast.error("Preencha ao menos: nome do cliente, serviço e valor.");
       return;
     }
 
@@ -249,13 +249,13 @@ export function GeradorPropostas() {
         tipo,
         status: "aguardando",
         nome_cliente: nomeCliente,
-        email_cliente: emailCliente,
+        email_cliente: emailCliente || "",
         nome_servico: nomeServico,
-        descricao,
-        valor,
-        prazo,
+        descricao: descricao || "",
+        valor: parseFloat(String(valor)) || 0,
+        prazo: prazo || "",
         condicoes_pagamento: condicoesPagamento,
-        validade,
+        validade: validade ? new Date(new Date().setDate(new Date().getDate() + validade)).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
         template,
       });
 
