@@ -231,7 +231,6 @@ export function DashboardLayout() {
                 >
                   <Bell className="w-5 h-5 text-[#28A263]" />
                 </button>
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#FF4F3D] rounded-full text-[9px] text-white flex items-center justify-center font-bold">2</span>
 
                 {/* Notifications Dropdown */}
                 {notificationsOpen && (
@@ -240,26 +239,9 @@ export function DashboardLayout() {
                       <h3 className="text-white font-bold text-sm">Notificações</h3>
                     </div>
                     <div className="max-h-96 overflow-y-auto">
-                      {[
-                        { title: "Limite de lançamentos próximo", desc: "Você usou 28/30 lançamentos este mês", time: "2h atrás", icon: "⚠️" },
-                        { title: "MEI atingiu 80% do limite", desc: "Seu faturamento é R$ 65.000 de R$ 81.000", time: "1d atrás", icon: "🔴" },
-                      ].map((notif, idx) => (
-                        <div key={idx} className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
-                          <div className="flex items-start gap-3">
-                            <span className="text-lg">{notif.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-white">{notif.title}</p>
-                              <p className="text-xs text-[#686F6F] mt-0.5">{notif.desc}</p>
-                              <p className="text-xs text-[#686F6F] mt-1">{notif.time}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="p-3 border-t border-white/5">
-                      <button className="w-full text-xs text-[#2DDB81] hover:text-white transition-colors font-medium">
-                        Ver todas as notificações
-                      </button>
+                      <div className="p-8 text-center">
+                        <p className="text-sm text-[#686F6F]">Nenhuma notificação no momento</p>
+                      </div>
                     </div>
                   </div>
                 )}
