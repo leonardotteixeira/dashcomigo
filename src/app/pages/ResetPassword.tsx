@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { Lock, KeyRound } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { supabase } from "../../lib/supabase";
+import { pb } from "../../lib/pocketbase";
 import { toast } from "sonner";
 
 export function ResetPassword() {
@@ -13,16 +13,7 @@ export function ResetPassword() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Supabase processa o token da URL automaticamente via onAuthStateChange
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
-        // Usuário chegou via link de recuperação — permanece na página
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+  const [searchParams] = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,10 +27,15 @@ export function ResetPassword() {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
+      // PocketBase password reset uses the token from URL query params
+      const token = searchParams.get("token");
+      if (!token) {
+        throw new Error("Token inválido ou expirado");
+      }
+
+      await pb.collection("profiles").confirmPasswordReset(token, password, password);
       toast.success("Senha redefinida com sucesso!");
-      navigate("/app");
+      navigate("/login");
     } catch (error: any) {
       toast.error("Erro ao redefinir senha. O link pode ter expirado.");
     } finally {

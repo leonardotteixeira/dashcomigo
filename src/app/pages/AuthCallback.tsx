@@ -1,20 +1,19 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { supabase } from "../../lib/supabase";
+import { pb } from "../../lib/pocketbase";
 import { LayoutDashboard } from "lucide-react";
 
 export function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Processa o token de OAuth da URL
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/app", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
-    });
+    // PocketBase handles OAuth callback automatically
+    // Just check if user is authenticated
+    if (pb.authStore.isValid && pb.authStore.model) {
+      navigate("/app", { replace: true });
+    } else {
+      navigate("/login", { replace: true });
+    }
   }, [navigate]);
 
   return (

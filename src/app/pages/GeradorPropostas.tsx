@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { supabase } from "../../lib/supabase";
+import { pb } from "../../lib/pocketbase";
 
 type Template = "basico" | "detalhado" | "premium";
 type ProposalStatus = "aguardando" | "aprovada" | "recusada";
@@ -97,14 +97,16 @@ export function GeradorPropostas() {
   }, [user]);
 
   const fetchProposals = async () => {
+    if (!user) return;
     setLoadingList(true);
-    const { data, error } = await supabase
-      .from("proposals")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error && data) {
-      setProposals(data as Proposal[]);
+    try {
+      const records = await pb.collection("proposals").getList(1, 500, {
+        filter: `user_id = "${user.id}"`,
+        sort: "-created_at",
+      });
+      setProposals(records.items as Proposal[]);
+    } catch (error) {
+      console.error("Error fetching proposals:", error);
     }
     setLoadingList(false);
   };
@@ -241,54 +243,58 @@ export function GeradorPropostas() {
     }
 
     setSaving(true);
-    const { error } = await supabase.from("proposals").insert({
-      user_id: user!.id,
-      tipo,
-      status: "aguardando",
-      nome_cliente: nomeCliente,
-      email_cliente: emailCliente,
-      nome_servico: nomeServico,
-      descricao,
-      valor,
-      prazo,
-      condicoes_pagamento: condicoesPagamento,
-      validade,
-      template,
-    });
+    try {
+      await pb.collection("proposals").create({
+        user_id: user!.id,
+        tipo,
+        status: "aguardando",
+        nome_cliente: nomeCliente,
+        email_cliente: emailCliente,
+        nome_servico: nomeServico,
+        descricao,
+        valor,
+        prazo,
+        condicoes_pagamento: condicoesPagamento,
+        validade,
+        template,
+      });
 
-    if (error) {
-      toast.error("Erro ao salvar proposta: " + error.message);
-    } else {
       toast.success("Proposta criada com sucesso!");
       try { await incrementProposalUsage(); } catch {}
       resetForm();
       await fetchProposals();
       setViewMode("list");
+    } catch (error: any) {
+      toast.error("Erro ao salvar proposta: " + error.message);
     }
     setSaving(false);
   };
 
   const handleUpdateStatus = async (id: string, newStatus: ProposalStatus) => {
-    const { error } = await supabase
-      .from("proposals")
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
-      .eq("id", id);
+    try {
+      await pb.collection("proposals").update(id, {
+        status: newStatus,
+        updated_at: new Date().toISOString()
+      });
 
-    if (!error) {
       toast.success(`Proposta marcada como ${STATUS_CONFIG[newStatus].label}`);
       await fetchProposals();
       if (selectedProposal?.id === id) {
         setSelectedProposal({ ...selectedProposal, status: newStatus });
       }
+    } catch (error: any) {
+      toast.error("Erro ao atualizar proposta");
     }
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("proposals").delete().eq("id", id);
-    if (!error) {
+    try {
+      await pb.collection("proposals").delete(id);
       toast.success("Proposta excluída");
       await fetchProposals();
       if (selectedProposal?.id === id) setSelectedProposal(null);
+    } catch (error: any) {
+      toast.error("Erro ao excluir proposta");
     }
   };
 

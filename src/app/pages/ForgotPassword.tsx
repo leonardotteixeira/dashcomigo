@@ -5,7 +5,7 @@ import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { supabase } from "../../lib/supabase";
+import { pb } from "../../lib/pocketbase";
 import { toast } from "sonner";
 
 export function ForgotPassword() {
@@ -17,10 +17,7 @@ export function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      });
-      if (error) throw error;
+      await pb.collection("profiles").requestPasswordReset(email);
       setEmailSent(true);
     } catch (error: any) {
       toast.error("Erro ao enviar email. Verifique o endereço e tente novamente.");
