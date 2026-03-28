@@ -35,7 +35,7 @@ interface Proposal {
   condicoes_pagamento: string;
   validade: number;
   template: Template;
-  created_at: string;
+  created: string;
 }
 
 const TEMPLATES: { id: Template; label: string; desc: string; badge?: string }[] = [
@@ -102,7 +102,7 @@ export function GeradorPropostas() {
     try {
       const records = await pb.collection("proposals").getList(1, 500, {
         filter: `user_id = "${user.id}"`,
-        sort: "-created_at",
+        sort: "-created",
       });
       setProposals(records.items as Proposal[]);
     } catch (error) {
@@ -284,7 +284,6 @@ export function GeradorPropostas() {
     try {
       await pb.collection("proposals").update(id, {
         status: newStatus,
-        updated_at: new Date().toISOString()
       });
 
       toast.success(`Proposta marcada como ${STATUS_CONFIG[newStatus].label}`);
@@ -435,7 +434,7 @@ export function GeradorPropostas() {
                       <p className="text-[#A1A1A1] text-sm">{proposal.nome_cliente}</p>
                       <div className="flex items-center gap-4 mt-3 text-sm">
                         <span className="text-white font-bold">{formatCurrency(Number(proposal.valor))}</span>
-                        <span className="text-[#686F6F]">{formatDate(proposal.created_at)}</span>
+                        <span className="text-[#686F6F]">{formatDate(proposal.created)}</span>
                       </div>
                     </div>
                     <ChevronRight className="w-5 h-5 text-[#686F6F] flex-shrink-0 mt-2" />
@@ -498,7 +497,7 @@ export function GeradorPropostas() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A1A1A1]">Criada em</span>
-                      <span className="text-white">{formatDate(selectedProposal.created_at)}</span>
+                      <span className="text-white">{formatDate(selectedProposal.created)}</span>
                     </div>
                   </div>
 

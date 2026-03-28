@@ -66,9 +66,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function fetchProfile(userId: string) {
     try {
-      const record = await pb.collection("profiles").getOne(userId);
+      // requestKey: null desabilita auto-cancel para evitar conflito de requisições simultâneas
+      const record = await pb.collection("profiles").getOne(userId, { requestKey: null });
       setUser(mapProfile(record));
     } catch (error: unknown) {
+      // Ignora erros de auto-cancel (código 0)
+      if (error instanceof Error && error.message.includes("autocancelled")) return;
       console.error("Error fetching profile:", error);
       // Se o token expirou ou é inválido, limpa a sessão
       if (error instanceof Error && (error.message.includes("404") || error.message.includes("401"))) {
@@ -184,7 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const incrementProposalUsage = async () => {
     if (!user) return;
     try {
-      const currentRecord = await pb.collection("profiles").getOne(user.id);
+      const currentRecord = await pb.collection("profiles").getOne(user.id, { requestKey: null });
       const today = new Date().toISOString().split("T")[0];
       const lastResetDate = currentRecord.proposal_reset_date;
 
@@ -207,7 +210,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const incrementTransactionUsage = async () => {
     if (!user) return;
     try {
-      const currentRecord = await pb.collection("profiles").getOne(user.id);
+      const currentRecord = await pb.collection("profiles").getOne(user.id, { requestKey: null });
       const today = new Date();
       const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
       const lastResetDate = currentRecord.transactions_reset_date || "";
@@ -246,7 +249,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = async () => {
     if (!user) return;
     try {
-      const record = await pb.collection("profiles").getOne(user.id);
+      const record = await pb.collection("profiles").getOne(user.id, { requestKey: null });
       setUser(mapProfile(record));
     } catch (error) {
       console.error("Error refreshing user:", error);
