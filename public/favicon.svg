@@ -1,53 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="headGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#E63946"/>
-      <stop offset="100%" style="stop-color:#A4161A"/>
+    <linearGradient id="bodyBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E5BA8"/>
+      <stop offset="100%" style="stop-color:#0F3A7D"/>
     </linearGradient>
-    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD60A"/>
-      <stop offset="100%" style="stop-color:#FFC300"/>
+    <linearGradient id="wingDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D2A5E"/>
+      <stop offset="100%" style="stop-color:#0A1E45"/>
     </linearGradient>
-    <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1E3A8A"/>
-      <stop offset="100%" style="stop-color:#3B82F6"/>
+    <linearGradient id="tailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00BCD4"/>
+      <stop offset="50%" style="stop-color:#1E88E5"/>
+      <stop offset="100%" style="stop-color:#0D47A1"/>
     </linearGradient>
   </defs>
 
-  <!-- Body (Yellow/Orange) -->
-  <ellipse cx="16" cy="19" rx="7.5" ry="9" fill="url(#bodyGrad)"/>
+  <!-- Tail (long turquoise/blue) -->
+  <path d="M 16 24 Q 15 28 14.5 32" stroke="url(#tailGrad)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 16 24 Q 17 28 17.5 32" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round"/>
 
-  <!-- Left Wing (Blue) -->
-  <path d="M 10 17 Q 4 15 2 19 Q 3 21 10 19.5" fill="url(#wingGrad)" opacity="0.95"/>
+  <!-- Body (blue) -->
+  <ellipse cx="15" cy="18" rx="6" ry="8" fill="url(#bodyBlue)"/>
 
-  <!-- Right Wing (Blue) -->
-  <path d="M 22 17 Q 28 15 30 19 Q 29 21 22 19.5" fill="url(#wingGrad)" opacity="0.95"/>
+  <!-- Wing (darker blue) -->
+  <path d="M 11 16 Q 6 14 4 18 Q 5 22 11 20" fill="url(#wingDark)" opacity="0.95"/>
 
-  <!-- Tail feathers -->
-  <path d="M 15 27 Q 13 31 14.5 32 Q 16 32.5 16 27" fill="#FF8C00" opacity="0.9"/>
-  <path d="M 17 27 Q 18 31 16.5 32 Q 16 32.5 17 27" fill="#FF6B35" opacity="0.9"/>
+  <!-- Chest (yellow) -->
+  <ellipse cx="15" cy="19" rx="4" ry="5.5" fill="#FFD700" opacity="0.9"/>
 
-  <!-- Head (Red) -->
-  <circle cx="16" cy="7.5" r="5.5" fill="url(#headGrad)"/>
+  <!-- Head (darker blue/black) -->
+  <circle cx="16" cy="8" r="4.5" fill="#0A0E27"/>
 
-  <!-- Head highlight -->
-  <ellipse cx="16" cy="6" rx="3" ry="2.5" fill="#FF6B6B" opacity="0.6"/>
+  <!-- White stripe on head -->
+  <ellipse cx="16.5" cy="7" rx="1.2" ry="2" fill="white" opacity="0.85"/>
 
   <!-- Eye white -->
-  <circle cx="18" cy="6.5" r="1.5" fill="white"/>
+  <circle cx="17.5" cy="7.5" r="1.2" fill="white"/>
 
-  <!-- Eye iris -->
-  <circle cx="18" cy="6.5" r="0.8" fill="#000"/>
+  <!-- Eye iris/pupil -->
+  <circle cx="17.5" cy="7.5" r="0.7" fill="#000"/>
 
-  <!-- Eye shine -->
-  <circle cx="18.3" cy="6" r="0.3" fill="white"/>
+  <!-- Beak (black) -->
+  <path d="M 19.5 8 L 24 7.5 L 19.5 8.8 Z" fill="#1a1a1a"/>
 
-  <!-- Beak (Black) -->
-  <path d="M 20 7.5 L 25 7 L 20.5 8.5 Z" fill="#1a1a1a"/>
+  <!-- Beak shine -->
+  <ellipse cx="22" cy="7.8" rx="1.5" ry="0.4" fill="white" opacity="0.3"/>
 
-  <!-- Beak tip detail -->
-  <path d="M 25 7 L 26 6.8 L 25 7.2 Z" fill="#0d0d0d"/>
-
-  <!-- Chest patch (lighter yellow) -->
-  <ellipse cx="16" cy="16" rx="4.5" ry="5.5" fill="#FFE55C" opacity="0.7"/>
+  <!-- Upper wing detail (lighter blue) -->
+  <path d="M 12 14 Q 9 12 8 14" stroke="#3B82F6" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
 </svg>
