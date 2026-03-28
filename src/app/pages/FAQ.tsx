@@ -26,7 +26,7 @@ const faqData: FAQItem[] = [
   {
     category: "Plataforma",
     question: "Meus dados estão seguros?",
-    answer: "Sim. Utilizamos o Supabase como infraestrutura de banco de dados, que oferece criptografia em trânsito e em repouso. Seus dados financeiros são acessíveis apenas por você. Não compartilhamos informações com terceiros.",
+    answer: "Sim. Utilizamos o PocketBase como infraestrutura de banco de dados, com criptografia em trânsito e em repouso. Seus dados financeiros são acessíveis apenas por você. Não compartilhamos informações com terceiros.",
   },
   {
     category: "Plataforma",

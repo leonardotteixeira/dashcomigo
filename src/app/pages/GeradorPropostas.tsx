@@ -103,6 +103,7 @@ export function GeradorPropostas() {
       const records = await pb.collection("proposals").getList(1, 500, {
         filter: `user_id = "${user.id}"`,
         sort: "-created",
+        requestKey: null,
       });
       setProposals(records.items as Proposal[]);
     } catch (error) {

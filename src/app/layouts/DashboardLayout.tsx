@@ -155,8 +155,10 @@ export function DashboardLayout() {
 
             {/* User info */}
             <div className="flex items-center gap-3 px-3 py-3 rounded-2xl mb-2">
-              <div className="w-9 h-9 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center text-[#A1A1A1]">
-                {user.plan === "pro" ? (
+              <div className="w-9 h-9 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center text-[#A1A1A1] overflow-hidden">
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                ) : user.plan === "pro" ? (
                   <Crown className="w-4 h-4 text-[#2DDB81]" />
                 ) : (
                   <User className="w-4 h-4" />
@@ -246,8 +248,12 @@ export function DashboardLayout() {
                   </div>
                 )}
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center">
-                <User className="w-4 h-4 text-[#A1A1A1]" />
+              <div className="w-8 h-8 rounded-full bg-[#313131] border border-[#28A263]/30 flex items-center justify-center overflow-hidden">
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-4 h-4 text-[#A1A1A1]" />
+                )}
               </div>
             </div>
           </div>
