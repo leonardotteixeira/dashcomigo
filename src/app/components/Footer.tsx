@@ -75,7 +75,7 @@ export function Footer() {
             <Link to="/privacidade" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Privacidade
             </Link>
-            <a href="mailto:suporte@hubempreendedor.com" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
+            <a href="mailto:contato@bubuya.com.br" className="text-[#868898] hover:text-[#2DDB81] transition-colors">
               Contato
             </a>
           </div>

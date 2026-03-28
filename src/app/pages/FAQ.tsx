@@ -174,7 +174,7 @@ export function FAQ() {
               Entre em contato conosco ou comece a usar a plataforma gratuitamente.
             </p>
             <div className="flex gap-4 justify-center">
-              <a href="mailto:suporte@hubempreendedor.com">
+              <a href="mailto:contato@bubuya.com.br">
                 <Button size="lg" className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl">
                   Enviar Email
                 </Button>

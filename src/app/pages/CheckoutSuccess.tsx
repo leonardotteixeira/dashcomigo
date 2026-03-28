@@ -119,8 +119,8 @@ export function CheckoutSuccess() {
         <div className="mt-6 text-center">
           <p className="text-sm text-[#A1A1A1]">
             Precisa de ajuda? Entre em contato pelo{" "}
-            <a href="mailto:suporte@hubempreendedor.com" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
-              suporte@hubempreendedor.com
+            <a href="mailto:contato@bubuya.com.br" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
+              contato@bubuya.com.br
             </a>
           </p>
         </div>

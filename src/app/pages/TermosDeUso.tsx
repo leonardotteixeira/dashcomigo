@@ -165,7 +165,7 @@ export function TermosDeUso() {
               No entanto, você pode cancelar antes do próximo ciclo de cobrança para evitar cobranças futuras.
             </p>
             <p>
-              Para solicitações especiais de reembolso, entre em contato através de suporte@hubempreendedor.com.
+              Para solicitações especiais de reembolso, entre em contato através de contato@bubuya.com.br.
             </p>
           </section>
 
@@ -243,8 +243,8 @@ export function TermosDeUso() {
             <div className="bg-[#1B1B1B] border border-white/10 rounded-2xl p-6">
               <p className="mb-2">
                 <strong className="text-white">Email:</strong>{" "}
-                <a href="mailto:suporte@hubempreendedor.com" className="text-[#2DDB81] hover:text-white transition-colors">
-                  suporte@hubempreendedor.com
+                <a href="mailto:contato@bubuya.com.br" className="text-[#2DDB81] hover:text-white transition-colors">
+                  contato@bubuya.com.br
                 </a>
               </p>
               <p>

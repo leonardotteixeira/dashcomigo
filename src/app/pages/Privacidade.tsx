@@ -34,7 +34,7 @@ export function Privacidade() {
             </p>
             <p>
               Recomendamos que você leia esta política cuidadosamente. Se tiver dúvidas, entre em contato conosco através de
-              suporte@hubempreendedor.com.
+              contato@bubuya.com.br.
             </p>
           </section>
 
@@ -210,7 +210,7 @@ export function Privacidade() {
               <li><strong className="text-white">Esclarecimento:</strong> Receber mais informações sobre como usamos seus dados</li>
             </ul>
             <p className="mt-4">
-              Para exercer qualquer desses direitos, entre em contato em suporte@hubempreendedor.com com o assunto
+              Para exercer qualquer desses direitos, entre em contato em contato@bubuya.com.br com o assunto
               "Solicitação LGPD" e seu CPF/CNPJ.
             </p>
           </section>
@@ -221,7 +221,7 @@ export function Privacidade() {
             <p>
               A Plataforma não é destinada a menores de 18 anos. Não coletamos intencionalmente dados de menores.
               Se descobrirmos que coletamos dados de um menor, os deletaremos imediatamente. Pais ou responsáveis
-              que acreditam que um menor forneceu dados devem contatar suporte@hubempreendedor.com.
+              que acreditam que um menor forneceu dados devem contatar contato@bubuya.com.br.
             </p>
           </section>
 
@@ -271,8 +271,8 @@ export function Privacidade() {
             <div className="bg-[#1B1B1B] border border-white/10 rounded-2xl p-6">
               <p className="mb-2">
                 <strong className="text-white">Email:</strong>{" "}
-                <a href="mailto:dpo@hubempreendedor.com" className="text-[#2DDB81] hover:text-white transition-colors">
-                  dpo@hubempreendedor.com
+                <a href="mailto:contato@bubuya.com.br" className="text-[#2DDB81] hover:text-white transition-colors">
+                  contato@bubuya.com.br
                 </a>
               </p>
               <p>
@@ -290,14 +290,14 @@ export function Privacidade() {
             <div className="bg-[#1B1B1B] border border-white/10 rounded-2xl p-6 space-y-3">
               <p>
                 <strong className="text-white">Email de Suporte:</strong>{" "}
-                <a href="mailto:suporte@hubempreendedor.com" className="text-[#2DDB81] hover:text-white transition-colors">
-                  suporte@hubempreendedor.com
+                <a href="mailto:contato@bubuya.com.br" className="text-[#2DDB81] hover:text-white transition-colors">
+                  contato@bubuya.com.br
                 </a>
               </p>
               <p>
                 <strong className="text-white">Email do DPO:</strong>{" "}
-                <a href="mailto:dpo@hubempreendedor.com" className="text-[#2DDB81] hover:text-white transition-colors">
-                  dpo@hubempreendedor.com
+                <a href="mailto:contato@bubuya.com.br" className="text-[#2DDB81] hover:text-white transition-colors">
+                  contato@bubuya.com.br
                 </a>
               </p>
               <p>
