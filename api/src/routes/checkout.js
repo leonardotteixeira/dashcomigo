@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const asaas = require("../lib/asaas");
-const supabase = require("../lib/supabase");
+const { pb, ensureAdmin } = require("../lib/pocketbase");
 
 // POST /checkout
 // Body: { userId, name, email, cpfCnpj }
@@ -12,9 +12,9 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "userId, name, email e cpfCnpj são obrigatórios" });
   }
 
-  // Validação de formato
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!uuidRegex.test(userId)) {
+  // PocketBase usa IDs de 15 chars alfanuméricos
+  const pbIdRegex = /^[a-z0-9]{15}$/;
+  if (!pbIdRegex.test(userId)) {
     return res.status(400).json({ error: "userId inválido" });
   }
 
@@ -33,13 +33,10 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // 1. Verificar se já tem customer_id salvo no perfil
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("asaas_customer_id")
-      .eq("id", userId)
-      .single();
+    await ensureAdmin();
 
+    // 1. Verificar se já tem customer_id salvo no perfil
+    const profile = await pb.collection("profiles").getOne(userId);
     let customerId = profile?.asaas_customer_id;
 
     // 2. Criar ou atualizar cliente no Asaas
@@ -52,10 +49,9 @@ router.post("/", async (req, res) => {
       });
       customerId = customer.id;
 
-      await supabase
-        .from("profiles")
-        .update({ asaas_customer_id: customerId })
-        .eq("id", userId);
+      await pb.collection("profiles").update(userId, {
+        asaas_customer_id: customerId,
+      });
     } else {
       // Atualizar CPF/CNPJ do cliente existente
       await asaas.put(`/customers/${customerId}`, { cpfCnpj });

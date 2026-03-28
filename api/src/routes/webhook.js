@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const asaas = require("../lib/asaas");
-const supabase = require("../lib/supabase");
+const { pb, ensureAdmin } = require("../lib/pocketbase");
 
 // Middleware de verificação do token do webhook Asaas
 function verifyWebhookToken(req, res, next) {
@@ -34,6 +34,7 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
   }
 
   try {
+    await ensureAdmin();
     const externalRef = payment?.externalReference || "";
 
     // --- PRIMEIRO MÊS (R$ 9,90) ---
@@ -41,17 +42,10 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
       const userId = externalRef.replace("first_month_", "");
 
       // Ativar plano PRO
-      await supabase
-        .from("profiles")
-        .update({ plan: "pro" })
-        .eq("id", userId);
+      await pb.collection("profiles").update(userId, { plan: "pro" });
 
       // Criar assinatura recorrente de R$ 29,90 a partir do mês seguinte
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("asaas_customer_id")
-        .eq("id", userId)
-        .single();
+      const profile = await pb.collection("profiles").getOne(userId);
 
       if (profile?.asaas_customer_id) {
         const nextMonth = new Date();
@@ -77,10 +71,7 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
       const userId = externalRef.replace("subscription_", "");
 
       // Garantir que plano continua PRO
-      await supabase
-        .from("profiles")
-        .update({ plan: "pro" })
-        .eq("id", userId);
+      await pb.collection("profiles").update(userId, { plan: "pro" });
 
       console.log(`Assinatura renovada para usuário ${userId}`);
     }
@@ -108,15 +99,13 @@ router.post("/asaas/cancel", verifyWebhookToken, async (req, res) => {
   }
 
   try {
+    await ensureAdmin();
     const externalRef = payment?.externalReference || subscription?.externalReference || "";
 
     if (externalRef.startsWith("subscription_")) {
       const userId = externalRef.replace("subscription_", "");
 
-      await supabase
-        .from("profiles")
-        .update({ plan: "free" })
-        .eq("id", userId);
+      await pb.collection("profiles").update(userId, { plan: "free" });
 
       console.log(`Usuário ${userId} revertido para free`);
     }
