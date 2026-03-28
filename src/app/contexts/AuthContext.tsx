@@ -189,7 +189,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const currentRecord = await pb.collection("profiles").getOne(user.id, { requestKey: null });
       const today = new Date().toISOString().split("T")[0];
-      const lastResetDate = currentRecord.proposal_reset_date;
+      const lastResetDate = (currentRecord.proposal_reset_date ?? "").slice(0, 10);
 
       // Se o último reset foi ontem ou mais cedo, reseta para 1
       let newUsage = 1;
