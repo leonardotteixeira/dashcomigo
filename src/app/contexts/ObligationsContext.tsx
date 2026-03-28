@@ -70,7 +70,20 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
         isFixture: ob.isFixture ?? false,
       });
 
-      setObligations([...obligations, record as Obligation]);
+      const newObligation: Obligation = {
+        id: record.id,
+        user_id: record.user_id,
+        titulo: record.titulo,
+        data: record.data?.split(" ")[0] ?? record.data,
+        valor: record.valor ?? 0,
+        status: record.status ?? "pendente",
+        categoria: record.categoria ?? "",
+        anotacoes: record.anotacoes ?? "",
+        isFixture: record.isFixture ?? false,
+        created_at: record.created,
+        updated_at: record.updated,
+      };
+      setObligations([...obligations, newObligation]);
     } catch (error) {
       console.error("Erro ao adicionar obrigação:", error);
       throw error;

@@ -50,7 +50,7 @@ function mapProfile(pbRecord: RecordModel): User {
     name: pbRecord.name ?? pbRecord.email?.split("@")[0] ?? "Usuário",
     email: pbRecord.email ?? "",
     plan: pbRecord.plan ?? "free",
-    proposalUsageToday: pbRecord.proposals_usage_today ?? 0,
+    proposalUsageToday: pbRecord.proposal_usage_today ?? 0,
     transactionsUsageToday: pbRecord.transactions_usage_today ?? 0,
     onboardingCompleted: pbRecord.onboarding_completed ?? false,
     avatarUrl: pbRecord.avatar_url ? pb.getFileUrl(pbRecord, pbRecord.avatar_url) : undefined,
@@ -68,8 +68,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const record = await pb.collection("profiles").getOne(userId);
       setUser(mapProfile(record));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error fetching profile:", error);
+      // Se o token expirou ou é inválido, limpa a sessão
+      if (error instanceof Error && (error.message.includes("404") || error.message.includes("401"))) {
+        pb.authStore.clear();
+        setUser(null);
+      }
     }
   }
 
@@ -127,13 +132,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
       // Create user record with auth
-      const record = await pb.collection("profiles").create({
+      await pb.collection("profiles").create({
         email,
         password,
         passwordConfirm: password,
         name,
         plan: "free",
         proposal_usage_today: 0,
+        proposal_reset_date: new Date().toISOString().split("T")[0],
+        transactions_usage_today: 0,
+        transactions_reset_date: new Date().toISOString().split("T")[0],
         onboarding_completed: false,
       });
 
@@ -178,17 +186,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const currentRecord = await pb.collection("profiles").getOne(user.id);
       const today = new Date().toISOString().split("T")[0];
-      const lastResetDate = currentRecord.proposals_reset_date;
+      const lastResetDate = currentRecord.proposal_reset_date;
 
       // Se o último reset foi ontem ou mais cedo, reseta para 1
       let newUsage = 1;
       if (lastResetDate === today) {
-        newUsage = (currentRecord.proposals_usage_today ?? 0) + 1;
+        newUsage = (currentRecord.proposal_usage_today ?? 0) + 1;
       }
 
       const record = await pb.collection("profiles").update(user.id, {
-        proposals_usage_today: newUsage,
-        proposals_reset_date: today,
+        proposal_usage_today: newUsage,
+        proposal_reset_date: today,
       });
       setUser(mapProfile(record));
     } catch (error) {
@@ -226,8 +234,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     try {
       const record = await pb.collection("profiles").update(user.id, {
-        proposals_usage_today: 0,
-        proposals_reset_date: new Date().toISOString().split("T")[0],
+        proposal_usage_today: 0,
+        proposal_reset_date: new Date().toISOString().split("T")[0],
       });
       setUser(mapProfile(record));
     } catch (error) {
