@@ -64,7 +64,7 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
           value: 29.90,
           nextDueDate: nextMonthStr,
           cycle: "MONTHLY",
-          description: "Hub do Empreendedor PRO - Assinatura mensal",
+          description: "Meu Fluxo PRO - Assinatura mensal",
           externalReference: `subscription_${userId}`
         });
       }

@@ -8,8 +8,8 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt="Hub do Empreendedor" className="h-23 w-auto" />
-              <span className="text-lg font-bold text-white">Hub do Empreendedor</span>
+              <img src="/logo.png" alt="Meu Fluxo" className="h-23 w-auto" />
+              <span className="text-lg font-bold text-white">Meu Fluxo</span>
             </div>
             <p className="text-[#868898] leading-relaxed max-w-md text-sm">
               Plataforma completa para empreendedores tomarem decisões inteligentes sobre regime tributário,
@@ -65,7 +65,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/5 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-[#45485F]">
-            &copy; 2026 Hub do Empreendedor. Todos os direitos reservados.
+            &copy; 2026 Meu Fluxo. Todos os direitos reservados.
           </p>
 
           <div className="flex gap-6 text-sm">

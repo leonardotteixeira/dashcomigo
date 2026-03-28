@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
       billingType: "UNDEFINED", // usuário escolhe PIX, boleto ou cartão
       value: 9.90,
       dueDate: dueDateStr,
-      description: "Hub do Empreendedor PRO - 1º mês",
+      description: "Meu Fluxo PRO - 1º mês",
       externalReference: `first_month_${userId}`,
       callback: {
         successUrl: `${process.env.APP_URL}/checkout/success`,

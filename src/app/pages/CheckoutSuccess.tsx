@@ -108,7 +108,7 @@ export function CheckoutSuccess() {
             {/* Thank you message */}
             <div className="mt-8 pt-8 border-t border-white/5">
               <p className="text-sm text-[#A1A1A1]">
-                Obrigado por confiar no <strong>Hub do Empreendedor</strong>!<br />
+                Obrigado por confiar no <strong>Meu Fluxo</strong>!<br />
                 Estamos aqui para ajudar seu negócio a crescer.
               </p>
             </div>

@@ -35,7 +35,7 @@ export function HeroSection({ onScrollToSimulator }: HeroSectionProps) {
             </h1>
 
             <p className="text-lg text-[#F7F7F7] leading-relaxed max-w-[510px] font-medium">
-              Hub do Empreendedor é a plataforma completa para empreendedores que
+              Meu Fluxo é a plataforma completa para empreendedores que
               querem controlar finanças, simular impostos e crescer com inteligência.
             </p>
 

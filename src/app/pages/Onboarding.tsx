@@ -36,7 +36,7 @@ const FEATURES = [
       <div className="relative bg-[#141414] rounded-2xl border border-white/10 p-6 mx-auto max-w-sm">
         <div className="flex items-center gap-3 mb-5">
           <img src="/logo.png" alt="" className="h-10 w-auto" />
-          <span className="text-white font-bold">Hub do Empreendedor</span>
+          <span className="text-white font-bold">Meu Fluxo</span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[

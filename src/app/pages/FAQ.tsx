@@ -15,7 +15,7 @@ const faqData: FAQItem[] = [
   // Plataforma
   {
     category: "Plataforma",
-    question: "O Hub do Empreendedor é gratuito?",
+    question: "O Meu Fluxo é gratuito?",
     answer: "Sim! Oferecemos um plano gratuito que inclui o Simulador MEI → ME ilimitado, 30 lançamentos por mês no Fluxo de Caixa, 2 propostas comerciais por dia e acesso ao Dashboard. Para recursos ilimitados e simuladores avançados, temos o plano PRO a partir de R$ 9,90/mês.",
   },
   {

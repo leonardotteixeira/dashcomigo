@@ -212,7 +212,7 @@ export function GeradorPropostas() {
       );
     }
 
-    lines.push(``, `Hub do Empreendedor`);
+    lines.push(``, `Meu Fluxo`);
     return lines.join("\n");
   };
 
@@ -850,7 +850,7 @@ export function GeradorPropostas() {
 
                 <div className="text-center pt-4 border-t border-slate-200">
                   <p className="text-sm text-slate-600 mb-2">Estamos à disposição para esclarecer dúvidas.</p>
-                  <p className="text-xs text-slate-500 font-bold">Hub do Empreendedor</p>
+                  <p className="text-xs text-slate-500 font-bold">Meu Fluxo</p>
                 </div>
               </div>
             </div>

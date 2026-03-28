@@ -31,7 +31,7 @@ export function DashboardLayout() {
       <div className="min-h-screen bg-[#141414] flex items-center justify-center">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4 animate-pulse">
-            <img src="/logo.png" alt="Hub do Empreendedor" className="h-26 w-auto" />
+            <img src="/logo.png" alt="Meu Fluxo" className="h-26 w-auto" />
           </div>
           <p className="text-[#A1A1A1] font-medium">Carregando...</p>
         </div>

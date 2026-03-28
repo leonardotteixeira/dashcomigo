@@ -107,7 +107,7 @@ export function Signup() {
                 Comece a tomar decisões mais inteligentes
               </h2>
               <p className="text-lg text-[#A1A1A1]">
-                Junte-se a milhares de empreendedores que já usam o Hub do Empreendedor
+                Junte-se a milhares de empreendedores que já usam o Meu Fluxo
               </p>
             </div>
 
