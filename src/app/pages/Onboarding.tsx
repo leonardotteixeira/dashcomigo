@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
@@ -311,7 +311,7 @@ const FEATURES = [
 const TOTAL_STEPS = FEATURES.length;
 
 export function Onboarding() {
-  const { completeOnboarding } = useAuth();
+  const { completeOnboarding, user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -319,6 +319,13 @@ export function Onboarding() {
 
   const current = FEATURES[step];
   const isLast = step === TOTAL_STEPS - 1;
+
+  // Navega para /app assim que onboardingCompleted for atualizado no estado
+  useEffect(() => {
+    if (user?.onboardingCompleted) {
+      navigate("/app");
+    }
+  }, [user?.onboardingCompleted, navigate]);
 
   const goNext = () => {
     setDirection(1);
@@ -334,16 +341,19 @@ export function Onboarding() {
     setSaving(true);
     try {
       await completeOnboarding({});
-    } catch {/* silently ignore */}
-    navigate("/app");
+    } catch {
+      // Se falhar, navega mesmo assim
+      navigate("/app");
+    }
   };
 
   const handleSkip = async () => {
     setSaving(true);
     try {
       await completeOnboarding({});
-    } catch {/* silently ignore */}
-    navigate("/app");
+    } catch {
+      navigate("/app");
+    }
   };
 
   const variants = {
