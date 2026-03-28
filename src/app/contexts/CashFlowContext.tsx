@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { supabase } from "../../lib/supabase";
+import { pb } from "../../lib/pocketbase";
 
 export type TransactionType = "entrada" | "saida";
 
@@ -72,7 +72,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Busca transações do Supabase sempre que o usuário mudar
+  // Busca transações do PocketBase sempre que o usuário mudar
   useEffect(() => {
     if (!user) {
       setTransactions([]);
@@ -81,15 +81,14 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
 
     async function fetchTransactions() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("transactions")
-        .select("*")
-        .eq("user_id", user!.id)
-        .order("data", { ascending: false });
+      try {
+        const records = await pb.collection("transactions").getList(1, 500, {
+          filter: `user_id = "${user.id}"`,
+          sort: "-data",
+        });
 
-      if (!error && data) {
         setTransactions(
-          data.map((t) => ({
+          records.items.map((t) => ({
             id: t.id,
             valor: Number(t.valor),
             tipo: t.tipo as TransactionType,
@@ -99,6 +98,8 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
             createdAt: new Date(t.created_at),
           }))
         );
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
       }
       setLoading(false);
     }
@@ -249,42 +250,39 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
     if (!user) throw new Error("Usuário não autenticado");
     if (!canAddTransaction()) throw new Error("Limite de lançamentos atingido");
 
-    const { data, error } = await supabase
-      .from("transactions")
-      .insert({
+    try {
+      const record = await pb.collection("transactions").create({
         user_id: user.id,
         valor: transaction.valor,
         tipo: transaction.tipo,
         categoria: transaction.categoria,
         data: transaction.data,
         descricao: transaction.descricao ?? null,
-      })
-      .select()
-      .single();
+      });
 
-    if (error) throw new Error(error.message);
+      const newTransaction: Transaction = {
+        id: record.id,
+        valor: Number(record.valor),
+        tipo: record.tipo as TransactionType,
+        categoria: record.categoria,
+        data: record.data,
+        descricao: record.descricao ?? undefined,
+        createdAt: new Date(record.created_at),
+      };
 
-    const newTransaction: Transaction = {
-      id: data.id,
-      valor: Number(data.valor),
-      tipo: data.tipo as TransactionType,
-      categoria: data.categoria,
-      data: data.data,
-      descricao: data.descricao ?? undefined,
-      createdAt: new Date(data.created_at),
-    };
-
-    setTransactions((prev) => [newTransaction, ...prev]);
+      setTransactions((prev) => [newTransaction, ...prev]);
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Failed to add transaction");
+    }
   }
 
   async function deleteTransaction(id: string) {
-    const { error } = await supabase
-      .from("transactions")
-      .delete()
-      .eq("id", id);
-
-    if (error) throw new Error(error.message);
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await pb.collection("transactions").delete(id);
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Failed to delete transaction");
+    }
   }
 
   return (

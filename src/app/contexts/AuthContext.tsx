@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { supabase } from "../../lib/supabase";
-import type { User as SupabaseUser, Session } from "@supabase/supabase-js";
+import { pb } from "../../lib/pocketbase";
+import type { RecordModel } from "pocketbase";
 
 export type UserPlan = "free" | "pro";
 
@@ -19,7 +19,6 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  session: Session | null;
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -43,138 +42,168 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function mapProfile(supabaseUser: SupabaseUser, profile: any): User {
+function mapProfile(pbRecord: RecordModel): User {
   return {
-    id: supabaseUser.id,
-    name: profile?.name ?? supabaseUser.email?.split("@")[0] ?? "Usuário",
-    email: supabaseUser.email ?? "",
-    plan: profile?.plan ?? "free",
-    proposalUsageToday: profile?.proposal_usage_today ?? 0,
-    onboardingCompleted: profile?.onboarding_completed ?? false,
-    avatarUrl: profile?.avatar_url,
-    phone: profile?.phone,
-    company: profile?.company,
-    bio: profile?.bio,
+    id: pbRecord.id,
+    name: pbRecord.name ?? pbRecord.email?.split("@")[0] ?? "Usuário",
+    email: pbRecord.email ?? "",
+    plan: pbRecord.plan ?? "free",
+    proposalUsageToday: pbRecord.proposal_usage_today ?? 0,
+    onboardingCompleted: pbRecord.onboarding_completed ?? false,
+    avatarUrl: pbRecord.avatar_url ? pb.getFileUrl(pbRecord, pbRecord.avatar_url) : undefined,
+    phone: pbRecord.phone,
+    company: pbRecord.company,
+    bio: pbRecord.bio,
   };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function fetchProfile(supabaseUser: SupabaseUser) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", supabaseUser.id)
-      .single();
-
-    setUser(mapProfile(supabaseUser, profile));
+  async function fetchProfile(userId: string) {
+    try {
+      const record = await pb.collection("profiles").getOne(userId);
+      setUser(mapProfile(record));
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
   }
 
   useEffect(() => {
-    // Obtém sessão atual
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        fetchProfile(session.user).finally(() => setLoading(false));
+    // Check if already authenticated
+    if (pb.authStore.isValid) {
+      const user = pb.authStore.model;
+      if (user) {
+        fetchProfile(user.id).finally(() => setLoading(false));
+      }
+    } else {
+      setLoading(false);
+    }
+
+    // Listen to auth state changes
+    const unsubscribe = pb.authStore.onChange(() => {
+      if (pb.authStore.isValid && pb.authStore.model) {
+        fetchProfile(pb.authStore.model.id);
       } else {
-        setLoading(false);
+        setUser(null);
       }
     });
 
-    // Escuta mudanças de auth (evita refetch duplicado)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
-        setSession(newSession);
-        if (newSession?.user) {
-          // Só busca profile se o user mudou (evita double-fetch no login)
-          setUser((currentUser) => {
-            if (currentUser?.id === newSession.user.id) return currentUser;
-            // Se é um user novo, busca profile em background
-            fetchProfile(newSession.user);
-            return currentUser;
-          });
-        } else {
-          setUser(null);
-        }
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw new Error(error.message);
-    // Já temos o user, busca o profile imediatamente sem esperar onAuthStateChange
-    if (data.user) {
-      await fetchProfile(data.user);
-      setSession(data.session);
+    try {
+      const authData = await pb
+        .collection("profiles")
+        .authWithPassword(email, password);
+
+      if (authData.record) {
+        setUser(mapProfile(authData.record));
+      }
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Login failed");
     }
   };
 
   const loginWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
-    if (error) throw new Error(error.message);
+    try {
+      const authData = await pb
+        .collection("profiles")
+        .authWithOAuth2({ provider: "google" });
+
+      if (authData.record) {
+        setUser(mapProfile(authData.record));
+      }
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Google login failed");
+    }
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name } },
-    });
-    if (error) throw new Error(error.message);
-    return !!data.session; // true = login imediato (sem confirmação de email)
+    try {
+      // Create user record with auth
+      const record = await pb.collection("profiles").create({
+        email,
+        password,
+        passwordConfirm: password,
+        name,
+        plan: "free",
+        proposal_usage_today: 0,
+        onboarding_completed: false,
+      });
+
+      // Auto-login after signup
+      const authData = await pb
+        .collection("profiles")
+        .authWithPassword(email, password);
+
+      if (authData.record) {
+        setUser(mapProfile(authData.record));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Signup failed");
+    }
   };
 
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw new Error(error.message);
-    setUser(null);
-    setSession(null);
+    try {
+      pb.authStore.clear();
+      setUser(null);
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Logout failed");
+    }
   };
 
   const upgradeToPro = async () => {
     if (!user) return;
-    const { error } = await supabase
-      .from("profiles")
-      .update({ plan: "pro" })
-      .eq("id", user.id);
-    if (error) throw new Error(error.message);
-    setUser({ ...user, plan: "pro" });
+    try {
+      const record = await pb.collection("profiles").update(user.id, {
+        plan: "pro",
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Upgrade failed");
+    }
   };
 
   const incrementProposalUsage = async () => {
     if (!user) return;
-    const newUsage = user.proposalUsageToday + 1;
-    const { error } = await supabase
-      .from("profiles")
-      .update({ proposal_usage_today: newUsage })
-      .eq("id", user.id);
-    if (error) throw new Error(error.message);
-    setUser({ ...user, proposalUsageToday: newUsage });
+    try {
+      const newUsage = user.proposalUsageToday + 1;
+      const record = await pb.collection("profiles").update(user.id, {
+        proposal_usage_today: newUsage,
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Update failed");
+    }
   };
 
   const resetProposalUsage = async () => {
     if (!user) return;
-    const { error } = await supabase
-      .from("profiles")
-      .update({ proposal_usage_today: 0, proposal_reset_date: new Date().toISOString().split("T")[0] })
-      .eq("id", user.id);
-    if (error) throw new Error(error.message);
-    setUser({ ...user, proposalUsageToday: 0 });
+    try {
+      const record = await pb.collection("profiles").update(user.id, {
+        proposal_usage_today: 0,
+        proposal_reset_date: new Date().toISOString().split("T")[0],
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Reset failed");
+    }
   };
 
   const refreshUser = async () => {
-    const { data: { user: supabaseUser } } = await supabase.auth.getUser();
-    if (supabaseUser) await fetchProfile(supabaseUser);
+    if (!user) return;
+    try {
+      const record = await pb.collection("profiles").getOne(user.id);
+      setUser(mapProfile(record));
+    } catch (error) {
+      console.error("Error refreshing user:", error);
+    }
   };
 
   const completeOnboarding = async (data: {
@@ -184,50 +213,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     objetivo?: string;
   }) => {
     if (!user) return;
-    const { error } = await supabase
-      .from("profiles")
-      .update({
+    try {
+      const record = await pb.collection("profiles").update(user.id, {
         cpf_cnpj: data.cpfCnpj ?? null,
         tipo_negocio: data.tipoNegocio ?? null,
         faturamento_mensal: data.faturamentoMensal ?? null,
         objetivo: data.objetivo ?? null,
         onboarding_completed: true,
-      })
-      .eq("id", user.id);
-    if (error) throw new Error(error.message);
-    setUser({ ...user, onboardingCompleted: true });
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Onboarding failed");
+    }
   };
 
   const updateProfile = async (updates: { name?: string; phone?: string; company?: string; bio?: string }) => {
     if (!user) return;
-
-    // Update name in auth if provided
-    if (updates.name) {
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: { name: updates.name }
-      });
-      if (updateError) throw new Error(updateError.message);
-    }
-
-    // Update profile in database
-    const { error } = await supabase
-      .from("profiles")
-      .update({
+    try {
+      const record = await pb.collection("profiles").update(user.id, {
         name: updates.name ?? undefined,
         phone: updates.phone ?? undefined,
         company: updates.company ?? undefined,
         bio: updates.bio ?? undefined,
-      })
-      .eq("id", user.id);
-    if (error) throw new Error(error.message);
-
-    setUser({
-      ...user,
-      name: updates.name ?? user.name,
-      phone: updates.phone ?? user.phone,
-      company: updates.company ?? user.company,
-      bio: updates.bio ?? user.bio,
-    });
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Profile update failed");
+    }
   };
 
   const uploadAvatar = async (file: File): Promise<string> => {
@@ -242,55 +254,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("Arquivo não pode ser maior que 5MB");
     }
 
-    // Upload to storage
-    const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
-    const { error: uploadError, data } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, { upsert: true });
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("avatar_url", file);
 
-    if (uploadError) throw new Error(uploadError.message);
+      // Update profile with avatar
+      const record = await pb.collection("profiles").update(user.id, formData);
 
-    // Get public URL
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
-    const avatarUrl = urlData.publicUrl;
+      // Get avatar URL
+      const avatarUrl = pb.getFileUrl(record, record.avatar_url);
 
-    // Update profile with avatar URL
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ avatar_url: avatarUrl })
-      .eq("id", user.id);
-
-    if (updateError) throw new Error(updateError.message);
-
-    setUser({ ...user, avatarUrl });
-    return avatarUrl;
+      setUser(mapProfile(record));
+      return avatarUrl;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Avatar upload failed");
+    }
   };
 
   const changePassword = async (currentPassword: string, newPassword: string) => {
-    if (!session?.user?.email) throw new Error("User not authenticated");
+    if (!user) throw new Error("User not authenticated");
 
-    // Re-authenticate with current password
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: session.user.email,
-      password: currentPassword,
-    });
-    if (authError) throw new Error("Senha atual está incorreta");
+    try {
+      // Re-authenticate to verify current password
+      await pb.collection("profiles").authWithPassword(user.email, currentPassword);
 
-    // Update password
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-    if (updateError) throw new Error(updateError.message);
+      // Update password
+      await pb.collection("profiles").update(user.id, {
+        password: newPassword,
+        passwordConfirm: newPassword,
+      });
 
-    // Auto-logout after password change
-    await logout();
+      // Auto-logout after password change
+      await logout();
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("401")) {
+        throw new Error("Senha atual está incorreta");
+      }
+      throw new Error(error instanceof Error ? error.message : "Password change failed");
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        session,
         isAuthenticated: !!user,
         loading,
         login,

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { supabase } from "../../lib/supabase";
+import { pb } from "../../lib/pocketbase";
 import type { Obligation } from "../types/obligations";
 
 interface ObligationsContextType {
@@ -31,13 +31,12 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     setLoading(true);
     try {
-      const { data } = await supabase
-        .from("obligations")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("data", { ascending: true });
+      const records = await pb.collection("obligations").getList(1, 500, {
+        filter: `user_id = "${user.id}"`,
+        sort: "data",
+      });
 
-      setObligations(data || []);
+      setObligations(records.items as Obligation[]);
     } catch (error) {
       console.error("Erro ao buscar obrigações:", error);
     } finally {
@@ -48,14 +47,12 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
   const addObligation = async (ob: Omit<Obligation, "id" | "user_id" | "created_at" | "updated_at">) => {
     if (!user) return;
     try {
-      const { data, error } = await supabase
-        .from("obligations")
-        .insert([{ ...ob, user_id: user.id }])
-        .select()
-        .single();
+      const record = await pb.collection("obligations").create({
+        ...ob,
+        user_id: user.id,
+      });
 
-      if (error) throw error;
-      if (data) setObligations([...obligations, data]);
+      setObligations([...obligations, record as Obligation]);
     } catch (error) {
       console.error("Erro ao adicionar obrigação:", error);
       throw error;
@@ -64,13 +61,8 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
 
   const updateObligation = async (id: string, ob: Partial<Obligation>) => {
     try {
-      const { error } = await supabase
-        .from("obligations")
-        .update(ob)
-        .eq("id", id);
-
-      if (error) throw error;
-      setObligations(obligations.map(o => (o.id === id ? { ...o, ...ob } : o)));
+      const record = await pb.collection("obligations").update(id, ob);
+      setObligations(obligations.map(o => (o.id === id ? (record as Obligation) : o)));
     } catch (error) {
       console.error("Erro ao atualizar obrigação:", error);
       throw error;
@@ -79,12 +71,7 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
 
   const deleteObligation = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from("obligations")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
+      await pb.collection("obligations").delete(id);
       setObligations(obligations.filter(o => o.id !== id));
     } catch (error) {
       console.error("Erro ao deletar obrigação:", error);
