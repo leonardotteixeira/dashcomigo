@@ -45,15 +45,19 @@ export function exportCashFlowToExcel(
 
   // Use blob approach for better browser compatibility
   const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  const blob = new Blob([wbout], { type: "application/octet-stream" });
+  const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `hub_fluxo-caixa_${periodText}.xlsx`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // setTimeout ensures the download fires after any dropdown/modal closes
+  setTimeout(() => {
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = `bubuya_fluxo-caixa_${periodText}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, 100);
 }
 
 export function exportCashFlowToCSV(
@@ -75,10 +79,17 @@ export function exportCashFlowToCSV(
 
   // BOM para Excel no Windows abrir com encoding correto
   const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `hub_fluxo-caixa_${periodText}.csv`;
-  link.click();
+  const url = URL.createObjectURL(blob);
+  setTimeout(() => {
+    const link = document.createElement("a");
+    link.style.display = "none";
+    link.href = url;
+    link.download = `bubuya_fluxo-caixa_${periodText}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, 100);
 }
 
 // ========================
