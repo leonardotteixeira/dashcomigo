@@ -13,7 +13,8 @@ import {
   Wallet,
   Bell,
   Search,
-  Settings
+  Settings,
+  Receipt
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -54,6 +55,7 @@ export function DashboardLayout() {
     { name: "Preço Ideal", href: "/app/preco", icon: Tag, isPro: true },
     { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
     { name: "Propostas", href: "/app/propostas", icon: FileText },
+    { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
   ];
 
   const handleLogout = () => {
