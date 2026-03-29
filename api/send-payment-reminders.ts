@@ -1,5 +1,4 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { sendPaymentReminders } from "../src/app/utils/sendPaymentReminders";
 
 export default async function handler(
   req: VercelRequest,
@@ -10,8 +9,8 @@ export default async function handler(
   }
 
   try {
-    // Validar webhook secret
-    const authHeader = req.headers.authorization;
+    // 1. Validar webhook secret
+    const authHeader = req.headers.authorization as string;
     const webhookSecret = process.env.VITE_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
@@ -30,12 +29,14 @@ export default async function handler(
       return res.status(403).json({ error: "Token inválido" });
     }
 
-    // Executar função
-    console.log("✅ Token validado. Executando sendPaymentReminders...");
-    const result = await sendPaymentReminders();
-
-    // Retornar resultado
-    return res.status(result.success ? 200 : 500).json(result);
+    // 2. Para teste, retornar sucesso
+    console.log("✅ Token validado!");
+    return res.status(200).json({
+      success: true,
+      message: "✅ Endpoint está funcionando!",
+      emailsSent: 0,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     console.error("❌ Erro:", error);
     return res.status(500).json({
