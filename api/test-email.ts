@@ -23,11 +23,17 @@ export default async function handler(
     }
 
     // Enviar email de teste
+    const resendApiKey = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
+
+    if (!resendApiKey) {
+      return res.status(500).json({ error: "Resend API key não configurado" });
+    }
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
         from: "cobrancas@bubuya.com.br",

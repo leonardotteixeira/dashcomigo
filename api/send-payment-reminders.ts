@@ -3,11 +3,17 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 // Mock Resend para teste
 async function sendTestEmail(to: string) {
   try {
+    const resendApiKey = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
+
+    if (!resendApiKey) {
+      throw new Error("Resend API key não configurado");
+    }
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
         from: "cobrancas@bubuya.com.br",
