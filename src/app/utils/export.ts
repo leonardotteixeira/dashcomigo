@@ -16,6 +16,18 @@ export interface CashFlowTransaction {
   amount: number;
 }
 
+function triggerDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
 export function exportCashFlowToExcel(
   transactions: CashFlowTransaction[],
   period?: string
@@ -24,14 +36,13 @@ export function exportCashFlowToExcel(
 
   const data = transactions.map((t) => ({
     Data: t.date,
-    Descrição: t.description || "-",
+    "Descrição": t.description || "-",
     Categoria: t.category,
     Tipo: t.type === "entrada" ? "Entrada" : "Saída",
     Valor: t.amount,
   }));
 
   const ws = XLSX.utils.json_to_sheet(data);
-
   ws["!cols"] = [
     { wch: 12 },
     { wch: 30 },
@@ -43,21 +54,12 @@ export function exportCashFlowToExcel(
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Fluxo de Caixa");
 
-  // Use blob approach for better browser compatibility
   const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-  const url = URL.createObjectURL(blob);
-  // setTimeout ensures the download fires after any dropdown/modal closes
-  setTimeout(() => {
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    a.download = `bubuya_fluxo-caixa_${periodText}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }, 100);
+  const blob = new Blob([wbout], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  triggerDownload(blob, `bubuya_fluxo-caixa_${periodText}.xlsx`);
 }
 
 export function exportCashFlowToCSV(
@@ -79,17 +81,7 @@ export function exportCashFlowToCSV(
 
   // BOM para Excel no Windows abrir com encoding correto
   const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  setTimeout(() => {
-    const link = document.createElement("a");
-    link.style.display = "none";
-    link.href = url;
-    link.download = `bubuya_fluxo-caixa_${periodText}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }, 100);
+  triggerDownload(blob, `bubuya_fluxo-caixa_${periodText}.csv`);
 }
 
 // ========================

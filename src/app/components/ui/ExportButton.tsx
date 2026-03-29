@@ -31,16 +31,16 @@ export function ExportButton({
 }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleExport = async (option: ExportOption) => {
-    setIsExporting(true);
+  const handleExport = (option: ExportOption) => {
     try {
-      await option.onExport();
+      setIsExporting(true);
+      option.onExport();
       toast.success("Arquivo exportado com sucesso!", {
         description: `Formato: ${option.format.toUpperCase()}`,
       });
     } catch (error) {
       toast.error("Erro ao exportar arquivo", {
-        description: "Tente novamente mais tarde",
+        description: String(error),
       });
       console.error("Export error:", error);
     } finally {
