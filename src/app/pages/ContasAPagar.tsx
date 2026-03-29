@@ -73,18 +73,14 @@ export function ContasAPagar() {
     }
 
     try {
-      // Converter data de DD/MM/YYYY para YYYY-MM-DD
-      const dateParts = formVencimento.split("/");
-      const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-
       await addPayable({
         descricao: formDescricao,
         valor: parseFloat(formValor),
         categoria: formCategoria,
-        dataVencimento: isoDate,
+        dataVencimento: formVencimento, // input type="date" já retorna YYYY-MM-DD
         status: "pendente",
         ehRecorrente: formRecorrente,
-        frequenciaRecorrencia: formRecorrente && formFrequencia ? formFrequencia as "mensal" | "anual" | "semanal" : undefined,
+        frequenciaRecorrencia: formRecorrente && formFrequencia ? formFrequencia as "mensal" | "anual" : undefined,
         anotacoes: formAnotacoes || undefined,
       });
 
