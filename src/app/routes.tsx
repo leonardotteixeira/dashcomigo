@@ -30,6 +30,7 @@ import { SobreOMEI } from "./pages/SobreOMEI";
 import { ComoMigrar } from "./pages/ComoMigrar";
 import { FAQ } from "./pages/FAQ";
 import { ConfirmEmail } from "./pages/ConfirmEmail";
+import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ export const router = createBrowserRouter([
   {
     path: "/auth/reset-password",
     Component: ResetPassword,
+  },
+  {
+    path: "/auth/confirm-password-reset/:token",
+    Component: PasswordResetConfirm,
   },
   {
     path: "/auth/confirm-email",
