@@ -25,9 +25,13 @@ interface BudgetsContextType {
   deleteBudget: (id: string) => Promise<void>;
   getBudgetsByMes: (mes: string) => BudgetItem[];
   getTotalByMes: (mes: string) => { planejado: number; realizado: number; restante: number };
+  getLimitStatus: () => { used: number; limit: number; percentage: number };
+  canAddBudget: () => boolean;
 }
 
 const BudgetsContext = createContext<BudgetsContextType | undefined>(undefined);
+
+const FREE_LIMIT = 5;
 
 export function BudgetsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -71,6 +75,7 @@ export function BudgetsProvider({ children }: { children: ReactNode }) {
 
   async function addBudget(data: Omit<Budget, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
+    if (!canAddBudget()) throw new Error("Limite de orçamentos atingido");
 
     const record = await pb.collection("budgets").create({
       userid: user.id,
@@ -137,8 +142,20 @@ export function BudgetsProvider({ children }: { children: ReactNode }) {
     return { planejado, realizado, restante: planejado - realizado };
   }
 
+  function getLimitStatus() {
+    const limit = user?.plan === "pro" ? Infinity : FREE_LIMIT;
+    const used = budgets.length;
+    const percentage = limit === Infinity ? 0 : (used / limit) * 100;
+    return { used, limit, percentage };
+  }
+
+  function canAddBudget(): boolean {
+    if (user?.plan === "pro") return true;
+    return budgets.length < FREE_LIMIT;
+  }
+
   return (
-    <BudgetsContext.Provider value={{ budgets, loading, addBudget, updateBudget, deleteBudget, getBudgetsByMes, getTotalByMes }}>
+    <BudgetsContext.Provider value={{ budgets, loading, addBudget, updateBudget, deleteBudget, getBudgetsByMes, getTotalByMes, getLimitStatus, canAddBudget }}>
       {children}
     </BudgetsContext.Provider>
   );

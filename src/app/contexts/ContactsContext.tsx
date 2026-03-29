@@ -31,7 +31,7 @@ interface ContactsContextType {
 
 const ContactsContext = createContext<ContactsContextType | undefined>(undefined);
 
-const FREE_LIMIT = 50;
+const FREE_LIMIT = 30;
 
 export function ContactsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
