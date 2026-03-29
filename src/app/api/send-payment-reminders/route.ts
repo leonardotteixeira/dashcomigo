@@ -13,7 +13,7 @@
  * }
  */
 
-import { sendPaymentReminders } from "../utils/sendPaymentReminders";
+import { sendPaymentReminders } from "../../utils/sendPaymentReminders";
 
 export async function POST(request: Request) {
   try {
