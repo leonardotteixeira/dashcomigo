@@ -22,6 +22,7 @@ import { Privacidade } from "./pages/Privacidade";
 import { SobreOMEI } from "./pages/SobreOMEI";
 import { ComoMigrar } from "./pages/ComoMigrar";
 import { FAQ } from "./pages/FAQ";
+import { ConfirmEmail } from "./pages/ConfirmEmail";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
   {
     path: "/auth/reset-password",
     Component: ResetPassword,
+  },
+  {
+    path: "/auth/confirm-email",
+    Component: ConfirmEmail,
   },
   {
     path: "/termos-de-uso",
