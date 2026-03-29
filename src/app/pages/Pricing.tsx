@@ -31,22 +31,30 @@ export function Pricing() {
   const savings = billingCycle === "annual" ? Math.round((priceMonthly * 12) - (priceMonthly * 10)) : 0;
 
   const FREE_FEATURES = [
+    "Dashboard e Relatórios básicos",
     "Simulador MEI → ME ilimitado",
     "Fluxo de Caixa: 30 lançamentos/mês",
-    "2 propostas comerciais por dia",
-    "Acesso ao dashboard",
-    "Relatórios básicos",
+    "Contas a Pagar: 30 itens",
+    "Contas a Receber: 30 itens",
+    "Clientes/Fornecedores: 30 contatos",
+    "Propostas comerciais: 2 por dia",
+    "Orçamentos por categoria: 5/mês",
+    "Estoque: 10 produtos",
   ];
 
   const PRO_FEATURES = [
+    "Tudo do Gratuito com limites ilimitados",
     "Fluxo de caixa: lançamentos ilimitados",
+    "Contas a Pagar/Receber: ilimitados",
+    "Clientes/Fornecedores: ilimitados",
+    "Orçamentos: ilimitados",
+    "Estoque: ilimitado",
+    "Propostas: ilimitadas",
     "Simulador de Preço Ideal (exclusivo)",
     "Simulador de Lucro com projeções",
-    "Propostas ilimitadas",
+    "Metas de Receita com histórico",
     "Relatórios e exportações completos",
-    "Gráficos avançados (AreaChart, BarChart)",
     "Alertas inteligentes e insights",
-    "Suporte prioritário",
   ];
 
   return (
