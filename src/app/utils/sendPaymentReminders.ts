@@ -58,9 +58,14 @@ function getProposalEmailTemplate(proposal: Proposal, user: User) {
         </p>
 
         <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-        <p style="color: #999; font-size: 12px; text-align: center;">
-          Este é um lembrete automático do Meu Fluxo
-        </p>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center;">
+          <p style="color: #999; font-size: 12px; margin: 0;">
+            Este é um lembrete automático do Meu Fluxo
+          </p>
+          <p style="color: #999; font-size: 12px; margin: 8px 0 0 0;">
+            Dúvidas? Entre em contato: <a href="mailto:contato@bubuya.com.br" style="color: #28A263; text-decoration: none;">contato@bubuya.com.br</a>
+          </p>
+        </div>
       </div>
     `,
   };
@@ -102,9 +107,14 @@ function getPayableEmailTemplate(payable: Payable, user: User) {
         </p>
 
         <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-        <p style="color: #999; font-size: 12px; text-align: center;">
-          Este é um lembrete automático do Meu Fluxo
-        </p>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center;">
+          <p style="color: #999; font-size: 12px; margin: 0;">
+            Este é um lembrete automático do Meu Fluxo
+          </p>
+          <p style="color: #999; font-size: 12px; margin: 8px 0 0 0;">
+            Dúvidas? Entre em contato: <a href="mailto:contato@bubuya.com.br" style="color: #28A263; text-decoration: none;">contato@bubuya.com.br</a>
+          </p>
+        </div>
       </div>
     `,
   };

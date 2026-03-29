@@ -12,6 +12,7 @@ export interface User {
   proposalUsageToday: number;
   transactionsUsageToday: number;
   onboardingCompleted: boolean;
+  receivePaymentReminders: boolean;
   avatarUrl?: string;
   phone?: string;
   company?: string;
@@ -40,6 +41,7 @@ interface AuthContextType {
   updateProfile: (updates: { name?: string; phone?: string; company?: string; bio?: string }) => Promise<void>;
   uploadAvatar: (file: File) => Promise<string>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  updatePaymentReminders: (enabled: boolean) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,6 +55,7 @@ function mapProfile(pbRecord: RecordModel): User {
     proposalUsageToday: pbRecord.proposal_usage_today ?? 0,
     transactionsUsageToday: pbRecord.transactions_usage_today ?? 0,
     onboardingCompleted: pbRecord.onboarding_completed ?? false,
+    receivePaymentReminders: pbRecord.receive_payment_reminders ?? true,
     avatarUrl: pbRecord.avatar_url ? pb.files.getUrl(pbRecord, pbRecord.avatar_url) : undefined,
     phone: pbRecord.phone,
     company: pbRecord.company,
@@ -146,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         transactions_usage_today: 0,
         transactions_reset_date: new Date().toISOString().split("T")[0],
         onboarding_completed: false,
+        receive_payment_reminders: true,
       });
 
       // Auto-login after signup
@@ -351,6 +355,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updatePaymentReminders = async (enabled: boolean) => {
+    if (!user) return;
+    try {
+      const record = await pb.collection("profiles").update(user.id, {
+        receive_payment_reminders: enabled,
+      });
+      setUser(mapProfile(record));
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Update payment reminders failed");
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -370,6 +386,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updateProfile,
         uploadAvatar,
         changePassword,
+        updatePaymentReminders,
       }}
     >
       {children}
