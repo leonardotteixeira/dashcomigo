@@ -93,7 +93,7 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
     if (!user) throw new Error("Usuário não autenticado");
 
     try {
-      const record = await pb.collection("payables").create({
+      const createData: Record<string, unknown> = {
         userid: user.id,
         descricao: payableData.descricao,
         valor: payableData.valor,
@@ -101,10 +101,19 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
         data_vencimento: payableData.dataVencimento,
         status: payableData.status,
         eh_recorrente: payableData.ehRecorrente,
-        frequencia_recorrencia: payableData.frequenciaRecorrencia,
-        data_pagamento: payableData.dataPagamento ?? null,
-        anotacoes: payableData.anotacoes ?? null,
-      });
+      };
+
+      if (payableData.frequenciaRecorrencia) {
+        createData.frequencia_recorrencia = payableData.frequenciaRecorrencia;
+      }
+      if (payableData.dataPagamento) {
+        createData.data_pagamento = payableData.dataPagamento;
+      }
+      if (payableData.anotacoes) {
+        createData.anotacoes = payableData.anotacoes;
+      }
+
+      const record = await pb.collection("payables").create(createData);
 
       const newPayable: Payable = {
         id: record.id,
