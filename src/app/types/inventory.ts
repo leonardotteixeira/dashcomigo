@@ -93,7 +93,7 @@ export const MOVEMENT_REASONS: MovementReason[] = [
 
 // Validation constants
 export const INVENTORY_LIMITS = {
-  FREE: 30,
+  FREE: 10,
   PRO: Infinity,
 } as const;
 
