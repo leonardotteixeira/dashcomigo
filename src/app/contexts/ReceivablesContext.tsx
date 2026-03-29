@@ -40,7 +40,7 @@ export const CATEGORIAS_RECEIVABLES = [
   "Outros",
 ];
 
-const FREE_LIMIT = 20;
+const FREE_LIMIT = 10;
 
 function getMesAtual() {
   const now = new Date();

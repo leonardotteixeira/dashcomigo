@@ -67,14 +67,14 @@ export function DashboardLayout() {
       items: [
         { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
         { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
-        { name: "Relatórios", href: "/app/relatorios", icon: BarChart3 },
+        { name: "Relatórios", href: "/app/relatorios", icon: BarChart3, isPro: true },
       ],
     },
     {
       label: "Planejamento",
       items: [
-        { name: "Orçamentos", href: "/app/orcamentos", icon: PieChart },
-        { name: "Metas", href: "/app/metas", icon: Target },
+        { name: "Orçamentos", href: "/app/orcamentos", icon: PieChart, isPro: true },
+        { name: "Metas", href: "/app/metas", icon: Target, isPro: true },
       ],
     },
     {
