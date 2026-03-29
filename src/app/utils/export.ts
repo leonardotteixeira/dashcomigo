@@ -185,3 +185,231 @@ export function exportDashboardToPDF(data: DashboardReportData) {
   const filename = `hub_relatorio-financeiro_${format(new Date(), "dd-MM-yyyy")}.pdf`;
   doc.save(filename);
 }
+
+// ========================
+// RELATÓRIOS FINANCEIROS
+// ========================
+
+export interface ReportExportData {
+  period: string;
+  dateRange: [Date, Date];
+  totalReceitas: number;
+  totalDespesas: number;
+  fluxoCaixa: number;
+  margemLiquida: number;
+  transactions: Array<{
+    data: string;
+    descricao: string;
+    categoria: string;
+    tipo: string;
+    valor: number;
+  }>;
+  monthlyData: Array<{
+    mes: string;
+    receitas: number;
+    despesas: number;
+    fluxo: number;
+  }>;
+  expensesByCategory: Record<string, number>;
+  payablesTotal?: number;
+  payablesPending?: number;
+  payablesPaid?: number;
+}
+
+/**
+ * Exportar relatório financeiro para Excel
+ */
+export function exportReportToExcel(data: ReportExportData) {
+  const wb = XLSX.utils.book_new();
+
+  // Sheet 1: Resumo
+  const summaryData = [
+    ["RELATÓRIO FINANCEIRO", ""],
+    ["Período", `${format(data.dateRange[0], "dd/MM/yyyy", { locale: ptBR })} a ${format(data.dateRange[1], "dd/MM/yyyy", { locale: ptBR })}`],
+    [""],
+    ["RESUMO EXECUTIVO", ""],
+    ["Total de Receitas", data.totalReceitas],
+    ["Total de Despesas", data.totalDespesas],
+    ["Fluxo de Caixa", data.fluxoCaixa],
+    ["Margem Líquida (%)", data.margemLiquida.toFixed(2)],
+    ...(data.payablesTotal !== undefined ? [
+      [""],
+      ["CONTAS A PAGAR", ""],
+      ["Total a Pagar", data.payablesTotal],
+      ["Pendentes", data.payablesPending],
+      ["Pagas", data.payablesPaid],
+    ] : []),
+  ];
+
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+  summarySheet["!cols"] = [{ wch: 25 }, { wch: 20 }];
+  XLSX.utils.book_append_sheet(wb, summarySheet, "Resumo");
+
+  // Sheet 2: Fluxo Mensal
+  const monthlyDataForSheet = data.monthlyData.map((m) => ({
+    Mês: m.mes,
+    Receitas: m.receitas,
+    Despesas: m.despesas,
+    "Fluxo de Caixa": m.fluxo,
+  }));
+
+  const monthlySheet = XLSX.utils.json_to_sheet(monthlyDataForSheet);
+  monthlySheet["!cols"] = [
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 15 },
+  ];
+  XLSX.utils.book_append_sheet(wb, monthlySheet, "Fluxo Mensal");
+
+  // Sheet 3: Despesas por Categoria
+  const categoryData = Object.entries(data.expensesByCategory).map(([categoria, valor]) => ({
+    Categoria: categoria,
+    Valor: valor,
+  }));
+
+  if (categoryData.length > 0) {
+    const categorySheet = XLSX.utils.json_to_sheet(categoryData);
+    categorySheet["!cols"] = [{ wch: 25 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, categorySheet, "Despesas por Categoria");
+  }
+
+  // Sheet 4: Transações Detalhadas
+  const transactionsData = data.transactions.map((t) => ({
+    Data: t.data,
+    Descrição: t.descricao,
+    Categoria: t.categoria,
+    Tipo: t.tipo,
+    Valor: t.valor,
+  }));
+
+  const transactionsSheet = XLSX.utils.json_to_sheet(transactionsData);
+  transactionsSheet["!cols"] = [
+    { wch: 12 },
+    { wch: 30 },
+    { wch: 20 },
+    { wch: 10 },
+    { wch: 15 },
+  ];
+  XLSX.utils.book_append_sheet(wb, transactionsSheet, "Transações");
+
+  // Download
+  const filename = `bubuya_relatorio_${format(new Date(), "dd-MM-yyyy", { locale: ptBR })}.xlsx`;
+  XLSX.writeFile(wb, filename);
+}
+
+/**
+ * Exportar relatório financeiro para PDF
+ */
+export function exportReportToPDF(data: ReportExportData) {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  let yPos = 20;
+
+  // Header verde
+  doc.setFillColor(40, 162, 99); // #28A263
+  doc.rect(0, 0, pageWidth, 30, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.text("Relatório Financeiro", 15, 18);
+
+  // Período
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(10);
+  const dateRangeText = `${format(data.dateRange[0], "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} a ${format(data.dateRange[1], "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`;
+  doc.text(`Período: ${dateRangeText}`, 15, 45);
+  doc.text(`Data de geração: ${format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}`, pageWidth - 15, 45, { align: "right" });
+
+  yPos = 55;
+
+  // KPIs - 4 boxes
+  const boxWidth = (pageWidth - 30) / 4;
+  const boxHeight = 20;
+  const kpis = [
+    { label: "Receitas", value: data.totalReceitas, color: [40, 162, 99] },
+    { label: "Despesas", value: data.totalDespesas, color: [247, 76, 76] },
+    { label: "Fluxo de Caixa", value: data.fluxoCaixa, color: [91, 95, 255] },
+    { label: "Margem Líquida", value: `${data.margemLiquida.toFixed(1)}%`, color: [244, 178, 60] },
+  ];
+
+  kpis.forEach((kpi, index) => {
+    const x = 15 + index * (boxWidth + 2);
+    doc.setFillColor(...kpi.color);
+    doc.rect(x, yPos, boxWidth, boxHeight, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.setFont(undefined, "bold");
+    doc.text(kpi.label, x + 3, yPos + 6);
+    doc.setFontSize(10);
+    doc.text(
+      typeof kpi.value === "number"
+        ? `R$ ${kpi.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+        : kpi.value,
+      x + 3,
+      yPos + 15
+    );
+  });
+
+  yPos += 35;
+
+  // Tabela de Fluxo Mensal
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(12);
+  doc.setFont(undefined, "bold");
+  doc.text("Fluxo de Caixa Mensal", 15, yPos);
+
+  yPos += 7;
+
+  autoTable(doc, {
+    startY: yPos,
+    head: [["Mês", "Receitas", "Despesas", "Fluxo de Caixa"]],
+    body: data.monthlyData.map((m) => [
+      m.mes,
+      `R$ ${m.receitas.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      `R$ ${m.despesas.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      `R$ ${m.fluxo.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+    ]),
+    theme: "striped",
+    headStyles: { fillColor: [40, 162, 99], textColor: [255, 255, 255] },
+    margin: { left: 15, right: 15 },
+  });
+
+  yPos = (doc as any).lastAutoTable?.finalY + 15;
+
+  // Despesas por Categoria (se houver espaço)
+  if (yPos < pageHeight - 40 && Object.keys(data.expensesByCategory).length > 0) {
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.text("Despesas por Categoria", 15, yPos);
+
+    yPos += 7;
+
+    autoTable(doc, {
+      startY: yPos,
+      head: [["Categoria", "Valor"]],
+      body: Object.entries(data.expensesByCategory).map(([cat, valor]) => [
+        cat,
+        `R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      ]),
+      theme: "striped",
+      headStyles: { fillColor: [40, 162, 99], textColor: [255, 255, 255] },
+      margin: { left: 15, right: 15 },
+    });
+  }
+
+  // Footer
+  doc.setFontSize(8);
+  doc.setTextColor(128, 128, 128);
+  doc.text(
+    "Relatório gerado pelo Bubuya",
+    pageWidth / 2,
+    pageHeight - 10,
+    { align: "center" }
+  );
+
+  // Download
+  const filename = `bubuya_relatorio_${format(new Date(), "dd-MM-yyyy", { locale: ptBR })}.pdf`;
+  doc.save(filename);
+}
