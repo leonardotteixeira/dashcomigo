@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react";
 import { useAuth } from "./AuthContext";
-import PocketBase from "pocketbase";
+import { pb } from "../../lib/pocketbase";
 import {
   InventoryItem,
   InventoryMovement,
@@ -17,8 +17,6 @@ import {
 } from "../utils/inventoryCalculations";
 
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined);
-
-const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
 
 export function InventoryProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -38,7 +36,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       setError(null);
 
       const records = await pb.collection("inventory").getList(1, 500, {
-        filter: `user_id = "${user.id}"`,
+        filter: `userid = "${user.id}"`,
         sort: "-updated",
       });
 
@@ -60,7 +58,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
 
     try {
       const records = await pb.collection("inventory_movements").getList(1, 500, {
-        filter: `user_id = "${user.id}"`,
+        filter: `userid = "${user.id}"`,
         sort: "-data",
       });
 
@@ -110,7 +108,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
 
       const record = await pb.collection("inventory").create({
         ...item,
-        user_id: user.id,
+        userid: user.id,
       });
 
       const newItem = record as InventoryItem;
@@ -234,7 +232,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       // Create the movement record
       const record = await pb.collection("inventory_movements").create({
         ...movement,
-        user_id: user.id,
+        userid: user.id,
       });
 
       const newMovement = record as InventoryMovement;

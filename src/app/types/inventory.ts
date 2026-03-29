@@ -9,7 +9,7 @@ export type MovementReason = "Compra" | "Venda" | "Dano" | "Inventário" | "Ajus
 
 export interface InventoryItem {
   id: string;
-  user_id: string;
+  userid: string;
   nome: string;
   descricao?: string;
   quantidade: number;
@@ -25,7 +25,7 @@ export interface InventoryItem {
 export interface InventoryMovement {
   id: string;
   inventory_id: string;
-  user_id: string;
+  userid: string;
   tipo: MovementType;
   quantidade: number;
   motivo?: MovementReason;
