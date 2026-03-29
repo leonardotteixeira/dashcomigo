@@ -80,8 +80,10 @@ const ReportsContext = createContext<ReportsContextType | undefined>(undefined);
 
 export function ReportsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const { transactions } = useCashFlow();
-  const { payables } = usePayables();
+  const cashFlowContext = useCashFlow();
+  const transactions = cashFlowContext?.transactions || [];
+  const payablesContext = usePayables();
+  const payables = payablesContext?.payables || [];
 
   // Nota: Você precisará adicionar um ProposalsContext ou adaptar conforme necessário
   // Por enquanto, vamos trabalhar com transações e payables
