@@ -41,7 +41,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { ExportButton, ExportIcons } from "../components/ui/ExportButton";
 import {
   exportCashFlowToExcel,
   exportCashFlowToCSV,
@@ -135,20 +134,6 @@ export function FluxoCaixa() {
     ano: "1ano",
   }[periodo];
 
-  const exportOptions = [
-    {
-      label: "Exportar Excel",
-      format: "xlsx" as const,
-      icon: ExportIcons.excel,
-      onExport: () => exportCashFlowToExcel(exportableTransactions, periodoLabel),
-    },
-    {
-      label: "Exportar CSV",
-      format: "csv" as const,
-      icon: ExportIcons.csv,
-      onExport: () => exportCashFlowToCSV(exportableTransactions, periodoLabel),
-    },
-  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -413,7 +398,16 @@ export function FluxoCaixa() {
             Nova Saída
           </Button>
 
-          {!isEmpty && <ExportButton options={exportOptions} size="lg" />}
+          {!isEmpty && (
+            <Button
+              size="lg"
+              className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl"
+              onClick={() => exportCashFlowToExcel(exportableTransactions, periodoLabel)}
+            >
+              <FileSpreadsheet className="w-4 h-4 mr-2 text-green-400" />
+              Exportar Excel
+            </Button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
