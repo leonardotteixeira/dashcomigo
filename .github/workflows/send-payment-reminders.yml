@@ -1,0 +1,52 @@
+name: Send Payment Reminders
+
+# Executar diariamente às 08:00 AM (ajuste o timezone conforme necessário)
+on:
+  schedule:
+    - cron: '0 8 * * *'  # 08:00 UTC (13:00 em São Paulo)
+
+  # Permitir disparo manual (teste)
+  workflow_dispatch
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Send Payment Reminders
+        run: |
+          echo "🚀 Iniciando envio de lembretes de cobrança..."
+
+          RESPONSE=$(curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
+            -w "\n%{http_code}" \
+            https://bubuya.com.br/api/send-payment-reminders)
+
+          # Separar resposta do status code
+          STATUS=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $STATUS"
+          echo "Response: $BODY"
+
+          # Validar resposta
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Erro ao enviar lembretes (Status: $STATUS)"
+            exit 1
+          fi
+
+          # Extrair número de emails enviados
+          EMAILS_SENT=$(echo "$BODY" | jq '.emailsSent // 0')
+          echo "✅ $EMAILS_SENT emails de lembrete enviados com sucesso"
+
+      - name: Notify on failure (Optional)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setFailed('Falha ao enviar lembretes de cobrança')
+            // Opcionalmente, enviar notificação (Discord, Slack, etc)
