@@ -26,7 +26,7 @@ export function ContasAPagar() {
   const [formCategoria, setFormCategoria] = useState("");
   const [formVencimento, setFormVencimento] = useState("");
   const [formRecorrente, setFormRecorrente] = useState(false);
-  const [formFrequencia, setFormFrequencia] = useState<"mensal" | "anual" | "semanal" | "">("");
+  const [formFrequencia, setFormFrequencia] = useState<"mensal" | "anual" | "">("");
   const [formAnotacoes, setFormAnotacoes] = useState("");
 
   const limitStatus = getLimitStatus();
@@ -60,6 +60,11 @@ export function ContasAPagar() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!formDescricao || !formValor || !formCategoria || !formVencimento) {
+      toast.error("Preencha todos os campos obrigatórios");
+      return;
+    }
+
     if (!canAddPayable()) {
       toast.error("Limite atingido", {
         description: "Faça upgrade para PRO para adicionar mais contas.",
@@ -68,14 +73,18 @@ export function ContasAPagar() {
     }
 
     try {
+      // Converter data de DD/MM/YYYY para YYYY-MM-DD
+      const dateParts = formVencimento.split("/");
+      const isoDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
       await addPayable({
         descricao: formDescricao,
         valor: parseFloat(formValor),
         categoria: formCategoria,
-        dataVencimento: formVencimento,
+        dataVencimento: isoDate,
         status: "pendente",
         ehRecorrente: formRecorrente,
-        frequenciaRecorrencia: formRecorrente ? formFrequencia as "mensal" | "anual" | "semanal" : null,
+        frequenciaRecorrencia: formRecorrente && formFrequencia ? formFrequencia as "mensal" | "anual" | "semanal" : undefined,
         anotacoes: formAnotacoes || undefined,
       });
 
@@ -85,8 +94,10 @@ export function ContasAPagar() {
 
       resetForm();
       setDialogOpen(false);
-    } catch {
-      toast.error("Erro ao adicionar conta");
+    } catch (error: any) {
+      toast.error("Erro ao adicionar conta", {
+        description: error?.message || "Tente novamente",
+      });
     }
   }
 
@@ -424,11 +435,10 @@ export function ContasAPagar() {
                     <label className="text-[#A1A1A1] text-sm mb-1 block">Frequência</label>
                     <select
                       value={formFrequencia}
-                      onChange={(e) => setFormFrequencia(e.target.value as "mensal" | "anual" | "semanal")}
+                      onChange={(e) => setFormFrequencia(e.target.value as "mensal" | "anual")}
                       className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#2DDB81]/50"
                     >
                       <option value="">Selecione...</option>
-                      <option value="semanal">Semanal</option>
                       <option value="mensal">Mensal</option>
                       <option value="anual">Anual</option>
                     </select>
