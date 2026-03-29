@@ -54,20 +54,50 @@ export function DashboardLayout() {
     return <Navigate to="/app/onboarding" replace />;
   }
 
-  const navigation = [
-    { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
-    { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
-    { name: "Relatórios", href: "/app/relatorios", icon: BarChart3 },
-    { name: "MEI → ME", href: "/app/mei-me", icon: ArrowRightLeft },
-    { name: "Preço Ideal", href: "/app/preco", icon: Tag, isPro: true },
-    { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
-    { name: "Propostas", href: "/app/propostas", icon: FileText },
-    { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
-    { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
-    { name: "Clientes", href: "/app/clientes", icon: Users },
-    { name: "Orçamentos", href: "/app/orcamentos", icon: PieChart },
-    { name: "Metas", href: "/app/metas", icon: Target },
-    { name: "Estoque", href: "/app/estoque", icon: Package },
+  const navigationGroups = [
+    {
+      label: "Core",
+      items: [
+        { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
+        { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
+      ],
+    },
+    {
+      label: "Finanças",
+      items: [
+        { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
+        { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
+        { name: "Relatórios", href: "/app/relatorios", icon: BarChart3 },
+      ],
+    },
+    {
+      label: "Planejamento",
+      items: [
+        { name: "Orçamentos", href: "/app/orcamentos", icon: PieChart },
+        { name: "Metas", href: "/app/metas", icon: Target },
+      ],
+    },
+    {
+      label: "Vendas",
+      items: [
+        { name: "Clientes", href: "/app/clientes", icon: Users },
+        { name: "Propostas", href: "/app/propostas", icon: FileText },
+      ],
+    },
+    {
+      label: "Operações",
+      items: [
+        { name: "Estoque", href: "/app/estoque", icon: Package },
+      ],
+    },
+    {
+      label: "Simuladores",
+      items: [
+        { name: "MEI → ME", href: "/app/mei-me", icon: ArrowRightLeft },
+        { name: "Preço Ideal", href: "/app/preco", icon: Tag, isPro: true },
+        { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
+      ],
+    },
   ];
 
   const handleLogout = () => {
@@ -112,37 +142,46 @@ export function DashboardLayout() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.name}
-                  to={item.href}
-                  end={item.end}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-2.5 rounded-full font-medium transition-all text-sm ${
-                      isActive
-                        ? "bg-[#28A263]/15 text-[#28A263]"
-                        : "text-[#A1A1A1] hover:text-white hover:bg-white/5"
-                    }`
-                  }
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  {({ isActive }) => (
-                    <>
-                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-[#28A263]" : ""}`} />
-                      <span className="flex-1">{item.name}</span>
-                      {item.isPro && (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-[#28A263]/20 text-[#2DDB81] rounded-full font-semibold">
-                          PRO
-                        </span>
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              );
-            })}
+          <nav className="flex-1 px-4 py-3 space-y-2 overflow-y-auto">
+            {navigationGroups.map((group) => (
+              <div key={group.label}>
+                <div className="px-4 py-1.5 text-xs font-semibold text-[#686F6F] uppercase tracking-wider">
+                  {group.label}
+                </div>
+                <div className="space-y-0.5 mb-1">
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={item.name}
+                        to={item.href}
+                        end={item.end}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                            isActive
+                              ? "bg-[#28A263]/15 text-[#28A263]"
+                              : "text-[#A1A1A1] hover:text-white hover:bg-white/5"
+                          }`
+                        }
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        {({ isActive }) => (
+                          <>
+                            <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-[#28A263]" : ""}`} />
+                            <span className="flex-1">{item.name}</span>
+                            {item.isPro && (
+                              <span className="text-[7px] px-1 py-0.5 bg-[#28A263]/20 text-[#2DDB81] rounded-full font-semibold">
+                                PRO
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </nav>
 
           {/* User section */}

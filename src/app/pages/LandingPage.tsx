@@ -6,7 +6,7 @@ import { TestimonialsSection } from "../components/TestimonialsSection";
 import { CTASection } from "../components/CTASection";
 import { Footer } from "../components/Footer";
 import { Button } from "../components/ui/button";
-import { ArrowRight, Check, Crown } from "lucide-react";
+import { ArrowRight, Check, Crown, TrendingUp, Users, PieChart, Target } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 export function LandingPage() {
@@ -158,6 +158,142 @@ export function LandingPage() {
                 onClick={() => navigate(isAuthenticated ? "/app" : "/signup")}
               >
                 {isAuthenticated ? "Ir para o Dashboard" : "Criar Conta Grátis"}
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Gestão Financeira Completa Section */}
+        <section className="py-20 bg-black relative overflow-hidden">
+          {/* Glow effects */}
+          <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#2DDB81] rounded-full opacity-5 blur-[150px]" />
+
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="text-center mb-12">
+              <div className="inline-flex px-4 py-2 bg-[#22242F] rounded-full mb-4">
+                <span className="text-xs text-[#DEDFE3] font-medium uppercase tracking-wider">
+                  Gestão Completa
+                </span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#F4F4F6] mb-4">
+                Organize suas <span className="text-white">finanças com precisão</span>
+              </h2>
+              <p className="text-lg text-[#C8C9D0]">
+                Controle completo sobre contas, clientes, orçamentos e metas em um só lugar
+              </p>
+            </div>
+
+            {/* Feature Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* Contas a Receber */}
+              <div className="bg-[#111218] border border-white/5 rounded-3xl p-8 hover:border-[#2DDB81]/30 transition-colors">
+                <div className="w-12 h-12 bg-[#2DDB81]/20 rounded-2xl flex items-center justify-center mb-4">
+                  <TrendingUp className="w-6 h-6 text-[#2DDB81]" />
+                </div>
+                <h3 className="text-lg font-bold text-[#F4F4F6] mb-2">Contas a Receber</h3>
+                <p className="text-sm text-[#C8C9D0] mb-4">
+                  Rastreie suas receitas pendentes, ventos próximos e recorrências automáticas. Nunca mais perca dinheiro devido a clientes.
+                </p>
+                <ul className="space-y-2 text-xs text-[#A1A1A1]">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Alertas de vencimento
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Recorrências automáticas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Categorização por tipo
+                  </li>
+                </ul>
+              </div>
+
+              {/* Clientes e Fornecedores */}
+              <div className="bg-[#111218] border border-white/5 rounded-3xl p-8 hover:border-[#2DDB81]/30 transition-colors">
+                <div className="w-12 h-12 bg-[#2DDB81]/20 rounded-2xl flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-[#2DDB81]" />
+                </div>
+                <h3 className="text-lg font-bold text-[#F4F4F6] mb-2">Clientes & Fornecedores</h3>
+                <p className="text-sm text-[#C8C9D0] mb-4">
+                  Gerencie seus contatos de forma centralizada com dados, documentos e anotações específicas.
+                </p>
+                <ul className="space-y-2 text-xs text-[#A1A1A1]">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    CPF/CNPJ centralizado
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Classificação por tipo
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Busca e filtros avançados
+                  </li>
+                </ul>
+              </div>
+
+              {/* Orçamentos */}
+              <div className="bg-[#111218] border border-white/5 rounded-3xl p-8 hover:border-[#2DDB81]/30 transition-colors">
+                <div className="w-12 h-12 bg-[#2DDB81]/20 rounded-2xl flex items-center justify-center mb-4">
+                  <PieChart className="w-6 h-6 text-[#2DDB81]" />
+                </div>
+                <h3 className="text-lg font-bold text-[#F4F4F6] mb-2">Orçamentos por Categoria</h3>
+                <p className="text-sm text-[#C8C9D0] mb-4">
+                  Planeje seus gastos mensais por categoria e compare com o realizado em tempo real.
+                </p>
+                <ul className="space-y-2 text-xs text-[#A1A1A1]">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Comparativo planejado vs realizado
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Alertas quando ultrapassar limite
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Histórico mensal
+                  </li>
+                </ul>
+              </div>
+
+              {/* Metas de Receita */}
+              <div className="bg-[#111218] border border-white/5 rounded-3xl p-8 hover:border-[#2DDB81]/30 transition-colors">
+                <div className="w-12 h-12 bg-[#2DDB81]/20 rounded-2xl flex items-center justify-center mb-4">
+                  <Target className="w-6 h-6 text-[#2DDB81]" />
+                </div>
+                <h3 className="text-lg font-bold text-[#F4F4F6] mb-2">Metas de Receita</h3>
+                <p className="text-sm text-[#C8C9D0] mb-4">
+                  Defina metas de receita e acompanhe o progresso em tempo real com histórico de performance.
+                </p>
+                <ul className="space-y-2 text-xs text-[#A1A1A1]">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Progresso visual em tempo real
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Histórico de 6 meses
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-[#2DDB81]" />
+                    Metas por categoria
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Button
+                size="lg"
+                className="bg-[#28A263] hover:bg-[#2DDB81] text-white px-8 py-6 text-lg rounded-xl transition-colors"
+                onClick={() => navigate(isAuthenticated ? "/app" : "/signup")}
+              >
+                {isAuthenticated ? "Acessar Agora" : "Começar Grátis"}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
