@@ -26,8 +26,11 @@ export default async function handler(
     const resendApiKey = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
 
     if (!resendApiKey) {
+      console.error("❌ Erro: RESEND_API_KEY=", process.env.RESEND_API_KEY, "VITE_RESEND_API_KEY=", process.env.VITE_RESEND_API_KEY);
       return res.status(500).json({ error: "Resend API key não configurado" });
     }
+
+    console.log("🔑 Usando chave Resend que começa com:", resendApiKey.substring(0, 10) + "...");
 
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
