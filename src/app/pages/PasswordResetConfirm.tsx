@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Lock, KeyRound } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
@@ -13,7 +13,8 @@ export function PasswordResetConfirm() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { token } = useParams();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
     Component: ResetPassword,
   },
   {
-    path: "/auth/confirm-password-reset/:token",
+    path: "/auth/confirm-password-reset",
     Component: PasswordResetConfirm,
   },
   {
