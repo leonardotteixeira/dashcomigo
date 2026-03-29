@@ -17,10 +17,10 @@ import { toast } from "sonner";
 import { pb } from "../../lib/pocketbase";
 
 type Template = "basico" | "detalhado" | "premium";
-type ProposalStatus = "aguardando" | "aprovada" | "recusada";
+type ProposalStatus = "aguardando" | "aprovada" | "recusada" | "paga" | "vencida";
 type ProposalTipo = "contrato" | "orcamento";
 type ViewMode = "list" | "create" | "view";
-type FilterTab = "todas" | "aguardando" | "aprovadas" | "recusadas";
+type FilterTab = "todas" | "aguardando" | "aprovadas" | "recusadas" | "pagas" | "vencidas";
 
 interface Proposal {
   id: string;
@@ -34,6 +34,7 @@ interface Proposal {
   prazo: string;
   condicoes_pagamento: string;
   validade: number;
+  data_pagamento?: string;
   template: Template;
   created: string;
 }
@@ -46,8 +47,10 @@ const TEMPLATES: { id: Template; label: string; desc: string; badge?: string }[]
 
 const STATUS_CONFIG = {
   aguardando: { label: "Aguardando", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-  aprovada: { label: "Aprovada", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  recusada: { label: "Recusada", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+  aprovada: { label: "Aprovada", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+  paga: { label: "Paga", color: "bg-green-500/20 text-green-400 border-green-500/30" },
+  vencida: { label: "Vencida", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+  recusada: { label: "Recusada", color: "bg-orange-500/20 text-orange-400 border-orange-500/30" },
 };
 
 const TIPO_CONFIG = {
@@ -84,6 +87,9 @@ export function GeradorPropostas() {
   // Dialogs
   const [limitDialogOpen, setLimitDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [paymentDateDialogOpen, setPaymentDateDialogOpen] = useState(false);
+  const [paymentDate, setPaymentDate] = useState("");
+  const [pendingPaymentProposalId, setPendingPaymentProposalId] = useState<string | null>(null);
 
   const FREE_LIMIT = 2;
   const limite = user?.plan === "pro" ? Infinity : FREE_LIMIT;
@@ -127,9 +133,11 @@ export function GeradorPropostas() {
 
   const getFilteredProposals = () => {
     if (activeTab === "todas") return proposals;
-    if (activeTab === "aprovadas") return proposals.filter(p => p.status === "aprovada");
-    if (activeTab === "recusadas") return proposals.filter(p => p.status === "recusada");
     if (activeTab === "aguardando") return proposals.filter(p => p.status === "aguardando");
+    if (activeTab === "aprovadas") return proposals.filter(p => p.status === "aprovada");
+    if (activeTab === "pagas") return proposals.filter(p => p.status === "paga");
+    if (activeTab === "vencidas") return proposals.filter(p => p.status === "vencida");
+    if (activeTab === "recusadas") return proposals.filter(p => p.status === "recusada");
     return proposals;
   };
 
@@ -282,16 +290,52 @@ export function GeradorPropostas() {
   };
 
   const handleUpdateStatus = async (id: string, newStatus: ProposalStatus) => {
+    if (newStatus === "paga") {
+      // Show dialog to set payment date
+      setPendingPaymentProposalId(id);
+      setPaymentDate(new Date().toISOString().split("T")[0]);
+      setPaymentDateDialogOpen(true);
+      return;
+    }
+
     try {
-      await pb.collection("proposals").update(id, {
-        status: newStatus,
-      });
+      const updateData: Record<string, any> = { status: newStatus };
+      await pb.collection("proposals").update(id, updateData);
 
       toast.success(`Proposta marcada como ${STATUS_CONFIG[newStatus].label}`);
       await fetchProposals();
       if (selectedProposal?.id === id) {
         setSelectedProposal({ ...selectedProposal, status: newStatus });
       }
+    } catch (error: any) {
+      toast.error("Erro ao atualizar proposta");
+    }
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!pendingPaymentProposalId || !paymentDate) {
+      toast.error("Selecione uma data de pagamento");
+      return;
+    }
+
+    try {
+      await pb.collection("proposals").update(pendingPaymentProposalId, {
+        status: "paga",
+        data_pagamento: paymentDate,
+      });
+
+      toast.success("Proposta marcada como Paga");
+      await fetchProposals();
+      if (selectedProposal?.id === pendingPaymentProposalId) {
+        setSelectedProposal({
+          ...selectedProposal,
+          status: "paga",
+          data_pagamento: paymentDate,
+        });
+      }
+      setPaymentDateDialogOpen(false);
+      setPendingPaymentProposalId(null);
+      setPaymentDate("");
     } catch (error: any) {
       toast.error("Erro ao atualizar proposta");
     }
@@ -337,6 +381,8 @@ export function GeradorPropostas() {
     { id: "todas", label: "Todas" },
     { id: "aguardando", label: "Aguardando" },
     { id: "aprovadas", label: "Aprovadas" },
+    { id: "pagas", label: "Pagas" },
+    { id: "vencidas", label: "Vencidas" },
     { id: "recusadas", label: "Recusadas" },
   ];
 
@@ -496,6 +542,12 @@ export function GeradorPropostas() {
                       <span className="text-[#A1A1A1]">Pagamento</span>
                       <span className="text-white">{selectedProposal.condicoes_pagamento}</span>
                     </div>
+                    {selectedProposal.data_pagamento && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-[#A1A1A1]">Paga em</span>
+                        <span className="text-[#2DDB81] font-medium">{formatDate(selectedProposal.data_pagamento)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A1A1A1]">Criada em</span>
                       <span className="text-white">{formatDate(selectedProposal.created)}</span>
@@ -505,12 +557,12 @@ export function GeradorPropostas() {
                   {/* Status Actions */}
                   <div>
                     <p className="text-xs text-[#A1A1A1] font-medium mb-2 uppercase">Alterar Status</p>
-                    <div className="flex gap-2">
-                      {(["aguardando", "aprovada", "recusada"] as ProposalStatus[]).map(s => (
+                    <div className="flex flex-wrap gap-2">
+                      {(["aguardando", "aprovada", "paga", "vencida", "recusada"] as ProposalStatus[]).map(s => (
                         <button
                           key={s}
                           onClick={() => handleUpdateStatus(selectedProposal.id, s)}
-                          className={`flex-1 text-xs py-2 rounded-lg border font-medium transition-colors ${
+                          className={`flex-1 min-w-20 text-xs py-2 rounded-lg border font-medium transition-colors ${
                             selectedProposal.status === s
                               ? STATUS_CONFIG[s].color
                               : "border-white/10 text-[#686F6F] hover:text-white hover:border-white/20"
@@ -589,6 +641,46 @@ export function GeradorPropostas() {
             )}
           </div>
         </div>
+
+        {/* Payment Date Dialog */}
+        <Dialog open={paymentDateDialogOpen} onOpenChange={setPaymentDateDialogOpen}>
+          <DialogContent className="max-w-md bg-[#1B1B1B] border-white/10">
+            <DialogHeader>
+              <DialogTitle className="text-white">Data de Pagamento</DialogTitle>
+              <DialogDescription className="text-[#A1A1A1]">
+                Em qual data a proposta foi paga?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-[#A1A1A1] mb-2 block">Data</Label>
+                <Input
+                  type="date"
+                  value={paymentDate}
+                  onChange={(e) => setPaymentDate(e.target.value)}
+                  className="bg-[#141414] border-white/10 text-white"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  className="flex-1 bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg"
+                  onClick={handleConfirmPayment}
+                >
+                  Confirmar
+                </Button>
+                <Button
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg"
+                  onClick={() => {
+                    setPaymentDateDialogOpen(false);
+                    setPendingPaymentProposalId(null);
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Limit Dialog */}
         <Dialog open={limitDialogOpen} onOpenChange={setLimitDialogOpen}>
