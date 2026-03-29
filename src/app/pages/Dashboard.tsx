@@ -25,6 +25,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
 import { ObligationsProvider } from "../contexts/ObligationsContext";
 import { ObligationsSection } from "../components/ObligationsSection";
+import { ProximasAVencerWidget } from "../components/ProximasAVencerWidget";
 import {
   AreaChart,
   Area,
@@ -573,6 +574,9 @@ export function Dashboard() {
               </div>
             </div>
           </motion.div>
+
+          {/* Próximas a Vencer */}
+          <ProximasAVencerWidget />
 
           {/* Próximas Obrigações */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}>
