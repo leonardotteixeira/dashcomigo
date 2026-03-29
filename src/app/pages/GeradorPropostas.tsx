@@ -45,13 +45,16 @@ const TEMPLATES: { id: Template; label: string; desc: string; badge?: string }[]
   { id: "premium", label: "Premium", desc: "Header destacado e termos", badge: "PRO" },
 ];
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   aguardando: { label: "Aguardando", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
   aprovada: { label: "Aprovada", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
   paga: { label: "Paga", color: "bg-green-500/20 text-green-400 border-green-500/30" },
   vencida: { label: "Vencida", color: "bg-red-500/20 text-red-400 border-red-500/30" },
   recusada: { label: "Recusada", color: "bg-orange-500/20 text-orange-400 border-orange-500/30" },
 };
+
+const getStatusConfig = (status: string) =>
+  STATUS_CONFIG[status] ?? { label: status ?? "—", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" };
 
 const TIPO_CONFIG = {
   contrato: { label: "CONTRATO", color: "text-[#2DDB81]" },
@@ -302,7 +305,7 @@ export function GeradorPropostas() {
       const updateData: Record<string, any> = { status: newStatus };
       await pb.collection("proposals").update(id, updateData);
 
-      toast.success(`Proposta marcada como ${STATUS_CONFIG[newStatus].label}`);
+      toast.success(`Proposta marcada como ${getStatusConfig(newStatus).label}`);
       await fetchProposals();
       if (selectedProposal?.id === id) {
         setSelectedProposal({ ...selectedProposal, status: newStatus });
@@ -473,8 +476,8 @@ export function GeradorPropostas() {
                         <span className={`text-xs font-bold ${TIPO_CONFIG[proposal.tipo].color}`}>
                           {TIPO_CONFIG[proposal.tipo].label} #{proposal.id.slice(0, 4).toUpperCase()}
                         </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${STATUS_CONFIG[proposal.status].color}`}>
-                          {STATUS_CONFIG[proposal.status].label}
+                        <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${getStatusConfig(proposal.status).color}`}>
+                          {getStatusConfig(proposal.status).label}
                         </span>
                       </div>
                       <h3 className="text-white font-semibold truncate">{proposal.nome_servico}</h3>
@@ -521,8 +524,8 @@ export function GeradorPropostas() {
                     <div className="mt-3">
                       <div className="flex justify-between text-xs mb-1">
                         <span className="text-[#A1A1A1]">Status</span>
-                        <span className={`font-medium ${STATUS_CONFIG[selectedProposal.status].color.split(' ')[1]}`}>
-                          {STATUS_CONFIG[selectedProposal.status].label}
+                        <span className={`font-medium ${getStatusConfig(selectedProposal.status).color.split(' ')[1]}`}>
+                          {getStatusConfig(selectedProposal.status).label}
                         </span>
                       </div>
                     </div>
@@ -564,11 +567,11 @@ export function GeradorPropostas() {
                           onClick={() => handleUpdateStatus(selectedProposal.id, s)}
                           className={`flex-1 min-w-20 text-xs py-2 rounded-lg border font-medium transition-colors ${
                             selectedProposal.status === s
-                              ? STATUS_CONFIG[s].color
+                              ? getStatusConfig(s).color
                               : "border-white/10 text-[#686F6F] hover:text-white hover:border-white/20"
                           }`}
                         >
-                          {STATUS_CONFIG[s].label}
+                          {getStatusConfig(s).label}
                         </button>
                       ))}
                     </div>
