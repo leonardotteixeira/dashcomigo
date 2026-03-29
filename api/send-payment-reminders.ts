@@ -93,15 +93,16 @@ export default async function handler(
     }
 
     // Se for um teste, enviar email de teste
-    let testEmail = null;
+    let testEmail = (req.query?.testEmail as string) || null;
 
-    // Tenta pegar do body (se for JSON)
-    if (typeof req.body === 'object' && req.body?.testEmail) {
-      testEmail = req.body.testEmail;
-    }
-    // Tenta pegar da query string
-    if (!testEmail && typeof req.query?.testEmail === 'string') {
-      testEmail = req.query.testEmail;
+    // Se não encontrou na query, tenta parsear do body
+    if (!testEmail && req.body) {
+      try {
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        testEmail = body?.testEmail;
+      } catch (e) {
+        // Ignora erro de parse
+      }
     }
 
     if (testEmail) {
