@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Plus, Trash2, AlertTriangle, X, PieChart } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, X, PieChart, Crown, Lock } from "lucide-react";
 import { useBudgets } from "../contexts/BudgetsContext";
 import { CATEGORIAS_PAYABLES } from "../contexts/PayablesContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 const MESES = [
@@ -31,7 +33,30 @@ function gerarOpcoesMeses() {
 }
 
 export function Orcamentos() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const { budgets, loading, addBudget, deleteBudget, getBudgetsByMes, getTotalByMes } = useBudgets();
+
+  if (user?.plan !== "pro") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+        <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center mb-6">
+          <Lock className="w-8 h-8 text-[#2DDB81]" />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-3">Orçamentos são exclusivos do PRO</h2>
+        <p className="text-[#A1A1A1] mb-8 max-w-md">
+          Planeje seus gastos por categoria e compare com o realizado em tempo real com o plano PRO.
+        </p>
+        <button
+          onClick={() => navigate("/checkout")}
+          className="flex items-center gap-2 bg-[#2DDB81] hover:bg-[#28C974] text-black font-bold px-6 py-3 rounded-xl transition-colors"
+        >
+          <Crown className="w-5 h-5" />
+          Fazer Upgrade para PRO
+        </button>
+      </div>
+    );
+  }
 
   const [mesSelecionado, setMesSelecionado] = useState(mesAtual());
   const [modalOpen, setModalOpen] = useState(false);
