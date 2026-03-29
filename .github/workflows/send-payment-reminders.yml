@@ -6,7 +6,7 @@ on:
     - cron: '0 8 * * *'  # 08:00 UTC (13:00 em São Paulo)
 
   # Permitir disparo manual (teste)
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   send-reminders:
