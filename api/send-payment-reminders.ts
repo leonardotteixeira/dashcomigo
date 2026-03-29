@@ -93,7 +93,17 @@ export default async function handler(
     }
 
     // Se for um teste, enviar email de teste
-    const testEmail = req.body?.testEmail;
+    let testEmail = null;
+
+    // Tenta pegar do body (se for JSON)
+    if (typeof req.body === 'object' && req.body?.testEmail) {
+      testEmail = req.body.testEmail;
+    }
+    // Tenta pegar da query string
+    if (!testEmail && typeof req.query?.testEmail === 'string') {
+      testEmail = req.query.testEmail;
+    }
+
     if (testEmail) {
       try {
         await sendTestEmail(testEmail);
