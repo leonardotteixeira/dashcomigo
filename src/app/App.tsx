@@ -5,17 +5,29 @@ import { CashFlowProvider } from "./contexts/CashFlowContext";
 import { PayablesProvider } from "./contexts/PayablesContext";
 import { ReportsProvider } from "./contexts/ReportsContext";
 import { InventoryProvider } from "./contexts/InventoryContext";
+import { ReceivablesProvider } from "./contexts/ReceivablesContext";
+import { ContactsProvider } from "./contexts/ContactsContext";
+import { BudgetsProvider } from "./contexts/BudgetsContext";
+import { GoalsProvider } from "./contexts/GoalsContext";
 
 export default function App() {
   return (
     <AuthProvider>
       <CashFlowProvider>
         <PayablesProvider>
-          <InventoryProvider>
-            <ReportsProvider>
-              <RouterProvider router={router} />
-            </ReportsProvider>
-          </InventoryProvider>
+          <ReceivablesProvider>
+            <ContactsProvider>
+              <InventoryProvider>
+                <BudgetsProvider>
+                  <GoalsProvider>
+                    <ReportsProvider>
+                      <RouterProvider router={router} />
+                    </ReportsProvider>
+                  </GoalsProvider>
+                </BudgetsProvider>
+              </InventoryProvider>
+            </ContactsProvider>
+          </ReceivablesProvider>
         </PayablesProvider>
       </CashFlowProvider>
     </AuthProvider>
