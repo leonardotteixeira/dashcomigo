@@ -14,7 +14,8 @@ import {
   Bell,
   Search,
   Settings,
-  Receipt
+  Receipt,
+  BarChart3
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -51,6 +52,7 @@ export function DashboardLayout() {
   const navigation = [
     { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
     { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
+    { name: "Relatórios", href: "/app/relatorios", icon: BarChart3 },
     { name: "MEI → ME", href: "/app/mei-me", icon: ArrowRightLeft },
     { name: "Preço Ideal", href: "/app/preco", icon: Tag, isPro: true },
     { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
