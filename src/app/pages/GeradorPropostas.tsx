@@ -148,8 +148,11 @@ export function GeradorPropostas() {
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+  const formatDate = (dateStr: string | undefined | null) => {
+    if (!dateStr) return "—";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "—";
+    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
   };
 
   const formatDateFull = (daysFromNow: number) => {

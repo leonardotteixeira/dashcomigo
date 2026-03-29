@@ -113,6 +113,7 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
         createData.anotacoes = payableData.anotacoes;
       }
 
+      console.log("📤 Enviando para PocketBase:", JSON.stringify(createData, null, 2));
       const record = await pb.collection("payables").create(createData);
 
       const newPayable: Payable = {
@@ -130,8 +131,9 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
       };
 
       setPayables([newPayable, ...payables]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao adicionar conta a pagar:", error);
+      console.error("Detalhes do erro:", JSON.stringify(error?.data ?? error?.response ?? {}, null, 2));
       throw error;
     }
   }
