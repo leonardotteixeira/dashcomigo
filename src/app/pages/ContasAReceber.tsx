@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Plus, Trash2, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Plus, Trash2, CheckCircle, Clock, AlertCircle, Crown } from "lucide-react";
 import { useReceivables, CATEGORIAS_RECEIVABLES, Receivable } from "../contexts/ReceivablesContext";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { format, isPast, isToday, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -29,6 +30,7 @@ export function ContasAReceber() {
   const [formAnotacoes, setFormAnotacoes] = useState("");
 
   const limitStatus = getLimitStatus();
+  const navigate = useNavigate();
   const proximasAReceber = getProximasAReceber(7);
 
   const receivablesFiltradas = filtro === "todas"
@@ -288,16 +290,52 @@ export function ContasAReceber() {
         </div>
       )}
 
-      {/* Limite */}
+      {/* Limite FREE */}
       {limitStatus.limit !== Infinity && (
-        <div className="mt-6 bg-[#1B1B1B] border border-white/5 rounded-2xl p-4">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-[#A1A1A1]">Contas cadastradas</span>
-            <span className="text-white">{limitStatus.used}/{limitStatus.limit}</span>
+        <div className={`mt-6 rounded-2xl p-4 border ${
+          limitStatus.percentage >= 100
+            ? "bg-red-500/10 border-red-500/30"
+            : limitStatus.percentage >= 80
+            ? "bg-yellow-500/10 border-yellow-500/30"
+            : "bg-[#1B1B1B] border-white/5"
+        }`}>
+          <div className="flex justify-between items-center mb-2">
+            <div>
+              <span className="text-sm text-white font-medium">Recebimentos este mês</span>
+              <span className="text-xs text-[#A1A1A1] ml-2">(reseta todo dia 1)</span>
+            </div>
+            <span className={`text-sm font-bold ${
+              limitStatus.percentage >= 100 ? "text-red-400" :
+              limitStatus.percentage >= 80 ? "text-yellow-400" : "text-white"
+            }`}>
+              {limitStatus.used}/{limitStatus.limit}
+            </span>
           </div>
-          <div className="w-full bg-[#2a2a2a] rounded-full h-2">
-            <div className="bg-[#2DDB81] h-2 rounded-full transition-all" style={{ width: `${Math.min(limitStatus.percentage, 100)}%` }} />
+          <div className="w-full bg-[#2a2a2a] rounded-full h-2 mb-3">
+            <div
+              className={`h-2 rounded-full transition-all ${
+                limitStatus.percentage >= 100 ? "bg-red-500" :
+                limitStatus.percentage >= 80 ? "bg-yellow-400" : "bg-[#2DDB81]"
+              }`}
+              style={{ width: `${Math.min(limitStatus.percentage, 100)}%` }}
+            />
           </div>
+          {limitStatus.percentage >= 80 && (
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-[#A1A1A1]">
+                {limitStatus.percentage >= 100
+                  ? "Limite atingido! Faça upgrade para continuar."
+                  : `Restam apenas ${limitStatus.limit - limitStatus.used} lançamentos.`}
+              </p>
+              <button
+                onClick={() => navigate("/checkout")}
+                className="flex items-center gap-1 text-xs bg-[#2DDB81] hover:bg-[#28C974] text-black font-bold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <Crown className="w-3 h-3" />
+                Upgrade PRO
+              </button>
+            </div>
+          )}
         </div>
       )}
 

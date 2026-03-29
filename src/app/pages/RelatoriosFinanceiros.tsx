@@ -1,8 +1,10 @@
 import { useState, useMemo } from "react";
-import { PieChart, TrendingUp, DollarSign, AlertCircle, CheckCircle } from "lucide-react";
+import { PieChart, TrendingUp, DollarSign, AlertCircle, CheckCircle, Crown, Lock } from "lucide-react";
 import { useReports } from "../contexts/ReportsContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
 import { usePayables } from "../contexts/PayablesContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router";
 import { PeriodFilter } from "../components/reports/PeriodFilter";
 import { ReportCard, CompactReportCard } from "../components/reports/ReportCard";
 import { ReportChart } from "../components/reports/ReportChart";
@@ -21,6 +23,8 @@ import {
 type TabType = "resumo" | "receita-despesa" | "fluxo" | "propostas" | "contas-pagar";
 
 export function RelatoriosFinanceiros() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("resumo");
   const [period, setPeriod] = useState<"mes" | "trimestre" | "ano" | "custom" | "30dias">("mes");
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
@@ -28,6 +32,27 @@ export function RelatoriosFinanceiros() {
   const { summary, getTransactionsByDateRange, getMonthlyFlow: getMonthlyFlowFn } = useReports();
   const { transactions } = useCashFlow();
   const { payables } = usePayables();
+
+  if (user?.plan !== "pro") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+        <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center mb-6">
+          <Lock className="w-8 h-8 text-[#2DDB81]" />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-3">Relatórios são exclusivos do PRO</h2>
+        <p className="text-[#A1A1A1] mb-8 max-w-md">
+          Acesse relatórios completos, gráficos avançados, exportação em PDF e Excel com o plano PRO.
+        </p>
+        <button
+          onClick={() => navigate("/checkout")}
+          className="flex items-center gap-2 bg-[#2DDB81] hover:bg-[#28C974] text-black font-bold px-6 py-3 rounded-xl transition-colors"
+        >
+          <Crown className="w-5 h-5" />
+          Fazer Upgrade para PRO
+        </button>
+      </div>
+    );
+  }
 
   // Get transactions for the selected period
   const periodTransactions = useMemo(

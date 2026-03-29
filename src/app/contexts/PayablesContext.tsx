@@ -41,7 +41,12 @@ export const CATEGORIAS_PAYABLES = [
   "Outros"
 ];
 
-const FREE_LIMIT = 30;
+const FREE_LIMIT = 20;
+
+function getMesAtual() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
 
 export function PayablesProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -200,7 +205,8 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
   }
 
   function getLimitStatus() {
-    const used = payables.length;
+    const mesAtual = getMesAtual();
+    const used = payables.filter((p) => p.createdAt.toISOString().startsWith(mesAtual)).length;
     const limit = user?.plan === "pro" ? Infinity : FREE_LIMIT;
     const percentage = limit === Infinity ? 0 : (used / limit) * 100;
     return { used, limit, percentage };
