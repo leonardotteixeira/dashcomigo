@@ -15,7 +15,8 @@ import {
   Search,
   Settings,
   Receipt,
-  BarChart3
+  BarChart3,
+  Package
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -58,6 +59,7 @@ export function DashboardLayout() {
     { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
     { name: "Propostas", href: "/app/propostas", icon: FileText },
     { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
+    { name: "Estoque", href: "/app/estoque", icon: Package },
   ];
 
   const handleLogout = () => {

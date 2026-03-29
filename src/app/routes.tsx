@@ -16,6 +16,7 @@ import { SimuladorLucro } from "./pages/SimuladorLucro";
 import { GeradorPropostas } from "./pages/GeradorPropostas";
 import { ContasAPagar } from "./pages/ContasAPagar";
 import { RelatoriosFinanceiros } from "./pages/RelatoriosFinanceiros";
+import { Estoque } from "./pages/Estoque";
 import { Onboarding } from "./pages/Onboarding";
 import { Profile } from "./pages/Profile";
 import { AuthCallback } from "./pages/AuthCallback";
@@ -118,6 +119,10 @@ export const router = createBrowserRouter([
       {
         path: "contas-a-pagar",
         Component: ContasAPagar,
+      },
+      {
+        path: "estoque",
+        Component: Estoque,
       },
       {
         path: "relatorios",
