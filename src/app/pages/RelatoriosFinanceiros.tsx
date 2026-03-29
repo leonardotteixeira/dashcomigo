@@ -8,6 +8,8 @@ import { ReportCard, CompactReportCard } from "../components/reports/ReportCard"
 import { ReportChart } from "../components/reports/ReportChart";
 import { ReportTable, Column } from "../components/reports/ReportTable";
 import { ExportButtons } from "../components/reports/ExportButtons";
+import { exportReportToExcel, exportReportToPDF } from "../utils/export";
+import type { ReportExportData } from "../utils/export";
 import {
   formatCurrency,
   formatPercentage,
@@ -173,6 +175,54 @@ export function RelatoriosFinanceiros() {
   const handlePeriodChange = (newPeriod: any, dates: [Date, Date]) => {
     setPeriod(newPeriod);
     setDateRange(dates);
+  };
+
+  // Build export data
+  const exportData: ReportExportData = useMemo(
+    () => ({
+      period,
+      dateRange,
+      totalReceitas: periodSummary.receitas,
+      totalDespesas: periodSummary.despesas,
+      fluxoCaixa: periodSummary.fluxo,
+      margemLiquida: periodSummary.margem,
+      transactions: periodTransactions.map((t) => ({
+        data: new Date(t.data).toLocaleDateString("pt-BR"),
+        descricao: t.descricao || "-",
+        categoria: t.categoria,
+        tipo: t.tipo === "entrada" ? "Receita" : "Despesa",
+        valor: t.valor,
+      })),
+      monthlyData: monthlyFlowData,
+      expensesByCategory: expenseByCategory.reduce(
+        (acc, item) => ({ ...acc, [item.name]: item.value }),
+        {}
+      ),
+      payablesTotal: payables.reduce((sum, p) => sum + p.valor, 0),
+      payablesPending: payables
+        .filter((p) => p.status === "pendente")
+        .reduce((sum, p) => sum + p.valor, 0),
+      payablesPaid: payables
+        .filter((p) => p.status === "pago")
+        .reduce((sum, p) => sum + p.valor, 0),
+    }),
+    [period, dateRange, periodSummary, periodTransactions, monthlyFlowData, expenseByCategory, payables]
+  );
+
+  const handleExportExcel = () => {
+    try {
+      exportReportToExcel(exportData);
+    } catch (error) {
+      alert("Erro ao exportar Excel: " + (error instanceof Error ? error.message : "Desconhecido"));
+    }
+  };
+
+  const handleExportPDF = () => {
+    try {
+      exportReportToPDF(exportData);
+    } catch (error) {
+      alert("Erro ao exportar PDF: " + (error instanceof Error ? error.message : "Desconhecido"));
+    }
   };
 
   const tabs = [
@@ -436,8 +486,8 @@ export function RelatoriosFinanceiros() {
           <p className="text-[#A1A1A1] text-sm">Exportar relatório para análise externa</p>
           <ExportButtons
             filename={`relatorio_financeiro_${period}`}
-            onExportExcel={() => alert("Excel export em desenvolvimento")}
-            onExportPDF={() => alert("PDF export em desenvolvimento")}
+            onExportExcel={handleExportExcel}
+            onExportPDF={handleExportPDF}
           />
         </div>
       </div>
