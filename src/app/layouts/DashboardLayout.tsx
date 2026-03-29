@@ -16,7 +16,11 @@ import {
   Settings,
   Receipt,
   BarChart3,
-  Package
+  Package,
+  TrendingUp,
+  Users,
+  PieChart,
+  Target
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -59,6 +63,10 @@ export function DashboardLayout() {
     { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
     { name: "Propostas", href: "/app/propostas", icon: FileText },
     { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
+    { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
+    { name: "Clientes", href: "/app/clientes", icon: Users },
+    { name: "Orçamentos", href: "/app/orcamentos", icon: PieChart },
+    { name: "Metas", href: "/app/metas", icon: Target },
     { name: "Estoque", href: "/app/estoque", icon: Package },
   ];
 

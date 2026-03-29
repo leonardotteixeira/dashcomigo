@@ -17,6 +17,10 @@ import { GeradorPropostas } from "./pages/GeradorPropostas";
 import { ContasAPagar } from "./pages/ContasAPagar";
 import { RelatoriosFinanceiros } from "./pages/RelatoriosFinanceiros";
 import { Estoque } from "./pages/Estoque";
+import { ContasAReceber } from "./pages/ContasAReceber";
+import { ClientesFornecedores } from "./pages/ClientesFornecedores";
+import { Orcamentos } from "./pages/Orcamentos";
+import { Metas } from "./pages/Metas";
 import { Onboarding } from "./pages/Onboarding";
 import { Profile } from "./pages/Profile";
 import { AuthCallback } from "./pages/AuthCallback";
@@ -123,6 +127,22 @@ export const router = createBrowserRouter([
       {
         path: "estoque",
         Component: Estoque,
+      },
+      {
+        path: "contas-a-receber",
+        Component: ContasAReceber,
+      },
+      {
+        path: "clientes",
+        Component: ClientesFornecedores,
+      },
+      {
+        path: "orcamentos",
+        Component: Orcamentos,
+      },
+      {
+        path: "metas",
+        Component: Metas,
       },
       {
         path: "relatorios",
