@@ -31,6 +31,7 @@ import { ComoMigrar } from "./pages/ComoMigrar";
 import { FAQ } from "./pages/FAQ";
 import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
+import { PasswordResetRedirect } from "./pages/PasswordResetRedirect";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +73,10 @@ export const router = createBrowserRouter([
   {
     path: "/auth/confirm-password-reset",
     Component: PasswordResetConfirm,
+  },
+  {
+    path: "/auth/confirm-password-reset/:token",
+    Component: PasswordResetRedirect,
   },
   {
     path: "/auth/confirm-email",
