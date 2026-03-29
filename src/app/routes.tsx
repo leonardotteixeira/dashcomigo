@@ -14,6 +14,7 @@ import { SimuladorMEI } from "./pages/SimuladorMEI";
 import { SimuladorPreco } from "./pages/SimuladorPreco";
 import { SimuladorLucro } from "./pages/SimuladorLucro";
 import { GeradorPropostas } from "./pages/GeradorPropostas";
+import { ContasAPagar } from "./pages/ContasAPagar";
 import { Onboarding } from "./pages/Onboarding";
 import { Profile } from "./pages/Profile";
 import { AuthCallback } from "./pages/AuthCallback";
@@ -112,6 +113,10 @@ export const router = createBrowserRouter([
       {
         path: "propostas",
         Component: GeradorPropostas,
+      },
+      {
+        path: "contas-a-pagar",
+        Component: ContasAPagar,
       },
       {
         path: "onboarding",
