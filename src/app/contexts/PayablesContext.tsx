@@ -10,7 +10,7 @@ export interface Payable {
   dataVencimento: string;
   status: "pendente" | "pago";
   ehRecorrente: boolean;
-  frequenciaRecorrencia?: "mensal" | "anual" | null;
+  frequenciaRecorrencia?: "mensal" | "anual";
   dataPagamento?: string;
   anotacoes?: string;
   createdAt: Date;
