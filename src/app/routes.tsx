@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 import { DashboardLayout } from "./layouts/DashboardLayout";
 import { LandingPage } from "./pages/LandingPage";
 import { Login } from "./pages/Login";
@@ -33,7 +33,7 @@ import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
 import { PasswordResetRedirect } from "./pages/PasswordResetRedirect";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     Component: LandingPage,
