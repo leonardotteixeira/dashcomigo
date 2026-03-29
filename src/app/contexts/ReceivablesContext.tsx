@@ -40,7 +40,12 @@ export const CATEGORIAS_RECEIVABLES = [
   "Outros",
 ];
 
-const FREE_LIMIT = 30;
+const FREE_LIMIT = 20;
+
+function getMesAtual() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
 
 export function ReceivablesProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -162,7 +167,8 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
   }
 
   function getLimitStatus() {
-    const used = receivables.length;
+    const mesAtual = getMesAtual();
+    const used = receivables.filter((r) => r.createdAt.toISOString().startsWith(mesAtual)).length;
     const limit = user?.plan === "pro" ? Infinity : FREE_LIMIT;
     const percentage = limit === Infinity ? 0 : (used / limit) * 100;
     return { used, limit, percentage };
