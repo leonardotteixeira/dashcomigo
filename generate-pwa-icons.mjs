@@ -8,8 +8,11 @@ const OUTPUT = "public/icons";
 
 await mkdir(OUTPUT, { recursive: true });
 
+// Fundo branco — o logo Bubuya foi desenhado para fundo branco
+const BG = { r: 255, g: 255, b: 255, alpha: 1 };
+
 const sizes = [
-  // PWA padrão
+  // PWA padrão (manifest.webmanifest)
   { name: "icon-72x72.png",   size: 72 },
   { name: "icon-96x96.png",   size: 96 },
   { name: "icon-128x128.png", size: 128 },
@@ -18,7 +21,7 @@ const sizes = [
   { name: "icon-192x192.png", size: 192 },
   { name: "icon-384x384.png", size: 384 },
   { name: "icon-512x512.png", size: 512 },
-  // Apple Touch Icons
+  // Apple Touch Icons (iOS usa estes)
   { name: "apple-touch-icon-57x57.png",   size: 57 },
   { name: "apple-touch-icon-60x60.png",   size: 60 },
   { name: "apple-touch-icon-72x72.png",   size: 72 },
@@ -34,11 +37,23 @@ const sizes = [
 ];
 
 for (const { name, size } of sizes) {
+  // Padding de 10% para o logo não encostar nas bordas
+  const pad = Math.round(size * 0.10);
+  const inner = size - pad * 2;
   await sharp(SOURCE)
-    .resize(size, size, { fit: "contain", background: { r: 20, g: 20, b: 20, alpha: 1 } })
+    .resize(inner, inner, { fit: "contain", background: BG })
+    .extend({ top: pad, bottom: pad, left: pad, right: pad, background: BG })
     .png()
     .toFile(`${OUTPUT}/${name}`);
   console.log(`✅ ${OUTPUT}/${name}`);
 }
+
+// apple-touch-icon.png na raiz — iOS procura aqui automaticamente
+await sharp(SOURCE)
+  .resize(152, 152, { fit: "contain", background: BG })
+  .extend({ top: 14, bottom: 14, left: 14, right: 14, background: BG })
+  .png()
+  .toFile("public/apple-touch-icon.png");
+console.log("✅ public/apple-touch-icon.png (root — descoberta automática iOS)");
 
 console.log("\n🎉 Ícones gerados com sucesso!");
