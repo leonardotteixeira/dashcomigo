@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 export interface Contact {
   id: string;
@@ -80,6 +80,8 @@ export function ContactsProvider({ children }: { children: ReactNode }) {
 
   async function addContact(data: Omit<Contact, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
+    const plan = await getVerifiedPlan(user.id);
+    if (plan !== "pro" && contacts.length >= FREE_LIMIT) throw new Error("Limite de contatos atingido");
 
     const createData: Record<string, unknown> = {
       userid: user.id,
