@@ -3,7 +3,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 // Mock Resend para teste
 async function sendTestEmail(to: string) {
   try {
-    const resendApiKey = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
+    const resendApiKey = process.env.RESEND_API_KEY;
 
     if (!resendApiKey) {
       throw new Error("Resend API key não configurado");
@@ -82,7 +82,7 @@ export default async function handler(
 
   try {
     const authHeader = req.headers.authorization as string;
-    const webhookSecret = process.env.VITE_WEBHOOK_SECRET;
+    const webhookSecret = process.env.WEBHOOK_SECRET;
 
     if (!webhookSecret) {
       return res.status(500).json({ error: "Webhook secret não configurado" });
