@@ -289,3 +289,194 @@ export const getMarginHealthMessage = (
   };
   return messages[status];
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INSIGHTS ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Insight {
+  type: "warning" | "success" | "info";
+  message: string;
+}
+
+export function generateInsights(params: {
+  receitas: number;
+  despesas: number;
+  fluxo: number;
+  margem: number;
+  prevReceitas: number;
+  prevDespesas: number;
+  monthlyFlowData: Array<{ receitas: number; despesas: number; fluxo: number; name: string }>;
+  overduePayables: number;
+}): Insight[] {
+  const { receitas, despesas, fluxo, margem, prevReceitas, prevDespesas, monthlyFlowData, overduePayables } = params;
+  const insights: Insight[] = [];
+
+  // Sem receitas
+  if (receitas === 0) {
+    insights.push({ type: "info", message: "Nenhuma receita registrada neste período. Registre suas entradas para uma análise completa." });
+    return insights;
+  }
+
+  // Resultado do período
+  if (fluxo < 0) {
+    insights.push({ type: "warning", message: `Prejuízo de ${formatCurrency(Math.abs(fluxo))} neste período — despesas superam as receitas.` });
+  } else if (margem >= 30) {
+    insights.push({ type: "success", message: `Ótima margem de ${formatPercentage(margem)} — seu negócio está saudável e rentável.` });
+  } else if (margem >= 10) {
+    insights.push({ type: "info", message: `Margem de ${formatPercentage(margem)} — dentro do aceitável, mas há espaço para crescer.` });
+  } else {
+    insights.push({ type: "warning", message: `Margem de apenas ${formatPercentage(margem)} — muito baixa. Revise sua precificação.` });
+  }
+
+  // Comparação com período anterior
+  if (prevReceitas > 0) {
+    const receitaGrowth = calculateGrowth(receitas, prevReceitas);
+    const despesaGrowth = calculateGrowth(despesas, prevDespesas);
+
+    if (receitaGrowth <= -15) {
+      insights.push({ type: "warning", message: `Receitas caíram ${formatPercentage(Math.abs(receitaGrowth))} em relação ao período anterior.` });
+    } else if (receitaGrowth >= 15) {
+      insights.push({ type: "success", message: `Receitas cresceram ${formatPercentage(receitaGrowth)} em relação ao período anterior.` });
+    }
+
+    if (despesaGrowth >= 20) {
+      insights.push({ type: "warning", message: `Despesas aumentaram ${formatPercentage(despesaGrowth)} em relação ao período anterior — verifique o que subiu.` });
+    }
+  }
+
+  // Peso das despesas
+  if (receitas > 0 && despesas / receitas >= 0.85 && fluxo >= 0) {
+    insights.push({ type: "warning", message: `Despesas equivalem a ${formatPercentage((despesas / receitas) * 100)} das receitas — margem de segurança muito pequena.` });
+  }
+
+  // Contas vencidas
+  if (overduePayables > 0) {
+    insights.push({ type: "warning", message: `${overduePayables} conta${overduePayables > 1 ? "s" : ""} a pagar vencida${overduePayables > 1 ? "s" : ""} — quite para evitar juros e proteger seu crédito.` });
+  }
+
+  // Tendência dos últimos 3 meses
+  const last3 = monthlyFlowData.slice(-3);
+  if (last3.length === 3) {
+    const declining = last3[0].fluxo > last3[1].fluxo && last3[1].fluxo > last3[2].fluxo;
+    const improving = last3[0].fluxo < last3[1].fluxo && last3[1].fluxo < last3[2].fluxo;
+    if (declining && last3[2].fluxo < 0) {
+      insights.push({ type: "warning", message: "Fluxo de caixa em queda nos últimos 3 meses — tendência preocupante." });
+    } else if (improving) {
+      insights.push({ type: "success", message: "Fluxo de caixa em crescimento nos últimos 3 meses — boa trajetória!" });
+    }
+  }
+
+  return insights.slice(0, 4); // máximo 4 insights
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RECOMMENDATIONS ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Recommendation {
+  priority: "alta" | "media" | "baixa";
+  action: string;
+}
+
+export function generateRecommendations(params: {
+  receitas: number;
+  despesas: number;
+  fluxo: number;
+  margem: number;
+  expenseByCategory: Array<{ name: string; value: number }>;
+  overduePayables: number;
+  totalPayablesPending: number;
+}): Recommendation[] {
+  const { receitas, despesas, fluxo, margem, expenseByCategory, overduePayables, totalPayablesPending } = params;
+  const recs: Recommendation[] = [];
+
+  if (receitas === 0) {
+    recs.push({ priority: "alta", action: "Registre suas receitas no Fluxo de Caixa para ativar a análise completa." });
+    return recs;
+  }
+
+  // Críticas
+  if (fluxo < 0) {
+    recs.push({ priority: "alta", action: "Reduza despesas não essenciais ou aumente seus preços — o negócio está no vermelho." });
+  }
+  if (overduePayables > 0) {
+    recs.push({ priority: "alta", action: `Quite as ${overduePayables} conta${overduePayables > 1 ? "s" : ""} vencida${overduePayables > 1 ? "s" : ""} para evitar multas e proteger seu score de crédito.` });
+  }
+  if (margem < 10 && fluxo >= 0) {
+    recs.push({ priority: "alta", action: "Margem abaixo de 10% — revise a precificação dos seus serviços ou produtos." });
+  }
+
+  // Médias
+  if (totalPayablesPending > receitas * 0.5) {
+    recs.push({ priority: "media", action: `Contas a pagar pendentes representam ${formatPercentage((totalPayablesPending / receitas) * 100)} das suas receitas — planeje o pagamento.` });
+  }
+  if (expenseByCategory.length > 0) {
+    const topCategory = expenseByCategory[0];
+    if (topCategory.value / despesas >= 0.5) {
+      recs.push({ priority: "media", action: `"${topCategory.name}" representa ${formatPercentage((topCategory.value / despesas) * 100)} das despesas — avalie se é possível reduzir esse custo.` });
+    }
+  }
+
+  // Baixas
+  if (margem >= 20) {
+    recs.push({ priority: "baixa", action: "Boa margem! Considere reinvestir parte do lucro em divulgação ou ferramentas para crescer." });
+  }
+  if (receitas > 0 && expenseByCategory.length === 0) {
+    recs.push({ priority: "baixa", action: "Categorize suas despesas no Fluxo de Caixa para identificar onde o dinheiro vai." });
+  }
+
+  return recs.slice(0, 4);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADVANCED INDICATORS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Índice de cobertura: quanto de contas a receber cobre as contas a pagar.
+ * Acima de 1 = saudável (você tem mais a receber do que a pagar).
+ */
+export function calcularLiquidez(receivablesPending: number, payablesPending: number): number {
+  if (payablesPending === 0) return receivablesPending > 0 ? 99 : 0;
+  return receivablesPending / payablesPending;
+}
+
+/**
+ * Ponto de equilíbrio: receita mínima necessária para cobrir todas as despesas.
+ * Com margem de contribuição positiva, é o valor que zera o resultado.
+ */
+export function calcularPontoEquilibrio(despesasTotais: number, margemPct: number): number {
+  if (margemPct <= 0 || margemPct >= 100) return despesasTotais;
+  return despesasTotais / (margemPct / 100);
+}
+
+/**
+ * Estimativa simplificada de valor de negócio: média mensal de lucro × 12.
+ * Múltiplo conservador de 1 ano para negócios de serviço/MEI.
+ */
+export function estimarValorNegocio(monthlyFlowData: Array<{ fluxo: number }>): number {
+  const profitable = monthlyFlowData.filter((m) => m.fluxo > 0);
+  if (profitable.length === 0) return 0;
+  const avgMonthlyProfit = profitable.reduce((sum, m) => sum + m.fluxo, 0) / profitable.length;
+  return avgMonthlyProfit * 12;
+}
+
+/**
+ * Projeção de fluxo para os próximos 30 dias baseada na média dos últimos 3 meses.
+ */
+export function projetarProximos30dias(monthlyFlowData: Array<{ receitas: number; despesas: number }>): {
+  receitas: number;
+  despesas: number;
+  fluxo: number;
+} {
+  const recent = monthlyFlowData.slice(-3);
+  if (recent.length === 0) return { receitas: 0, despesas: 0, fluxo: 0 };
+  const avgReceitas = recent.reduce((s, m) => s + m.receitas, 0) / recent.length;
+  const avgDespesas = recent.reduce((s, m) => s + m.despesas, 0) / recent.length;
+  return {
+    receitas: avgReceitas,
+    despesas: avgDespesas,
+    fluxo: avgReceitas - avgDespesas,
+  };
+}
