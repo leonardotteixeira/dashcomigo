@@ -3,6 +3,15 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface User {
   id: string;
   email: string;
@@ -39,13 +48,13 @@ function getProposalEmailTemplate(proposal: Proposal, user: User) {
         <h2 style="color: #333;">Olá,</h2>
 
         <p style="color: #666; font-size: 16px;">
-          Sua proposta para <strong>${proposal.nome_servico}</strong> está <strong style="color: #d32f2f;">vencida</strong>.
+          Sua proposta para <strong>${escapeHtml(proposal.nome_servico)}</strong> está <strong style="color: #d32f2f;">vencida</strong>.
         </p>
 
         <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p style="margin: 5px 0;"><strong>Serviço:</strong> ${proposal.nome_servico}</p>
+          <p style="margin: 5px 0;"><strong>Serviço:</strong> ${escapeHtml(proposal.nome_servico)}</p>
           <p style="margin: 5px 0;"><strong>Valor:</strong> R$ ${proposal.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-          <p style="margin: 5px 0;"><strong>Cliente:</strong> ${proposal.nome_cliente}</p>
+          <p style="margin: 5px 0;"><strong>Cliente:</strong> ${escapeHtml(proposal.nome_cliente)}</p>
         </div>
 
         <p style="color: #666; font-size: 16px;">
@@ -54,7 +63,7 @@ function getProposalEmailTemplate(proposal: Proposal, user: User) {
 
         <p style="color: #999; font-size: 14px; margin-top: 30px;">
           Obrigado,<br>
-          <strong>${user.name}</strong>
+          <strong>${escapeHtml(user.name)}</strong>
         </p>
 
         <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
@@ -84,15 +93,15 @@ function getPayableEmailTemplate(payable: Payable, user: User) {
     subject: `📌 Conta a Pagar: ${payable.descricao}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #333;">Olá ${user.name},</h2>
+        <h2 style="color: #333;">Olá ${escapeHtml(user.name)},</h2>
 
         <p style="color: #666; font-size: 16px;">
           Você tem uma conta a pagar <strong style="color: #ff9800;">vencendo em ${diasRestantes} dia(s)</strong>.
         </p>
 
         <div style="background: #fff3cd; border-left: 4px solid #ff9800; padding: 15px; border-radius: 4px; margin: 20px 0;">
-          <p style="margin: 5px 0;"><strong>Descrição:</strong> ${payable.descricao}</p>
-          <p style="margin: 5px 0;"><strong>Categoria:</strong> ${payable.categoria}</p>
+          <p style="margin: 5px 0;"><strong>Descrição:</strong> ${escapeHtml(payable.descricao)}</p>
+          <p style="margin: 5px 0;"><strong>Categoria:</strong> ${escapeHtml(payable.categoria)}</p>
           <p style="margin: 5px 0;"><strong>Valor:</strong> R$ ${payable.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
           <p style="margin: 5px 0;"><strong>Vencimento:</strong> ${vencimento.toLocaleDateString("pt-BR")}</p>
         </div>

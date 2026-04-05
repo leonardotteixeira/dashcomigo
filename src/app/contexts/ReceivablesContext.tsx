@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 export interface Receivable {
   id: string;
@@ -94,6 +94,8 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
 
   async function addReceivable(data: Omit<Receivable, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
+    const plan = await getVerifiedPlan(user.id);
+    if (plan !== "pro" && receivables.length >= FREE_LIMIT) throw new Error("Limite de contas a receber atingido");
 
     const createData: Record<string, unknown> = {
       userid: user.id,

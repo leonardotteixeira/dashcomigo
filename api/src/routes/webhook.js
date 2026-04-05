@@ -84,7 +84,7 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
         });
       }
 
-      console.log(`Usuário ${userId} ativado como PRO`);
+      console.log("Usuário ativado como PRO");
     }
 
     // --- RENOVAÇÃO MENSAL (R$ 29,90) ---
@@ -99,7 +99,7 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
       // Garantir que plano continua PRO
       await pb.collection("profiles").update(userId, { plan: "pro" });
 
-      console.log(`Assinatura renovada para usuário ${userId}`);
+      console.log("Assinatura renovada");
     }
 
     return res.json({ received: true });
@@ -138,7 +138,7 @@ router.post("/asaas/cancel", verifyWebhookToken, async (req, res) => {
 
       await pb.collection("profiles").update(userId, { plan: "free" });
 
-      console.log(`Usuário ${userId} revertido para free`);
+      console.log("Assinatura cancelada, plano revertido para free");
     }
 
     return res.json({ received: true });
