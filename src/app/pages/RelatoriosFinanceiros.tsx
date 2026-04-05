@@ -291,8 +291,15 @@ export function RelatoriosFinanceiros() {
       payablesTotal: payables.reduce((sum, p) => sum + p.valor, 0),
       payablesPending: pendingPayablesTotal,
       payablesPaid: payables.filter((p) => p.status === "pago").reduce((sum, p) => sum + p.valor, 0),
+      // Smart analysis
+      insights,
+      recommendations,
+      liquidez,
+      pontoEquilibrio,
+      valorNegocio,
+      projecao30dias: projecao30,
     }),
-    [period, dateRange, periodSummary, periodTransactions, monthlyFlowData, expenseByCategory, payables, pendingPayablesTotal]
+    [period, dateRange, periodSummary, periodTransactions, monthlyFlowData, expenseByCategory, payables, pendingPayablesTotal, insights, recommendations, liquidez, pontoEquilibrio, valorNegocio, projecao30]
   );
 
   const handleExportExcel = () => {
