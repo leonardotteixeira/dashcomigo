@@ -6,7 +6,7 @@ export default async function handler(
 ) {
   try {
     const authHeader = req.headers.authorization as string;
-    const webhookSecret = process.env.VITE_WEBHOOK_SECRET;
+    const webhookSecret = process.env.WEBHOOK_SECRET;
 
     if (!webhookSecret) {
       return res.status(500).json({ error: "Webhook secret não configurado" });
@@ -23,10 +23,10 @@ export default async function handler(
     }
 
     // Enviar email de teste
-    const resendApiKey = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
+    const resendApiKey = process.env.RESEND_API_KEY;
 
     if (!resendApiKey) {
-      console.error("❌ Erro: RESEND_API_KEY=", process.env.RESEND_API_KEY, "VITE_RESEND_API_KEY=", process.env.VITE_RESEND_API_KEY);
+      console.error("❌ Erro: RESEND_API_KEY não configurado");
       return res.status(500).json({ error: "Resend API key não configurado" });
     }
 
@@ -40,7 +40,7 @@ export default async function handler(
       },
       body: JSON.stringify({
         from: "cobrancas@bubuya.com.br",
-        to: "leonardoteixeira018@gmail.com",
+        to: process.env.TEST_EMAIL_RECIPIENT || "contato@bubuya.com.br",
         subject: "✅ Teste - Sistema de Lembretes de Cobrança Funcionando!",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -95,7 +95,7 @@ export default async function handler(
 
     return res.status(200).json({
       success: true,
-      message: "✅ Email de teste enviado com sucesso para leonardoteixeira018@gmail.com!",
+      message: "✅ Email de teste enviado com sucesso!",
       timestamp: new Date().toISOString(),
       resendId: result.id,
     });

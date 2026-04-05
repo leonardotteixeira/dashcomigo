@@ -4,6 +4,7 @@ import { Crown, Check, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useAuth } from "../contexts/AuthContext";
+import { pb } from "../../lib/pocketbase";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -51,7 +52,10 @@ export function Checkout() {
     try {
       const res = await fetch(`${API_URL}/checkout`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${pb.authStore.token}`,
+        },
         body: JSON.stringify({
           userId: user!.id,
           name: user!.name,

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { useCashFlow } from "./CashFlowContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 export interface Goal {
   id: string;
@@ -76,7 +76,8 @@ export function GoalsProvider({ children }: { children: ReactNode }) {
 
   async function addGoal(data: Omit<Goal, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
-    if (user.plan !== "pro") throw new Error("Metas de receita são apenas para plano PRO");
+    const plan = await getVerifiedPlan(user.id);
+    if (plan !== "pro") throw new Error("Metas de receita são apenas para plano PRO");
 
     const createData: Record<string, unknown> = {
       userid: user.id,
