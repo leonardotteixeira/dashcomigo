@@ -9,25 +9,56 @@ const webhookRouter = require("./routes/webhook");
 
 const app = express();
 
-// Security headers
-app.use(helmet());
+// Força HTTPS em produção (Railway/Vercel encaminham X-Forwarded-Proto)
+if (process.env.NODE_ENV === "production") {
+  app.use((req, res, next) => {
+    if (req.headers["x-forwarded-proto"] !== "https") {
+      return res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
 
-// Rate limiting global: 100 requests por 15 min por IP
+// Security headers com HSTS e CSP
+app.use(
+  helmet({
+    hsts: {
+      maxAge: 31536000,       // 1 ano
+      includeSubDomains: true,
+      preload: true,
+    },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'none'"],
+        scriptSrc: ["'none'"],
+        styleSrc: ["'none'"],
+        imgSrc: ["'none'"],
+        connectSrc: ["'none'"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        formAction: ["'none'"],
+      },
+    },
+  })
+);
+
+// Rate limiting global: 30 requests por 15 min por IP
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "Muitas requisições. Tente novamente em alguns minutos." },
 });
 app.use(globalLimiter);
 
-// Rate limiting restrito para checkout: 10 requests por 15 min por IP
+// Rate limiting restrito para checkout: 5 requests por 15 min por IP
 const checkoutLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 5,
   standardHeaders: true,
   legacyHeaders: false,
+  skipSuccessfulRequests: false,
   message: { error: "Limite de tentativas de checkout atingido. Tente novamente em 15 minutos." },
 });
 

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 export type TransactionType = "entrada" | "saida";
 
@@ -248,7 +248,9 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
     transaction: Omit<Transaction, "id" | "createdAt">
   ) {
     if (!user) throw new Error("Usuário não autenticado");
-    if (!canAddTransaction()) throw new Error("Limite de lançamentos atingido");
+    const plan = await getVerifiedPlan(user.id);
+    const isPro = plan === "pro";
+    if (!isPro && transactions.length >= FREE_LIMIT) throw new Error("Limite de lançamentos atingido");
 
     try {
       const record = await pb.collection("transactions").create({

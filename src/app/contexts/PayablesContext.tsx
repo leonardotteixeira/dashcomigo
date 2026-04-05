@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 export interface Payable {
   id: string;
@@ -96,6 +96,8 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
 
   async function addPayable(payableData: Omit<Payable, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
+    const plan = await getVerifiedPlan(user.id);
+    if (plan !== "pro" && payables.length >= FREE_LIMIT) throw new Error("Limite de contas a pagar atingido");
 
     try {
       const createData: Record<string, unknown> = {

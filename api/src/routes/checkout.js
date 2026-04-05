@@ -1,6 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const PocketBase = require("pocketbase/cjs");
+
+function isValidCPF(digits) {
+  if (digits.length !== 11 || /^(\d)\1+$/.test(digits)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i);
+  let d1 = (sum * 10) % 11;
+  if (d1 === 10 || d1 === 11) d1 = 0;
+  if (d1 !== parseInt(digits[9])) return false;
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i);
+  let d2 = (sum * 10) % 11;
+  if (d2 === 10 || d2 === 11) d2 = 0;
+  return d2 === parseInt(digits[10]);
+}
+
+function isValidCNPJ(digits) {
+  if (digits.length !== 14 || /^(\d)\1+$/.test(digits)) return false;
+  const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  let sum = weights1.reduce((acc, w, i) => acc + parseInt(digits[i]) * w, 0);
+  let d1 = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  if (d1 !== parseInt(digits[12])) return false;
+  sum = weights2.reduce((acc, w, i) => acc + parseInt(digits[i]) * w, 0);
+  let d2 = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  return d2 === parseInt(digits[13]);
+}
 const asaas = require("../lib/asaas");
 const { pb, ensureAdmin } = require("../lib/pocketbase");
 
@@ -57,6 +83,12 @@ router.post("/", async (req, res) => {
   const digits = cpfCnpj.replace(/\D/g, "");
   if (digits.length !== 11 && digits.length !== 14) {
     return res.status(400).json({ error: "CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos" });
+  }
+  if (digits.length === 11 && !isValidCPF(digits)) {
+    return res.status(400).json({ error: "CPF inválido" });
+  }
+  if (digits.length === 14 && !isValidCNPJ(digits)) {
+    return res.status(400).json({ error: "CNPJ inválido" });
   }
 
   try {
