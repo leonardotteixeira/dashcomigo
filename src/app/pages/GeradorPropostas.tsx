@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 type Template = "basico" | "detalhado" | "premium";
 type ProposalStatus = "aguardando" | "aprovada" | "recusada" | "paga" | "vencida";
@@ -269,6 +269,20 @@ export function GeradorPropostas() {
       : null;
 
     try {
+      // Re-verificar plano e uso diário direto do PocketBase para evitar bypass client-side
+      const freshPlan = await getVerifiedPlan(user!.id);
+      if (freshPlan !== "pro") {
+        const today = new Date().toISOString().split("T")[0];
+        const profile = await pb.collection("profiles").getOne(user!.id, { requestKey: null });
+        const lastReset = (profile.proposal_reset_date ?? "").slice(0, 10);
+        const freshUsage = lastReset === today ? (profile.proposal_usage_today ?? 0) : 0;
+        if (freshUsage >= FREE_LIMIT) {
+          setLimitDialogOpen(true);
+          setSaving(false);
+          return;
+        }
+      }
+
       await pb.collection("proposals").create({
         user_id: user!.id,
         tipo: tipo || "orcamento",
