@@ -9,6 +9,11 @@ if (!POCKETBASE_URL) {
   process.exit(1);
 }
 
+if (!POCKETBASE_ADMIN_EMAIL || !POCKETBASE_ADMIN_PASSWORD) {
+  console.error("ERRO FATAL: POCKETBASE_ADMIN_EMAIL e POCKETBASE_ADMIN_PASSWORD são obrigatórios.");
+  process.exit(1);
+}
+
 const pb = new PocketBase(POCKETBASE_URL);
 
 // Autenticar como admin para operações de backend
@@ -16,8 +21,8 @@ async function ensureAdmin() {
   if (!pb.authStore.isValid) {
     try {
       await pb.collection("_superusers").authWithPassword(
-        POCKETBASE_ADMIN_EMAIL || "admin@bubuya.com",
-        POCKETBASE_ADMIN_PASSWORD || "Admin123456!"
+        POCKETBASE_ADMIN_EMAIL,
+        POCKETBASE_ADMIN_PASSWORD
       );
     } catch (error) {
       console.error("Erro ao autenticar como admin:", error.message);

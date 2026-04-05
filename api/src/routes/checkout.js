@@ -1,11 +1,32 @@
 const express = require("express");
 const router = express.Router();
+const PocketBase = require("pocketbase/cjs");
 const asaas = require("../lib/asaas");
 const { pb, ensureAdmin } = require("../lib/pocketbase");
 
+// Verifica se o token pertence ao userId informado
+async function verifyUserToken(token, userId) {
+  const userPb = new PocketBase(process.env.POCKETBASE_URL);
+  userPb.authStore.save(token, null);
+  try {
+    const { record } = await userPb.collection("users").authRefresh();
+    return record.id === userId;
+  } catch {
+    return false;
+  }
+}
+
 // POST /checkout
 // Body: { userId, name, email, cpfCnpj }
+// Header: Authorization: Bearer <pocketbase_token>
 router.post("/", async (req, res) => {
+  // Verificar autenticação
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Autenticação necessária" });
+  }
+  const userToken = authHeader.substring("Bearer ".length);
+
   const { userId, name, email, cpfCnpj } = req.body;
 
   if (!userId || !name || !email || !cpfCnpj) {
@@ -16,6 +37,12 @@ router.post("/", async (req, res) => {
   const pbIdRegex = /^[a-z0-9]{15}$/;
   if (!pbIdRegex.test(userId)) {
     return res.status(400).json({ error: "userId inválido" });
+  }
+
+  // Confirmar que o token pertence ao userId declarado
+  const tokenValid = await verifyUserToken(userToken, userId);
+  if (!tokenValid) {
+    return res.status(403).json({ error: "Acesso negado: token não corresponde ao usuário" });
   }
 
   if (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 200) {
