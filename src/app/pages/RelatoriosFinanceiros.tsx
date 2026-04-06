@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   TrendingUp, DollarSign, AlertCircle, CheckCircle, Crown, Lock,
   TrendingDown, Minus, Lightbulb, Target, ChevronRight, FileText,
@@ -33,7 +33,15 @@ import {
   calcularCentrosCusto,
 } from "../utils/reportCalculations";
 
-type TabType = "resumo" | "receita-despesa" | "fluxo" | "dre" | "propostas" | "contas-pagar";
+type TabType = "resumo" | "receita-despesa" | "fluxo" | "dre" | "cenarios" | "propostas" | "contas-pagar";
+
+interface Cenario {
+  nome: string;
+  cor: string;
+  emoji: string;
+  receita: number;
+  ajusteDespesas: number; // % change on expenses (-20 = -20%)
+}
 
 type ProposalStatus = "aguardando" | "aprovada" | "recusada" | "paga" | "vencida";
 
@@ -64,6 +72,11 @@ export function RelatoriosFinanceiros() {
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loadingProposals, setLoadingProposals] = useState(false);
+  const [cenarios, setCenarios] = useState<Cenario[]>([
+    { nome: "Pessimista", cor: "#F74C4C", emoji: "📉", receita: 0, ajusteDespesas: 10 },
+    { nome: "Realista",   cor: "#F4B23C", emoji: "📊", receita: 0, ajusteDespesas: 0 },
+    { nome: "Otimista",   cor: "#2DDB81", emoji: "📈", receita: 0, ajusteDespesas: -5 },
+  ]);
 
   const { getTransactionsByDateRange } = useReports();
   const { transactions } = useCashFlow();
@@ -323,9 +336,20 @@ export function RelatoriosFinanceiros() {
     { id: "receita-despesa", label: "Receita/Despesa" },
     { id: "fluxo", label: "Fluxo de Caixa" },
     { id: "dre", label: "DRE" },
+    { id: "cenarios", label: "Cenários" },
     { id: "propostas", label: "Propostas" },
     { id: "contas-pagar", label: "Contas a Pagar" },
   ] as const;
+
+  // Initialize scenario revenues when period data is available
+  const initCenarios = useCallback(() => {
+    if (periodSummary.receitas === 0) return;
+    setCenarios([
+      { nome: "Pessimista", cor: "#F74C4C", emoji: "📉", receita: Math.round(periodSummary.receitas * 0.8),  ajusteDespesas: 10  },
+      { nome: "Realista",   cor: "#F4B23C", emoji: "📊", receita: Math.round(periodSummary.receitas),        ajusteDespesas: 0   },
+      { nome: "Otimista",   cor: "#2DDB81", emoji: "📈", receita: Math.round(periodSummary.receitas * 1.25), ajusteDespesas: -5  },
+    ]);
+  }, [periodSummary.receitas]);
 
   // Proposals stats
   const proposalStats = useMemo(() => ({
@@ -883,6 +907,178 @@ export function RelatoriosFinanceiros() {
                   </div>
                 </>
               )}
+            </div>
+          )}
+
+          {/* ── CENÁRIOS TAB ── */}
+          {activeTab === "cenarios" && (
+            <div className="space-y-6">
+              {/* Header + init button */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <h3 className="text-white font-semibold">Planejamento por Cenários</h3>
+                  <p className="text-[#686F6F] text-sm mt-0.5">Simule receitas esperadas e veja o impacto no resultado</p>
+                </div>
+                <button
+                  onClick={initCenarios}
+                  disabled={periodSummary.receitas === 0}
+                  className="text-sm px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[#A1A1A1] hover:text-white border border-white/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Usar dados do período atual
+                </button>
+              </div>
+
+              {/* Scenario input cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {cenarios.map((cenario, idx) => {
+                  const despesasBase = periodSummary.despesas;
+                  const despesasAjustadas = despesasBase * (1 + cenario.ajusteDespesas / 100);
+                  const resultado = cenario.receita - despesasAjustadas;
+                  const margem = cenario.receita > 0 ? (resultado / cenario.receita) * 100 : 0;
+
+                  return (
+                    <div
+                      key={cenario.nome}
+                      className="bg-[#1B1B1B] border rounded-xl overflow-hidden"
+                      style={{ borderColor: cenario.cor + "44" }}
+                    >
+                      {/* Card header */}
+                      <div className="px-5 py-3 flex items-center gap-2" style={{ background: cenario.cor + "18" }}>
+                        <span className="text-lg">{cenario.emoji}</span>
+                        <span className="font-bold text-white">{cenario.nome}</span>
+                      </div>
+
+                      <div className="p-5 space-y-4">
+                        {/* Receita esperada */}
+                        <div>
+                          <label className="text-xs text-[#686F6F] mb-1.5 block">Receita esperada (R$)</label>
+                          <input
+                            type="number"
+                            min={0}
+                            value={cenario.receita || ""}
+                            onChange={(e) => {
+                              const val = parseFloat(e.target.value) || 0;
+                              setCenarios((prev) => prev.map((c, i) => i === idx ? { ...c, receita: val } : c));
+                            }}
+                            placeholder="0,00"
+                            className="w-full bg-[#141414] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-white/30"
+                          />
+                        </div>
+
+                        {/* Ajuste de despesas */}
+                        <div>
+                          <label className="text-xs text-[#686F6F] mb-1.5 block">
+                            Ajuste nas despesas: <span style={{ color: cenario.cor }} className="font-medium">
+                              {cenario.ajusteDespesas > 0 ? "+" : ""}{cenario.ajusteDespesas}%
+                            </span>
+                          </label>
+                          <input
+                            type="range"
+                            min={-50}
+                            max={50}
+                            step={5}
+                            value={cenario.ajusteDespesas}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value);
+                              setCenarios((prev) => prev.map((c, i) => i === idx ? { ...c, ajusteDespesas: val } : c));
+                            }}
+                            className="w-full accent-current"
+                            style={{ accentColor: cenario.cor }}
+                          />
+                          <div className="flex justify-between text-xs text-[#686F6F] mt-0.5">
+                            <span>-50%</span><span>0%</span><span>+50%</span>
+                          </div>
+                        </div>
+
+                        {/* Projected results */}
+                        <div className="pt-3 border-t border-white/10 space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-[#686F6F]">Despesas proj.</span>
+                            <span className="text-[#F74C4C]">{formatCurrency(despesasAjustadas)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-[#686F6F]">Margem</span>
+                            <span style={{ color: margem >= 0 ? cenario.cor : "#F74C4C" }}>{formatPercentage(margem)}</span>
+                          </div>
+                          <div className="flex justify-between font-bold">
+                            <span className="text-white text-sm">Resultado</span>
+                            <span style={{ color: resultado >= 0 ? cenario.cor : "#F74C4C" }}>
+                              {formatCurrency(resultado)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Comparison table */}
+              {cenarios.some((c) => c.receita > 0) && (
+                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
+                  <div className="p-5 border-b border-white/10">
+                    <h3 className="font-semibold text-white">Comparação entre Cenários</h3>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="border-b border-white/10">
+                        <tr>
+                          <th className="text-left px-5 py-3 text-[#A1A1A1]">Indicador</th>
+                          {cenarios.map((c) => (
+                            <th key={c.nome} className="text-right px-5 py-3 font-semibold" style={{ color: c.cor }}>
+                              {c.emoji} {c.nome}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          {
+                            label: "Receita Esperada",
+                            values: cenarios.map((c) => ({ v: c.receita, color: "#2DDB81" })),
+                          },
+                          {
+                            label: "Despesas Projetadas",
+                            values: cenarios.map((c) => ({ v: periodSummary.despesas * (1 + c.ajusteDespesas / 100), color: "#F74C4C" })),
+                          },
+                          {
+                            label: "Resultado",
+                            values: cenarios.map((c) => {
+                              const r = c.receita - periodSummary.despesas * (1 + c.ajusteDespesas / 100);
+                              return { v: r, color: r >= 0 ? c.cor : "#F74C4C" };
+                            }),
+                          },
+                          {
+                            label: "Margem",
+                            values: cenarios.map((c) => {
+                              const r = c.receita - periodSummary.despesas * (1 + c.ajusteDespesas / 100);
+                              const m = c.receita > 0 ? (r / c.receita) * 100 : 0;
+                              return { v: m, color: m >= 0 ? c.cor : "#F74C4C", isPct: true };
+                            }),
+                          },
+                        ].map((row) => (
+                          <tr key={row.label} className="border-b border-white/5 hover:bg-white/3">
+                            <td className="px-5 py-3 text-[#A1A1A1]">{row.label}</td>
+                            {row.values.map((val, i) => (
+                              <td key={i} className="px-5 py-3 text-right font-medium" style={{ color: val.color }}>
+                                {"isPct" in val && val.isPct ? formatPercentage(val.v) : formatCurrency(val.v)}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Tip */}
+              <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4 flex gap-3">
+                <span className="text-xl flex-shrink-0">💡</span>
+                <p className="text-[#686F6F] text-sm">
+                  Clique em <strong className="text-[#A1A1A1]">"Usar dados do período atual"</strong> para preencher automaticamente com os valores reais como ponto de partida. Depois ajuste as receitas esperadas e o slider de despesas para simular cada cenário.
+                </p>
+              </div>
             </div>
           )}
 
