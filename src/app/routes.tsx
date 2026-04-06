@@ -16,6 +16,7 @@ import { SimuladorLucro } from "./pages/SimuladorLucro";
 import { GeradorPropostas } from "./pages/GeradorPropostas";
 import { ContasAPagar } from "./pages/ContasAPagar";
 import { RelatoriosFinanceiros } from "./pages/RelatoriosFinanceiros";
+import { DASMei } from "./pages/DASMei";
 import { Estoque } from "./pages/Estoque";
 import { ContasAReceber } from "./pages/ContasAReceber";
 import { ClientesFornecedores } from "./pages/ClientesFornecedores";
@@ -157,6 +158,10 @@ export const router = createHashRouter([
       {
         path: "relatorios",
         Component: RelatoriosFinanceiros,
+      },
+      {
+        path: "das-mei",
+        Component: DASMei,
       },
       {
         path: "onboarding",
