@@ -229,82 +229,182 @@ export interface ReportExportData {
  */
 export function exportReportToExcel(data: ReportExportData) {
   const wb = XLSX.utils.book_new();
+  const periodText = `${format(data.dateRange[0], "dd/MM/yyyy", { locale: ptBR })} a ${format(data.dateRange[1], "dd/MM/yyyy", { locale: ptBR })}`;
+  const geradoEm = format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+  const fmtBRL = (v: number) =>
+    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
 
-  // Sheet 1: Resumo
-  const summaryData = [
-    ["RELATÓRIO FINANCEIRO", ""],
-    ["Período", `${format(data.dateRange[0], "dd/MM/yyyy", { locale: ptBR })} a ${format(data.dateRange[1], "dd/MM/yyyy", { locale: ptBR })}`],
-    [""],
-    ["RESUMO EXECUTIVO", ""],
-    ["Total de Receitas", data.totalReceitas],
-    ["Total de Despesas", data.totalDespesas],
-    ["Fluxo de Caixa", data.fluxoCaixa],
-    ["Margem Líquida (%)", data.margemLiquida.toFixed(2)],
-    ...(data.payablesTotal !== undefined ? [
-      [""],
-      ["CONTAS A PAGAR", ""],
-      ["Total a Pagar", data.payablesTotal],
-      ["Pendentes", data.payablesPending],
-      ["Pagas", data.payablesPaid],
-    ] : []),
+  // ── SHEET 1: RESUMO ────────────────────────────────────────────────
+  const activeMonths = data.monthlyData.filter((m) => m.receitas > 0 || m.despesas > 0);
+  const totalDespesasCat = Object.values(data.expensesByCategory).reduce((s, v) => s + v, 0);
+
+  const summaryRows: any[][] = [
+    ["RELATÓRIO FINANCEIRO — BUBUYA"],
+    [`Período: ${periodText}`],
+    [`Gerado em: ${geradoEm}`],
+    [],
+    ["── RESULTADO DO PERÍODO ──"],
+    ["Indicador", "Valor"],
+    ["Total de Receitas", fmtBRL(data.totalReceitas)],
+    ["Total de Despesas", fmtBRL(data.totalDespesas)],
+    ["Fluxo de Caixa (Resultado)", fmtBRL(data.fluxoCaixa)],
+    ["Margem Líquida", `${data.margemLiquida.toFixed(1)}%`],
+    [],
   ];
 
-  const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
-  summarySheet["!cols"] = [{ wch: 25 }, { wch: 20 }];
-  XLSX.utils.book_append_sheet(wb, summarySheet, "Resumo");
-
-  // Sheet 2: Fluxo Mensal
-  const monthlyDataForSheet = data.monthlyData
-    .filter((m) => m.receitas > 0 || m.despesas > 0)
-    .map((m) => ({
-      Mês: m.name,
-      Receitas: m.receitas,
-      Despesas: m.despesas,
-      "Fluxo de Caixa": m.fluxo,
-      "Margem (%)": m.receitas > 0 ? ((m.fluxo / m.receitas) * 100).toFixed(1) : "—",
-    }));
-
-  const monthlySheet = XLSX.utils.json_to_sheet(monthlyDataForSheet);
-  monthlySheet["!cols"] = [
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 },
-  ];
-  XLSX.utils.book_append_sheet(wb, monthlySheet, "Fluxo Mensal");
-
-  // Sheet 3: Despesas por Categoria
-  const categoryData = Object.entries(data.expensesByCategory).map(([categoria, valor]) => ({
-    Categoria: categoria,
-    Valor: valor,
-  }));
-
-  if (categoryData.length > 0) {
-    const categorySheet = XLSX.utils.json_to_sheet(categoryData);
-    categorySheet["!cols"] = [{ wch: 25 }, { wch: 15 }];
-    XLSX.utils.book_append_sheet(wb, categorySheet, "Despesas por Categoria");
+  if (data.payablesTotal !== undefined) {
+    summaryRows.push(
+      ["── CONTAS A PAGAR ──"],
+      ["Indicador", "Valor"],
+      ["Total a Pagar", fmtBRL(data.payablesTotal)],
+      ["Pendentes", fmtBRL(data.payablesPending ?? 0)],
+      ["Pagas", fmtBRL(data.payablesPaid ?? 0)],
+      [],
+    );
   }
 
-  // Sheet 4: Transações Detalhadas
-  const transactionsData = data.transactions.map((t) => ({
-    Data: t.data,
-    Descrição: t.descricao,
-    Categoria: t.categoria,
-    Tipo: t.tipo,
-    Valor: t.valor,
-  }));
+  if (
+    data.liquidez !== undefined ||
+    data.pontoEquilibrio !== undefined ||
+    data.valorNegocio !== undefined ||
+    data.projecao30dias !== undefined
+  ) {
+    summaryRows.push(["── INDICADORES AVANÇADOS ──"], ["Indicador", "Valor", "Observação"]);
 
-  const transactionsSheet = XLSX.utils.json_to_sheet(transactionsData);
-  transactionsSheet["!cols"] = [
-    { wch: 12 },
-    { wch: 30 },
-    { wch: 20 },
-    { wch: 10 },
-    { wch: 15 },
-  ];
-  XLSX.utils.book_append_sheet(wb, transactionsSheet, "Transações");
+    if (data.liquidez !== undefined) {
+      const liqVal = data.liquidez >= 99 ? "∞" : `${data.liquidez.toFixed(2)}×`;
+      const liqObs =
+        data.liquidez === 0 ? "Sem contas a pagar/receber"
+        : data.liquidez >= 1.5 ? "Cobertura excelente"
+        : data.liquidez >= 1 ? "Cobre as dívidas"
+        : "Atenção: insuficiente";
+      summaryRows.push(["Índice de Cobertura (Liquidez)", liqVal, liqObs]);
+    }
+    if (data.pontoEquilibrio !== undefined && data.pontoEquilibrio > 0) {
+      const peObs =
+        data.totalReceitas >= data.pontoEquilibrio
+          ? "Receita atual cobre o ponto de equilíbrio ✓"
+          : `Faltam ${fmtBRL(data.pontoEquilibrio - data.totalReceitas)} para equilibrar`;
+      summaryRows.push(["Ponto de Equilíbrio", fmtBRL(data.pontoEquilibrio), peObs]);
+    }
+    if (data.valorNegocio !== undefined && data.valorNegocio > 0) {
+      summaryRows.push(["Valor Estimado do Negócio", fmtBRL(data.valorNegocio), "Múltiplo 12× lucro médio mensal"]);
+    }
+    if (data.projecao30dias && data.projecao30dias.receitas > 0) {
+      summaryRows.push([
+        "Projeção 30 Dias (Fluxo)",
+        fmtBRL(data.projecao30dias.fluxo),
+        `Receitas est.: ${fmtBRL(data.projecao30dias.receitas)} | Despesas est.: ${fmtBRL(data.projecao30dias.despesas)}`,
+      ]);
+    }
+    summaryRows.push([]);
+  }
 
-  // Download
+  if (data.insights && data.insights.length > 0) {
+    summaryRows.push(["── ANÁLISE DO PERÍODO ──"], ["Tipo", "Observação"]);
+    data.insights.forEach((ins) => {
+      const tipo = ins.type === "warning" ? "⚠ Atenção" : ins.type === "success" ? "✓ Positivo" : "ℹ Info";
+      summaryRows.push([tipo, ins.message]);
+    });
+    summaryRows.push([]);
+  }
+
+  if (data.recommendations && data.recommendations.length > 0) {
+    summaryRows.push(["── RECOMENDAÇÕES ──"], ["Prioridade", "Ação"]);
+    data.recommendations.forEach((rec) => {
+      const prio = rec.priority === "alta" ? "🔴 Alta" : rec.priority === "media" ? "🟡 Média" : "🟢 Baixa";
+      summaryRows.push([prio, rec.action]);
+    });
+  }
+
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryRows);
+  summarySheet["!cols"] = [{ wch: 35 }, { wch: 22 }, { wch: 60 }];
+  XLSX.utils.book_append_sheet(wb, summarySheet, "Resumo");
+
+  // ── SHEET 2: FLUXO MENSAL ──────────────────────────────────────────
+  if (activeMonths.length > 0) {
+    const monthlyRows: any[][] = [
+      ["FLUXO DE CAIXA MENSAL"],
+      [`Período: ${periodText}`],
+      [],
+      ["Mês", "Receitas (R$)", "Despesas (R$)", "Fluxo de Caixa (R$)", "Margem (%)"],
+    ];
+
+    activeMonths.forEach((m) => {
+      monthlyRows.push([
+        m.name,
+        m.receitas,
+        m.despesas,
+        m.fluxo,
+        m.receitas > 0 ? parseFloat(((m.fluxo / m.receitas) * 100).toFixed(1)) : 0,
+      ]);
+    });
+
+    // Totals row
+    const totReceitas = activeMonths.reduce((s, m) => s + m.receitas, 0);
+    const totDespesas = activeMonths.reduce((s, m) => s + m.despesas, 0);
+    const totFluxo = totReceitas - totDespesas;
+    monthlyRows.push([
+      "TOTAL",
+      totReceitas,
+      totDespesas,
+      totFluxo,
+      totReceitas > 0 ? parseFloat(((totFluxo / totReceitas) * 100).toFixed(1)) : 0,
+    ]);
+
+    const monthlySheet = XLSX.utils.aoa_to_sheet(monthlyRows);
+    monthlySheet["!cols"] = [{ wch: 14 }, { wch: 18 }, { wch: 18 }, { wch: 20 }, { wch: 13 }];
+    XLSX.utils.book_append_sheet(wb, monthlySheet, "Fluxo Mensal");
+  }
+
+  // ── SHEET 3: DESPESAS POR CATEGORIA ───────────────────────────────
+  const categoryEntries = Object.entries(data.expensesByCategory).sort((a, b) => b[1] - a[1]);
+  if (categoryEntries.length > 0) {
+    const catRows: any[][] = [
+      ["DESPESAS POR CATEGORIA"],
+      [`Período: ${periodText}`],
+      [],
+      ["Categoria", "Valor (R$)", "% do Total"],
+    ];
+
+    categoryEntries.forEach(([cat, valor]) => {
+      catRows.push([
+        cat,
+        valor,
+        totalDespesasCat > 0 ? parseFloat(((valor / totalDespesasCat) * 100).toFixed(1)) : 0,
+      ]);
+    });
+
+    catRows.push(["TOTAL", totalDespesasCat, 100]);
+
+    const catSheet = XLSX.utils.aoa_to_sheet(catRows);
+    catSheet["!cols"] = [{ wch: 28 }, { wch: 18 }, { wch: 13 }];
+    XLSX.utils.book_append_sheet(wb, catSheet, "Despesas por Categoria");
+  }
+
+  // ── SHEET 4: TRANSAÇÕES ────────────────────────────────────────────
+  if (data.transactions.length > 0) {
+    const txRows: any[][] = [
+      ["TRANSAÇÕES DO PERÍODO"],
+      [`Período: ${periodText}`],
+      [],
+      ["Data", "Descrição", "Categoria", "Tipo", "Valor (R$)"],
+    ];
+
+    data.transactions.forEach((t) => {
+      txRows.push([t.data, t.descricao, t.categoria, t.tipo, t.valor]);
+    });
+
+    // Subtotals
+    const totalRec = data.transactions.filter((t) => t.tipo === "Receita").reduce((s, t) => s + t.valor, 0);
+    const totalDesp = data.transactions.filter((t) => t.tipo === "Despesa").reduce((s, t) => s + t.valor, 0);
+    txRows.push([], ["Total Receitas", "", "", "", totalRec], ["Total Despesas", "", "", "", totalDesp], ["Resultado", "", "", "", totalRec - totalDesp]);
+
+    const txSheet = XLSX.utils.aoa_to_sheet(txRows);
+    txSheet["!cols"] = [{ wch: 12 }, { wch: 35 }, { wch: 22 }, { wch: 12 }, { wch: 16 }];
+    XLSX.utils.book_append_sheet(wb, txSheet, "Transações");
+  }
+
   const filename = `bubuya_relatorio_${format(new Date(), "dd-MM-yyyy", { locale: ptBR })}.xlsx`;
   XLSX.writeFile(wb, filename);
 }
