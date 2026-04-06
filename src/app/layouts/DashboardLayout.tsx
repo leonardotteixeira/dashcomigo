@@ -67,6 +67,7 @@ export function DashboardLayout() {
       items: [
         { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
         { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
+        { name: "DAS-MEI", href: "/app/das-mei", icon: FileText },
         { name: "Relatórios", href: "/app/relatorios", icon: BarChart3, isPro: true },
       ],
     },
