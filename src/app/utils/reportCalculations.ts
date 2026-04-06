@@ -480,3 +480,182 @@ export function projetarProximos30dias(monthlyFlowData: Array<{ receitas: number
     fluxo: avgReceitas - avgDespesas,
   };
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRE — Demonstração do Resultado do Exercício
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Classificação DRE de cada categoria de saída */
+const CATEGORIA_DRE: Record<string, "cpv" | "operacional" | "administrativo" | "imposto" | "retirada"> = {
+  "Fornecedores/Mercadorias": "cpv",
+  "Custos de produção":       "cpv",
+  "Frete/Entregas":           "cpv",
+  "Aluguel":                  "administrativo",
+  "Internet/Telefonia":       "administrativo",
+  "Energia/Água":             "administrativo",
+  "Anúncios/Marketing":       "operacional",
+  "Ferramentas/Software":     "operacional",
+  "Taxas/Tarifas":            "administrativo",
+  "Impostos":                 "imposto",
+  "Retirada do proprietário": "retirada",
+  "Despesas diversas":        "administrativo",
+};
+
+export interface DRELinha {
+  label: string;
+  valor: number;
+  /** true = soma, false = subtração, undefined = resultado acumulado */
+  operacao?: "soma" | "subtracao" | "resultado";
+  indent?: number;
+  destaque?: boolean;
+}
+
+export interface DREData {
+  linhas: DRELinha[];
+  receitaBruta: number;
+  impostos: number;
+  receitaLiquida: number;
+  cpv: number;
+  lucroBruto: number;
+  despesasOperacionais: number;
+  despesasAdministrativas: number;
+  retirada: number;
+  resultadoLiquido: number;
+  margemBruta: number;
+  margemLiquida: number;
+  detalhesCPV: Record<string, number>;
+  detalhesOperacional: Record<string, number>;
+  detalhesAdministrativo: Record<string, number>;
+}
+
+export function calcularDRE(
+  transactions: Array<{ tipo: string; categoria: string; valor: number }>
+): DREData {
+  const entradas = transactions.filter((t) => t.tipo === "entrada");
+  const saidas   = transactions.filter((t) => t.tipo === "saida");
+
+  const receitaBruta = entradas.reduce((s, t) => s + t.valor, 0);
+
+  // Classificar saídas por grupo DRE
+  const grupos: Record<string, number> = { cpv: 0, operacional: 0, administrativo: 0, imposto: 0, retirada: 0 };
+  const detalhesCPV: Record<string, number> = {};
+  const detalhesOperacional: Record<string, number> = {};
+  const detalhesAdministrativo: Record<string, number> = {};
+
+  saidas.forEach((t) => {
+    const grupo = CATEGORIA_DRE[t.categoria] ?? "administrativo";
+    grupos[grupo] = (grupos[grupo] || 0) + t.valor;
+    if (grupo === "cpv") detalhesCPV[t.categoria] = (detalhesCPV[t.categoria] || 0) + t.valor;
+    if (grupo === "operacional") detalhesOperacional[t.categoria] = (detalhesOperacional[t.categoria] || 0) + t.valor;
+    if (grupo === "administrativo") detalhesAdministrativo[t.categoria] = (detalhesAdministrativo[t.categoria] || 0) + t.valor;
+  });
+
+  const impostos = grupos.imposto;
+  const receitaLiquida = receitaBruta - impostos;
+  const cpv = grupos.cpv;
+  const lucroBruto = receitaLiquida - cpv;
+  const despesasOperacionais = grupos.operacional;
+  const despesasAdministrativas = grupos.administrativo;
+  const retirada = grupos.retirada;
+  const resultadoLiquido = lucroBruto - despesasOperacionais - despesasAdministrativas - retirada;
+  const margemBruta = receitaBruta > 0 ? (lucroBruto / receitaBruta) * 100 : 0;
+  const margemLiquida = receitaBruta > 0 ? (resultadoLiquido / receitaBruta) * 100 : 0;
+
+  const linhas: DRELinha[] = [
+    { label: "RECEITA BRUTA",              valor: receitaBruta,           operacao: "resultado", destaque: true },
+    { label: "(-) Impostos / DAS-MEI",     valor: impostos,               operacao: "subtracao", indent: 1 },
+    { label: "= RECEITA LÍQUIDA",          valor: receitaLiquida,         operacao: "resultado", destaque: true },
+    { label: "(-) Custo das Mercadorias/Serviços (CPV)", valor: cpv,      operacao: "subtracao", indent: 1 },
+    ...Object.entries(detalhesCPV).map(([cat, val]) => ({ label: cat, valor: val, operacao: "subtracao" as const, indent: 2 })),
+    { label: "= LUCRO BRUTO",              valor: lucroBruto,             operacao: "resultado", destaque: true },
+    { label: "(-) Despesas Operacionais",  valor: despesasOperacionais,   operacao: "subtracao", indent: 1 },
+    ...Object.entries(detalhesOperacional).map(([cat, val]) => ({ label: cat, valor: val, operacao: "subtracao" as const, indent: 2 })),
+    { label: "(-) Despesas Administrativas", valor: despesasAdministrativas, operacao: "subtracao", indent: 1 },
+    ...Object.entries(detalhesAdministrativo).map(([cat, val]) => ({ label: cat, valor: val, operacao: "subtracao" as const, indent: 2 })),
+    { label: "(-) Retirada do Proprietário", valor: retirada,             operacao: "subtracao", indent: 1 },
+    { label: "= RESULTADO LÍQUIDO",        valor: resultadoLiquido,       operacao: "resultado", destaque: true },
+  ];
+
+  return {
+    linhas, receitaBruta, impostos, receitaLiquida, cpv, lucroBruto,
+    despesasOperacionais, despesasAdministrativas, retirada, resultadoLiquido,
+    margemBruta, margemLiquida, detalhesCPV, detalhesOperacional, detalhesAdministrativo,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CENTRO DE CUSTOS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Mapeamento de categoria → Centro de Custo */
+const CATEGORIA_CC: Record<string, string> = {
+  // Receitas
+  "Vendas":                    "Comercial",
+  "Serviços prestados":        "Operacional",
+  "Recebimentos de clientes":  "Comercial",
+  "Outros ganhos":             "Operacional",
+  // Saídas
+  "Fornecedores/Mercadorias":  "Operacional",
+  "Custos de produção":        "Operacional",
+  "Frete/Entregas":            "Operacional",
+  "Aluguel":                   "Administrativo",
+  "Internet/Telefonia":        "Administrativo",
+  "Energia/Água":              "Administrativo",
+  "Anúncios/Marketing":        "Comercial",
+  "Ferramentas/Software":      "Administrativo",
+  "Taxas/Tarifas":             "Financeiro",
+  "Impostos":                  "Financeiro",
+  "Retirada do proprietário":  "Pessoal",
+  "Despesas diversas":         "Administrativo",
+};
+
+export const CENTROS_CUSTO = ["Operacional", "Comercial", "Administrativo", "Financeiro", "Pessoal"] as const;
+export type CentroCusto = typeof CENTROS_CUSTO[number];
+
+export interface CentroCustoData {
+  nome: CentroCusto;
+  receitas: number;
+  despesas: number;
+  resultado: number;
+  percentualDespesas: number; // % do total de despesas
+  categorias: Array<{ nome: string; tipo: "entrada" | "saida"; valor: number }>;
+}
+
+export function calcularCentrosCusto(
+  transactions: Array<{ tipo: string; categoria: string; valor: number }>
+): CentroCustoData[] {
+  const totalDespesas = transactions.filter((t) => t.tipo === "saida").reduce((s, t) => s + t.valor, 0);
+
+  const map: Record<string, { receitas: number; despesas: number; cats: Record<string, { tipo: string; valor: number }> }> = {};
+
+  CENTROS_CUSTO.forEach((cc) => {
+    map[cc] = { receitas: 0, despesas: 0, cats: {} };
+  });
+
+  transactions.forEach((t) => {
+    const cc = CATEGORIA_CC[t.categoria] ?? "Administrativo";
+    if (!map[cc]) return;
+    if (t.tipo === "entrada") {
+      map[cc].receitas += t.valor;
+    } else {
+      map[cc].despesas += t.valor;
+    }
+    map[cc].cats[t.categoria] = {
+      tipo: t.tipo,
+      valor: (map[cc].cats[t.categoria]?.valor ?? 0) + t.valor,
+    };
+  });
+
+  return CENTROS_CUSTO.map((cc) => ({
+    nome: cc,
+    receitas: map[cc].receitas,
+    despesas: map[cc].despesas,
+    resultado: map[cc].receitas - map[cc].despesas,
+    percentualDespesas: totalDespesas > 0 ? (map[cc].despesas / totalDespesas) * 100 : 0,
+    categorias: Object.entries(map[cc].cats).map(([nome, { tipo, valor }]) => ({
+      nome,
+      tipo: tipo as "entrada" | "saida",
+      valor,
+    })),
+  })).filter((cc) => cc.receitas > 0 || cc.despesas > 0);
+}

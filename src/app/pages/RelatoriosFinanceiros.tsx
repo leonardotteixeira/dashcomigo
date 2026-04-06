@@ -29,9 +29,11 @@ import {
   calcularPontoEquilibrio,
   estimarValorNegocio,
   projetarProximos30dias,
+  calcularDRE,
+  calcularCentrosCusto,
 } from "../utils/reportCalculations";
 
-type TabType = "resumo" | "receita-despesa" | "fluxo" | "propostas" | "contas-pagar";
+type TabType = "resumo" | "receita-despesa" | "fluxo" | "dre" | "propostas" | "contas-pagar";
 
 type ProposalStatus = "aguardando" | "aprovada" | "recusada" | "paga" | "vencida";
 
@@ -228,6 +230,10 @@ export function RelatoriosFinanceiros() {
   const valorNegocio = useMemo(() => estimarValorNegocio(monthlyFlowData), [monthlyFlowData]);
   const projecao30 = useMemo(() => projetarProximos30dias(monthlyFlowData), [monthlyFlowData]);
 
+  // DRE e Centro de Custos
+  const dre = useMemo(() => calcularDRE(periodTransactions), [periodTransactions]);
+  const centrosCusto = useMemo(() => calcularCentrosCusto(periodTransactions), [periodTransactions]);
+
   // Hero card config
   const healthStatus = getMarginHealthStatus(periodSummary.margem);
   const heroColor =
@@ -316,6 +322,7 @@ export function RelatoriosFinanceiros() {
     { id: "resumo", label: "Resumo" },
     { id: "receita-despesa", label: "Receita/Despesa" },
     { id: "fluxo", label: "Fluxo de Caixa" },
+    { id: "dre", label: "DRE" },
     { id: "propostas", label: "Propostas" },
     { id: "contas-pagar", label: "Contas a Pagar" },
   ] as const;
@@ -693,6 +700,189 @@ export function RelatoriosFinanceiros() {
                   </table>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* ── DRE TAB ── */}
+          {activeTab === "dre" && (
+            <div className="space-y-6">
+              {periodTransactions.length === 0 ? (
+                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-8 text-center">
+                  <BarChart2 className="w-12 h-12 text-[#686F6F] mx-auto mb-4" />
+                  <p className="text-[#A1A1A1] text-lg mb-2">Sem transações no período</p>
+                  <p className="text-[#686F6F] text-sm">Selecione um período com lançamentos no Fluxo de Caixa.</p>
+                </div>
+              ) : (
+                <>
+                  {/* DRE summary cards */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
+                      <p className="text-xs text-[#686F6F] mb-1">Receita Bruta</p>
+                      <p className="text-xl font-bold text-[#2DDB81]">{formatCurrency(dre.receitaBruta)}</p>
+                    </div>
+                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
+                      <p className="text-xs text-[#686F6F] mb-1">Lucro Bruto</p>
+                      <p className="text-xl font-bold" style={{ color: dre.lucroBruto >= 0 ? "#2DDB81" : "#F74C4C" }}>
+                        {formatCurrency(dre.lucroBruto)}
+                      </p>
+                      <p className="text-xs text-[#686F6F]">Margem {formatPercentage(dre.margemBruta)}</p>
+                    </div>
+                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
+                      <p className="text-xs text-[#686F6F] mb-1">Resultado Líquido</p>
+                      <p className="text-xl font-bold" style={{ color: dre.resultadoLiquido >= 0 ? "#2DDB81" : "#F74C4C" }}>
+                        {formatCurrency(dre.resultadoLiquido)}
+                      </p>
+                      <p className="text-xs text-[#686F6F]">Margem {formatPercentage(dre.margemLiquida)}</p>
+                    </div>
+                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
+                      <p className="text-xs text-[#686F6F] mb-1">Total Despesas</p>
+                      <p className="text-xl font-bold text-[#F74C4C]">
+                        {formatCurrency(dre.cpv + dre.despesasOperacionais + dre.despesasAdministrativas + dre.impostos + dre.retirada)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* DRE table */}
+                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
+                    <div className="p-5 border-b border-white/10 flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-white">Demonstração do Resultado do Exercício</h3>
+                        <p className="text-xs text-[#686F6F] mt-0.5">Baseado nas categorias lançadas no Fluxo de Caixa</p>
+                      </div>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <tbody>
+                          {dre.linhas.map((linha, idx) => {
+                            const isResultado = linha.operacao === "resultado";
+                            const isSubtracao = linha.operacao === "subtracao";
+                            const indent = linha.indent ?? 0;
+                            const isLucroPrejuizo = linha.label === "= RESULTADO LÍQUIDO";
+                            const valueColor = isLucroPrejuizo
+                              ? linha.valor >= 0 ? "#2DDB81" : "#F74C4C"
+                              : isResultado
+                              ? linha.valor >= 0 ? "#2DDB81" : "#F74C4C"
+                              : isSubtracao && linha.valor > 0
+                              ? "#F74C4C"
+                              : "#A1A1A1";
+
+                            return (
+                              <tr
+                                key={idx}
+                                className={`border-b border-white/5 ${isResultado ? "bg-white/5" : "hover:bg-white/3"}`}
+                              >
+                                <td
+                                  className={`py-2.5 pr-4 ${isResultado ? "font-bold text-white" : indent === 2 ? "text-[#686F6F]" : "text-[#A1A1A1]"}`}
+                                  style={{ paddingLeft: `${(indent + 1) * 16}px` }}
+                                >
+                                  {linha.label}
+                                </td>
+                                <td
+                                  className={`py-2.5 px-5 text-right font-medium whitespace-nowrap ${isResultado ? "font-bold" : ""}`}
+                                  style={{ color: valueColor }}
+                                >
+                                  {linha.valor === 0 && !isResultado ? "—" : (
+                                    <>
+                                      {isSubtracao && linha.valor > 0 ? "- " : ""}
+                                      {formatCurrency(Math.abs(linha.valor))}
+                                    </>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Centro de Custos */}
+                  <div>
+                    <h3 className="text-sm font-medium text-[#A1A1A1] uppercase tracking-wider mb-3">Centro de Custos</h3>
+                    <p className="text-xs text-[#686F6F] mb-4">Despesas classificadas automaticamente por área do negócio</p>
+
+                    {centrosCusto.length === 0 ? (
+                      <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-6 text-center">
+                        <p className="text-[#686F6F] text-sm">Nenhuma despesa no período para classificar.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {centrosCusto.map((cc) => {
+                          const totalDespCC = centrosCusto.reduce((s, c) => s + c.despesas, 0);
+                          const pct = totalDespCC > 0 ? (cc.despesas / totalDespCC) * 100 : 0;
+                          const ccColors: Record<string, string> = {
+                            Operacional: "#2DDB81",
+                            Comercial: "#5B5FFF",
+                            Administrativo: "#F4B23C",
+                            Financeiro: "#F74C4C",
+                            Pessoal: "#A78BFA",
+                          };
+                          const color = ccColors[cc.nome] ?? "#A1A1A1";
+
+                          return (
+                            <div key={cc.nome} className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
+                                  <span className="font-medium text-white text-sm">{cc.nome}</span>
+                                </div>
+                                <span className="text-xs text-[#686F6F]">{formatPercentage(pct)} das despesas</span>
+                              </div>
+
+                              {cc.despesas > 0 && (
+                                <div className="mb-3">
+                                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full rounded-full transition-all"
+                                      style={{ width: `${Math.min(pct, 100)}%`, background: color }}
+                                    />
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="space-y-1.5">
+                                {cc.despesas > 0 && (
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-[#686F6F]">Despesas</span>
+                                    <span className="text-[#F74C4C] font-medium">{formatCurrency(cc.despesas)}</span>
+                                  </div>
+                                )}
+                                {cc.receitas > 0 && (
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-[#686F6F]">Receitas</span>
+                                    <span className="text-[#2DDB81] font-medium">{formatCurrency(cc.receitas)}</span>
+                                  </div>
+                                )}
+                                <div className="flex justify-between text-sm border-t border-white/5 pt-1.5">
+                                  <span className="text-[#686F6F]">Resultado</span>
+                                  <span className="font-semibold" style={{ color: cc.resultado >= 0 ? "#2DDB81" : "#F74C4C" }}>
+                                    {formatCurrency(cc.resultado)}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {cc.categorias.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-white/5 space-y-1">
+                                  {cc.categorias
+                                    .filter((c) => c.tipo === "saida")
+                                    .sort((a, b) => b.valor - a.valor)
+                                    .slice(0, 3)
+                                    .map((cat) => (
+                                      <div key={cat.nome} className="flex justify-between text-xs">
+                                        <span className="text-[#686F6F] truncate mr-2">{cat.nome}</span>
+                                        <span className="text-[#A1A1A1] whitespace-nowrap">{formatCurrency(cat.valor)}</span>
+                                      </div>
+                                    ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
