@@ -1,15 +1,14 @@
 import { AvatarUpload } from "../components/AvatarUpload";
 import { ProfileForm } from "../components/ProfileForm";
 import { ChangePasswordForm } from "../components/ChangePasswordForm";
-import { ArrowLeft, Bell, User, Lock, Shield } from "lucide-react";
-import { useNavigate } from "react-router";
-import { Button } from "../components/ui/button";
+import { Bell, User, Lock, Shield, Zap } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
 import { colors } from "../../utils/designTokens";
+import { KPICard } from "../components/KPICard";
+import { PageHeader } from "../components/PageHeader";
 
 export function Profile() {
-  const navigate = useNavigate();
   const { user, updatePaymentReminders } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -26,19 +25,47 @@ export function Profile() {
   };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/app/dashboard")}
-          className="mb-6 rounded-lg transition-colors"
-          style={{ color: colors.textSecondary }}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Voltar ao Dashboard
-        </Button>
-        <h1 className="text-3xl font-bold mb-2" style={{ color: colors.textPrimary }}>Meu Perfil</h1>
-        <p style={{ color: colors.textSecondary }}>Gerencie suas informações pessoais e segurança</p>
+    <div className="space-y-6 max-w-4xl">
+      {/* Header with PageHeader component */}
+      <PageHeader
+        title="Meu Perfil"
+        subtitle="Gerencie suas informações pessoais e configurações"
+      />
+
+      {/* KPI Cards - Account Status */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <KPICard
+          title="Plano"
+          value="Gratuito"
+          icon={User}
+          iconColor="blue"
+          status={{
+            label: "Upgrade disponível",
+            color: "blue",
+          }}
+        />
+
+        <KPICard
+          title="Segurança"
+          value="100%"
+          icon={Shield}
+          iconColor="green"
+          status={{
+            label: "Conta segura",
+            color: "green",
+          }}
+        />
+
+        <KPICard
+          title="Notificações"
+          value={user?.receivePaymentReminders ? "Ativas" : "Desativadas"}
+          icon={Bell}
+          iconColor="orange"
+          status={{
+            label: user?.receivePaymentReminders ? "Lembretes ligados" : "Lembretes desligados",
+            color: user?.receivePaymentReminders ? "green" : "orange",
+          }}
+        />
       </div>
 
       {/* Content */}
