@@ -46,13 +46,13 @@ export function RecomendacoesInvestimento() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-1">Recomendações de Investimento</h1>
-          <p className="text-[#A1A1A1]">Descubra onde investir seu dinheiro de forma segura</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-1">Recomendações de Investimento</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Descubra onde investir seu dinheiro de forma segura</p>
         </div>
         <Button
           variant="ghost"
           size="lg"
-          className="text-[#A1A1A1] hover:text-white"
+          className="text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
           onClick={() => navigate('/app/dashboard')}
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
@@ -66,8 +66,8 @@ export function RecomendacoesInvestimento() {
       {step === 'questionnaire' && (
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Questionnaire */}
-          <div className="p-6 bg-[#1B1B1B] rounded-xl border border-white/5">
-            <h2 className="text-2xl font-bold text-white mb-6">
+          <div className="p-6 bg-white rounded-xl border border-[#E8EBF1] shadow-sm">
+            <h2 className="text-2xl font-bold text-[#001529] mb-6">
               Vamos conhecer seu perfil
             </h2>
             <QuestionarioRisco onComplete={handleQuestionarioComplete} />
@@ -79,9 +79,9 @@ export function RecomendacoesInvestimento() {
             {available && <CalculadoraDisponivel available={available} />}
 
             {/* Tips */}
-            <div className="p-6 bg-blue-500/10 rounded-xl border border-blue-500/20">
-              <h3 className="font-bold text-blue-300 mb-2">💡 Dicas para melhor resultado</h3>
-              <ul className="text-xs text-blue-200 space-y-2">
+            <div className="p-6 bg-[#EBF5FF] rounded-xl border border-[#0066FF]/20">
+              <h3 className="font-bold text-[#0066FF] mb-2">💡 Dicas para melhor resultado</h3>
+              <ul className="text-xs text-[#0066FF]/80 space-y-2">
                 <li>✓ Responda baseado em seu perfil real, não em esperança</li>
                 <li>✓ Considere seu horizonte de tempo realista</li>
                 <li>✓ Lembre-se: maior risco = maior possibilidade de perda</li>
@@ -101,8 +101,8 @@ export function RecomendacoesInvestimento() {
           <div className="space-y-6">
             {/* Curto prazo */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-4">⏱️ Curto Prazo (até 1 ano)</h2>
-              <p className="text-[#A1A1A1] mb-4">
+              <h2 className="text-2xl font-bold text-[#001529] mb-4">⏱️ Curto Prazo (até 1 ano)</h2>
+              <p className="text-[rgba(0,21,41,0.6)] mb-4">
                 Para dinheiro que você pode precisar em breve. Baixo risco, retorno moderado.
               </p>
               <div className="grid md:grid-cols-2 gap-4">
@@ -117,9 +117,9 @@ export function RecomendacoesInvestimento() {
             </div>
 
             {/* Médio prazo */}
-            <div className="pt-6 border-t border-white/10">
-              <h2 className="text-2xl font-bold text-white mb-4">📈 Médio Prazo (1 a 5 anos)</h2>
-              <p className="text-[#A1A1A1] mb-4">
+            <div className="pt-6 border-t border-[#E8EBF1]">
+              <h2 className="text-2xl font-bold text-[#001529] mb-4">📈 Médio Prazo (1 a 5 anos)</h2>
+              <p className="text-[rgba(0,21,41,0.6)] mb-4">
                 Equilíbrio entre segurança e crescimento. Risco moderado, bom retorno.
               </p>
               <div className="grid md:grid-cols-2 gap-4">
@@ -134,9 +134,9 @@ export function RecomendacoesInvestimento() {
             </div>
 
             {/* Longo prazo */}
-            <div className="pt-6 border-t border-white/10">
-              <h2 className="text-2xl font-bold text-white mb-4">🚀 Longo Prazo (5+ anos)</h2>
-              <p className="text-[#A1A1A1] mb-4">
+            <div className="pt-6 border-t border-[#E8EBF1]">
+              <h2 className="text-2xl font-bold text-[#001529] mb-4">🚀 Longo Prazo (5+ anos)</h2>
+              <p className="text-[rgba(0,21,41,0.6)] mb-4">
                 Para construir patrimônio. Maior risco, maior potencial de retorno.
               </p>
               <div className="grid md:grid-cols-2 gap-4">
@@ -152,9 +152,9 @@ export function RecomendacoesInvestimento() {
           </div>
 
           {/* Próximos passos */}
-          <div className="p-6 bg-[#28A263]/10 rounded-xl border border-[#28A263]/20">
-            <h3 className="font-bold text-[#2DDB81] mb-3">📋 Próximos passos</h3>
-            <ol className="text-sm text-[#A1A1A1] space-y-2 ml-4 list-decimal">
+          <div className="p-6 bg-[#F0F8F5] rounded-xl border border-[#28A263]/20">
+            <h3 className="font-bold text-[#28A263] mb-3">📋 Próximos passos</h3>
+            <ol className="text-sm text-[rgba(0,21,41,0.6)] space-y-2 ml-4 list-decimal">
               <li>Escolha pelo menos um investimento de cada bucket</li>
               <li>Abra conta nos provedores (Tesouro Direto, Nubank, etc)</li>
               <li>Comece com valores pequenos para aprender</li>
@@ -166,13 +166,13 @@ export function RecomendacoesInvestimento() {
           {/* CTA buttons */}
           <div className="flex gap-3 justify-center pt-6">
             <Button
-              className="bg-white/10 hover:bg-white/20 text-white rounded-lg"
+              className="bg-[#F9FAFB] hover:bg-[#E8EBF1] text-[#001529] rounded-lg border border-[#E8EBF1]"
               onClick={() => setStep('questionnaire')}
             >
               Refazer Questionário
             </Button>
             <Button
-              className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg"
+              className="bg-[#28A263] hover:bg-[#1f7a4a] text-white rounded-lg"
               onClick={() => navigate('/app/dashboard')}
             >
               Voltar ao Dashboard
