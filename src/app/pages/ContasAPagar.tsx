@@ -146,44 +146,48 @@ export function ContasAPagar() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#001529] mb-1">Contas a Pagar</h1>
-        <p className="text-[rgba(0,21,41,0.6)]">Controle suas despesas e vencimentos</p>
+        <h1 className="font-bold text-[#001529] mb-1">Contas a Pagar</h1>
+        <p className="text-[#001529]/60">Controle suas despesas e vencimentos</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#FF4F3D]/20 rounded-xl flex items-center justify-center mb-4">
-            <AlertCircle className="w-5 h-5 text-[#FF4F3D]" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Total Pendente</p>
+            <div className="w-11 h-11 rounded-xl bg-[#ef4444]/10 flex items-center justify-center">
+              <AlertCircle className="w-5 h-5 text-[#ef4444]" />
+            </div>
           </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Pendente</p>
-          <p className="text-2xl font-bold text-[#FF4F3D]">{fmt(totalPendente)}</p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
+          <p className="financial-medium text-[#001529] mb-2">{fmt(totalPendente)}</p>
+          <p className="text-xs text-[#001529]/60">
             {payables.filter((p) => p.status === "pendente").length} contas
           </p>
         </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
-            <CheckCircle className="w-5 h-5 text-[#28A263]" />
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Total Pago</p>
+            <div className="w-11 h-11 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-[#10b981]" />
+            </div>
           </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Pago</p>
-          <p className="text-2xl font-bold text-[#28A263]">{fmt(totalPago)}</p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
+          <p className="financial-medium text-[#001529] mb-2">{fmt(totalPago)}</p>
+          <p className="text-xs text-[#001529]/60">
             {payables.filter((p) => p.status === "pago").length} contas
           </p>
         </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
-            <Clock className="w-5 h-5 text-yellow-600" />
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Vencem em 7 dias</p>
+            <div className="w-11 h-11 rounded-xl bg-[#f59e0b]/10 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-[#f59e0b]" />
+            </div>
           </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Vencem em 7 dias</p>
-          <p className="text-2xl font-bold text-yellow-600">
-            {proximasAVencer.length}
-          </p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
+          <p className="financial-medium text-[#001529] mb-2">{proximasAVencer.length}</p>
+          <p className="text-xs text-[#001529]/60">
             {fmt(proximasAVencer.reduce((s, p) => s + p.valor, 0))}
           </p>
         </div>
@@ -191,7 +195,7 @@ export function ContasAPagar() {
 
       {/* Alerts */}
       {proximasAVencer.length > 0 && (
-        <div className="p-6 bg-yellow-50 rounded-2xl border border-yellow-200">
+        <div className="p-6 bg-[#fef3c7] rounded-2xl border border-[#fde68a]">
           <div className="flex items-start gap-3 mb-4">
             <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
             <div>

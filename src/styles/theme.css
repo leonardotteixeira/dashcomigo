@@ -2,63 +2,104 @@
 
 :root {
   --font-size: 16px;
-  /* LIGHT MODE - Premium Design */
-  --background: #FFFFFF;
-  --foreground: #001529;
-  --card: #FFFFFF;
-  --card-foreground: #001529;
-  --popover: #FFFFFF;
-  --popover-foreground: #001529;
 
-  /* Primary: Verde Kelly (mantém identidade) */
-  --primary: #28A263;
+  /* Core Colors - Premium Fintech Palette */
+  --background: #F8F9FB;
+  --foreground: #0F1419;
+  --card: #FFFFFF;
+  --card-foreground: #0F1419;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F1419;
+
+  /* Primary - Sophisticated Green */
+  --primary: #047857;
   --primary-foreground: #FFFFFF;
 
-  /* Secondary: Azul Institucional (novo) */
-  --secondary: #0066FF;
-  --secondary-foreground: #FFFFFF;
+  /* Secondary - Elegant Neutral */
+  --secondary: #F3F4F6;
+  --secondary-foreground: #0F1419;
 
-  /* Muted: Cinzas para textos secundários */
-  --muted: #F8F9FA;
-  --muted-foreground: rgba(0, 21, 41, 0.6);
+  /* Muted - Refined Gray */
+  --muted: #F9FAFB;
+  --muted-foreground: #6B7280;
 
-  /* Accent: Cinza claro */
-  --accent: #F5F7FA;
-  --accent-foreground: #001529;
+  /* Accent - Trust Blue */
+  --accent: #2563EB;
+  --accent-foreground: #FFFFFF;
 
-  /* Destructive: Vermelho */
-  --destructive: #d4183d;
-  --destructive-foreground: #ffffff;
+  /* Status Colors - More Elegant */
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --success: #047857;
+  --success-foreground: #FFFFFF;
+  --warning: #D97706;
+  --warning-foreground: #FFFFFF;
+  --info: #2563EB;
+  --info-foreground: #FFFFFF;
 
-  /* Border e Input */
-  --border: rgba(0, 0, 0, 0.1);
-  --input: #FFFFFF;
-  --input-background: #F8F9FA;
-  --switch-background: #D9D9D9;
+  /* Financial Status Colors - Refined */
+  --income: #059669;
+  --expense: #DC2626;
+  --pending: #D97706;
+  --paid: #047857;
+  --overdue: #991B1B;
 
-  /* Typography */
-  --font-weight-medium: 500;
+  /* PF vs PJ Colors - More Sophisticated */
+  --pf-color: #7C3AED;
+  --pj-color: #2563EB;
+
+  /* Borders and Inputs - Subtle */
+  --border: #E5E7EB;
+  --input: transparent;
+  --input-background: #FFFFFF;
+  --switch-background: #D1D5DB;
+
+  /* Typography Weights - Premium Hierarchy */
   --font-weight-normal: 400;
-  --ring: #0066FF;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
 
-  /* Charts */
-  --chart-1: #FF6B35;
-  --chart-2: #0066FF;
-  --chart-3: #28A263;
-  --chart-4: #FFB703;
-  --chart-5: #8338EC;
+  /* Typography Sizes - Financial Focus */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
 
-  --radius: 0.625rem;
+  /* Ring */
+  --ring: #047857;
 
-  /* Sidebar - Light Mode */
+  /* Chart Colors - Premium Palette */
+  --chart-1: #059669;
+  --chart-2: #2563EB;
+  --chart-3: #7C3AED;
+  --chart-4: #D97706;
+  --chart-5: #DC2626;
+
+  /* Radius - Refined */
+  --radius: 1rem;
+
+  /* Shadows - Subtle Depth */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+
+  /* Sidebar - Clean Premium */
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #001529;
-  --sidebar-primary: #28A263;
+  --sidebar-foreground: #0F1419;
+  --sidebar-primary: #047857;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F7FA;
-  --sidebar-accent-foreground: #001529;
+  --sidebar-accent: #F3F4F6;
+  --sidebar-accent-foreground: #0F1419;
   --sidebar-border: #E5E7EB;
-  --sidebar-ring: #0066FF;
+  --sidebar-ring: #047857;
 }
 
 .dark {
@@ -115,6 +156,19 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --color-pending: var(--pending);
+  --color-paid: var(--paid);
+  --color-overdue: var(--overdue);
+  --color-pf: var(--pf-color);
+  --color-pj: var(--pj-color);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-input-background: var(--input-background);
@@ -145,12 +199,14 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
   /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  * Premium Typography System - Fintech Focus
+  * Strong hierarchy with clear distinction between titles and financial values
   */
 
   html {
@@ -158,33 +214,37 @@
   }
 
   h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
   }
 
   h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
   }
 
   h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
   }
 
   h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
     line-height: 1.5;
   }
 
   label {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    letter-spacing: 0.01em;
   }
 
   button {
@@ -197,5 +257,37 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+
+  /* Financial Value Classes - Premium Numeric Display */
+  .financial-hero {
+    font-size: var(--text-6xl);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .financial-large {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .financial-medium {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .financial-small {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
   }
 }

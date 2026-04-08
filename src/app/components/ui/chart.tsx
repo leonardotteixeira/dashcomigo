@@ -47,9 +47,7 @@ function ChartContainer({
   >["children"];
 }) {
   const uniqueId = React.useId();
-  // Sanitize id to only allow alphanumeric and hyphens to prevent CSS injection via data-chart selector
-  const safeId = (id || uniqueId).replace(/[^a-zA-Z0-9-_]/g, "");
-  const chartId = `chart-${safeId}`;
+  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
   return (
     <ChartContext.Provider value={{ config }}>

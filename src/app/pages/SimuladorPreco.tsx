@@ -339,5 +339,6 @@ export function SimuladorPreco() {
         </div>
       </div>
     </div>
+  </div>
   );
 }
