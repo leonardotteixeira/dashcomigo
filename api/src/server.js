@@ -78,9 +78,24 @@ app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
+// Serve frontend static files
+const path = require("path");
+const frontendPath = path.join(__dirname, "../../dist");
+app.use(express.static(frontendPath));
+
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 app.use("/checkout", checkoutLimiter, checkoutRouter);
 app.use("/webhook", webhookRouter);
+
+// SPA fallback - serve index.html for all non-API routes
+app.get("*", (req, res) => {
+  const indexPath = path.join(frontendPath, "index.html");
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      res.status(500).json({ error: "Could not load frontend" });
+    }
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => console.log(`API rodando na porta ${PORT}`));
