@@ -9,12 +9,14 @@ import { ReceivablesProvider } from "./contexts/ReceivablesContext";
 import { ContactsProvider } from "./contexts/ContactsContext";
 import { BudgetsProvider } from "./contexts/BudgetsContext";
 import { GoalsProvider } from "./contexts/GoalsContext";
+import { PFPJProvider } from "./contexts/PFPJContext";
 
 export default function App() {
   return (
     <AuthProvider>
       <CashFlowProvider>
-        <PayablesProvider>
+        <PFPJProvider>
+          <PayablesProvider>
           <ReceivablesProvider>
             <ContactsProvider>
               <InventoryProvider>
@@ -29,6 +31,7 @@ export default function App() {
             </ContactsProvider>
           </ReceivablesProvider>
         </PayablesProvider>
+        </PFPJProvider>
       </CashFlowProvider>
     </AuthProvider>
   );
