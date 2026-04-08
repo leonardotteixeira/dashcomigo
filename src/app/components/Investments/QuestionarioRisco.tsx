@@ -41,9 +41,9 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
   ];
 
   const handleNext = () => {
-    if (step < 1) {
+    if (step < 2) {
       setStep(step + 1);
-    } else if (timeHorizon && experience && tolerance) {
+    } else if (step === 2 && timeHorizon && experience && tolerance) {
       onComplete({
         experience,
         tolerance,
