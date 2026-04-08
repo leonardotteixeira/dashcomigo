@@ -2,14 +2,14 @@ import { Link } from "react-router";
 
 export function Footer() {
   return (
-    <footer className="bg-[#111218] text-[#9C9EAB] py-12 border-t border-white/5">
+    <footer className="bg-white text-[rgba(0,21,41,0.6)] py-12 border-t border-[#E5E7EB]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <img src="/logo.png" alt="Meu Fluxo" className="h-23 w-auto" />
-              <span className="text-lg font-bold text-white">Meu Fluxo</span>
+              <span className="text-lg font-bold text-[#001529]">Meu Fluxo</span>
             </div>
             <p className="text-[#868898] leading-relaxed max-w-md text-sm">
               Plataforma completa para empreendedores tomarem decisões inteligentes sobre regime tributário,
@@ -63,7 +63,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/5 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-[#E5E7EB] pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-[#45485F]">
             &copy; 2026 Meu Fluxo. Todos os direitos reservados.
           </p>
@@ -82,7 +82,7 @@ export function Footer() {
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-8 p-4 bg-[#1B1B1B] rounded-2xl border border-white/5">
+        <div className="mt-8 p-4 bg-[#1B1B1B] rounded-2xl border border-[#E5E7EB]">
           <p className="text-xs text-[#45485F] leading-relaxed">
             <strong className="text-[#868898]">Aviso Legal:</strong> Esta ferramenta fornece simulações aproximadas
             baseadas em dados gerais do Simples Nacional e MEI. Os valores reais podem variar dependendo de diversos

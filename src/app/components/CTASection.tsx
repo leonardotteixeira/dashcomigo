@@ -7,7 +7,7 @@ interface CTASectionProps {
 
 export function CTASection({ onScrollToSimulator }: CTASectionProps) {
   return (
-    <section className="py-24 bg-black relative overflow-hidden">
+    <section className="py-24 bg-white relative overflow-hidden">
       {/* Big green circle decoration */}
       <div className="absolute -bottom-[400px] -right-[300px] w-[1104px] h-[1104px] bg-[#2DDB81] rounded-full opacity-20" />
       <div className="absolute -bottom-[400px] -right-[300px] w-[1104px] h-[1104px] bg-[#2DDB81] rounded-full opacity-5 blur-[50px]" />
@@ -22,11 +22,11 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
               </span>
             </div>
 
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-[#F4F4F6] leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-extrabold text-[#001529] leading-tight">
               A melhor ferramenta para o seu negócio!
             </h2>
 
-            <p className="text-lg text-[#9C9EAB] font-medium leading-relaxed">
+            <p className="text-lg text-[rgba(0,21,41,0.6)] font-medium leading-relaxed">
               Faça sua simulação gratuita agora e descubra se vale a pena migrar do MEI para ME.
               Leva menos de 2 minutos e pode economizar milhares de reais por ano.
             </p>
@@ -45,7 +45,7 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-6 text-sm text-[#9C9EAB]">
+            <div className="flex flex-wrap gap-6 text-sm text-[rgba(0,21,41,0.6)]">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-[#2DDB81]" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -84,7 +84,7 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
                   <div className="bg-[#22242F] rounded-2xl p-4 border border-white/5">
                     <div className="text-xs text-red-400 font-medium mb-1">MEI</div>
                     <div className="text-2xl font-bold text-red-400">R$ 810</div>
-                    <div className="text-xs text-[#9C9EAB] mt-1">impostos/mês</div>
+                    <div className="text-xs text-[rgba(0,21,41,0.6)] mt-1">impostos/mês</div>
                   </div>
 
                   <div className="bg-[#22242F] rounded-2xl p-4 border border-[#28A263]/30 relative">
@@ -93,7 +93,7 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
                     </div>
                     <div className="text-xs text-[#2DDB81] font-medium mb-1">ME</div>
                     <div className="text-2xl font-bold text-[#2DDB81]">R$ 520</div>
-                    <div className="text-xs text-[#9C9EAB] mt-1">impostos/mês</div>
+                    <div className="text-xs text-[rgba(0,21,41,0.6)] mt-1">impostos/mês</div>
                   </div>
                 </div>
 
@@ -110,7 +110,7 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
 
             {/* Floating Elements */}
             <div className="absolute -top-4 -right-4 bg-[#22242F] rounded-2xl shadow-lg p-4 border border-white/5 transform rotate-3">
-              <div className="text-xs text-[#9C9EAB]">Tempo até o limite</div>
+              <div className="text-xs text-[rgba(0,21,41,0.6)]">Tempo até o limite</div>
               <div className="text-xl font-bold text-white">8 meses</div>
             </div>
 

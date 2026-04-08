@@ -29,19 +29,19 @@ export function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-24 bg-black relative overflow-hidden">
+    <section className="py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 gap-6">
           <div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-[#F4F4F6] mb-2 leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-2 leading-tight">
               O que nossos <span className="text-[#2DDB81]">clientes</span>
               <br />dizem
             </h2>
           </div>
           <div className="flex items-center gap-4">
             <MessageSquareQuote className="w-8 h-8 text-[#28A263]" />
-            <p className="text-sm text-[#C8C9D0] max-w-[300px]">
+            <p className="text-sm text-[rgba(0,21,41,0.65)] max-w-[300px]">
               Milhares de empreendedores já usaram nosso simulador para tomar decisões mais inteligentes.
             </p>
           </div>
@@ -63,12 +63,12 @@ export function TestimonialsSection() {
               }`}
             >
               <div className="space-y-4">
-                <h3 className="text-[#F4F4F6] text-xl font-light leading-snug">
+                <h3 className="text-[#001529] text-xl font-light leading-snug">
                   {testimonial.content.length > 60
                     ? testimonial.content.substring(0, 60) + "..."
                     : testimonial.content}
                 </h3>
-                <p className="text-[#C8C9D0] text-sm font-medium leading-relaxed">
+                <p className="text-[rgba(0,21,41,0.65)] text-sm font-medium leading-relaxed">
                   {testimonial.content}
                 </p>
               </div>
