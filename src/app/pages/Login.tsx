@@ -47,23 +47,23 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-[#F8F9FA] flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-white via-[#F5F7FA] to-white flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md">
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-8 transition-colors font-medium"
+          className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-10 transition-colors font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Voltar
         </Link>
 
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/12 rounded-2xl mb-6">
             <LogIn className="w-8 h-8 text-[#28A263]" />
           </div>
-          <h1 className="text-4xl font-bold text-[#001529] mb-3">
+          <h1 className="text-4xl font-bold text-[#001529] mb-4">
             Bem-vindo de volta
           </h1>
           <p className="text-lg text-[rgba(0,21,41,0.65)]">
@@ -72,7 +72,7 @@ export function Login() {
         </div>
 
         {/* Login Card */}
-        <Card className="p-8 border border-[rgba(0,0,0,0.08)] bg-white shadow-sm mb-6">
+        <Card className="p-9 border border-[#E5E7EB] bg-white shadow-sm rounded-2xl mb-8">
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div>
@@ -86,7 +86,7 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all"
+                className="h-12 bg-white border border-[#E5E7EB] text-[#001529] placeholder:text-[rgba(0,21,41,0.45)] rounded-xl focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
                 autoComplete="email"
               />
             </div>
@@ -99,7 +99,7 @@ export function Login() {
                 </Label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#28A263] hover:text-[#1F8C50] transition-colors font-medium"
+                  className="text-sm text-[#28A263] hover:text-[#20915a] transition-colors font-medium"
                 >
                   Esqueceu a senha?
                 </Link>
@@ -112,13 +112,13 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all pr-12"
+                  className="h-12 bg-white border border-[#E5E7EB] text-[#001529] placeholder:text-[rgba(0,21,41,0.45)] rounded-xl focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all pr-12"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[rgba(0,21,41,0.5)] hover:text-[#001529] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[rgba(0,21,41,0.45)] hover:text-[#001529] transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -128,7 +128,7 @@ export function Login() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-[#28A263] hover:bg-[#1F8C50] text-white h-12 font-semibold rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full bg-[#28A263] hover:bg-[#20915a] text-white h-12 font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? (
@@ -143,9 +143,9 @@ export function Login() {
           </form>
 
           {/* Sign up link */}
-          <div className="mt-6 text-center text-sm text-[rgba(0,21,41,0.65)]">
+          <div className="mt-8 text-center text-sm text-[rgba(0,21,41,0.65)]">
             Não tem uma conta?{" "}
-            <Link to="/signup" className="text-[#28A263] hover:text-[#1F8C50] font-semibold transition-colors">
+            <Link to="/signup" className="text-[#28A263] hover:text-[#20915a] font-semibold transition-colors">
               Cadastre-se grátis
             </Link>
           </div>
@@ -154,11 +154,11 @@ export function Login() {
         {/* Footer */}
         <p className="text-center text-xs text-[rgba(0,21,41,0.55)]">
           Ao entrar, você concorda com nossos{" "}
-          <a href="#" className="text-[#28A263] hover:text-[#1F8C50] transition-colors">
+          <a href="#" className="text-[#28A263] hover:text-[#20915a] transition-colors">
             Termos de Uso
           </a>
           {" "}e{" "}
-          <a href="#" className="text-[#28A263] hover:text-[#1F8C50] transition-colors">
+          <a href="#" className="text-[#28A263] hover:text-[#20915a] transition-colors">
             Política de Privacidade
           </a>
         </p>
