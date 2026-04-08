@@ -289,3 +289,373 @@ export const getMarginHealthMessage = (
   };
   return messages[status];
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INSIGHTS ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Insight {
+  type: "warning" | "success" | "info";
+  message: string;
+}
+
+export function generateInsights(params: {
+  receitas: number;
+  despesas: number;
+  fluxo: number;
+  margem: number;
+  prevReceitas: number;
+  prevDespesas: number;
+  monthlyFlowData: Array<{ receitas: number; despesas: number; fluxo: number; name: string }>;
+  overduePayables: number;
+}): Insight[] {
+  const { receitas, despesas, fluxo, margem, prevReceitas, prevDespesas, monthlyFlowData, overduePayables } = params;
+  const insights: Insight[] = [];
+
+  // Sem receitas
+  if (receitas === 0) {
+    insights.push({ type: "info", message: "Nenhuma receita registrada neste período. Registre suas entradas para uma análise completa." });
+    return insights;
+  }
+
+  // Resultado do período
+  if (fluxo < 0) {
+    insights.push({ type: "warning", message: `Prejuízo de ${formatCurrency(Math.abs(fluxo))} neste período — despesas superam as receitas.` });
+  } else if (margem >= 30) {
+    insights.push({ type: "success", message: `Ótima margem de ${formatPercentage(margem)} — seu negócio está saudável e rentável.` });
+  } else if (margem >= 10) {
+    insights.push({ type: "info", message: `Margem de ${formatPercentage(margem)} — dentro do aceitável, mas há espaço para crescer.` });
+  } else {
+    insights.push({ type: "warning", message: `Margem de apenas ${formatPercentage(margem)} — muito baixa. Revise sua precificação.` });
+  }
+
+  // Comparação com período anterior
+  if (prevReceitas > 0) {
+    const receitaGrowth = calculateGrowth(receitas, prevReceitas);
+    const despesaGrowth = calculateGrowth(despesas, prevDespesas);
+
+    if (receitaGrowth <= -15) {
+      insights.push({ type: "warning", message: `Receitas caíram ${formatPercentage(Math.abs(receitaGrowth))} em relação ao período anterior.` });
+    } else if (receitaGrowth >= 15) {
+      insights.push({ type: "success", message: `Receitas cresceram ${formatPercentage(receitaGrowth)} em relação ao período anterior.` });
+    }
+
+    if (despesaGrowth >= 20) {
+      insights.push({ type: "warning", message: `Despesas aumentaram ${formatPercentage(despesaGrowth)} em relação ao período anterior — verifique o que subiu.` });
+    }
+  }
+
+  // Peso das despesas
+  if (receitas > 0 && despesas / receitas >= 0.85 && fluxo >= 0) {
+    insights.push({ type: "warning", message: `Despesas equivalem a ${formatPercentage((despesas / receitas) * 100)} das receitas — margem de segurança muito pequena.` });
+  }
+
+  // Contas vencidas
+  if (overduePayables > 0) {
+    insights.push({ type: "warning", message: `${overduePayables} conta${overduePayables > 1 ? "s" : ""} a pagar vencida${overduePayables > 1 ? "s" : ""} — quite para evitar juros e proteger seu crédito.` });
+  }
+
+  // Tendência dos últimos 3 meses
+  const last3 = monthlyFlowData.slice(-3);
+  if (last3.length === 3) {
+    const declining = last3[0].fluxo > last3[1].fluxo && last3[1].fluxo > last3[2].fluxo;
+    const improving = last3[0].fluxo < last3[1].fluxo && last3[1].fluxo < last3[2].fluxo;
+    if (declining && last3[2].fluxo < 0) {
+      insights.push({ type: "warning", message: "Fluxo de caixa em queda nos últimos 3 meses — tendência preocupante." });
+    } else if (improving) {
+      insights.push({ type: "success", message: "Fluxo de caixa em crescimento nos últimos 3 meses — boa trajetória!" });
+    }
+  }
+
+  return insights.slice(0, 4); // máximo 4 insights
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RECOMMENDATIONS ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Recommendation {
+  priority: "alta" | "media" | "baixa";
+  action: string;
+}
+
+export function generateRecommendations(params: {
+  receitas: number;
+  despesas: number;
+  fluxo: number;
+  margem: number;
+  expenseByCategory: Array<{ name: string; value: number }>;
+  overduePayables: number;
+  totalPayablesPending: number;
+}): Recommendation[] {
+  const { receitas, despesas, fluxo, margem, expenseByCategory, overduePayables, totalPayablesPending } = params;
+  const recs: Recommendation[] = [];
+
+  if (receitas === 0) {
+    recs.push({ priority: "alta", action: "Registre suas receitas no Fluxo de Caixa para ativar a análise completa." });
+    return recs;
+  }
+
+  // Críticas
+  if (fluxo < 0) {
+    recs.push({ priority: "alta", action: "Reduza despesas não essenciais ou aumente seus preços — o negócio está no vermelho." });
+  }
+  if (overduePayables > 0) {
+    recs.push({ priority: "alta", action: `Quite as ${overduePayables} conta${overduePayables > 1 ? "s" : ""} vencida${overduePayables > 1 ? "s" : ""} para evitar multas e proteger seu score de crédito.` });
+  }
+  if (margem < 10 && fluxo >= 0) {
+    recs.push({ priority: "alta", action: "Margem abaixo de 10% — revise a precificação dos seus serviços ou produtos." });
+  }
+
+  // Médias
+  if (totalPayablesPending > receitas * 0.5) {
+    recs.push({ priority: "media", action: `Contas a pagar pendentes representam ${formatPercentage((totalPayablesPending / receitas) * 100)} das suas receitas — planeje o pagamento.` });
+  }
+  if (expenseByCategory.length > 0) {
+    const topCategory = expenseByCategory[0];
+    if (topCategory.value / despesas >= 0.5) {
+      recs.push({ priority: "media", action: `"${topCategory.name}" representa ${formatPercentage((topCategory.value / despesas) * 100)} das despesas — avalie se é possível reduzir esse custo.` });
+    }
+  }
+
+  // Baixas
+  if (margem >= 20) {
+    recs.push({ priority: "baixa", action: "Boa margem! Considere reinvestir parte do lucro em divulgação ou ferramentas para crescer." });
+  }
+  if (receitas > 0 && expenseByCategory.length === 0) {
+    recs.push({ priority: "baixa", action: "Categorize suas despesas no Fluxo de Caixa para identificar onde o dinheiro vai." });
+  }
+
+  return recs.slice(0, 4);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADVANCED INDICATORS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Índice de cobertura: quanto de contas a receber cobre as contas a pagar.
+ * Acima de 1 = saudável (você tem mais a receber do que a pagar).
+ */
+export function calcularLiquidez(receivablesPending: number, payablesPending: number): number {
+  if (payablesPending === 0) return receivablesPending > 0 ? 99 : 0;
+  return receivablesPending / payablesPending;
+}
+
+/**
+ * Ponto de equilíbrio: receita mínima necessária para cobrir todas as despesas.
+ * Com margem de contribuição positiva, é o valor que zera o resultado.
+ */
+export function calcularPontoEquilibrio(despesasTotais: number, margemPct: number): number {
+  if (margemPct <= 0 || margemPct >= 100) return despesasTotais;
+  return despesasTotais / (margemPct / 100);
+}
+
+/**
+ * Estimativa simplificada de valor de negócio: média mensal de lucro × 12.
+ * Múltiplo conservador de 1 ano para negócios de serviço/MEI.
+ */
+export function estimarValorNegocio(monthlyFlowData: Array<{ fluxo: number }>): number {
+  const profitable = monthlyFlowData.filter((m) => m.fluxo > 0);
+  if (profitable.length === 0) return 0;
+  const avgMonthlyProfit = profitable.reduce((sum, m) => sum + m.fluxo, 0) / profitable.length;
+  return avgMonthlyProfit * 12;
+}
+
+/**
+ * Projeção de fluxo para os próximos 30 dias baseada na média dos últimos 3 meses.
+ */
+export function projetarProximos30dias(monthlyFlowData: Array<{ receitas: number; despesas: number }>): {
+  receitas: number;
+  despesas: number;
+  fluxo: number;
+} {
+  const recent = monthlyFlowData.slice(-3);
+  if (recent.length === 0) return { receitas: 0, despesas: 0, fluxo: 0 };
+  const avgReceitas = recent.reduce((s, m) => s + m.receitas, 0) / recent.length;
+  const avgDespesas = recent.reduce((s, m) => s + m.despesas, 0) / recent.length;
+  return {
+    receitas: avgReceitas,
+    despesas: avgDespesas,
+    fluxo: avgReceitas - avgDespesas,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRE — Demonstração do Resultado do Exercício
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Classificação DRE de cada categoria de saída */
+const CATEGORIA_DRE: Record<string, "cpv" | "operacional" | "administrativo" | "imposto" | "retirada"> = {
+  "Fornecedores/Mercadorias": "cpv",
+  "Custos de produção":       "cpv",
+  "Frete/Entregas":           "cpv",
+  "Aluguel":                  "administrativo",
+  "Internet/Telefonia":       "administrativo",
+  "Energia/Água":             "administrativo",
+  "Anúncios/Marketing":       "operacional",
+  "Ferramentas/Software":     "operacional",
+  "Taxas/Tarifas":            "administrativo",
+  "Impostos":                 "imposto",
+  "Retirada do proprietário": "retirada",
+  "Despesas diversas":        "administrativo",
+};
+
+export interface DRELinha {
+  label: string;
+  valor: number;
+  /** true = soma, false = subtração, undefined = resultado acumulado */
+  operacao?: "soma" | "subtracao" | "resultado";
+  indent?: number;
+  destaque?: boolean;
+}
+
+export interface DREData {
+  linhas: DRELinha[];
+  receitaBruta: number;
+  impostos: number;
+  receitaLiquida: number;
+  cpv: number;
+  lucroBruto: number;
+  despesasOperacionais: number;
+  despesasAdministrativas: number;
+  retirada: number;
+  resultadoLiquido: number;
+  margemBruta: number;
+  margemLiquida: number;
+  detalhesCPV: Record<string, number>;
+  detalhesOperacional: Record<string, number>;
+  detalhesAdministrativo: Record<string, number>;
+}
+
+export function calcularDRE(
+  transactions: Array<{ tipo: string; categoria: string; valor: number }>
+): DREData {
+  const entradas = transactions.filter((t) => t.tipo === "entrada");
+  const saidas   = transactions.filter((t) => t.tipo === "saida");
+
+  const receitaBruta = entradas.reduce((s, t) => s + t.valor, 0);
+
+  // Classificar saídas por grupo DRE
+  const grupos: Record<string, number> = { cpv: 0, operacional: 0, administrativo: 0, imposto: 0, retirada: 0 };
+  const detalhesCPV: Record<string, number> = {};
+  const detalhesOperacional: Record<string, number> = {};
+  const detalhesAdministrativo: Record<string, number> = {};
+
+  saidas.forEach((t) => {
+    const grupo = CATEGORIA_DRE[t.categoria] ?? "administrativo";
+    grupos[grupo] = (grupos[grupo] || 0) + t.valor;
+    if (grupo === "cpv") detalhesCPV[t.categoria] = (detalhesCPV[t.categoria] || 0) + t.valor;
+    if (grupo === "operacional") detalhesOperacional[t.categoria] = (detalhesOperacional[t.categoria] || 0) + t.valor;
+    if (grupo === "administrativo") detalhesAdministrativo[t.categoria] = (detalhesAdministrativo[t.categoria] || 0) + t.valor;
+  });
+
+  const impostos = grupos.imposto;
+  const receitaLiquida = receitaBruta - impostos;
+  const cpv = grupos.cpv;
+  const lucroBruto = receitaLiquida - cpv;
+  const despesasOperacionais = grupos.operacional;
+  const despesasAdministrativas = grupos.administrativo;
+  const retirada = grupos.retirada;
+  const resultadoLiquido = lucroBruto - despesasOperacionais - despesasAdministrativas - retirada;
+  const margemBruta = receitaBruta > 0 ? (lucroBruto / receitaBruta) * 100 : 0;
+  const margemLiquida = receitaBruta > 0 ? (resultadoLiquido / receitaBruta) * 100 : 0;
+
+  const linhas: DRELinha[] = [
+    { label: "RECEITA BRUTA",              valor: receitaBruta,           operacao: "resultado", destaque: true },
+    { label: "(-) Impostos / DAS-MEI",     valor: impostos,               operacao: "subtracao", indent: 1 },
+    { label: "= RECEITA LÍQUIDA",          valor: receitaLiquida,         operacao: "resultado", destaque: true },
+    { label: "(-) Custo das Mercadorias/Serviços (CPV)", valor: cpv,      operacao: "subtracao", indent: 1 },
+    ...Object.entries(detalhesCPV).map(([cat, val]) => ({ label: cat, valor: val, operacao: "subtracao" as const, indent: 2 })),
+    { label: "= LUCRO BRUTO",              valor: lucroBruto,             operacao: "resultado", destaque: true },
+    { label: "(-) Despesas Operacionais",  valor: despesasOperacionais,   operacao: "subtracao", indent: 1 },
+    ...Object.entries(detalhesOperacional).map(([cat, val]) => ({ label: cat, valor: val, operacao: "subtracao" as const, indent: 2 })),
+    { label: "(-) Despesas Administrativas", valor: despesasAdministrativas, operacao: "subtracao", indent: 1 },
+    ...Object.entries(detalhesAdministrativo).map(([cat, val]) => ({ label: cat, valor: val, operacao: "subtracao" as const, indent: 2 })),
+    { label: "(-) Retirada do Proprietário", valor: retirada,             operacao: "subtracao", indent: 1 },
+    { label: "= RESULTADO LÍQUIDO",        valor: resultadoLiquido,       operacao: "resultado", destaque: true },
+  ];
+
+  return {
+    linhas, receitaBruta, impostos, receitaLiquida, cpv, lucroBruto,
+    despesasOperacionais, despesasAdministrativas, retirada, resultadoLiquido,
+    margemBruta, margemLiquida, detalhesCPV, detalhesOperacional, detalhesAdministrativo,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CENTRO DE CUSTOS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Mapeamento de categoria → Centro de Custo */
+const CATEGORIA_CC: Record<string, string> = {
+  // Receitas
+  "Vendas":                    "Comercial",
+  "Serviços prestados":        "Operacional",
+  "Recebimentos de clientes":  "Comercial",
+  "Outros ganhos":             "Operacional",
+  // Saídas
+  "Fornecedores/Mercadorias":  "Operacional",
+  "Custos de produção":        "Operacional",
+  "Frete/Entregas":            "Operacional",
+  "Aluguel":                   "Administrativo",
+  "Internet/Telefonia":        "Administrativo",
+  "Energia/Água":              "Administrativo",
+  "Anúncios/Marketing":        "Comercial",
+  "Ferramentas/Software":      "Administrativo",
+  "Taxas/Tarifas":             "Financeiro",
+  "Impostos":                  "Financeiro",
+  "Retirada do proprietário":  "Pessoal",
+  "Despesas diversas":         "Administrativo",
+};
+
+export const CENTROS_CUSTO = ["Operacional", "Comercial", "Administrativo", "Financeiro", "Pessoal"] as const;
+export type CentroCusto = typeof CENTROS_CUSTO[number];
+
+export interface CentroCustoData {
+  nome: CentroCusto;
+  receitas: number;
+  despesas: number;
+  resultado: number;
+  percentualDespesas: number; // % do total de despesas
+  categorias: Array<{ nome: string; tipo: "entrada" | "saida"; valor: number }>;
+}
+
+export function calcularCentrosCusto(
+  transactions: Array<{ tipo: string; categoria: string; valor: number }>
+): CentroCustoData[] {
+  const totalDespesas = transactions.filter((t) => t.tipo === "saida").reduce((s, t) => s + t.valor, 0);
+
+  const map: Record<string, { receitas: number; despesas: number; cats: Record<string, { tipo: string; valor: number }> }> = {};
+
+  CENTROS_CUSTO.forEach((cc) => {
+    map[cc] = { receitas: 0, despesas: 0, cats: {} };
+  });
+
+  transactions.forEach((t) => {
+    const cc = CATEGORIA_CC[t.categoria] ?? "Administrativo";
+    if (!map[cc]) return;
+    if (t.tipo === "entrada") {
+      map[cc].receitas += t.valor;
+    } else {
+      map[cc].despesas += t.valor;
+    }
+    map[cc].cats[t.categoria] = {
+      tipo: t.tipo,
+      valor: (map[cc].cats[t.categoria]?.valor ?? 0) + t.valor,
+    };
+  });
+
+  return CENTROS_CUSTO.map((cc) => ({
+    nome: cc,
+    receitas: map[cc].receitas,
+    despesas: map[cc].despesas,
+    resultado: map[cc].receitas - map[cc].despesas,
+    percentualDespesas: totalDespesas > 0 ? (map[cc].despesas / totalDespesas) * 100 : 0,
+    categorias: Object.entries(map[cc].cats).map(([nome, { tipo, valor }]) => ({
+      nome,
+      tipo: tipo as "entrada" | "saida",
+      valor,
+    })),
+  })).filter((cc) => cc.receitas > 0 || cc.despesas > 0);
+}
