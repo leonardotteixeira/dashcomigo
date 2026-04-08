@@ -1,7 +1,23 @@
 const express = require("express");
 const router = express.Router();
+const crypto = require("crypto");
 const asaas = require("../lib/asaas");
 const { pb, ensureAdmin } = require("../lib/pocketbase");
+
+// Regex para validar IDs do PocketBase (15 chars alfanuméricos minúsculos)
+const PB_ID_REGEX = /^[a-z0-9]{15}$/;
+
+// Comparação em tempo constante para evitar timing attacks
+function timingSafeEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) {
+    // Executa a comparação de qualquer forma para evitar timing leak no length check
+    crypto.timingSafeEqual(bufA, Buffer.alloc(bufA.length));
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 // Middleware de verificação do token do webhook Asaas
 function verifyWebhookToken(req, res, next) {
@@ -13,7 +29,7 @@ function verifyWebhookToken(req, res, next) {
     return res.status(500).json({ error: "Webhook token not configured" });
   }
 
-  if (token !== expectedToken) {
+  if (!token || !timingSafeEqual(token, expectedToken)) {
     console.warn("Webhook rejeitado: token inválido");
     return res.status(401).json({ error: "Token inválido" });
   }
@@ -41,6 +57,11 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
     if (externalRef.startsWith("first_month_")) {
       const userId = externalRef.replace("first_month_", "");
 
+      if (!PB_ID_REGEX.test(userId)) {
+        console.warn("Webhook: userId inválido em externalReference:", externalRef);
+        return res.json({ received: true });
+      }
+
       // Ativar plano PRO
       await pb.collection("profiles").update(userId, { plan: "pro" });
 
@@ -63,17 +84,22 @@ router.post("/asaas", verifyWebhookToken, async (req, res) => {
         });
       }
 
-      console.log(`Usuário ${userId} ativado como PRO`);
+      console.log("Usuário ativado como PRO");
     }
 
     // --- RENOVAÇÃO MENSAL (R$ 29,90) ---
     if (externalRef.startsWith("subscription_")) {
       const userId = externalRef.replace("subscription_", "");
 
+      if (!PB_ID_REGEX.test(userId)) {
+        console.warn("Webhook: userId inválido em externalReference:", externalRef);
+        return res.json({ received: true });
+      }
+
       // Garantir que plano continua PRO
       await pb.collection("profiles").update(userId, { plan: "pro" });
 
-      console.log(`Assinatura renovada para usuário ${userId}`);
+      console.log("Assinatura renovada");
     }
 
     return res.json({ received: true });
@@ -105,9 +131,14 @@ router.post("/asaas/cancel", verifyWebhookToken, async (req, res) => {
     if (externalRef.startsWith("subscription_")) {
       const userId = externalRef.replace("subscription_", "");
 
+      if (!PB_ID_REGEX.test(userId)) {
+        console.warn("Webhook cancel: userId inválido em externalReference:", externalRef);
+        return res.json({ received: true });
+      }
+
       await pb.collection("profiles").update(userId, { plan: "free" });
 
-      console.log(`Usuário ${userId} revertido para free`);
+      console.log("Assinatura cancelada, plano revertido para free");
     }
 
     return res.json({ received: true });

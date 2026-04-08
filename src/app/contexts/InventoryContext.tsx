@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react";
 import { useAuth } from "./AuthContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 import {
   InventoryItem,
   InventoryMovement,
@@ -101,8 +101,10 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
 
-      // Check plan limit
-      if (!canAddItem()) {
+      // Re-verify plan from PocketBase to prevent client-side state manipulation
+      const plan = await getVerifiedPlan(user.id);
+      const limit = plan === "pro" ? INVENTORY_LIMITS.PRO : INVENTORY_LIMITS.FREE;
+      if (items.length >= limit) {
         throw new Error("Limite de itens atingido para seu plano");
       }
 

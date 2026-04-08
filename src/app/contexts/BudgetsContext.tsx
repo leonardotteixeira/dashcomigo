@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { usePayables } from "./PayablesContext";
-import { pb } from "../../lib/pocketbase";
+import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 
 export interface Budget {
   id: string;
@@ -75,7 +75,9 @@ export function BudgetsProvider({ children }: { children: ReactNode }) {
 
   async function addBudget(data: Omit<Budget, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
-    if (!canAddBudget()) throw new Error("Limite de orçamentos atingido");
+    const plan = await getVerifiedPlan(user.id);
+    const isPro = plan === "pro";
+    if (!isPro && budgets.length >= FREE_LIMIT) throw new Error("Limite de orçamentos atingido");
 
     const record = await pb.collection("budgets").create({
       userid: user.id,
