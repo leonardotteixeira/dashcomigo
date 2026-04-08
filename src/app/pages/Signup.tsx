@@ -51,7 +51,7 @@ export function Signup() {
   // Email Verification Screen
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white to-[#F8F9FA] flex items-center justify-center p-4 sm:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-white via-[#F5F7FA] to-white flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-md text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-[#28A263]/12 rounded-2xl mb-8">
             <MailCheck className="w-10 h-10 text-[#28A263]" />
@@ -67,9 +67,9 @@ export function Signup() {
             Clique no link do email para ativar sua conta e acessar todas as ferramentas gratuitamente.
           </p>
 
-          <Card className="p-8 border border-[rgba(0,0,0,0.08)] bg-white shadow-sm mb-8 text-left">
-            <p className="text-sm font-semibold text-[#001529] mb-4">Não recebeu o email?</p>
-            <ul className="text-sm text-[rgba(0,21,41,0.65)] space-y-3">
+          <Card className="p-8 border border-[#E5E7EB] bg-white shadow-sm mb-8 text-left rounded-2xl">
+            <p className="text-base font-semibold text-[#001529] mb-5">Não recebeu o email?</p>
+            <ul className="text-base text-[rgba(0,21,41,0.65)] space-y-3">
               <li className="flex items-start gap-3">
                 <span className="text-[#28A263] font-bold flex-shrink-0">•</span>
                 <span>Verifique a pasta de <strong>spam/lixo eletrônico</strong></span>
@@ -86,7 +86,7 @@ export function Signup() {
           </Card>
 
           <Button
-            className="w-full h-12 bg-[#28A263] hover:bg-[#1F8C50] text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg mb-4"
+            className="w-full h-12 bg-[#28A263] hover:bg-[#20915a] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl mb-4"
             onClick={() => navigate("/login")}
           >
             Já confirmei meu email
@@ -94,7 +94,7 @@ export function Signup() {
 
           <Link
             to="/signup"
-            className="text-sm text-[#28A263] hover:text-[#1F8C50] transition-colors font-medium"
+            className="text-sm text-[#28A263] hover:text-[#20915a] transition-colors font-medium"
             onClick={() => setEmailSent(false)}
           >
             Voltar para o formulário
@@ -105,16 +105,16 @@ export function Signup() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-[#F8F9FA] flex items-center justify-center p-4 sm:p-6">
-      <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-white via-[#F5F7FA] to-white flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left side - Value Proposition */}
         <div className="hidden lg:block order-last">
-          <div className="space-y-8">
+          <div className="space-y-10">
             <div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-4 leading-tight">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-5 leading-tight">
                 Crie sua conta grátis e comece agora
               </h2>
-              <p className="text-xl text-[rgba(0,21,41,0.65)]">
+              <p className="text-xl text-[rgba(0,21,41,0.65)] leading-relaxed">
                 Junte-se a milhares de empreendedores que já controlam suas finanças inteligentemente
               </p>
             </div>
@@ -130,24 +130,24 @@ export function Signup() {
                   <div className="w-6 h-6 bg-[#28A263] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                     <Check className="w-4 h-4 text-white font-bold" />
                   </div>
-                  <p className="text-[rgba(0,21,41,0.65)] leading-relaxed">{benefit}</p>
+                  <p className="text-lg text-[rgba(0,21,41,0.65)] leading-relaxed">{benefit}</p>
                 </div>
               ))}
             </div>
 
             <div className="bg-gradient-to-br from-[#28A263]/10 to-[#28A263]/5 rounded-2xl p-8 border border-[#28A263]/15">
-              <p className="text-sm font-bold text-[#28A263] uppercase tracking-wide mb-4">Plano Gratuito Inclui:</p>
-              <ul className="space-y-3 text-sm text-[rgba(0,21,41,0.65)]">
+              <p className="text-sm font-bold text-[#28A263] uppercase tracking-wider mb-5">Plano Gratuito Inclui:</p>
+              <ul className="space-y-4 text-base text-[rgba(0,21,41,0.65)]">
                 <li className="flex items-center gap-3">
-                  <Check className="w-4 h-4 text-[#28A263] flex-shrink-0" />
+                  <Check className="w-5 h-5 text-[#28A263] flex-shrink-0" />
                   <span>Simulador MEI → ME ilimitado</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-4 h-4 text-[#28A263] flex-shrink-0" />
+                  <Check className="w-5 h-5 text-[#28A263] flex-shrink-0" />
                   <span>2 propostas comerciais por dia</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-4 h-4 text-[#28A263] flex-shrink-0" />
+                  <Check className="w-5 h-5 text-[#28A263] flex-shrink-0" />
                   <span>Dashboard personalizado</span>
                 </li>
               </ul>
@@ -159,17 +159,17 @@ export function Signup() {
         <div>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-8 transition-colors font-medium lg:hidden"
+            className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-10 transition-colors font-medium lg:hidden"
           >
             <ArrowLeft className="w-4 h-4" />
             Voltar
           </Link>
 
-          <div className="text-center mb-10 lg:text-left">
+          <div className="text-center mb-12 lg:text-left">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/12 rounded-2xl mb-6">
               <UserPlus className="w-8 h-8 text-[#28A263]" />
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-[#001529] mb-3">
+            <h1 className="text-3xl lg:text-4xl font-bold text-[#001529] mb-4">
               Crie sua conta
             </h1>
             <p className="text-lg text-[rgba(0,21,41,0.65)]">
@@ -178,8 +178,8 @@ export function Signup() {
           </div>
 
           {/* Sign Up Form */}
-          <Card className="p-8 border border-[rgba(0,0,0,0.08)] bg-white shadow-sm mb-6">
-            <form onSubmit={handleSignup} className="space-y-5">
+          <Card className="p-9 border border-[#E5E7EB] bg-white shadow-sm rounded-2xl mb-8">
+            <form onSubmit={handleSignup} className="space-y-6">
               {/* Full Name */}
               <div>
                 <Label htmlFor="name" className="block text-sm font-semibold text-[#001529] mb-3">
@@ -192,7 +192,7 @@ export function Signup() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="João Silva"
                   required
-                  className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all"
+                  className="h-12 bg-white border border-[#E5E7EB] text-[#001529] placeholder:text-[rgba(0,21,41,0.45)] rounded-xl focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
                   autoComplete="name"
                 />
               </div>
@@ -209,7 +209,7 @@ export function Signup() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
-                  className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all"
+                  className="h-12 bg-white border border-[#E5E7EB] text-[#001529] placeholder:text-[rgba(0,21,41,0.45)] rounded-xl focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
                   autoComplete="email"
                 />
               </div>
@@ -228,13 +228,13 @@ export function Signup() {
                     placeholder="Mínimo 8 caracteres"
                     required
                     minLength={8}
-                    className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all pr-12"
+                    className="h-12 bg-white border border-[#E5E7EB] text-[#001529] placeholder:text-[rgba(0,21,41,0.45)] rounded-xl focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all pr-12"
                     autoComplete="new-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[rgba(0,21,41,0.5)] hover:text-[#001529] transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[rgba(0,21,41,0.45)] hover:text-[#001529] transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -244,7 +244,7 @@ export function Signup() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-[#28A263] hover:bg-[#1F8C50] text-white h-12 font-semibold rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-[#28A263] hover:bg-[#20915a] text-white h-12 font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={loading}
               >
                 {loading ? (
@@ -259,9 +259,9 @@ export function Signup() {
             </form>
 
             {/* Login Link */}
-            <div className="mt-6 text-center text-sm text-[rgba(0,21,41,0.65)]">
+            <div className="mt-8 text-center text-sm text-[rgba(0,21,41,0.65)]">
               Já tem uma conta?{" "}
-              <Link to="/login" className="text-[#28A263] hover:text-[#1F8C50] font-semibold transition-colors">
+              <Link to="/login" className="text-[#28A263] hover:text-[#20915a] font-semibold transition-colors">
                 Fazer login
               </Link>
             </div>
@@ -270,11 +270,11 @@ export function Signup() {
           {/* Footer Links */}
           <p className="text-center text-xs text-[rgba(0,21,41,0.55)]">
             Ao criar uma conta, você concorda com nossos{" "}
-            <a href="#" className="text-[#28A263] hover:text-[#1F8C50] transition-colors">
+            <a href="#" className="text-[#28A263] hover:text-[#20915a] transition-colors">
               Termos de Uso
             </a>
             {" "}e{" "}
-            <a href="#" className="text-[#28A263] hover:text-[#1F8C50] transition-colors">
+            <a href="#" className="text-[#28A263] hover:text-[#20915a] transition-colors">
               Política de Privacidade
             </a>
           </p>

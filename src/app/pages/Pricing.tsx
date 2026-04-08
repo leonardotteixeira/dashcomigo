@@ -57,31 +57,31 @@ export function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen bg-white py-20 px-4 sm:px-6">
+    <div className="min-h-screen bg-white py-32 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex px-4 py-2 bg-[#28A263]/10 border border-[#28A263]/15 rounded-full mb-8">
-            <span className="text-xs text-[#28A263] font-bold uppercase tracking-widest">
+        <div className="text-center mb-20">
+          <div className="inline-flex px-4 py-2 bg-[#28A263]/10 border border-[#28A263]/15 rounded-full mb-8 backdrop-blur-sm">
+            <span className="text-xs text-[#28A263] font-bold uppercase tracking-wider">
               Planos e Preços
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-6 leading-tight">
             Escolha o plano ideal para você
           </h1>
-          <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto leading-relaxed">
             Comece grátis, faça upgrade quando precisar. Sem compromisso a longo prazo.
           </p>
         </div>
 
         {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-3 mb-16">
+        <div className="flex items-center justify-center gap-4 mb-20">
           <button
             onClick={() => setBillingCycle("monthly")}
             className={`px-6 py-3 rounded-xl font-semibold transition-all ${
               billingCycle === "monthly"
-                ? "bg-[#28A263] text-white shadow-md"
-                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[rgba(0,0,0,0.08)]"
+                ? "bg-[#28A263] text-white shadow-lg"
+                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[#E5E7EB]"
             }`}
           >
             Mensal
@@ -90,13 +90,13 @@ export function Pricing() {
             onClick={() => setBillingCycle("annual")}
             className={`px-6 py-3 rounded-xl font-semibold transition-all relative ${
               billingCycle === "annual"
-                ? "bg-[#28A263] text-white shadow-md"
-                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[rgba(0,0,0,0.08)]"
+                ? "bg-[#28A263] text-white shadow-lg"
+                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[#E5E7EB]"
             }`}
           >
             Anual
             {billingCycle === "annual" && savings > 0 && (
-              <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap">
+              <span className="absolute -top-3 -right-3 bg-[#ef4444] text-white text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap shadow-lg">
                 Economize R$ {savings}
               </span>
             )}
@@ -104,9 +104,9 @@ export function Pricing() {
         </div>
 
         {/* Plans Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
+        <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto mb-24">
           {/* Free Plan */}
-          <div className="group relative p-10 bg-white border border-[rgba(0,0,0,0.08)] rounded-3xl hover:border-[rgba(0,0,0,0.12)] hover:shadow-lg transition-all duration-300">
+          <div className="group relative p-10 bg-white border border-[#E5E7EB] rounded-3xl hover:border-[#E5E7EB] hover:shadow-lg transition-all duration-300">
             <div className="mb-10">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-[#28A263]/12 rounded-2xl flex items-center justify-center">
@@ -129,7 +129,7 @@ export function Pricing() {
               <Button
                 onClick={() => handleSelectPlan("free")}
                 disabled={user?.plan === "free"}
-                className={`w-full h-12 rounded-lg font-semibold transition-all ${
+                className={`w-full h-12 rounded-xl font-semibold transition-all ${
                   user?.plan === "free"
                     ? "bg-[#F8F9FA] text-[rgba(0,21,41,0.5)] cursor-default"
                     : "bg-white text-[#28A263] hover:bg-[#F8F9FA] border border-[#28A263]/20 shadow-sm"
@@ -139,13 +139,13 @@ export function Pricing() {
               </Button>
             </div>
 
-            <div className="space-y-4 border-t border-[rgba(0,0,0,0.08)] pt-10">
+            <div className="space-y-4 border-t border-[#E5E7EB] pt-10">
               <p className="font-bold text-[#001529]">O que está incluso:</p>
               <ul className="space-y-3">
                 {FREE_FEATURES.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[rgba(0,21,41,0.65)]">{feature}</span>
+                    <span className="text-base text-[rgba(0,21,41,0.65)]">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -153,9 +153,9 @@ export function Pricing() {
           </div>
 
           {/* PRO Plan - Featured */}
-          <div className="group relative p-10 bg-gradient-to-br from-[#28A263]/8 to-white border-2 border-[#28A263]/30 rounded-3xl hover:border-[#28A263]/50 hover:shadow-xl transition-all duration-300 shadow-lg md:ring-2 md:ring-[#28A263]/20">
+          <div className="group relative p-10 bg-gradient-to-br from-[#28A263]/8 to-white border-2 border-[#28A263]/30 rounded-3xl hover:border-[#28A263]/50 hover:shadow-xl transition-all duration-300 shadow-xl md:ring-2 md:ring-[#28A263]/20">
             {/* Badge */}
-            <div className="absolute -top-4 right-8 bg-[#28A263] text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+            <div className="absolute -top-4 right-8 bg-[#28A263] text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
               Mais Popular
             </div>
 
@@ -201,10 +201,10 @@ export function Pricing() {
               <Button
                 onClick={() => handleSelectPlan("pro")}
                 disabled={user?.plan === "pro"}
-                className={`w-full h-12 rounded-lg font-semibold transition-all shadow-md ${
+                className={`w-full h-12 rounded-xl font-semibold transition-all shadow-lg ${
                   user?.plan === "pro"
                     ? "bg-[#F8F9FA] text-[rgba(0,21,41,0.5)] cursor-default"
-                    : "bg-[#28A263] hover:bg-[#1F8C50] text-white hover:shadow-lg"
+                    : "bg-[#28A263] hover:bg-[#20915a] text-white hover:shadow-xl"
                 }`}
               >
                 {user?.plan === "pro" ? (
@@ -227,14 +227,14 @@ export function Pricing() {
                 {PRO_FEATURES.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[rgba(0,21,41,0.65)]">{feature}</span>
+                    <span className="text-base text-[rgba(0,21,41,0.65)]">{feature}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Security Badge */}
-            <div className="mt-10 pt-8 border-t border-[#28A263]/15 flex items-center justify-center gap-2 text-xs text-[rgba(0,21,41,0.6)]">
+            <div className="mt-10 pt-8 border-t border-[#28A263]/15 flex items-center justify-center gap-2 text-sm text-[rgba(0,21,41,0.6)]">
               <Shield className="w-4 h-4 text-[#28A263]" />
               Pagamento 100% seguro via <strong>Asaas</strong>
             </div>
@@ -243,12 +243,12 @@ export function Pricing() {
 
         {/* FAQ Section */}
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#001529] mb-2">Perguntas frequentes</h2>
-            <p className="text-[rgba(0,21,41,0.65)]">Encontre respostas para as dúvidas mais comuns</p>
+          <div className="text-center mb-14">
+            <h2 className="text-3xl font-bold text-[#001529] mb-3">Perguntas frequentes</h2>
+            <p className="text-lg text-[rgba(0,21,41,0.65)]">Encontre respostas para as dúvidas mais comuns</p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-4 mb-20">
             {[
               {
                 q: "Posso cancelar a qualquer momento?",
@@ -263,17 +263,17 @@ export function Pricing() {
                 a: "Clique em 'Assinar Plano PRO', preencha seus dados pessoais e escolha o método de pagamento (PIX, boleto ou cartão de crédito). O acesso é imediato.",
               },
             ].map((item, idx) => (
-              <div key={idx} className="p-6 bg-[#F8F9FA] border border-[rgba(0,0,0,0.08)] rounded-xl hover:border-[rgba(0,0,0,0.12)] hover:shadow-sm transition-all">
-                <p className="font-semibold text-[#001529] mb-3">{item.q}</p>
-                <p className="text-[rgba(0,21,41,0.65)] leading-relaxed">{item.a}</p>
+              <div key={idx} className="p-8 bg-[#F8F9FA] border border-[#E5E7EB] rounded-xl hover:border-[#E5E7EB] hover:shadow-sm transition-all">
+                <p className="font-semibold text-lg text-[#001529] mb-4">{item.q}</p>
+                <p className="text-base text-[rgba(0,21,41,0.65)] leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>
 
           {/* CTA Section */}
-          <div className="mt-16 p-10 bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-2xl text-center">
-            <h3 className="text-2xl font-bold text-[#001529] mb-3">Pronto para começar?</h3>
-            <p className="text-[rgba(0,21,41,0.65)] mb-8 max-w-2xl mx-auto">
+          <div className="p-12 bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-3xl text-center">
+            <h3 className="text-3xl font-bold text-[#001529] mb-4">Pronto para começar?</h3>
+            <p className="text-lg text-[rgba(0,21,41,0.65)] mb-10 max-w-2xl mx-auto leading-relaxed">
               Crie sua conta gratuitamente e acesse todas as ferramentas. Faça upgrade para PRO quando estiver pronto para usar recursos avançados.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -281,14 +281,14 @@ export function Pricing() {
                 <>
                   <Button
                     onClick={() => navigate("/app")}
-                    className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-lg font-semibold h-12 transition-all shadow-md hover:shadow-lg"
+                    className="bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl font-semibold h-12 transition-all shadow-lg hover:shadow-xl"
                   >
                     Ir para o Dashboard
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => navigate("/pricing")}
-                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-lg font-semibold h-12 transition-all"
+                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-xl font-semibold h-12 transition-all"
                   >
                     Comparar Planos
                   </Button>
@@ -297,14 +297,14 @@ export function Pricing() {
                 <>
                   <Button
                     onClick={() => navigate("/signup")}
-                    className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-lg font-semibold h-12 transition-all shadow-md hover:shadow-lg"
+                    className="bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl font-semibold h-12 transition-all shadow-lg hover:shadow-xl"
                   >
                     Começar Grátis
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => navigate("/login")}
-                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-lg font-semibold h-12 transition-all"
+                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-xl font-semibold h-12 transition-all"
                   >
                     Fazer Login
                   </Button>

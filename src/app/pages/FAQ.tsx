@@ -100,7 +100,7 @@ export function FAQ() {
   return (
     <div className="min-h-screen bg-white">
       <Header onScrollToSimulator={() => {}} />
-      <main className="pt-24 pb-20">
+      <main className="pt-24 pb-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Back Link */}
           <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-10 transition-colors font-medium">
@@ -109,28 +109,28 @@ export function FAQ() {
           </Link>
 
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <div className="w-16 h-16 bg-[#28A263]/12 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <HelpCircle className="w-8 h-8 text-[#28A263]" />
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-4 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-5 leading-tight">
               Perguntas <span className="text-[#28A263]">Frequentes</span>
             </h1>
-            <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto leading-relaxed">
               Encontre respostas para as dúvidas mais comuns sobre a plataforma, MEI e nossas ferramentas financeiras.
             </p>
           </div>
 
           {/* Category Filter - Premium */}
-          <div className="flex flex-wrap gap-2 justify-center mb-14">
+          <div className="flex flex-wrap gap-3 justify-center mb-16">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => { setActiveCategory(cat); setOpenIndex(null); }}
-                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                   activeCategory === cat
                     ? "bg-[#28A263] text-white shadow-md"
-                    : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[rgba(0,0,0,0.08)]"
+                    : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[#E5E7EB]"
                 }`}
               >
                 {cat}
@@ -139,11 +139,11 @@ export function FAQ() {
           </div>
 
           {/* FAQ Items Grid */}
-          <div className="space-y-3 mb-16">
+          <div className="space-y-3 mb-20">
             {filtered.map((item, index) => (
               <div
                 key={index}
-                className="group bg-white border border-[rgba(0,0,0,0.08)] rounded-lg overflow-hidden hover:border-[rgba(0,0,0,0.12)] hover:shadow-sm transition-all duration-200"
+                className="group bg-white border border-[#E5E7EB] rounded-xl overflow-hidden hover:border-[#28A263]/25 hover:shadow-sm transition-all duration-200"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -153,15 +153,15 @@ export function FAQ() {
                     <span className="text-xs px-3 py-1.5 rounded-full bg-[#28A263]/12 text-[#28A263] border border-[#28A263]/20 font-bold uppercase tracking-wide flex-shrink-0">
                       {item.category}
                     </span>
-                    <span className="text-[#001529] font-semibold leading-tight">{item.question}</span>
+                    <span className="text-lg text-[#001529] font-semibold leading-tight">{item.question}</span>
                   </div>
                   <ChevronDown className={`w-5 h-5 text-[rgba(0,21,41,0.5)] flex-shrink-0 ml-4 transition-transform duration-300 ${
                     openIndex === index ? "rotate-180" : ""
                   }`} />
                 </button>
                 {openIndex === index && (
-                  <div className="px-6 sm:px-8 pb-6 sm:pb-8 bg-[#F8F9FA] border-t border-[rgba(0,0,0,0.08)]">
-                    <p className="text-[rgba(0,21,41,0.65)] leading-relaxed text-base">
+                  <div className="px-6 sm:px-8 pb-8 sm:pb-10 bg-[#F8F9FA] border-t border-[#E5E7EB]">
+                    <p className="text-base text-[rgba(0,21,41,0.65)] leading-relaxed">
                       {item.answer}
                     </p>
                   </div>
@@ -171,19 +171,19 @@ export function FAQ() {
           </div>
 
           {/* CTA Section - Premium */}
-          <div className="bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-2xl p-8 sm:p-12 text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#001529] mb-3">Ainda tem dúvidas?</h2>
-            <p className="text-lg text-[rgba(0,21,41,0.65)] mb-10 max-w-2xl mx-auto">
+          <div className="bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-3xl p-10 sm:p-14 text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#001529] mb-4">Ainda tem dúvidas?</h2>
+            <p className="text-lg text-[rgba(0,21,41,0.65)] mb-12 max-w-2xl mx-auto leading-relaxed">
               Não encontrou a resposta que procurava? Entre em contato conosco ou comece a usar a plataforma gratuitamente.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="mailto:contato@bubuya.com.br" className="flex-1 sm:flex-none">
-                <Button size="lg" className="w-full sm:w-auto bg-white text-[#28A263] border border-[#28A263]/20 hover:bg-[#F8F9FA] rounded-lg font-semibold h-12 transition-all">
+                <Button size="lg" className="w-full sm:w-auto bg-white text-[#28A263] border border-[#28A263]/20 hover:bg-[#F8F9FA] rounded-xl font-semibold h-12 transition-all">
                   Enviar Email
                 </Button>
               </a>
               <Link to="/signup" className="flex-1 sm:flex-none">
-                <Button size="lg" className="w-full sm:w-auto bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-lg font-semibold h-12 transition-all shadow-md hover:shadow-lg">
+                <Button size="lg" className="w-full sm:w-auto bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl font-semibold h-12 transition-all shadow-lg hover:shadow-xl">
                   Começar Grátis
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
