@@ -4,6 +4,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
 import { pb } from "../../lib/pocketbase";
 import { toast } from "sonner";
+import { colors, spacing } from "../../utils/designTokens";
+import { PremiumPageLayout } from "../components/PremiumPageLayout";
 
 // DAS-MEI 2026 values (salário mínimo R$1.518,00)
 const SALARIO_MINIMO = 1518.0;
@@ -113,17 +115,15 @@ export function DASMei() {
   const atividadeInfo = ATIVIDADES.find((a) => a.id === atividade)!;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#001529] mb-1">DAS-MEI</h1>
-        <p className="text-[rgba(0,21,41,0.6)]">Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional</p>
-      </div>
-
-        {/* Atividade selector */}
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-5">
-          <label className="text-sm font-medium text-[#001529] mb-3 block">Sua atividade principal</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <PremiumPageLayout
+      title="DAS-MEI"
+      description="Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional"
+    >
+      <div className={spacing.sectionGap}>
+        {/* Activity Selector */}
+        <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+          <label className="text-sm font-medium mb-3 block" style={{ color: colors.textPrimary }}>Sua atividade principal</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ATIVIDADES.map((a) => {
               const valor = getValorDAS(a.id);
               const selected = atividade === a.id;
@@ -131,13 +131,17 @@ export function DASMei() {
                 <button
                   key={a.id}
                   onClick={() => setAtividade(a.id)}
-                  className={`flex items-center justify-between p-3 rounded-lg border text-left transition-all ${selected ? "border-[#28A263] bg-[#28A263]/10" : "border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.15)]"}`}
+                  className="flex items-center justify-between p-3 rounded-lg border text-left transition-all hover:border-opacity-80"
+                  style={{
+                    backgroundColor: selected ? `${colors.primary}/10` : colors.bgLight,
+                    borderColor: selected ? colors.primary : colors.borderDefault
+                  }}
                 >
                   <div>
-                    <p className={`text-sm font-medium ${selected ? "text-[#28A263]" : "text-[#001529]"}`}>{a.label}</p>
-                    <p className="text-xs text-[rgba(0,21,41,0.5)]">{a.desc}</p>
+                    <p className="text-sm font-medium" style={{ color: selected ? colors.primary : colors.textPrimary }}>{a.label}</p>
+                    <p className="text-xs" style={{ color: colors.textSecondary }}>{a.desc}</p>
                   </div>
-                  <span className={`text-sm font-bold whitespace-nowrap ml-3 ${selected ? "text-[#28A263]" : "text-[rgba(0,21,41,0.6)]"}`}>
+                  <span className="text-sm font-bold whitespace-nowrap ml-3" style={{ color: selected ? colors.primary : colors.textSecondary }}>
                     R$ {valor.toFixed(2).replace(".", ",")}
                   </span>
                 </button>
@@ -153,41 +157,44 @@ export function DASMei() {
           const isVencido = !isPago && new Date() > venc;
           const diasRestantes = Math.ceil((venc.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
+          const bgColor = isPago ? `${colors.success}/10` : isVencido ? `${colors.danger}/10` : diasRestantes <= 5 ? `${colors.warning}/10` : colors.bgLighter;
+          const borderCol = isPago ? colors.success : isVencido ? colors.danger : diasRestantes <= 5 ? colors.warning : colors.borderDefault;
+          const textCol = isPago ? colors.success : isVencido ? colors.danger : diasRestantes <= 5 ? colors.warning : colors.textSecondary;
+
           return (
-            <div
-              className={`rounded-xl border p-6 ${isPago ? "border-[#28A263]/30 bg-[#28A263]/8" : isVencido ? "border-red-500/30 bg-red-50" : diasRestantes <= 5 ? "border-yellow-400/30 bg-yellow-50" : "border-[rgba(0,0,0,0.1)] bg-[#F8F9FA]"}`}
-            >
+            <div className="rounded-2xl border p-6 shadow-sm" style={{ backgroundColor: bgColor, borderColor: borderCol }}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     {isPago
-                      ? <CheckCircle className="w-5 h-5 text-[#28A263]" />
+                      ? <CheckCircle className="w-5 h-5" style={{ color: colors.success }} />
                       : isVencido
-                      ? <AlertTriangle className="w-5 h-5 text-red-500" />
-                      : <Clock className="w-5 h-5 text-yellow-600" />}
-                    <span className={`text-sm font-medium ${isPago ? "text-[#28A263]" : isVencido ? "text-red-500" : "text-yellow-600"}`}>
+                      ? <AlertTriangle className="w-5 h-5" style={{ color: colors.danger }} />
+                      : <Clock className="w-5 h-5" style={{ color: colors.warning }} />}
+                    <span className="text-sm font-medium" style={{ color: textCol }}>
                       {isPago ? "Pago" : isVencido ? "Vencido" : diasRestantes <= 5 ? `Vence em ${diasRestantes} dia${diasRestantes !== 1 ? "s" : ""}` : "Pendente"}
                     </span>
                   </div>
-                  <h2 className="text-xl font-bold text-[#001529] capitalize">{getMesLabel(now)}</h2>
-                  <p className="text-[rgba(0,21,41,0.5)] text-sm mt-0.5">
+                  <h2 className="text-xl font-bold capitalize" style={{ color: colors.textPrimary }}>{getMesLabel(now)}</h2>
+                  <p className="text-sm mt-0.5" style={{ color: colors.textSecondary }}>
                     {`Vencimento: dia 20/${String(venc.getMonth() + 1).padStart(2, "0")}/${venc.getFullYear()}`} · {atividadeInfo.label}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-xs text-[rgba(0,21,41,0.5)]">Valor do DAS</p>
-                    <p className="text-3xl font-bold text-[#001529]">
+                    <p className="text-xs" style={{ color: colors.textSecondary }}>Valor do DAS</p>
+                    <p className="text-3xl font-bold" style={{ color: colors.textPrimary }}>
                       R$ {valorDAS.toFixed(2).replace(".", ",")}
                     </p>
-                    <p className="text-xs text-[rgba(0,21,41,0.5)]">INSS R${INSS.toFixed(2).replace(".", ",")} + impostos</p>
+                    <p className="text-xs" style={{ color: colors.textSecondary }}>INSS R${INSS.toFixed(2).replace(".", ",")} + impostos</p>
                   </div>
                   {!isPago && (
                     <button
                       onClick={() => handlePagar(now)}
                       disabled={paying === currentMesKey}
-                      className="flex-shrink-0 px-5 py-2.5 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-bold rounded-xl text-sm transition-colors disabled:opacity-50"
+                      className="flex-shrink-0 px-5 py-2.5 text-white font-bold rounded-lg text-sm transition-all hover:opacity-90 disabled:opacity-50"
+                      style={{ backgroundColor: colors.primary }}
                     >
                       {paying === currentMesKey ? "Salvando..." : "Marcar pago"}
                     </button>
@@ -199,37 +206,38 @@ export function DASMei() {
         })()}
 
         {/* Info expandable */}
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl overflow-hidden">
+        <div className="rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
           <button
             onClick={() => setShowInfo(!showInfo)}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-[#F8F9FA] transition-colors"
+            className="w-full flex items-center justify-between p-6 text-left hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: colors.bgLight }}
           >
             <div className="flex items-center gap-2">
-              <Info className="w-4 h-4 text-[#28A263]" />
-              <span className="text-sm font-medium text-[#001529]">Como funciona o DAS-MEI?</span>
+              <Info className="w-4 h-4" style={{ color: colors.primary }} />
+              <span className="text-sm font-medium" style={{ color: colors.textPrimary }}>Como funciona o DAS-MEI?</span>
             </div>
-            {showInfo ? <ChevronUp className="w-4 h-4 text-[rgba(0,21,41,0.5)]" /> : <ChevronDown className="w-4 h-4 text-[rgba(0,21,41,0.5)]" />}
+            {showInfo ? <ChevronUp className="w-4 h-4" style={{ color: colors.textSecondary }} /> : <ChevronDown className="w-4 h-4" style={{ color: colors.textSecondary }} />}
           </button>
           {showInfo && (
-            <div className="px-4 pb-4 space-y-3 text-sm text-[rgba(0,21,41,0.6)]">
+            <div className="px-6 pb-6 space-y-3 text-sm" style={{ color: colors.textSecondary, borderTop: `1px solid ${colors.borderDefault}` }}>
               <p>O DAS-MEI é o pagamento mensal obrigatório do MEI, composto por:</p>
               <ul className="space-y-1.5 ml-4">
-                <li>• <strong className="text-[#001529]">INSS:</strong> 5% do salário mínimo (R${INSS.toFixed(2).replace(".", ",")} em 2026)</li>
-                <li>• <strong className="text-[#001529]">ICMS:</strong> R$1,00 — para atividades de comércio e transporte</li>
-                <li>• <strong className="text-[#001529]">ISS:</strong> R$5,00 — para atividades de serviços</li>
+                <li>• <strong style={{ color: colors.textPrimary }}>INSS:</strong> 5% do salário mínimo (R${INSS.toFixed(2).replace(".", ",")} em 2026)</li>
+                <li>• <strong style={{ color: colors.textPrimary }}>ICMS:</strong> R$1,00 — para atividades de comércio e transporte</li>
+                <li>• <strong style={{ color: colors.textPrimary }}>ISS:</strong> R$5,00 — para atividades de serviços</li>
               </ul>
-              <p>Vence sempre no <strong className="text-[#001529]">dia 20 do mês seguinte</strong> ao de competência.</p>
-              <p className="text-[rgba(0,21,41,0.5)] text-xs">Ao marcar como pago, o valor é lançado automaticamente no Fluxo de Caixa (categoria DAS-MEI) e aparece no DRE em Impostos.</p>
+              <p>Vence sempre no <strong style={{ color: colors.textPrimary }}>dia 20 do mês seguinte</strong> ao de competência.</p>
+              <p className="text-xs" style={{ color: colors.textSecondary }}>Ao marcar como pago, o valor é lançado automaticamente no Fluxo de Caixa (categoria DAS-MEI) e aparece no DRE em Impostos.</p>
             </div>
           )}
         </div>
 
         {/* History — last 12 months */}
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl overflow-hidden">
-          <div className="p-5 border-b border-[rgba(0,0,0,0.1)]">
-            <h3 className="font-semibold text-[#001529]">Histórico — últimos 12 meses</h3>
+        <div className="rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+          <div className="p-6" style={{ borderBottom: `1px solid ${colors.borderDefault}` }}>
+            <h3 className="font-semibold" style={{ color: colors.textPrimary }}>Histórico — últimos 12 meses</h3>
           </div>
-          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
+          <div style={{ borderTop: `1px solid ${colors.borderDefault}` }}>
             {[...months].reverse().map((date) => {
               const mesKey = getMesKey(date);
               const pago = paidMonths[mesKey];
@@ -239,21 +247,28 @@ export function DASMei() {
               const isVencido = !pago && !isFuture && new Date() > venc;
 
               return (
-                <div key={mesKey} className={`flex items-center justify-between px-5 py-3.5 ${isCurrent ? "bg-[#F8F9FA]" : ""}`}>
+                <div
+                  key={mesKey}
+                  className="flex items-center justify-between px-6 py-3.5 border-b"
+                  style={{
+                    backgroundColor: isCurrent ? colors.bgLighter : colors.bgLight,
+                    borderColor: colors.borderDefault
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     {pago
-                      ? <CheckCircle className="w-4 h-4 text-[#28A263] flex-shrink-0" />
+                      ? <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: colors.success }} />
                       : isFuture
-                      ? <div className="w-4 h-4 rounded-full border border-[rgba(0,0,0,0.15)] flex-shrink-0" />
+                      ? <div className="w-4 h-4 rounded-full border flex-shrink-0" style={{ borderColor: colors.borderDefault }} />
                       : isVencido
-                      ? <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-                      : <Clock className="w-4 h-4 text-yellow-600 flex-shrink-0" />}
+                      ? <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: colors.danger }} />
+                      : <Clock className="w-4 h-4 flex-shrink-0" style={{ color: colors.warning }} />}
                     <div>
-                      <p className={`text-sm font-medium capitalize ${isCurrent ? "text-[#001529]" : "text-[rgba(0,21,41,0.6)]"}`}>
+                      <p className="text-sm font-medium capitalize" style={{ color: isCurrent ? colors.textPrimary : colors.textSecondary }}>
                         {getMesLabel(date)}
-                        {isCurrent && <span className="ml-2 text-xs text-[#28A263] font-normal">mês atual</span>}
+                        {isCurrent && <span className="ml-2 text-xs font-normal" style={{ color: colors.primary }}>mês atual</span>}
                       </p>
-                      <p className="text-xs text-[rgba(0,21,41,0.5)]">
+                      <p className="text-xs" style={{ color: colors.textSecondary }}>
                         {`Venc. 20/${String(venc.getMonth() + 1).padStart(2, "0")}/${venc.getFullYear()}`}
                         {pago && ` · Pago em ${new Date(pago.data).toLocaleDateString("pt-BR")}`}
                       </p>
@@ -263,15 +278,19 @@ export function DASMei() {
                   <div className="flex items-center gap-3">
                     {pago ? (
                       <div className="text-right">
-                        <span className="text-sm text-[#28A263] font-medium">R$ {pago.valor.toFixed(2).replace(".", ",")}</span>
+                        <span className="text-sm font-medium" style={{ color: colors.success }}>R$ {pago.valor.toFixed(2).replace(".", ",")}</span>
                       </div>
                     ) : isFuture ? (
-                      <span className="text-xs text-[rgba(0,21,41,0.5)]">R$ {valorDAS.toFixed(2).replace(".", ",")}</span>
+                      <span className="text-xs" style={{ color: colors.textSecondary }}>R$ {valorDAS.toFixed(2).replace(".", ",")}</span>
                     ) : (
                       <button
                         onClick={() => handlePagar(date)}
                         disabled={paying === mesKey}
-                        className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${isVencido ? "bg-red-100 text-red-600 hover:bg-red-200" : "bg-[#28A263]/10 text-[#28A263] hover:bg-[#28A263]/20"} disabled:opacity-50`}
+                        className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-90 disabled:opacity-50"
+                        style={{
+                          backgroundColor: isVencido ? `${colors.danger}/10` : `${colors.primary}/10`,
+                          color: isVencido ? colors.danger : colors.primary
+                        }}
                       >
                         {paying === mesKey ? "..." : "Marcar pago"}
                       </button>
@@ -285,33 +304,33 @@ export function DASMei() {
 
         {/* Summary */}
         {Object.keys(paidMonths).length > 0 && (
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-[#28A263]">{Object.keys(paidMonths).length}</p>
-              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">Meses pagos</p>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+              <p className="text-2xl font-bold" style={{ color: colors.success }}>{Object.keys(paidMonths).length}</p>
+              <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Meses pagos</p>
             </div>
-            <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-[#001529]">
+            <div className="rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+              <p className="text-2xl font-bold" style={{ color: colors.textPrimary }}>
                 R$ {Object.values(paidMonths).reduce((s, p) => s + p.valor, 0).toFixed(2).replace(".", ",")}
               </p>
-              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">Total pago</p>
+              <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Total pago</p>
             </div>
-            <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-yellow-600">
+            <div className="rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+              <p className="text-2xl font-bold" style={{ color: colors.warning }}>
                 R$ {(valorDAS * 12).toFixed(2).replace(".", ",")}
               </p>
-              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">Custo anual est.</p>
+              <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Custo anual est.</p>
             </div>
           </div>
         )}
 
-        <p className="text-xs text-[rgba(0,21,41,0.5)] text-center pb-4">
+        <p className="text-xs text-center pb-4" style={{ color: colors.textSecondary }}>
           Valores baseados no salário mínimo de 2026 (R${SALARIO_MINIMO.toLocaleString("pt-BR")}). Para emitir a guia oficial, acesse o{" "}
-          <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/pagamento-das-mei" target="_blank" rel="noopener noreferrer" className="text-[#28A263] hover:underline">
+          <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/pagamento-das-mei" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity" style={{ color: colors.primary }}>
             Portal do Empreendedor
           </a>.
         </p>
       </div>
-    </div>
+    </PremiumPageLayout>
   );
 }
