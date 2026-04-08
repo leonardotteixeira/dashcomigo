@@ -1,22 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
-import { LogIn, Mail, Lock, ArrowLeft } from "lucide-react";
+import { LogIn, Mail, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Separator } from "../components/ui/separator";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, login, loginWithGoogle } = useAuth();
+  const { user, login } = useAuth();
 
-  // Quando user ficar disponível (via onAuthStateChange), redireciona
   useEffect(() => {
     if (user) {
       toast.success("Login realizado com sucesso!");
@@ -29,10 +28,8 @@ export function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      // Login já buscou o profile, redireciona imediatamente
       toast.success("Login realizado com sucesso!");
       navigate("/app");
-      return;
     } catch (error: any) {
       const msg = error?.message || "";
       if (msg.includes("Invalid login credentials") || msg.includes("invalid_credentials")) {
@@ -49,47 +46,37 @@ export function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    try {
-      await loginWithGoogle();
-      // O redirecionamento acontece automaticamente via OAuth
-    } catch (error: any) {
-      toast.error("Erro ao entrar com Google. Tente novamente.");
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-white to-[#F8F9FA] flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md">
-        {/* Back to home */}
+        {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center text-[rgba(0,21,41,0.5)] hover:text-[rgba(0,21,41,0.7)] mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-8 transition-colors font-medium"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Voltar para o início
+          <ArrowLeft className="w-4 h-4" />
+          Voltar
         </Link>
 
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/12 rounded-2xl mb-6">
             <LogIn className="w-8 h-8 text-[#28A263]" />
           </div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-2">
-            Bem-vindo de volta!
+          <h1 className="text-4xl font-bold text-[#001529] mb-3">
+            Bem-vindo de volta
           </h1>
-          <p className="text-[rgba(0,21,41,0.6)]">
-            Entre para acessar suas ferramentas
+          <p className="text-lg text-[rgba(0,21,41,0.65)]">
+            Entre na sua conta para continuar
           </p>
         </div>
 
-        <Card className="p-8 border border-[rgba(0,0,0,0.1)] bg-white shadow-xl">
+        {/* Login Card */}
+        <Card className="p-8 border border-[rgba(0,0,0,0.08)] bg-white shadow-sm mb-6">
           <form onSubmit={handleLogin} className="space-y-6">
+            {/* Email Field */}
             <div>
-              <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-[#001529]">
-                <Mail className="w-4 h-4" />
+              <Label htmlFor="email" className="block text-sm font-semibold text-[#001529] mb-3">
                 Email
               </Label>
               <Input
@@ -99,48 +86,64 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="h-12 bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)]"
+                className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all"
                 autoComplete="email"
               />
             </div>
 
+            {/* Password Field */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <Label htmlFor="password" className="flex items-center gap-2 text-[#001529]">
-                  <Lock className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-3">
+                <Label htmlFor="password" className="block text-sm font-semibold text-[#001529]">
                   Senha
                 </Label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#28A263] hover:text-[#1F8C50] transition-colors"
+                  className="text-sm text-[#28A263] hover:text-[#1F8C50] transition-colors font-medium"
                 >
-                  Esqueceu?
+                  Esqueceu a senha?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="h-12 bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)]"
-                autoComplete="current-password"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="h-12 bg-white border border-[rgba(0,0,0,0.08)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-lg focus:border-[#28A263]/30 focus:ring-1 focus:ring-[#28A263]/20 transition-all pr-12"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[rgba(0,21,41,0.5)] hover:text-[#001529] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
+            {/* Submit Button */}
             <Button
               type="submit"
-              size="lg"
-              className="w-full bg-[#28A263] hover:bg-[#1F8C50] text-white h-12 font-semibold"
+              className="w-full bg-[#28A263] hover:bg-[#1F8C50] text-white h-12 font-semibold rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
               disabled={loading}
             >
-              {loading ? "Entrando..." : "Entrar"}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Entrando...
+                </span>
+              ) : (
+                "Entrar"
+              )}
             </Button>
           </form>
 
-
-          <div className="mt-6 text-center text-sm text-[rgba(0,21,41,0.6)]">
+          {/* Sign up link */}
+          <div className="mt-6 text-center text-sm text-[rgba(0,21,41,0.65)]">
             Não tem uma conta?{" "}
             <Link to="/signup" className="text-[#28A263] hover:text-[#1F8C50] font-semibold transition-colors">
               Cadastre-se grátis
@@ -148,8 +151,16 @@ export function Login() {
           </div>
         </Card>
 
-        <p className="text-center text-sm text-[rgba(0,21,41,0.5)] mt-6">
-          Ao entrar, você concorda com nossos Termos de Uso
+        {/* Footer */}
+        <p className="text-center text-xs text-[rgba(0,21,41,0.55)]">
+          Ao entrar, você concorda com nossos{" "}
+          <a href="#" className="text-[#28A263] hover:text-[#1F8C50] transition-colors">
+            Termos de Uso
+          </a>
+          {" "}e{" "}
+          <a href="#" className="text-[#28A263] hover:text-[#1F8C50] transition-colors">
+            Política de Privacidade
+          </a>
         </p>
       </div>
     </div>

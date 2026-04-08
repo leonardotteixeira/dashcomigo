@@ -98,36 +98,39 @@ export function FAQ() {
     : faqData.filter(f => f.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-white">
       <Header onScrollToSimulator={() => {}} />
       <main className="pt-24 pb-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-[#A1A1A1] hover:text-white mb-8 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Voltar ao início
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          {/* Back Link */}
+          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-10 transition-colors font-medium">
+            <ArrowLeft className="w-4 h-4" />
+            Voltar ao início
           </Link>
 
-          <div className="text-center mb-12">
-            <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <HelpCircle className="w-8 h-8 text-[#2DDB81]" />
+          {/* Header */}
+          <div className="text-center mb-16">
+            <div className="w-16 h-16 bg-[#28A263]/12 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <HelpCircle className="w-8 h-8 text-[#28A263]" />
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              Perguntas <span className="text-[#2DDB81]">Frequentes</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-4 leading-tight">
+              Perguntas <span className="text-[#28A263]">Frequentes</span>
             </h1>
-            <p className="text-lg text-[#A1A1A1] max-w-2xl mx-auto">
-              Encontre respostas para as dúvidas mais comuns sobre a plataforma, MEI e nossas ferramentas.
+            <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto">
+              Encontre respostas para as dúvidas mais comuns sobre a plataforma, MEI e nossas ferramentas financeiras.
             </p>
           </div>
 
-          {/* Category Filter */}
-          <div className="flex gap-2 justify-center mb-10">
+          {/* Category Filter - Premium */}
+          <div className="flex flex-wrap gap-2 justify-center mb-14">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => { setActiveCategory(cat); setOpenIndex(null); }}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                   activeCategory === cat
-                    ? "bg-[#28A263] text-white"
-                    : "bg-[#1B1B1B] text-[#A1A1A1] hover:text-white border border-white/5"
+                    ? "bg-[#28A263] text-white shadow-md"
+                    : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[rgba(0,0,0,0.08)]"
                 }`}
               >
                 {cat}
@@ -135,30 +138,30 @@ export function FAQ() {
             ))}
           </div>
 
-          {/* FAQ Items */}
-          <div className="space-y-3">
+          {/* FAQ Items Grid */}
+          <div className="space-y-3 mb-16">
             {filtered.map((item, index) => (
               <div
                 key={index}
-                className="bg-[#1B1B1B] rounded-2xl border border-white/5 overflow-hidden"
+                className="group bg-white border border-[rgba(0,0,0,0.08)] rounded-lg overflow-hidden hover:border-[rgba(0,0,0,0.12)] hover:shadow-sm transition-all duration-200"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-[#F8F9FA] transition-colors"
                 >
-                  <div className="flex items-center gap-3 flex-1">
-                    <span className="text-xs px-2 py-1 rounded-full bg-[#28A263]/10 text-[#2DDB81] border border-[#28A263]/20 font-medium flex-shrink-0">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <span className="text-xs px-3 py-1.5 rounded-full bg-[#28A263]/12 text-[#28A263] border border-[#28A263]/20 font-bold uppercase tracking-wide flex-shrink-0">
                       {item.category}
                     </span>
-                    <span className="text-white font-medium">{item.question}</span>
+                    <span className="text-[#001529] font-semibold leading-tight">{item.question}</span>
                   </div>
-                  <ChevronDown className={`w-5 h-5 text-[#A1A1A1] flex-shrink-0 ml-4 transition-transform ${
+                  <ChevronDown className={`w-5 h-5 text-[rgba(0,21,41,0.5)] flex-shrink-0 ml-4 transition-transform duration-300 ${
                     openIndex === index ? "rotate-180" : ""
                   }`} />
                 </button>
                 {openIndex === index && (
-                  <div className="px-6 pb-6">
-                    <p className="text-[#C8C9D0] leading-relaxed pl-[calc(theme(spacing.3)+theme(spacing.2)+60px)]">
+                  <div className="px-6 sm:px-8 pb-6 sm:pb-8 bg-[#F8F9FA] border-t border-[rgba(0,0,0,0.08)]">
+                    <p className="text-[rgba(0,21,41,0.65)] leading-relaxed text-base">
                       {item.answer}
                     </p>
                   </div>
@@ -167,22 +170,22 @@ export function FAQ() {
             ))}
           </div>
 
-          {/* CTA */}
-          <div className="mt-12 bg-[#1B1B1B] rounded-2xl border border-white/5 p-8 text-center">
-            <h2 className="text-xl font-bold text-white mb-2">Ainda tem dúvidas?</h2>
-            <p className="text-[#A1A1A1] mb-6">
-              Entre em contato conosco ou comece a usar a plataforma gratuitamente.
+          {/* CTA Section - Premium */}
+          <div className="bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-2xl p-8 sm:p-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#001529] mb-3">Ainda tem dúvidas?</h2>
+            <p className="text-lg text-[rgba(0,21,41,0.65)] mb-10 max-w-2xl mx-auto">
+              Não encontrou a resposta que procurava? Entre em contato conosco ou comece a usar a plataforma gratuitamente.
             </p>
-            <div className="flex gap-4 justify-center">
-              <a href="mailto:contato@bubuya.com.br">
-                <Button size="lg" className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="mailto:contato@bubuya.com.br" className="flex-1 sm:flex-none">
+                <Button size="lg" className="w-full sm:w-auto bg-white text-[#28A263] border border-[#28A263]/20 hover:bg-[#F8F9FA] rounded-lg font-semibold h-12 transition-all">
                   Enviar Email
                 </Button>
               </a>
-              <Link to="/signup">
-                <Button size="lg" className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl">
+              <Link to="/signup" className="flex-1 sm:flex-none">
+                <Button size="lg" className="w-full sm:w-auto bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-lg font-semibold h-12 transition-all shadow-md hover:shadow-lg">
                   Começar Grátis
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             </div>
