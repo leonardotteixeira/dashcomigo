@@ -16,7 +16,7 @@ export function SimuladorMEI() {
         <Button
           variant="ghost"
           onClick={() => navigate("/app")}
-          className="text-[#A1A1A1] hover:text-white hover:bg-white/5 rounded-xl"
+          className="text-[rgba(0,21,41,0.6)] hover:text-[#001529] hover:bg-[rgba(0,0,0,0.05)] rounded-xl"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar ao Dashboard

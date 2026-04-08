@@ -46,19 +46,19 @@ const TEMPLATES: { id: Template; label: string; desc: string; badge?: string }[]
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  aguardando: { label: "Aguardando", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-  aprovada: { label: "Aprovada", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  paga: { label: "Paga", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  vencida: { label: "Vencida", color: "bg-red-500/20 text-red-400 border-red-500/30" },
-  recusada: { label: "Recusada", color: "bg-orange-500/20 text-orange-400 border-orange-500/30" },
+  aguardando: { label: "Aguardando", color: "bg-yellow-100 text-yellow-700 border-yellow-300" },
+  aprovada: { label: "Aprovada", color: "bg-blue-100 text-blue-700 border-blue-300" },
+  paga: { label: "Paga", color: "bg-green-100 text-green-700 border-green-300" },
+  vencida: { label: "Vencida", color: "bg-red-100 text-red-700 border-red-300" },
+  recusada: { label: "Recusada", color: "bg-orange-100 text-orange-700 border-orange-300" },
 };
 
 const getStatusConfig = (status: string) =>
-  STATUS_CONFIG[status] ?? { label: status ?? "—", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" };
+  STATUS_CONFIG[status] ?? { label: status ?? "—", color: "bg-gray-100 text-gray-700 border-gray-300" };
 
 const TIPO_CONFIG = {
-  contrato: { label: "CONTRATO", color: "text-[#2DDB81]" },
-  orcamento: { label: "ORÇAMENTO", color: "text-blue-400" },
+  contrato: { label: "CONTRATO", color: "text-primary" },
+  orcamento: { label: "ORÇAMENTO", color: "text-secondary" },
 };
 
 export function GeradorPropostas() {
@@ -395,7 +395,7 @@ export function GeradorPropostas() {
     document.body.classList.remove("printing-proposal");
   };
 
-  const inputClass = "bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F] rounded-xl focus:border-[#28A263]";
+  const inputClass = "bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl focus:border-primary";
 
   const tabs: { id: FilterTab; label: string }[] = [
     { id: "todas", label: "Todas" },
@@ -413,12 +413,12 @@ export function GeradorPropostas() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white">Propostas</h1>
-            <p className="text-[#A1A1A1] mt-1">Gerencie seus contratos e orçamentos com precisão editorial</p>
+            <h1 className="text-3xl font-bold text-foreground">Propostas</h1>
+            <p className="text-muted-foreground mt-1">Gerencie seus contratos e orçamentos com precisão editorial</p>
           </div>
           <Button
             size="lg"
-            className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl"
+            className="bg-[#28A263] hover:bg-primary text-foreground rounded-xl"
             onClick={() => { resetForm(); setViewMode("create"); }}
           >
             <Plus className="w-5 h-5 mr-2" />
@@ -428,13 +428,13 @@ export function GeradorPropostas() {
 
         {/* Usage counter for free users */}
         {user?.plan !== "pro" && (
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[#1B1B1B] border border-white/5">
-            <Info className="h-4 w-4 text-[#2DDB81] flex-shrink-0" />
-            <span className="text-sm text-[#A1A1A1]">
-              Plano gratuito: <span className="text-white font-medium">{usageCount}/{FREE_LIMIT}</span> propostas criadas hoje
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
+            <Info className="h-4 w-4 text-primary flex-shrink-0" />
+            <span className="text-sm text-muted-foreground">
+              Plano gratuito: <span className="text-foreground font-medium">{usageCount}/{FREE_LIMIT}</span> propostas criadas hoje
             </span>
             {limitReached && (
-              <Button size="sm" className="ml-auto bg-[#28A263] hover:bg-[#2DDB81] text-white text-xs rounded-lg" onClick={() => navigate("/checkout")}>
+              <Button size="sm" className="ml-auto bg-[#28A263] hover:bg-primary text-foreground text-xs rounded-lg" onClick={() => navigate("/checkout")}>
                 <Crown className="w-3 h-3 mr-1" /> Upgrade PRO
               </Button>
             )}
@@ -449,8 +449,8 @@ export function GeradorPropostas() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "bg-[#28A263] text-white"
-                  : "bg-[#1B1B1B] text-[#A1A1A1] hover:text-white border border-white/5"
+                  ? "bg-[#28A263] text-foreground"
+                  : "bg-card text-muted-foreground hover:text-foreground border border-border"
               }`}
             >
               {tab.label}
@@ -462,18 +462,18 @@ export function GeradorPropostas() {
           {/* Proposal List */}
           <div className="lg:col-span-2 space-y-3">
             {loadingList ? (
-              <div className="text-center py-12 text-[#A1A1A1]">Carregando propostas...</div>
+              <div className="text-center py-12 text-muted-foreground">Carregando propostas...</div>
             ) : getFilteredProposals().length === 0 ? (
-              <div className="text-center py-16 bg-[#1B1B1B] rounded-2xl border border-white/5">
-                <FileText className="w-12 h-12 text-[#686F6F] mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-white mb-2">
+              <div className="text-center py-16 bg-card rounded-2xl border border-border">
+                <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-foreground mb-2">
                   {proposals.length === 0 ? "Nenhuma proposta ainda" : "Nenhuma proposta neste filtro"}
                 </h3>
-                <p className="text-[#A1A1A1] mb-6 text-sm">
+                <p className="text-muted-foreground mb-6 text-sm">
                   {proposals.length === 0 ? "Crie sua primeira proposta comercial profissional" : "Tente outro filtro"}
                 </p>
                 {proposals.length === 0 && (
-                  <Button className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl" onClick={() => setViewMode("create")}>
+                  <Button className="bg-[#28A263] hover:bg-primary text-foreground rounded-xl" onClick={() => setViewMode("create")}>
                     <Plus className="w-4 h-4 mr-2" /> Criar Proposta
                   </Button>
                 )}
@@ -483,8 +483,8 @@ export function GeradorPropostas() {
                 <div
                   key={proposal.id}
                   onClick={() => setSelectedProposal(proposal)}
-                  className={`p-5 bg-[#1B1B1B] rounded-2xl border cursor-pointer transition-all hover:border-[#28A263]/30 ${
-                    selectedProposal?.id === proposal.id ? "border-[#28A263]/50" : "border-white/5"
+                  className={`p-5 bg-card rounded-2xl border cursor-pointer transition-all hover:border-primary/30 ${
+                    selectedProposal?.id === proposal.id ? "border-primary/50" : "border-border"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -497,14 +497,14 @@ export function GeradorPropostas() {
                           {getStatusConfig(proposal.status).label}
                         </span>
                       </div>
-                      <h3 className="text-white font-semibold truncate">{proposal.nome_servico}</h3>
-                      <p className="text-[#A1A1A1] text-sm">{proposal.nome_cliente}</p>
+                      <h3 className="text-foreground font-semibold truncate">{proposal.nome_servico}</h3>
+                      <p className="text-muted-foreground text-sm">{proposal.nome_cliente}</p>
                       <div className="flex items-center gap-4 mt-3 text-sm">
-                        <span className="text-white font-bold">{formatCurrency(Number(proposal.valor))}</span>
-                        <span className="text-[#686F6F]">{formatDate(proposal.created)}</span>
+                        <span className="text-foreground font-bold">{formatCurrency(Number(proposal.valor))}</span>
+                        <span className="text-muted-foreground">{formatDate(proposal.created)}</span>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-[#686F6F] flex-shrink-0 mt-2" />
+                    <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-2" />
                   </div>
                 </div>
               ))
@@ -515,32 +515,32 @@ export function GeradorPropostas() {
           <div className="space-y-4">
             {/* Active Document Preview */}
             {selectedProposal ? (
-              <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 overflow-hidden">
-                <div className="p-5 border-b border-white/5">
+              <div className="bg-card rounded-2xl border border-border overflow-hidden">
+                <div className="p-5 border-b border-border">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-[#2DDB81] font-bold uppercase">Documento Ativo</span>
-                    <button onClick={() => setSelectedProposal(null)} className="text-[#686F6F] hover:text-white">
+                    <span className="text-xs text-primary font-bold uppercase">Documento Ativo</span>
+                    <button onClick={() => setSelectedProposal(null)} className="text-muted-foreground hover:text-foreground">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
-                  <h3 className="text-white font-bold">Preview Rápido</h3>
+                  <h3 className="text-foreground font-bold">Preview Rápido</h3>
                 </div>
 
                 <div className="p-5 space-y-4">
                   {/* Document info */}
-                  <div className="bg-[#141414] rounded-xl p-4 border border-white/5">
+                  <div className="bg-muted rounded-xl p-4 border border-border">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#28A263]/20 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-[#2DDB81]" />
+                      <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm font-medium truncate">{selectedProposal.nome_servico}</p>
-                        <p className="text-[#686F6F] text-xs">{selectedProposal.nome_cliente}</p>
+                        <p className="text-foreground text-sm font-medium truncate">{selectedProposal.nome_servico}</p>
+                        <p className="text-muted-foreground text-xs">{selectedProposal.nome_cliente}</p>
                       </div>
                     </div>
                     <div className="mt-3">
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-[#A1A1A1]">Status</span>
+                        <span className="text-muted-foreground">Status</span>
                         <span className={`font-medium ${getStatusConfig(selectedProposal.status).color.split(' ')[1]}`}>
                           {getStatusConfig(selectedProposal.status).label}
                         </span>
@@ -551,32 +551,32 @@ export function GeradorPropostas() {
                   {/* Quick details */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-[#A1A1A1]">Valor</span>
-                      <span className="text-white font-bold">{formatCurrency(Number(selectedProposal.valor))}</span>
+                      <span className="text-muted-foreground">Valor</span>
+                      <span className="text-foreground font-bold">{formatCurrency(Number(selectedProposal.valor))}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-[#A1A1A1]">Prazo</span>
-                      <span className="text-white">{selectedProposal.prazo || "—"}</span>
+                      <span className="text-muted-foreground">Prazo</span>
+                      <span className="text-foreground">{selectedProposal.prazo || "—"}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-[#A1A1A1]">Pagamento</span>
-                      <span className="text-white">{selectedProposal.condicoes_pagamento}</span>
+                      <span className="text-muted-foreground">Pagamento</span>
+                      <span className="text-foreground">{selectedProposal.condicoes_pagamento}</span>
                     </div>
                     {selectedProposal.data_pagamento && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#A1A1A1]">Paga em</span>
-                        <span className="text-[#2DDB81] font-medium">{formatDate(selectedProposal.data_pagamento)}</span>
+                        <span className="text-muted-foreground">Paga em</span>
+                        <span className="text-primary font-medium">{formatDate(selectedProposal.data_pagamento)}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">
-                      <span className="text-[#A1A1A1]">Criada em</span>
-                      <span className="text-white">{formatDate(selectedProposal.created)}</span>
+                      <span className="text-muted-foreground">Criada em</span>
+                      <span className="text-foreground">{formatDate(selectedProposal.created)}</span>
                     </div>
                   </div>
 
                   {/* Status Actions */}
                   <div>
-                    <p className="text-xs text-[#A1A1A1] font-medium mb-2 uppercase">Alterar Status</p>
+                    <p className="text-xs text-muted-foreground font-medium mb-2 uppercase">Alterar Status</p>
                     <div className="flex flex-wrap gap-2">
                       {(["aguardando", "aprovada", "paga", "vencida", "recusada"] as ProposalStatus[]).map(s => (
                         <button
@@ -585,7 +585,7 @@ export function GeradorPropostas() {
                           className={`flex-1 min-w-20 text-xs py-2 rounded-lg border font-medium transition-colors ${
                             selectedProposal.status === s
                               ? getStatusConfig(s).color
-                              : "border-white/10 text-[#686F6F] hover:text-white hover:border-white/20"
+                              : "border-border text-muted-foreground hover:text-foreground hover:border-border"
                           }`}
                         >
                           {getStatusConfig(s).label}
@@ -598,7 +598,7 @@ export function GeradorPropostas() {
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       size="sm"
-                      className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg text-xs"
+                      className="bg-[#28A263] hover:bg-primary text-foreground rounded-lg text-xs"
                       onClick={() => handleCopyText(selectedProposal)}
                     >
                       {copied ? <Check className="w-3 h-3 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
@@ -606,7 +606,7 @@ export function GeradorPropostas() {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg text-xs"
+                      className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-lg text-xs"
                       onClick={() => handleSendEmail(selectedProposal)}
                     >
                       <Send className="w-3 h-3 mr-1" />
@@ -626,35 +626,35 @@ export function GeradorPropostas() {
                 </div>
               </div>
             ) : (
-              <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-8 text-center">
-                <Eye className="w-8 h-8 text-[#686F6F] mx-auto mb-3" />
-                <p className="text-[#A1A1A1] text-sm">Selecione uma proposta para ver detalhes</p>
+              <div className="bg-card rounded-2xl border border-border p-8 text-center">
+                <Eye className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground text-sm">Selecione uma proposta para ver detalhes</p>
               </div>
             )}
 
             {/* Stats Card */}
             {proposals.length > 0 && (
-              <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-5">
+              <div className="bg-card rounded-2xl border border-border p-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp className="w-4 h-4 text-[#2DDB81]" />
-                  <span className="text-xs text-[#A1A1A1]">Resumo</span>
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                  <span className="text-xs text-muted-foreground">Resumo</span>
                 </div>
-                <div className="text-3xl font-bold text-white mb-1">
+                <div className="text-3xl font-bold text-foreground mb-1">
                   {formatCurrency(stats.valorAprovado)}
                 </div>
-                <p className="text-sm text-[#A1A1A1]">Em propostas aprovadas</p>
-                <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-white/5">
+                <p className="text-sm text-muted-foreground">Em propostas aprovadas</p>
+                <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-border">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-white">{stats.total}</div>
-                    <div className="text-xs text-[#686F6F]">Total</div>
+                    <div className="text-lg font-bold text-foreground">{stats.total}</div>
+                    <div className="text-xs text-muted-foreground">Total</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-[#2DDB81]">{stats.aprovadas}</div>
-                    <div className="text-xs text-[#686F6F]">Aprovadas</div>
+                    <div className="text-lg font-bold text-primary">{stats.aprovadas}</div>
+                    <div className="text-xs text-muted-foreground">Aprovadas</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-yellow-400">{stats.aguardando}</div>
-                    <div className="text-xs text-[#686F6F]">Pendentes</div>
+                    <div className="text-xs text-muted-foreground">Pendentes</div>
                   </div>
                 </div>
               </div>
@@ -664,32 +664,32 @@ export function GeradorPropostas() {
 
         {/* Payment Date Dialog */}
         <Dialog open={paymentDateDialogOpen} onOpenChange={setPaymentDateDialogOpen}>
-          <DialogContent className="max-w-md bg-[#1B1B1B] border-white/10">
+          <DialogContent className="max-w-md bg-card border-border">
             <DialogHeader>
-              <DialogTitle className="text-white">Data de Pagamento</DialogTitle>
-              <DialogDescription className="text-[#A1A1A1]">
+              <DialogTitle className="text-foreground">Data de Pagamento</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
                 Em qual data a proposta foi paga?
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label className="text-[#A1A1A1] mb-2 block">Data</Label>
+                <Label className="text-muted-foreground mb-2 block">Data</Label>
                 <Input
                   type="date"
                   value={paymentDate}
                   onChange={(e) => setPaymentDate(e.target.value)}
-                  className="bg-[#141414] border-white/10 text-white"
+                  className="bg-muted border-border text-foreground"
                 />
               </div>
               <div className="flex gap-2">
                 <Button
-                  className="flex-1 bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg"
+                  className="flex-1 bg-[#28A263] hover:bg-primary text-foreground rounded-lg"
                   onClick={handleConfirmPayment}
                 >
                   Confirmar
                 </Button>
                 <Button
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg"
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-lg"
                   onClick={() => {
                     setPaymentDateDialogOpen(false);
                     setPendingPaymentProposalId(null);
@@ -704,23 +704,23 @@ export function GeradorPropostas() {
 
         {/* Limit Dialog */}
         <Dialog open={limitDialogOpen} onOpenChange={setLimitDialogOpen}>
-          <DialogContent className="max-w-md text-center bg-[#1B1B1B] border-white/10">
+          <DialogContent className="max-w-md text-center bg-card border-border">
             <DialogHeader>
               <div className="flex justify-center mb-4 mt-2">
-                <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center">
-                  <Crown className="w-8 h-8 text-[#2DDB81]" />
+                <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center">
+                  <Crown className="w-8 h-8 text-primary" />
                 </div>
               </div>
-              <DialogTitle className="text-2xl font-bold text-white">Limite diário atingido!</DialogTitle>
-              <DialogDescription className="text-[#A1A1A1] mt-2">
+              <DialogTitle className="text-2xl font-bold text-foreground">Limite diário atingido!</DialogTitle>
+              <DialogDescription className="text-muted-foreground mt-2">
                 Você usou todas as {FREE_LIMIT} propostas gratuitas de hoje. Faça upgrade para o PRO e gere propostas ilimitadas!
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 mt-4">
-              <Button size="lg" className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl" onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}>
+              <Button size="lg" className="w-full bg-[#28A263] hover:bg-primary text-foreground rounded-xl" onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}>
                 <Crown className="w-4 h-4 mr-2" /> Ver Planos PRO
               </Button>
-              <Button size="lg" className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl" onClick={() => setLimitDialogOpen(false)}>
+              <Button size="lg" className="w-full bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl" onClick={() => setLimitDialogOpen(false)}>
                 Fechar
               </Button>
             </div>
@@ -736,18 +736,18 @@ export function GeradorPropostas() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" className="text-[#A1A1A1] hover:text-white" onClick={() => setViewMode("list")}>
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => setViewMode("list")}>
             <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
             Voltar
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-white">Nova Proposta</h1>
-            <p className="text-[#A1A1A1] text-sm">Preencha os campos e veja o preview em tempo real</p>
+            <h1 className="text-2xl font-bold text-foreground">Nova Proposta</h1>
+            <p className="text-muted-foreground text-sm">Preencha os campos e veja o preview em tempo real</p>
           </div>
         </div>
         {user?.plan !== "pro" && (
           <span className={`text-xs px-3 py-1.5 rounded-full border font-medium ${
-            limitReached ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-[#28A263]/10 text-[#2DDB81] border-[#28A263]/20"
+            limitReached ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-primary/10 text-primary border-primary/20"
           }`}>
             {usageCount}/{FREE_LIMIT} hoje
           </span>
@@ -756,15 +756,15 @@ export function GeradorPropostas() {
 
       {/* Type + Template selector */}
       <div className="flex gap-4">
-        <div className="p-4 bg-[#1B1B1B] rounded-2xl border border-white/5 flex-shrink-0">
-          <h3 className="text-xs font-bold text-[#A1A1A1] uppercase mb-3">Tipo</h3>
+        <div className="p-4 bg-card rounded-2xl border border-border flex-shrink-0">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase mb-3">Tipo</h3>
           <div className="flex gap-2">
             {(["orcamento", "contrato"] as ProposalTipo[]).map(t => (
               <button
                 key={t}
                 onClick={() => setTipo(t)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  tipo === t ? "bg-[#28A263] text-white" : "bg-[#141414] text-[#A1A1A1] border border-white/10 hover:text-white"
+                  tipo === t ? "bg-[#28A263] text-foreground" : "bg-muted text-muted-foreground border border-border hover:text-foreground"
                 }`}
               >
                 {t === "orcamento" ? "Orçamento" : "Contrato"}
@@ -773,10 +773,10 @@ export function GeradorPropostas() {
           </div>
         </div>
 
-        <div className="p-4 bg-[#1B1B1B] rounded-2xl border border-white/5 flex-1">
+        <div className="p-4 bg-card rounded-2xl border border-border flex-1">
           <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-3 h-3 text-[#2DDB81]" />
-            <h3 className="text-xs font-bold text-[#A1A1A1] uppercase">Modelo</h3>
+            <Sparkles className="w-3 h-3 text-primary" />
+            <h3 className="text-xs font-bold text-muted-foreground uppercase">Modelo</h3>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {TEMPLATES.map((t) => (
@@ -784,16 +784,16 @@ export function GeradorPropostas() {
                 key={t.id}
                 onClick={() => setTemplate(t.id)}
                 className={`relative p-3 rounded-xl border text-left transition-all ${
-                  template === t.id ? "border-[#28A263] bg-[#28A263]/10" : "border-white/10 bg-[#141414] hover:border-white/20"
+                  template === t.id ? "border-primary bg-primary/10" : "border-border bg-muted hover:border-border"
                 }`}
               >
                 {t.badge && (
                   <span className={`absolute top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${
-                    t.badge === "PRO" ? "bg-[#28A263]/20 text-[#2DDB81]" : "bg-blue-500/20 text-blue-400"
+                    t.badge === "PRO" ? "bg-primary/20 text-primary" : "bg-blue-500/20 text-blue-400"
                   }`}>{t.badge}</span>
                 )}
-                <p className={`font-bold text-sm ${template === t.id ? "text-[#2DDB81]" : "text-white"}`}>{t.label}</p>
-                <p className="text-xs text-[#686F6F]">{t.desc}</p>
+                <p className={`font-bold text-sm ${template === t.id ? "text-primary" : "text-foreground"}`}>{t.label}</p>
+                <p className="text-xs text-muted-foreground">{t.desc}</p>
               </button>
             ))}
           </div>
@@ -803,50 +803,50 @@ export function GeradorPropostas() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-5">
-          <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
-            <h3 className="text-lg font-bold text-white mb-5">Dados do Cliente</h3>
+          <div className="p-6 bg-card rounded-2xl border border-border">
+            <h3 className="text-lg font-bold text-foreground mb-5">Dados do Cliente</h3>
             <div className="space-y-4">
               <div>
-                <Label className="text-[#A1A1A1] mb-2 block">Nome do Cliente</Label>
+                <Label className="text-muted-foreground mb-2 block">Nome do Cliente</Label>
                 <Input value={nomeCliente} onChange={(e) => setNomeCliente(e.target.value)} placeholder="Ex: João Silva" className={inputClass} />
               </div>
               <div>
-                <Label className="text-[#A1A1A1] mb-2 block">Email do Cliente</Label>
+                <Label className="text-muted-foreground mb-2 block">Email do Cliente</Label>
                 <Input type="email" value={emailCliente} onChange={(e) => setEmailCliente(e.target.value)} placeholder="cliente@email.com" className={inputClass} />
               </div>
             </div>
           </div>
 
-          <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
-            <h3 className="text-lg font-bold text-white mb-5">Dados do Serviço</h3>
+          <div className="p-6 bg-card rounded-2xl border border-border">
+            <h3 className="text-lg font-bold text-foreground mb-5">Dados do Serviço</h3>
             <div className="space-y-4">
               <div>
-                <Label className="text-[#A1A1A1] mb-2 block">Nome do Serviço/Projeto</Label>
+                <Label className="text-muted-foreground mb-2 block">Nome do Serviço/Projeto</Label>
                 <Input value={nomeServico} onChange={(e) => setNomeServico(e.target.value)} placeholder="Ex: Desenvolvimento de Website" className={inputClass} />
               </div>
               <div>
-                <Label className="text-[#A1A1A1] mb-2 block">Descrição Detalhada</Label>
+                <Label className="text-muted-foreground mb-2 block">Descrição Detalhada</Label>
                 <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} placeholder="Descreva o escopo do projeto..." className={`min-h-[100px] ${inputClass}`} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-[#A1A1A1] mb-2 block">Valor Total</Label>
+                  <Label className="text-muted-foreground mb-2 block">Valor Total</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A1A1A1]">R$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
                     <Input type="number" value={valor} onChange={(e) => setValor(Number(e.target.value))} className={`pl-10 ${inputClass}`} min={0} />
                   </div>
                 </div>
                 <div>
-                  <Label className="text-[#A1A1A1] mb-2 block">Prazo de Entrega</Label>
+                  <Label className="text-muted-foreground mb-2 block">Prazo de Entrega</Label>
                   <Input value={prazo} onChange={(e) => setPrazo(e.target.value)} placeholder="Ex: 30 dias" className={inputClass} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-[#A1A1A1] mb-2 block">Condições de Pagamento</Label>
+                  <Label className="text-muted-foreground mb-2 block">Condições de Pagamento</Label>
                   <Select value={condicoesPagamento} onValueChange={setCondicoesPagamento}>
-                    <SelectTrigger className="bg-[#141414] border-white/10 text-white rounded-xl"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B1B1B] border-white/10 text-white">
+                    <SelectTrigger className="bg-muted border-border text-foreground rounded-xl"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-card border-border text-foreground">
                       <SelectItem value="integral">À vista</SelectItem>
                       <SelectItem value="50-50">50% + 50%</SelectItem>
                       <SelectItem value="30-70">30% + 70%</SelectItem>
@@ -855,7 +855,7 @@ export function GeradorPropostas() {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-[#A1A1A1] mb-2 block">Validade (dias)</Label>
+                  <Label className="text-muted-foreground mb-2 block">Validade (dias)</Label>
                   <Input type="number" value={validade} onChange={(e) => setValidade(Number(e.target.value))} className={inputClass} min={1} max={90} />
                 </div>
               </div>
@@ -865,19 +865,19 @@ export function GeradorPropostas() {
           <div className="flex gap-3">
             <Button
               size="lg"
-              className="flex-1 bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl h-12"
+              className="flex-1 bg-[#28A263] hover:bg-primary text-foreground rounded-xl h-12"
               onClick={handleSave}
               disabled={saving || !nomeCliente || !nomeServico}
             >
               {saving ? "Salvando..." : "Salvar Proposta"}
             </Button>
-            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl h-12" onClick={handleDownloadPDF} disabled={!nomeCliente}>
+            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl h-12" onClick={handleDownloadPDF} disabled={!nomeCliente}>
               <Download className="w-4 h-4 mr-2" /> PDF
             </Button>
-            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl h-12" onClick={() => handleCopyText()}>
+            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl h-12" onClick={() => handleCopyText()}>
               <Copy className="w-4 h-4 mr-2" /> Copiar
             </Button>
-            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl h-12" onClick={() => handleSendEmail()} disabled={!emailCliente}>
+            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl h-12" onClick={() => handleSendEmail()} disabled={!emailCliente}>
               <Send className="w-4 h-4 mr-2" /> Email
             </Button>
           </div>
@@ -885,16 +885,16 @@ export function GeradorPropostas() {
 
         {/* Preview */}
         <div className="lg:sticky lg:top-6 lg:self-start">
-          <div className="rounded-2xl border border-white/5 overflow-hidden">
-            <div className="bg-[#1D1D1D] text-white px-6 py-4 flex items-center justify-between border-b border-white/5">
+          <div className="rounded-2xl border border-border overflow-hidden">
+            <div className="bg-card text-foreground px-6 py-4 flex items-center justify-between border-b border-border">
               <div className="flex items-center gap-2">
-                <Eye className="w-5 h-5 text-[#2DDB81]" />
-                <span className="font-bold text-white">Preview da Proposta</span>
+                <Eye className="w-5 h-5 text-primary" />
+                <span className="font-bold text-foreground">Preview da Proposta</span>
               </div>
               <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                template === "basico" ? "bg-white/10 text-[#A1A1A1]" :
+                template === "basico" ? "bg-white/10 text-muted-foreground" :
                 template === "detalhado" ? "bg-blue-500/20 text-blue-400" :
-                "bg-[#28A263]/20 text-[#2DDB81]"
+                "bg-primary/20 text-primary"
               }`}>
                 {TEMPLATES.find(t => t.id === template)?.label}
               </span>
@@ -904,7 +904,7 @@ export function GeradorPropostas() {
               <div id="proposal-preview" className="space-y-6">
                 {template === "premium" ? (
                   <div className="bg-[#28A263] rounded-xl p-5 mb-2">
-                    <h1 className="text-2xl font-bold text-white">Proposta Comercial</h1>
+                    <h1 className="text-2xl font-bold text-foreground">Proposta Comercial</h1>
                     <p className="text-green-100 text-sm mt-1">{new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>
                   </div>
                 ) : (

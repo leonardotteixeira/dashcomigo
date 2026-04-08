@@ -113,18 +113,18 @@ export function DASMei() {
   const atividadeInfo = ATIVIDADES.find((a) => a.id === atividade)!;
 
   return (
-    <div className="min-h-screen bg-[#141414] px-4 md:px-8 py-8">
+    <div className="min-h-screen bg-white px-4 md:px-8 py-8">
       <div className="max-w-3xl mx-auto space-y-6">
 
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-1">DAS-MEI</h1>
-          <p className="text-[#A1A1A1]">Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-1">DAS-MEI</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional</p>
         </div>
 
         {/* Atividade selector */}
-        <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-5">
-          <label className="text-sm font-medium text-white mb-3 block">Sua atividade principal</label>
+        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-5">
+          <label className="text-sm font-medium text-[#001529] mb-3 block">Sua atividade principal</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {ATIVIDADES.map((a) => {
               const valor = getValorDAS(a.id);
@@ -135,15 +135,15 @@ export function DASMei() {
                   onClick={() => setAtividade(a.id)}
                   className={`flex items-center justify-between p-3 rounded-lg border text-left transition-all ${
                     selected
-                      ? "border-[#2DDB81] bg-[#2DDB81]/10"
-                      : "border-white/10 hover:border-white/20"
+                      ? "border-[#28A263] bg-[#28A263]/10"
+                      : "border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.15)]"
                   }`}
                 >
                   <div>
-                    <p className={`text-sm font-medium ${selected ? "text-[#2DDB81]" : "text-white"}`}>{a.label}</p>
-                    <p className="text-xs text-[#686F6F]">{a.desc}</p>
+                    <p className={`text-sm font-medium ${selected ? "text-[#28A263]" : "text-[#001529]"}`}>{a.label}</p>
+                    <p className="text-xs text-[rgba(0,21,41,0.5)]">{a.desc}</p>
                   </div>
-                  <span className={`text-sm font-bold whitespace-nowrap ml-3 ${selected ? "text-[#2DDB81]" : "text-[#A1A1A1]"}`}>
+                  <span className={`text-sm font-bold whitespace-nowrap ml-3 ${selected ? "text-[#28A263]" : "text-[rgba(0,21,41,0.6)]"}`}>
                     R$ {valor.toFixed(2).replace(".", ",")}
                   </span>
                 </button>
@@ -163,45 +163,45 @@ export function DASMei() {
             <div
               className={`rounded-xl border p-6 ${
                 isPago
-                  ? "border-[#2DDB81]/30 bg-[#2DDB81]/8"
+                  ? "border-[#28A263]/30 bg-[#28A263]/8"
                   : isVencido
-                  ? "border-[#F74C4C]/30 bg-[#F74C4C]/8"
+                  ? "border-red-500/30 bg-red-50"
                   : diasRestantes <= 5
-                  ? "border-[#F4B23C]/30 bg-[#F4B23C]/8"
-                  : "border-white/10 bg-[#1B1B1B]"
+                  ? "border-yellow-400/30 bg-yellow-50"
+                  : "border-[rgba(0,0,0,0.1)] bg-[#F8F9FA]"
               }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     {isPago
-                      ? <CheckCircle className="w-5 h-5 text-[#2DDB81]" />
+                      ? <CheckCircle className="w-5 h-5 text-[#28A263]" />
                       : isVencido
-                      ? <AlertTriangle className="w-5 h-5 text-[#F74C4C]" />
-                      : <Clock className="w-5 h-5 text-[#F4B23C]" />}
-                    <span className={`text-sm font-medium ${isPago ? "text-[#2DDB81]" : isVencido ? "text-[#F74C4C]" : "text-[#F4B23C]"}`}>
+                      ? <AlertTriangle className="w-5 h-5 text-red-500" />
+                      : <Clock className="w-5 h-5 text-yellow-600" />}
+                    <span className={`text-sm font-medium ${isPago ? "text-[#28A263]" : isVencido ? "text-red-500" : "text-yellow-600"}`}>
                       {isPago ? "Pago" : isVencido ? "Vencido" : diasRestantes <= 5 ? `Vence em ${diasRestantes} dia${diasRestantes !== 1 ? "s" : ""}` : "Pendente"}
                     </span>
                   </div>
-                  <h2 className="text-xl font-bold text-white capitalize">{getMesLabel(now)}</h2>
-                  <p className="text-[#686F6F] text-sm mt-0.5">
+                  <h2 className="text-xl font-bold text-[#001529] capitalize">{getMesLabel(now)}</h2>
+                  <p className="text-[rgba(0,21,41,0.5)] text-sm mt-0.5">
                     Vencimento: dia 20/{String(venc.getMonth() + 1).padStart(2, "0")}/{venc.getFullYear()} · {atividadeInfo.label}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-xs text-[#686F6F]">Valor do DAS</p>
-                    <p className="text-3xl font-bold text-white">
+                    <p className="text-xs text-[rgba(0,21,41,0.5)]">Valor do DAS</p>
+                    <p className="text-3xl font-bold text-[#001529]">
                       R$ {valorDAS.toFixed(2).replace(".", ",")}
                     </p>
-                    <p className="text-xs text-[#686F6F]">INSS R${INSS.toFixed(2).replace(".", ",")} + impostos</p>
+                    <p className="text-xs text-[rgba(0,21,41,0.5)]">INSS R${INSS.toFixed(2).replace(".", ",")} + impostos</p>
                   </div>
                   {!isPago && (
                     <button
                       onClick={() => handlePagar(now)}
                       disabled={paying === currentMesKey}
-                      className="flex-shrink-0 px-5 py-2.5 bg-[#2DDB81] hover:bg-[#28C974] text-black font-bold rounded-xl text-sm transition-colors disabled:opacity-50"
+                      className="flex-shrink-0 px-5 py-2.5 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-bold rounded-xl text-sm transition-colors disabled:opacity-50"
                     >
                       {paying === currentMesKey ? "Salvando..." : "Marcar pago"}
                     </button>
@@ -213,37 +213,37 @@ export function DASMei() {
         })()}
 
         {/* Info expandable */}
-        <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
+        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl overflow-hidden">
           <button
             onClick={() => setShowInfo(!showInfo)}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-white/3 transition-colors"
+            className="w-full flex items-center justify-between p-4 text-left hover:bg-[#F8F9FA] transition-colors"
           >
             <div className="flex items-center gap-2">
-              <Info className="w-4 h-4 text-[#2DDB81]" />
-              <span className="text-sm font-medium text-white">Como funciona o DAS-MEI?</span>
+              <Info className="w-4 h-4 text-[#28A263]" />
+              <span className="text-sm font-medium text-[#001529]">Como funciona o DAS-MEI?</span>
             </div>
-            {showInfo ? <ChevronUp className="w-4 h-4 text-[#686F6F]" /> : <ChevronDown className="w-4 h-4 text-[#686F6F]" />}
+            {showInfo ? <ChevronUp className="w-4 h-4 text-[rgba(0,21,41,0.5)]" /> : <ChevronDown className="w-4 h-4 text-[rgba(0,21,41,0.5)]" />}
           </button>
           {showInfo && (
-            <div className="px-4 pb-4 space-y-3 text-sm text-[#A1A1A1]">
+            <div className="px-4 pb-4 space-y-3 text-sm text-[rgba(0,21,41,0.6)]">
               <p>O DAS-MEI é o pagamento mensal obrigatório do MEI, composto por:</p>
               <ul className="space-y-1.5 ml-4">
-                <li>• <strong className="text-white">INSS:</strong> 5% do salário mínimo (R${INSS.toFixed(2).replace(".", ",")} em 2026)</li>
-                <li>• <strong className="text-white">ICMS:</strong> R$1,00 — para atividades de comércio e transporte</li>
-                <li>• <strong className="text-white">ISS:</strong> R$5,00 — para atividades de serviços</li>
+                <li>• <strong className="text-[#001529]">INSS:</strong> 5% do salário mínimo (R${INSS.toFixed(2).replace(".", ",")} em 2026)</li>
+                <li>• <strong className="text-[#001529]">ICMS:</strong> R$1,00 — para atividades de comércio e transporte</li>
+                <li>• <strong className="text-[#001529]">ISS:</strong> R$5,00 — para atividades de serviços</li>
               </ul>
-              <p>Vence sempre no <strong className="text-white">dia 20 do mês seguinte</strong> ao de competência.</p>
-              <p className="text-[#686F6F] text-xs">Ao marcar como pago, o valor é lançado automaticamente no Fluxo de Caixa (categoria DAS-MEI) e aparece no DRE em Impostos.</p>
+              <p>Vence sempre no <strong className="text-[#001529]">dia 20 do mês seguinte</strong> ao de competência.</p>
+              <p className="text-[rgba(0,21,41,0.5)] text-xs">Ao marcar como pago, o valor é lançado automaticamente no Fluxo de Caixa (categoria DAS-MEI) e aparece no DRE em Impostos.</p>
             </div>
           )}
         </div>
 
         {/* History — last 12 months */}
-        <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
-          <div className="p-5 border-b border-white/10">
-            <h3 className="font-semibold text-white">Histórico — últimos 12 meses</h3>
+        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl overflow-hidden">
+          <div className="p-5 border-b border-[rgba(0,0,0,0.1)]">
+            <h3 className="font-semibold text-[#001529]">Histórico — últimos 12 meses</h3>
           </div>
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
             {[...months].reverse().map((date) => {
               const mesKey = getMesKey(date);
               const pago = paidMonths[mesKey];
@@ -253,21 +253,21 @@ export function DASMei() {
               const isVencido = !pago && !isFuture && new Date() > venc;
 
               return (
-                <div key={mesKey} className={`flex items-center justify-between px-5 py-3.5 ${isCurrent ? "bg-white/3" : ""}`}>
+                <div key={mesKey} className={`flex items-center justify-between px-5 py-3.5 ${isCurrent ? "bg-[#F8F9FA]" : ""}`}>
                   <div className="flex items-center gap-3">
                     {pago
-                      ? <CheckCircle className="w-4 h-4 text-[#2DDB81] flex-shrink-0" />
+                      ? <CheckCircle className="w-4 h-4 text-[#28A263] flex-shrink-0" />
                       : isFuture
-                      ? <div className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0" />
+                      ? <div className="w-4 h-4 rounded-full border border-[rgba(0,0,0,0.15)] flex-shrink-0" />
                       : isVencido
-                      ? <AlertTriangle className="w-4 h-4 text-[#F74C4C] flex-shrink-0" />
-                      : <Clock className="w-4 h-4 text-[#F4B23C] flex-shrink-0" />}
+                      ? <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                      : <Clock className="w-4 h-4 text-yellow-600 flex-shrink-0" />}
                     <div>
-                      <p className={`text-sm font-medium capitalize ${isCurrent ? "text-white" : "text-[#A1A1A1]"}`}>
+                      <p className={`text-sm font-medium capitalize ${isCurrent ? "text-[#001529]" : "text-[rgba(0,21,41,0.6)]"}`}>
                         {getMesLabel(date)}
-                        {isCurrent && <span className="ml-2 text-xs text-[#2DDB81] font-normal">mês atual</span>}
+                        {isCurrent && <span className="ml-2 text-xs text-[#28A263] font-normal">mês atual</span>}
                       </p>
-                      <p className="text-xs text-[#686F6F]">
+                      <p className="text-xs text-[rgba(0,21,41,0.5)]">
                         Venc. 20/{String(venc.getMonth() + 1).padStart(2, "0")}/{venc.getFullYear()}
                         {pago && ` · Pago em ${new Date(pago.data).toLocaleDateString("pt-BR")}`}
                       </p>
@@ -277,18 +277,18 @@ export function DASMei() {
                   <div className="flex items-center gap-3">
                     {pago ? (
                       <div className="text-right">
-                        <span className="text-sm text-[#2DDB81] font-medium">R$ {pago.valor.toFixed(2).replace(".", ",")}</span>
+                        <span className="text-sm text-[#28A263] font-medium">R$ {pago.valor.toFixed(2).replace(".", ",")}</span>
                       </div>
                     ) : isFuture ? (
-                      <span className="text-xs text-[#686F6F]">R$ {valorDAS.toFixed(2).replace(".", ",")}</span>
+                      <span className="text-xs text-[rgba(0,21,41,0.5)]">R$ {valorDAS.toFixed(2).replace(".", ",")}</span>
                     ) : (
                       <button
                         onClick={() => handlePagar(date)}
                         disabled={paying === mesKey}
                         className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
                           isVencido
-                            ? "bg-[#F74C4C]/20 text-[#F74C4C] hover:bg-[#F74C4C]/30"
-                            : "bg-[#2DDB81]/20 text-[#2DDB81] hover:bg-[#2DDB81]/30"
+                            ? "bg-red-100 text-red-600 hover:bg-red-200"
+                            : "bg-[#28A263]/10 text-[#28A263] hover:bg-[#28A263]/20"
                         } disabled:opacity-50`}
                       >
                         {paying === mesKey ? "..." : "Marcar pago"}
@@ -304,28 +304,28 @@ export function DASMei() {
         {/* Summary */}
         {Object.keys(paidMonths).length > 0 && (
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-[#2DDB81]">{Object.keys(paidMonths).length}</p>
-              <p className="text-xs text-[#686F6F] mt-1">Meses pagos</p>
+            <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-4 text-center">
+              <p className="text-2xl font-bold text-[#28A263]">{Object.keys(paidMonths).length}</p>
+              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">Meses pagos</p>
             </div>
-            <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-white">
+            <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-4 text-center">
+              <p className="text-2xl font-bold text-[#001529]">
                 R$ {Object.values(paidMonths).reduce((s, p) => s + p.valor, 0).toFixed(2).replace(".", ",")}
               </p>
-              <p className="text-xs text-[#686F6F] mt-1">Total pago</p>
+              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">Total pago</p>
             </div>
-            <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold text-[#F4B23C]">
+            <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-4 text-center">
+              <p className="text-2xl font-bold text-yellow-600">
                 R$ {(valorDAS * 12).toFixed(2).replace(".", ",")}
               </p>
-              <p className="text-xs text-[#686F6F] mt-1">Custo anual est.</p>
+              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">Custo anual est.</p>
             </div>
           </div>
         )}
 
-        <p className="text-xs text-[#686F6F] text-center pb-4">
+        <p className="text-xs text-[rgba(0,21,41,0.5)] text-center pb-4">
           Valores baseados no salário mínimo de 2026 (R${SALARIO_MINIMO.toLocaleString("pt-BR")}). Para emitir a guia oficial, acesse o{" "}
-          <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/pagamento-das-mei" target="_blank" rel="noopener noreferrer" className="text-[#2DDB81] hover:underline">
+          <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/pagamento-das-mei" target="_blank" rel="noopener noreferrer" className="text-[#28A263] hover:underline">
             Portal do Empreendedor
           </a>.
         </p>

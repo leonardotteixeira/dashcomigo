@@ -29,17 +29,17 @@ export function GuiaInvestimentos() {
   const allocation = getRecommendations(defaultProfile);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 px-4 md:px-8 py-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-1">Guia de Investimentos</h1>
-          <p className="text-[#A1A1A1]">Descubra onde investir seu dinheiro de forma segura</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-1">Guia de Investimentos</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Descubra onde investir seu dinheiro de forma segura</p>
         </div>
         <Button
           variant="ghost"
           size="lg"
-          className="text-[#A1A1A1] hover:text-white"
+          className="text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
           onClick={() => navigate('/app/dashboard')}
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
@@ -53,14 +53,14 @@ export function GuiaInvestimentos() {
       {/* Calculadora de Disponível */}
       {available && (
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">💰 Quanto Você Pode Investir</h2>
+          <h2 className="text-2xl font-bold text-[#001529] mb-4">💰 Quanto Você Pode Investir</h2>
           <CalculadoraDisponivel available={available} />
         </div>
       )}
 
       {/* Alocação Visual */}
       <div>
-        <h2 className="text-2xl font-bold text-white mb-4">📊 Estratégia de Alocação</h2>
+        <h2 className="text-2xl font-bold text-[#001529] mb-4">📊 Estratégia de Alocação</h2>
         <AlocacaoVisual allocation={allocation} />
       </div>
 
@@ -68,8 +68,8 @@ export function GuiaInvestimentos() {
       <div className="space-y-6">
         {/* Curto prazo */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">⏱️ Curto Prazo (até 1 ano)</h2>
-          <p className="text-[#A1A1A1] mb-4">
+          <h2 className="text-2xl font-bold text-[#001529] mb-4">⏱️ Curto Prazo (até 1 ano)</h2>
+          <p className="text-[rgba(0,21,41,0.6)] mb-4">
             Para dinheiro que você pode precisar em breve. Baixo risco, retorno moderado.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
@@ -84,9 +84,9 @@ export function GuiaInvestimentos() {
         </div>
 
         {/* Médio prazo */}
-        <div className="pt-6 border-t border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-4">📈 Médio Prazo (1 a 5 anos)</h2>
-          <p className="text-[#A1A1A1] mb-4">
+        <div className="pt-6 border-t border-[rgba(0,0,0,0.1)]">
+          <h2 className="text-2xl font-bold text-[#001529] mb-4">📈 Médio Prazo (1 a 5 anos)</h2>
+          <p className="text-[rgba(0,21,41,0.6)] mb-4">
             Equilíbrio entre segurança e crescimento. Risco moderado, bom retorno.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
@@ -101,9 +101,9 @@ export function GuiaInvestimentos() {
         </div>
 
         {/* Longo prazo */}
-        <div className="pt-6 border-t border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-4">🚀 Longo Prazo (5+ anos)</h2>
-          <p className="text-[#A1A1A1] mb-4">
+        <div className="pt-6 border-t border-[rgba(0,0,0,0.1)]">
+          <h2 className="text-2xl font-bold text-[#001529] mb-4">🚀 Longo Prazo (5+ anos)</h2>
+          <p className="text-[rgba(0,21,41,0.6)] mb-4">
             Para construir patrimônio. Maior risco, maior potencial de retorno.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
@@ -120,8 +120,8 @@ export function GuiaInvestimentos() {
 
       {/* Próximos passos */}
       <div className="p-6 bg-[#28A263]/10 rounded-xl border border-[#28A263]/20">
-        <h3 className="font-bold text-[#2DDB81] mb-3">📋 Próximos passos</h3>
-        <ol className="text-sm text-[#A1A1A1] space-y-2 ml-4 list-decimal">
+        <h3 className="font-bold text-[#28A263] mb-3">📋 Próximos passos</h3>
+        <ol className="text-sm text-[rgba(0,21,41,0.6)] space-y-2 ml-4 list-decimal">
           <li>Escolha pelo menos um investimento de cada período</li>
           <li>Abra conta nos provedores (Tesouro Direto, Nubank, etc)</li>
           <li>Comece com valores pequenos para aprender</li>
@@ -133,7 +133,7 @@ export function GuiaInvestimentos() {
       {/* CTA buttons */}
       <div className="flex gap-3 justify-center pt-6">
         <Button
-          className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-lg"
+          className="bg-[#28A263] hover:bg-[#1f7a4a] text-white rounded-lg"
           onClick={() => navigate('/app/dashboard')}
         >
           Voltar ao Dashboard

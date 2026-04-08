@@ -143,9 +143,9 @@ function buildAcoes(meiPct: number, margemLucro: number, totalSaidas: number, to
 
 
 const chartStyle = {
-  cartesian: "#2A2A2A",
-  axis: "#686F6F",
-  tooltip: { background: "#1B1B1B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff" },
+  cartesian: "rgba(0,0,0,0.1)",
+  axis: "rgba(0,21,41,0.6)",
+  tooltip: { background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.1)", borderRadius: "12px", color: "#001529" },
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -216,10 +216,10 @@ export function Dashboard() {
       <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white mb-1">
+        <h1 className="text-3xl font-bold text-[#001529] mb-1">
           Olá, <span className="capitalize">{user?.name?.split(" ")[0] ?? ""}!</span> 👋
         </h1>
-        <p className="text-[#A1A1A1]">Acompanhe seus indicadores e acesse ferramentas essenciais</p>
+        <p className="text-[rgba(0,21,41,0.6)]">Acompanhe seus indicadores e acesse ferramentas essenciais</p>
       </div>
 
       {/* ── Hero Banner MEI ── */}
@@ -262,57 +262,57 @@ export function Dashboard() {
 
       {/* ── Score Cards ── */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <h2 className="text-xl font-bold text-white mb-4">Diagnóstico do Seu Negócio</h2>
+        <h2 className="text-xl font-bold text-[#001529] mb-4">Diagnóstico do Seu Negócio</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {[
             {
               pergunta: "Seu dinheiro está sob controle?",
               score: Math.round(saudeScore),
-              progressClass: "[&>div]:bg-[#2DDB81]",
-              scoreColor: saudeScore >= 60 ? "text-[#2DDB81]" : saudeScore >= 40 ? "text-yellow-400" : "text-[#FF4F3D]",
+              progressClass: "[&>div]:bg-[#28A263]",
+              scoreColor: saudeScore >= 60 ? "text-[#28A263]" : saudeScore >= 40 ? "text-yellow-600" : "text-[#FF4F3D]",
               verdict: saudeScore >= 60 ? "Sim, está saudável" : saudeScore >= 40 ? "Pode melhorar" : "Margem baixa",
               sub: saudeScore >= 60 ? "Continue assim para crescer" : "Revise preços e custos",
               icon: saudeScore >= 60 ? CheckCircle2 : AlertCircle,
-              iconColor: saudeScore >= 60 ? "text-[#2DDB81]" : "text-[#FF973E]",
-              border: saudeScore >= 60 ? "" : saudeScore >= 40 ? "border-yellow-500/30" : "border-[#FF4F3D]/30",
+              iconColor: saudeScore >= 60 ? "text-[#28A263]" : "text-[#FF973E]",
+              border: saudeScore >= 60 ? "" : saudeScore >= 40 ? "border-yellow-400" : "border-[#FF4F3D]/30",
             },
             {
               pergunta: "Você paga imposto demais?",
               score: Math.round(tributacaoScore),
-              progressClass: tributacaoScore >= 60 ? "[&>div]:bg-[#2DDB81]" : tributacaoScore >= 40 ? "[&>div]:bg-orange-500" : "[&>div]:bg-[#FF4F3D]",
-              scoreColor: tributacaoScore >= 60 ? "text-[#2DDB81]" : tributacaoScore >= 40 ? "text-[#FF973E]" : "text-[#FF4F3D]",
+              progressClass: tributacaoScore >= 60 ? "[&>div]:bg-[#28A263]" : tributacaoScore >= 40 ? "[&>div]:bg-orange-500" : "[&>div]:bg-[#FF4F3D]",
+              scoreColor: tributacaoScore >= 60 ? "text-[#28A263]" : tributacaoScore >= 40 ? "text-[#FF973E]" : "text-[#FF4F3D]",
               verdict: tributacaoScore >= 60 ? "Não, está eficiente" : tributacaoScore >= 40 ? "Fique atento" : "Sim, pode reduzir!",
               sub: tributacaoScore >= 60 ? "Tributação dentro do ideal" : "Use o Simulador MEI→ME",
               icon: tributacaoScore >= 60 ? CheckCircle2 : AlertCircle,
-              iconColor: tributacaoScore >= 60 ? "text-[#2DDB81]" : "text-[#FF973E]",
+              iconColor: tributacaoScore >= 60 ? "text-[#28A263]" : "text-[#FF973E]",
               border: tributacaoScore < 60 ? "border-orange-500/30" : "",
             },
             {
               pergunta: "Seu negócio pode crescer mais?",
               score: Math.round(crescimentoScore),
-              progressClass: "[&>div]:bg-blue-400",
-              scoreColor: "text-blue-400",
+              progressClass: "[&>div]:bg-[#0066FF]",
+              scoreColor: "text-[#0066FF]",
               verdict: crescimentoScore >= 70 ? "Sim, muito potencial!" : crescimentoScore >= 50 ? "Potencial moderado" : "Adicione mais dados",
               sub: crescimentoScore >= 70 ? "Projeção de crescimento positiva" : "Continue registrando lançamentos",
               icon: TrendingUp,
-              iconColor: "text-blue-400",
+              iconColor: "text-[#0066FF]",
               border: "",
             },
           ].map((card, i) => {
             const Icon = card.icon;
             return (
-              <div key={i} className={`p-6 bg-[#1B1B1B] rounded-2xl border ${card.border || "border-white/5"} hover:border-[#28A263]/20 transition-colors`}>
+              <div key={i} className={`p-6 bg-white rounded-2xl border ${card.border || "border-[rgba(0,0,0,0.1)]"} hover:border-[#28A263]/20 transition-colors`}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="font-semibold text-white text-sm leading-snug pr-4">{card.pergunta}</span>
+                  <span className="font-semibold text-[#001529] text-sm leading-snug pr-4">{card.pergunta}</span>
                   <Icon className={`w-5 h-5 flex-shrink-0 ${card.iconColor}`} />
                 </div>
                 <div className="flex items-end gap-2 mb-2">
                   <span className={`text-4xl font-bold ${card.scoreColor}`}>{card.score}</span>
-                  <span className="text-[#686F6F] mb-1">/100</span>
+                  <span className="text-[rgba(0,21,41,0.5)] mb-1">/100</span>
                 </div>
-                <Progress value={card.score} className={`h-2 mb-3 bg-white/10 ${card.progressClass}`} />
+                <Progress value={card.score} className={`h-2 mb-3 bg-[#F8F9FA] ${card.progressClass}`} />
                 <p className={`text-sm font-medium ${card.scoreColor}`}>{card.verdict}</p>
-                <p className="text-xs text-[#686F6F] mt-1">{card.sub}</p>
+                <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">{card.sub}</p>
               </div>
             );
           })}
@@ -322,26 +322,26 @@ export function Dashboard() {
       {/* ── Alertas Inteligentes ── */}
       {insights.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <h2 className="text-xl font-bold text-white mb-4">Alertas Inteligentes</h2>
+          <h2 className="text-xl font-bold text-[#001529] mb-4">Alertas Inteligentes</h2>
           <div className="grid gap-3">
             {insights.map((insight) => {
               const action = alertActionMap[insight.id];
-              const cardClass = insight.tipo === "alerta" ? "bg-red-500/10 border-red-500/20"
+              const cardClass = insight.tipo === "alerta" ? "bg-red-100 border-red-200"
                 : insight.tipo === "sucesso" ? "bg-[#28A263]/10 border-[#28A263]/20"
-                : "bg-blue-500/10 border-blue-500/20";
-              const iconColor = insight.tipo === "alerta" ? "text-red-400"
-                : insight.tipo === "sucesso" ? "text-[#2DDB81]" : "text-blue-400";
-              const badgeClass = insight.tipo === "alerta" ? "bg-red-500/20 text-red-300"
-                : insight.tipo === "sucesso" ? "bg-[#28A263]/20 text-[#2DDB81]"
-                : "bg-blue-500/20 text-blue-300";
+                : "bg-blue-100 border-blue-200";
+              const iconColor = insight.tipo === "alerta" ? "text-red-600"
+                : insight.tipo === "sucesso" ? "text-[#28A263]" : "text-blue-600";
+              const badgeClass = insight.tipo === "alerta" ? "bg-red-200 text-red-700"
+                : insight.tipo === "sucesso" ? "bg-[#28A263]/20 text-[#28A263]"
+                : "bg-blue-200 text-blue-700";
               const badgeLabel = insight.tipo === "alerta" ? "Urgente"
                 : insight.tipo === "sucesso" ? "Oportunidade" : "Atenção";
-              const textColor = insight.tipo === "alerta" ? "text-red-300"
-                : insight.tipo === "sucesso" ? "text-[#C0F497]" : "text-blue-300";
+              const textColor = insight.tipo === "alerta" ? "text-red-700"
+                : insight.tipo === "sucesso" ? "text-[#28A263]" : "text-blue-700";
 
               return (
                 <div key={insight.id} className={`flex gap-4 p-5 rounded-2xl border ${cardClass}`}>
-                  <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-11 h-11 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
                     {insight.tipo === "sucesso"
                       ? <CheckCircle className={`h-5 w-5 ${iconColor}`} />
                       : <AlertCircle className={`h-5 w-5 ${iconColor}`} />}
@@ -380,11 +380,11 @@ export function Dashboard() {
           {/* Projeção de faturamento */}
           {transactions.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
+              <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
                 {/* Auto-insight */}
                 <div className="mb-4 p-3 bg-[#28A263]/10 border border-[#28A263]/20 rounded-xl flex items-start gap-2">
-                  <Sparkles className="h-4 w-4 text-[#2DDB81] mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-[#C0F497]">
+                  <Sparkles className="h-4 w-4 text-[#28A263] mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-[#28A263]">
                     <strong>Projeção automática:</strong> Com base no histórico, seu faturamento
                     {growthRate >= 0
                       ? ` cresce ~${(growthRate * 100).toFixed(0)}% ao mês`
@@ -395,11 +395,11 @@ export function Dashboard() {
 
                 <div className="flex items-center justify-between mb-5">
                   <div>
-                    <h2 className="text-lg font-bold text-white">Projeção de Faturamento</h2>
-                    <p className="text-sm text-[#A1A1A1]">Últimos 6 meses + próximos 3 meses</p>
+                    <h2 className="text-lg font-bold text-[#001529]">Projeção de Faturamento</h2>
+                    <p className="text-sm text-[rgba(0,21,41,0.6)]">Últimos 6 meses + próximos 3 meses</p>
                   </div>
                   {growthRate > 0 && (
-                    <span className="text-xs bg-[#28A263]/20 text-[#2DDB81] px-2 py-1 rounded-full font-semibold flex items-center gap-1">
+                    <span className="text-xs bg-[#28A263]/20 text-[#28A263] px-2 py-1 rounded-full font-semibold flex items-center gap-1">
                       <TrendingUp className="w-3 h-3" />+{(growthRate * 100).toFixed(0)}%
                     </span>
                   )}
@@ -436,20 +436,20 @@ export function Dashboard() {
           {/* Quick Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: "Lucro do mês", value: fmt(summary.lucro), trend: summary.lucro >= 0 ? "up" : "down", color: summary.lucro >= 0 ? "#2DDB81" : "#FF4F3D", sub: summary.lucro >= 0 ? "positivo" : "negativo" },
+              { label: "Lucro do mês", value: fmt(summary.lucro), trend: summary.lucro >= 0 ? "up" : "down", color: summary.lucro >= 0 ? "#28A263" : "#FF4F3D", sub: summary.lucro >= 0 ? "positivo" : "negativo" },
               { label: "Margem de lucro", value: `${summary.margemLucro.toFixed(1)}%`, trend: summary.margemLucro >= 20 ? "up" : "down", color: summary.margemLucro >= 20 ? "#28A263" : "#FF4F3D", sub: summary.margemLucro >= 20 ? "saudável" : "baixa" },
-              { label: "Total de entradas", value: fmt(summary.totalEntradas), trend: "up", color: "#2DDB81", sub: "receita total" },
+              { label: "Total de entradas", value: fmt(summary.totalEntradas), trend: "up", color: "#28A263", sub: "receita total" },
               { label: "Lançamentos", value: user?.plan === "pro" ? `${limitStatus.used}` : `${limitStatus.used}/${limitStatus.limit}`, trend: limitStatus.percentage > 80 ? "warning" : "up", color: limitStatus.percentage > 80 ? "#FF973E" : "#28A263", sub: user?.plan === "pro" ? "ilimitado" : limitStatus.percentage > 80 ? "Atenção" : "disponível" },
             ].map((m, i) => (
-              <div key={i} className="p-5 bg-[#1B1B1B] rounded-2xl border border-white/5 hover:border-[#28A263]/20 transition-colors">
+              <div key={i} className="p-5 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-[#28A263]/20 transition-colors">
                 <div className="flex items-start justify-between mb-2">
-                  <span className="text-xs text-[#A1A1A1] font-medium">{m.label}</span>
+                  <span className="text-xs text-[rgba(0,21,41,0.6)] font-medium">{m.label}</span>
                   {m.trend === "up" && <TrendingUp className="w-4 h-4" style={{ color: m.color }} />}
                   {m.trend === "down" && <TrendingDown className="w-4 h-4 text-[#FF4F3D]" />}
                   {m.trend === "warning" && <AlertCircle className="w-4 h-4 text-[#FF973E]" />}
                 </div>
                 <div className="text-2xl font-bold mb-1" style={{ color: m.color }}>{m.value}</div>
-                <div className="text-xs text-[#686F6F]">{m.sub}</div>
+                <div className="text-xs text-[rgba(0,21,41,0.5)]">{m.sub}</div>
               </div>
             ))}
           </div>
@@ -457,8 +457,8 @@ export function Dashboard() {
           {/* Tools Grid */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white">Ferramentas Disponíveis</h2>
-              <button className="text-sm text-[#2DDB81] border border-white/20 rounded-full px-4 py-2 hover:bg-white/5 transition-colors" onClick={() => navigate("/app/mei-me")}>
+              <h2 className="text-xl font-bold text-[#001529]">Ferramentas Disponíveis</h2>
+              <button className="text-sm text-[#28A263] border border-[rgba(0,0,0,0.1)] rounded-full px-4 py-2 hover:bg-[#F8F9FA] transition-colors" onClick={() => navigate("/app/mei-me")}>
                 Ver todas
               </button>
             </div>
@@ -468,11 +468,11 @@ export function Dashboard() {
                 return (
                   <div key={tool.id} className="relative">
                     <div
-                      className={`p-6 bg-[#1D1D1D] rounded-2xl border border-white/5 transition-all duration-300 cursor-pointer group ${tool.isLocked ? "opacity-60" : "hover:border-[#28A263]/30 hover:bg-[#1B1B1B]"}`}
+                      className={`p-6 bg-[#F8F9FA] rounded-2xl border border-[rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer group ${tool.isLocked ? "opacity-60" : "hover:border-[#28A263]/30 hover:bg-white"}`}
                       onClick={() => tool.isLocked ? navigate("/checkout") : navigate(tool.path)}
                     >
                       {tool.isPro && (
-                        <span className="absolute top-4 right-4 text-[9px] px-2 py-1 bg-[#28A263]/20 text-[#2DDB81] rounded-full font-semibold flex items-center gap-1">
+                        <span className="absolute top-4 right-4 text-[9px] px-2 py-1 bg-[#28A263]/20 text-[#28A263] rounded-full font-semibold flex items-center gap-1">
                           <Crown className="w-2.5 h-2.5" /> PRO
                         </span>
                       )}
@@ -481,19 +481,19 @@ export function Dashboard() {
                           <Icon className="w-6 h-6" style={{ color: tool.accent }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-white mb-1 group-hover:text-[#C0F497] transition-colors">{tool.title}</h3>
-                          <p className="text-[#686F6F] text-sm mb-3 leading-relaxed">{tool.description}</p>
+                          <h3 className="text-base font-semibold text-[#001529] mb-1 group-hover:text-[#28A263] transition-colors">{tool.title}</h3>
+                          <p className="text-[rgba(0,21,41,0.6)] text-sm mb-3 leading-relaxed">{tool.description}</p>
                           <div className="flex items-center justify-between">
-                            <span className="text-xs text-[#5F6868]">{tool.stats}</span>
+                            <span className="text-xs text-[rgba(0,21,41,0.5)]">{tool.stats}</span>
                             {!tool.isLocked && <ArrowRight className="w-4 h-4 text-[#28A263] group-hover:translate-x-1 transition-transform" />}
                           </div>
                         </div>
                       </div>
                       {tool.isLocked && (
-                        <div className="absolute inset-0 bg-[#141414]/70 rounded-2xl flex flex-col items-center justify-center backdrop-blur-sm">
-                          <Lock className="w-10 h-10 text-[#A1A1A1] mb-3" />
-                          <p className="text-white font-bold text-sm mb-2">Disponível no PRO</p>
-                          <Button size="sm" className="bg-[#28A263] hover:bg-[#2DDB81] text-white text-xs rounded-xl" onClick={(e) => { e.stopPropagation(); navigate("/checkout"); }}>
+                        <div className="absolute inset-0 bg-white/70 rounded-2xl flex flex-col items-center justify-center backdrop-blur-sm">
+                          <Lock className="w-10 h-10 text-[rgba(0,21,41,0.6)] mb-3" />
+                          <p className="text-[#001529] font-bold text-sm mb-2">Disponível no PRO</p>
+                          <Button size="sm" className="bg-[#28A263] hover:bg-[#1f7d4a] text-white text-xs rounded-xl" onClick={(e) => { e.stopPropagation(); navigate("/checkout"); }}>
                             <Crown className="w-3 h-3 mr-1" /> Ver Planos
                           </Button>
                         </div>
@@ -511,26 +511,26 @@ export function Dashboard() {
 
           {/* Plano de Ação */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-            <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
+            <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-[#2DDB81]" />
-                  <h3 className="font-bold text-white">Plano de Ação</h3>
+                  <Target className="h-5 w-5 text-[#28A263]" />
+                  <h3 className="font-bold text-[#001529]">Plano de Ação</h3>
                 </div>
                 <div className="text-sm">
-                  <span className="font-bold text-[#2DDB81]">{progressoAcoes}%</span>
-                  <span className="text-[#686F6F]"> completo</span>
+                  <span className="font-bold text-[#28A263]">{progressoAcoes}%</span>
+                  <span className="text-[rgba(0,21,41,0.5)]"> completo</span>
                 </div>
               </div>
 
-              <Progress value={progressoAcoes} className="h-2 mb-5 bg-white/10 [&>div]:bg-[#28A263]" />
+              <Progress value={progressoAcoes} className="h-2 mb-5 bg-[#F8F9FA] [&>div]:bg-[#28A263]" />
 
               <div className="space-y-3">
                 {acoes.map((acao, idx) => {
                   const isChecked = acoesChecked[idx] ?? acao.concluido;
-                  const borderColor = acao.prioridade === "alta" ? "border-l-red-500 border-red-500/20" : acao.prioridade === "media" ? "border-l-yellow-500 border-yellow-500/20" : "border-l-blue-500 border-blue-500/20";
-                  const bgColor = acao.prioridade === "alta" ? "bg-red-500/10" : acao.prioridade === "media" ? "bg-yellow-500/10" : "bg-blue-500/10";
-                  const badgeColor = acao.prioridade === "alta" ? "bg-red-500/20 text-red-300" : acao.prioridade === "media" ? "bg-yellow-500/20 text-yellow-300" : "bg-blue-500/20 text-blue-300";
+                  const borderColor = acao.prioridade === "alta" ? "border-l-red-500 border-red-100" : acao.prioridade === "media" ? "border-l-yellow-500 border-yellow-100" : "border-l-blue-500 border-blue-100";
+                  const bgColor = acao.prioridade === "alta" ? "bg-red-50" : acao.prioridade === "media" ? "bg-yellow-50" : "bg-blue-50";
+                  const badgeColor = acao.prioridade === "alta" ? "bg-red-200 text-red-700" : acao.prioridade === "media" ? "bg-yellow-200 text-yellow-700" : "bg-blue-200 text-blue-700";
 
                   return (
                     <div
@@ -543,19 +543,19 @@ export function Dashboard() {
                           onClick={() => setAcoesChecked((prev) => ({ ...prev, [idx]: !prev[idx] }))}
                         >
                           {isChecked
-                            ? <CheckCircle2 className="h-4 w-4 text-[#2DDB81]" />
-                            : <div className={`h-4 w-4 rounded border-2 ${acao.prioridade === "alta" ? "border-red-400" : acao.prioridade === "media" ? "border-yellow-400" : "border-blue-400"}`} />}
+                            ? <CheckCircle2 className="h-4 w-4 text-[#28A263]" />
+                            : <div className={`h-4 w-4 rounded border-2 ${acao.prioridade === "alta" ? "border-red-500" : acao.prioridade === "media" ? "border-yellow-500" : "border-blue-500"}`} />}
                         </button>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-1">
-                            <span className={`font-semibold text-sm text-white ${isChecked ? "line-through" : ""}`}>{acao.titulo}</span>
+                            <span className={`font-semibold text-sm text-[#001529] ${isChecked ? "line-through" : ""}`}>{acao.titulo}</span>
                             <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold whitespace-nowrap ${badgeColor}`}>{acao.prazo}</span>
                           </div>
-                          <p className="text-xs text-[#686F6F] mt-0.5">{acao.descricao}</p>
+                          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-0.5">{acao.descricao}</p>
                           <div className="flex items-center justify-between mt-1">
-                            <span className="text-xs text-[#2DDB81] font-medium">💰 {acao.impacto}</span>
+                            <span className="text-xs text-[#28A263] font-medium">💰 {acao.impacto}</span>
                             {!isChecked && (
-                              <button onClick={() => navigate(acao.href)} className="text-[10px] text-[#A1A1A1] hover:text-white flex items-center gap-0.5">
+                              <button onClick={() => navigate(acao.href)} className="text-[10px] text-[rgba(0,21,41,0.6)] hover:text-[#001529] flex items-center gap-0.5">
                                 Ver <ArrowRight className="w-3 h-3" />
                               </button>
                             )}
@@ -568,7 +568,7 @@ export function Dashboard() {
               </div>
 
               <div className="mt-4 p-3 bg-[#28A263]/10 border border-[#28A263]/20 rounded-xl">
-                <p className="text-xs text-[#C0F497]">
+                <p className="text-xs text-[#28A263]">
                   <strong>💡 Dica:</strong> Completar todas as ações melhora os scores do seu negócio.
                 </p>
               </div>
@@ -584,7 +584,7 @@ export function Dashboard() {
           </motion.div>
 
           {/* Quick value props */}
-          <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
+          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
             <div className="grid grid-cols-3 gap-6">
               {[
                 { icon: TrendingUp, title: "Análise Completa", desc: "Combine todas as ferramentas para uma visão 360°" },
@@ -595,10 +595,10 @@ export function Dashboard() {
                 return (
                   <div key={item.title} className="text-center">
                     <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <Icon className="w-5 h-5 text-[#2DDB81]" />
+                      <Icon className="w-5 h-5 text-[#28A263]" />
                     </div>
-                    <h4 className="font-bold text-white text-sm">{item.title}</h4>
-                    <p className="text-xs text-[#A1A1A1] mt-1">{item.desc}</p>
+                    <h4 className="font-bold text-[#001529] text-sm">{item.title}</h4>
+                    <p className="text-xs text-[rgba(0,21,41,0.6)] mt-1">{item.desc}</p>
                   </div>
                 );
               })}
