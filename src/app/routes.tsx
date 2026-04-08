@@ -32,6 +32,7 @@ import { FAQ } from "./pages/FAQ";
 import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
 import { PasswordResetRedirect } from "./pages/PasswordResetRedirect";
+import { RecomendacoesInvestimento } from "./pages/RecomendacoesInvestimento";
 
 export const router = createHashRouter([
   {
@@ -165,6 +166,10 @@ export const router = createHashRouter([
       {
         path: "profile",
         Component: Profile,
+      },
+      {
+        path: "investimentos",
+        Component: RecomendacoesInvestimento,
       },
     ],
   },
