@@ -42,7 +42,7 @@ const customers = [
   },
 ];
 
-export default function Customers() {
+export function Customers() {
   const [search, setSearch] = useState("");
 
   const filtered = customers.filter(c =>

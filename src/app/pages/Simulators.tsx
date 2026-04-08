@@ -1,7 +1,7 @@
 import { Calculator, DollarSign, TrendingUp, Target } from "lucide-react";
 import { useState } from "react";
 
-export default function Simulators() {
+export function Simulators() {
   const [meiRevenue, setMeiRevenue] = useState("");
   const [productCost, setProductCost] = useState("");
   const [desiredMargin, setDesiredMargin] = useState("");
