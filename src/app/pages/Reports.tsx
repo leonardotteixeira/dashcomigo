@@ -49,7 +49,7 @@ const expenseData = [
   { name: "Outros", value: 10, color: "#6B7280" },
 ];
 
-export default function Reports() {
+export function Reports() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallTrigger, setPaywallTrigger] = useState<"export_blocked" | "feature_locked">("export_blocked");
 

@@ -42,7 +42,7 @@ const suppliers = [
   },
 ];
 
-export default function Suppliers() {
+export function Suppliers() {
   const [search, setSearch] = useState("");
 
   const filtered = suppliers.filter(s =>

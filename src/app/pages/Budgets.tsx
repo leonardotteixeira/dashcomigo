@@ -30,7 +30,7 @@ const budgets = [
   },
 ];
 
-export default function Budgets() {
+export function Budgets() {
   const getStatusInfo = (status: string) => {
     switch (status) {
       case "pending":
