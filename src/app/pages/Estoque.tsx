@@ -182,8 +182,8 @@ export function Estoque() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Estoque</h1>
-          <p className="text-[#A1A1A1] text-sm mt-1">Gerencie seus produtos e movimentações</p>
+          <h1 className="text-2xl font-bold text-foreground">Estoque</h1>
+          <p className="text-muted-foreground text-sm mt-1">Gerencie seus produtos e movimentações</p>
         </div>
         <button
           onClick={() => {
@@ -194,7 +194,7 @@ export function Estoque() {
             resetItemForm();
             setModal("item");
           }}
-          className="flex items-center gap-2 bg-[#2DDB81] hover:bg-[#28C974] text-black font-semibold px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 py-2 rounded-xl transition-colors"
         >
           <Plus className="w-4 h-4" />
           Novo Item
@@ -203,32 +203,32 @@ export function Estoque() {
 
       {/* Cards resumo */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-[#1B1B1B] border border-white/5 rounded-2xl p-4">
-          <p className="text-[#A1A1A1] text-xs">Total de Itens</p>
-          <p className="text-white text-xl font-bold mt-1">{summary.totalItems}</p>
-          <p className="text-[#A1A1A1] text-xs mt-1">{summary.categoryCount} categorias</p>
+        <div className="bg-card border border-border rounded-2xl p-4">
+          <p className="text-muted-foreground text-xs">Total de Itens</p>
+          <p className="text-foreground text-xl font-bold mt-1">{summary.totalItems}</p>
+          <p className="text-muted-foreground text-xs mt-1">{summary.categoryCount} categorias</p>
         </div>
-        <div className="bg-[#1B1B1B] border border-white/5 rounded-2xl p-4">
-          <p className="text-[#A1A1A1] text-xs">Valor em Estoque</p>
-          <p className="text-[#2DDB81] text-xl font-bold mt-1">{formatCurrency(summary.totalValue)}</p>
-          <p className="text-[#A1A1A1] text-xs mt-1">custo total</p>
+        <div className="bg-card border border-border rounded-2xl p-4">
+          <p className="text-muted-foreground text-xs">Valor em Estoque</p>
+          <p className="text-primary text-xl font-bold mt-1">{formatCurrency(summary.totalValue)}</p>
+          <p className="text-muted-foreground text-xs mt-1">custo total</p>
         </div>
-        <div className="bg-[#1B1B1B] border border-white/5 rounded-2xl p-4">
-          <p className="text-[#A1A1A1] text-xs">Alertas</p>
-          <p className={`text-xl font-bold mt-1 ${alertItems.length > 0 ? "text-red-400" : "text-white"}`}>
+        <div className="bg-card border border-border rounded-2xl p-4">
+          <p className="text-muted-foreground text-xs">Alertas</p>
+          <p className={`text-xl font-bold mt-1 ${alertItems.length > 0 ? "text-red-400" : "text-foreground"}`}>
             {alertItems.length}
           </p>
-          <p className="text-[#A1A1A1] text-xs mt-1">abaixo do mínimo</p>
+          <p className="text-muted-foreground text-xs mt-1">abaixo do mínimo</p>
         </div>
-        <div className="bg-[#1B1B1B] border border-white/5 rounded-2xl p-4">
-          <p className="text-[#A1A1A1] text-xs">Uso do Plano</p>
-          <p className="text-white text-xl font-bold mt-1">
+        <div className="bg-card border border-border rounded-2xl p-4">
+          <p className="text-muted-foreground text-xs">Uso do Plano</p>
+          <p className="text-foreground text-xl font-bold mt-1">
             {limitStatus.used}/{limitStatus.limit === Infinity ? "∞" : limitStatus.limit}
           </p>
           {limitStatus.limit !== Infinity && (
-            <div className="w-full bg-[#2a2a2a] rounded-full h-1.5 mt-2">
+            <div className="w-full bg-muted rounded-full h-1.5 mt-2">
               <div
-                className="bg-[#2DDB81] h-1.5 rounded-full"
+                className="bg-primary h-1.5 rounded-full"
                 style={{ width: `${Math.min(limitStatus.percentage, 100)}%` }}
               />
             </div>
@@ -246,7 +246,7 @@ export function Estoque() {
             </span>
           </div>
           {alertItems.map((item) => (
-            <p key={item.id} className="text-[#A1A1A1] text-xs ml-6">
+            <p key={item.id} className="text-muted-foreground text-xs ml-6">
               • {item.nome} — <span className="text-red-400">{item.quantidade} un</span>{" "}
               (mínimo: {item.quantidade_minima})
             </p>
@@ -257,14 +257,14 @@ export function Estoque() {
       {/* Filtros e busca */}
       <div className="flex flex-wrap gap-3 mb-4">
         {/* Search */}
-        <div className="flex items-center gap-2 bg-[#1B1B1B] border border-white/10 rounded-xl px-3 py-2 flex-1 min-w-[180px]">
-          <Search className="w-4 h-4 text-[#A1A1A1]" />
+        <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-3 py-2 flex-1 min-w-[180px]">
+          <Search className="w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por nome ou SKU..."
-            className="bg-transparent text-white text-sm outline-none w-full placeholder-[#555]"
+            className="bg-transparent text-foreground text-sm outline-none w-full placeholder-muted-foreground"
           />
         </div>
 
@@ -272,7 +272,7 @@ export function Estoque() {
         <select
           value={filtroCategoria}
           onChange={(e) => setFiltroCategoria(e.target.value)}
-          className="bg-[#1B1B1B] border border-white/10 rounded-xl px-3 py-2 text-sm text-[#A1A1A1] focus:outline-none"
+          className="bg-card border border-border rounded-xl px-3 py-2 text-sm text-muted-foreground focus:outline-none"
         >
           <option value="">Todas as categorias</option>
           {categorias.map((c) => (
@@ -284,7 +284,7 @@ export function Estoque() {
         <select
           value={filtroStatus}
           onChange={(e) => setFiltroStatus(e.target.value as "ativo" | "inativo" | "")}
-          className="bg-[#1B1B1B] border border-white/10 rounded-xl px-3 py-2 text-sm text-[#A1A1A1] focus:outline-none"
+          className="bg-card border border-border rounded-xl px-3 py-2 text-sm text-muted-foreground focus:outline-none"
         >
           <option value="">Todos os status</option>
           <option value="ativo">Ativos</option>
@@ -295,7 +295,7 @@ export function Estoque() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortBy)}
-          className="bg-[#1B1B1B] border border-white/10 rounded-xl px-3 py-2 text-sm text-[#A1A1A1] focus:outline-none"
+          className="bg-card border border-border rounded-xl px-3 py-2 text-sm text-muted-foreground focus:outline-none"
         >
           <option value="nome">Ordenar: Nome</option>
           <option value="quantidade">Ordenar: Quantidade</option>
@@ -310,7 +310,7 @@ export function Estoque() {
           className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors border ${
             filtroAlerta
               ? "bg-red-500/20 text-red-400 border-red-500/30"
-              : "bg-[#1B1B1B] text-[#A1A1A1] border-white/10 hover:text-white"
+              : "bg-card text-muted-foreground border-border hover:text-foreground"
           }`}
         >
           <AlertTriangle className="w-4 h-4" />
@@ -320,17 +320,17 @@ export function Estoque() {
 
       {/* Lista */}
       {loading ? (
-        <div className="text-center py-16 text-[#A1A1A1]">Carregando estoque...</div>
+        <div className="text-center py-16 text-muted-foreground">Carregando estoque...</div>
       ) : displayed.length === 0 ? (
-        <div className="text-center py-16 bg-[#1B1B1B] border border-white/5 rounded-2xl">
-          <Package className="w-10 h-10 text-[#A1A1A1] mx-auto mb-3" />
-          <p className="text-[#A1A1A1]">
+        <div className="text-center py-16 bg-card border border-border rounded-2xl">
+          <Package className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+          <p className="text-muted-foreground">
             {items.length === 0 ? "Nenhum item cadastrado ainda." : "Nenhum item encontrado com os filtros atuais."}
           </p>
           {items.length === 0 && (
             <button
               onClick={() => { resetItemForm(); setModal("item"); }}
-              className="mt-3 text-[#2DDB81] text-sm hover:underline"
+              className="mt-3 text-primary text-sm hover:underline"
             >
               Adicionar primeiro item
             </button>
@@ -346,41 +346,41 @@ export function Estoque() {
             return (
               <div
                 key={item.id}
-                className={`bg-[#1B1B1B] border rounded-2xl transition-all ${
-                  alerta ? "border-red-500/40" : "border-white/5"
+                className={`bg-card border rounded-2xl transition-all ${
+                  alerta ? "border-red-500/40" : "border-border"
                 } ${item.status === "inativo" ? "opacity-50" : ""}`}
               >
                 {/* Linha principal */}
                 <div className="flex items-center gap-3 p-4">
                   {/* Ícone */}
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    alerta ? "bg-red-500/20" : "bg-[#2DDB81]/10"
+                    alerta ? "bg-red-500/20" : "bg-primary/10"
                   }`}>
                     {alerta
                       ? <AlertTriangle className="w-4 h-4 text-red-400" />
-                      : <Package className="w-4 h-4 text-[#2DDB81]" />
+                      : <Package className="w-4 h-4 text-primary" />
                     }
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-white font-medium truncate">{item.nome}</p>
+                      <p className="text-foreground font-medium truncate">{item.nome}</p>
                       {item.sku && (
-                        <span className="text-[10px] text-[#A1A1A1] bg-white/5 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full">
                           {item.sku}
                         </span>
                       )}
                       {item.status === "inativo" && (
-                        <span className="text-[10px] text-[#A1A1A1] bg-white/5 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full">
                           inativo
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 flex-wrap mt-0.5">
-                      <span className="text-[#A1A1A1] text-xs">{item.categoria}</span>
-                      <span className="text-[#A1A1A1] text-xs">•</span>
-                      <span className={`text-xs font-medium ${alerta ? "text-red-400" : "text-[#A1A1A1]"}`}>
+                      <span className="text-muted-foreground text-xs">{item.categoria}</span>
+                      <span className="text-muted-foreground text-xs">•</span>
+                      <span className={`text-xs font-medium ${alerta ? "text-red-400" : "text-muted-foreground"}`}>
                         {item.quantidade} un
                         {item.quantidade_minima ? ` (mín: ${item.quantidade_minima})` : ""}
                       </span>
@@ -390,21 +390,21 @@ export function Estoque() {
                   {/* Valor + ações */}
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <div className="text-right hidden sm:block">
-                      <p className="text-white text-sm font-semibold">{formatCurrency(valorTotal)}</p>
-                      <p className="text-[#A1A1A1] text-xs">{formatCurrency(item.preco_unitario)}/un</p>
+                      <p className="text-foreground text-sm font-semibold">{formatCurrency(valorTotal)}</p>
+                      <p className="text-muted-foreground text-xs">{formatCurrency(item.preco_unitario)}/un</p>
                     </div>
 
                     <button
                       onClick={() => openMovimento(item)}
                       title="Registrar movimento"
-                      className="p-1.5 text-[#A1A1A1] hover:text-[#2DDB81] transition-colors"
+                      className="p-1.5 text-muted-foreground hover:text-primary transition-colors"
                     >
                       <SlidersHorizontal className="w-4 h-4" />
                     </button>
 
                     <button
                       onClick={() => setExpandedItem(isExpanded ? null : item.id)}
-                      className="p-1.5 text-[#A1A1A1] hover:text-white transition-colors"
+                      className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                     </button>
@@ -413,18 +413,18 @@ export function Estoque() {
 
                 {/* Expandido */}
                 {isExpanded && (
-                  <div className="px-4 pb-4 border-t border-white/5 pt-3">
+                  <div className="px-4 pb-4 border-t border-border pt-3">
                     <div className="sm:hidden mb-3">
-                      <p className="text-white text-sm font-semibold">{formatCurrency(valorTotal)}</p>
-                      <p className="text-[#A1A1A1] text-xs">{formatCurrency(item.preco_unitario)}/un</p>
+                      <p className="text-foreground text-sm font-semibold">{formatCurrency(valorTotal)}</p>
+                      <p className="text-muted-foreground text-xs">{formatCurrency(item.preco_unitario)}/un</p>
                     </div>
                     {item.descricao && (
-                      <p className="text-[#A1A1A1] text-sm mb-3">{item.descricao}</p>
+                      <p className="text-muted-foreground text-sm mb-3">{item.descricao}</p>
                     )}
                     <div className="flex gap-2 flex-wrap">
                       <button
                         onClick={() => openMovimento(item)}
-                        className="flex items-center gap-1.5 text-xs bg-[#2DDB81]/10 hover:bg-[#2DDB81]/20 text-[#2DDB81] px-3 py-1.5 rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg transition-colors"
                       >
                         <ArrowDownCircle className="w-3.5 h-3.5" />
                         Entrada
@@ -443,7 +443,7 @@ export function Estoque() {
                       </button>
                       <button
                         onClick={() => handleToggleStatus(item)}
-                        className="flex items-center gap-1.5 text-xs bg-white/5 hover:bg-white/10 text-[#A1A1A1] px-3 py-1.5 rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 text-xs bg-white/5 hover:bg-white/10 text-muted-foreground px-3 py-1.5 rounded-lg transition-colors"
                       >
                         {item.status === "ativo" ? "Desativar" : "Ativar"}
                       </button>
@@ -466,35 +466,35 @@ export function Estoque() {
       {/* Modal: Novo Item */}
       {modal === "item" && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1B1B1B] border border-white/10 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-white font-bold text-lg">Novo Item de Estoque</h2>
-                <button onClick={() => setModal(null)} className="text-[#A1A1A1] hover:text-white">
+                <h2 className="text-foreground font-bold text-lg">Novo Item de Estoque</h2>
+                <button onClick={() => setModal(null)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <form onSubmit={handleAddItem} className="space-y-4">
                 <div>
-                  <label className="text-[#A1A1A1] text-sm mb-1 block">Nome *</label>
+                  <label className="text-muted-foreground text-sm mb-1 block">Nome *</label>
                   <input
                     type="text"
                     value={formNome}
                     onChange={(e) => setFormNome(e.target.value)}
                     placeholder="Ex: Camiseta P"
                     required
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50"
+                    className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[#A1A1A1] text-sm mb-1 block">Categoria *</label>
+                  <label className="text-muted-foreground text-sm mb-1 block">Categoria *</label>
                   <select
                     value={formCategoria}
                     onChange={(e) => setFormCategoria(e.target.value)}
                     required
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#2DDB81]/50"
+                    className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50"
                   >
                     <option value="">Selecione...</option>
                     {CATEGORIAS_ESTOQUE.map((c) => (
@@ -505,7 +505,7 @@ export function Estoque() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[#A1A1A1] text-sm mb-1 block">Quantidade *</label>
+                    <label className="text-muted-foreground text-sm mb-1 block">Quantidade *</label>
                     <input
                       type="number"
                       min="0"
@@ -513,11 +513,11 @@ export function Estoque() {
                       onChange={(e) => setFormQuantidade(e.target.value)}
                       placeholder="0"
                       required
-                      className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50"
+                      className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
                     />
                   </div>
                   <div>
-                    <label className="text-[#A1A1A1] text-sm mb-1 block">Preço unit. (R$) *</label>
+                    <label className="text-muted-foreground text-sm mb-1 block">Preço unit. (R$) *</label>
                     <input
                       type="number"
                       min="0"
@@ -526,43 +526,43 @@ export function Estoque() {
                       onChange={(e) => setFormPreco(e.target.value)}
                       placeholder="0,00"
                       required
-                      className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50"
+                      className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[#A1A1A1] text-sm mb-1 block">SKU (opcional)</label>
+                    <label className="text-muted-foreground text-sm mb-1 block">SKU (opcional)</label>
                     <input
                       type="text"
                       value={formSku}
                       onChange={(e) => setFormSku(e.target.value)}
                       placeholder="CAM-P-001"
-                      className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50"
+                      className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
                     />
                   </div>
                   <div>
-                    <label className="text-[#A1A1A1] text-sm mb-1 block">Qtd. mínima</label>
+                    <label className="text-muted-foreground text-sm mb-1 block">Qtd. mínima</label>
                     <input
                       type="number"
                       min="0"
                       value={formQtdMinima}
                       onChange={(e) => setFormQtdMinima(e.target.value)}
                       placeholder="10"
-                      className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50"
+                      className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[#A1A1A1] text-sm mb-1 block">Descrição (opcional)</label>
+                  <label className="text-muted-foreground text-sm mb-1 block">Descrição (opcional)</label>
                   <textarea
                     value={formDescricao}
                     onChange={(e) => setFormDescricao(e.target.value)}
                     placeholder="Detalhes do item..."
                     rows={2}
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50 resize-none"
+                    className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 resize-none"
                   />
                 </div>
 
@@ -570,13 +570,13 @@ export function Estoque() {
                   <button
                     type="button"
                     onClick={() => setModal(null)}
-                    className="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 py-2.5 rounded-xl transition-colors"
+                    className="flex-1 bg-white/5 hover:bg-white/10 text-foreground px-4 py-2.5 rounded-xl transition-colors"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-[#2DDB81] hover:bg-[#28C974] text-black font-semibold px-4 py-2.5 rounded-xl transition-colors"
+                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 py-2.5 rounded-xl transition-colors"
                   >
                     Adicionar
                   </button>
@@ -590,20 +590,20 @@ export function Estoque() {
       {/* Modal: Movimento */}
       {modal === "movimento" && selectedItem && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1B1B1B] border border-white/10 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-1">
-                <h2 className="text-white font-bold text-lg">Registrar Movimento</h2>
-                <button onClick={() => { setModal(null); setSelectedItem(null); }} className="text-[#A1A1A1] hover:text-white">
+                <h2 className="text-foreground font-bold text-lg">Registrar Movimento</h2>
+                <button onClick={() => { setModal(null); setSelectedItem(null); }} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-[#A1A1A1] text-sm mb-4">{selectedItem.nome} — {selectedItem.quantidade} un em estoque</p>
+              <p className="text-muted-foreground text-sm mb-4">{selectedItem.nome} — {selectedItem.quantidade} un em estoque</p>
 
               <form onSubmit={handleMovimento} className="space-y-4">
                 {/* Tipo */}
                 <div>
-                  <label className="text-[#A1A1A1] text-sm mb-2 block">Tipo de movimento *</label>
+                  <label className="text-muted-foreground text-sm mb-2 block">Tipo de movimento *</label>
                   <div className="grid grid-cols-3 gap-2">
                     {(["entrada", "saida", "ajuste"] as MovementType[]).map((tipo) => (
                       <button
@@ -613,11 +613,11 @@ export function Estoque() {
                         className={`py-2 rounded-xl text-sm font-medium transition-colors capitalize ${
                           movTipo === tipo
                             ? tipo === "entrada"
-                              ? "bg-[#2DDB81]/20 text-[#2DDB81] border border-[#2DDB81]/40"
+                              ? "bg-primary/20 text-primary border border-[#2DDB81]/40"
                               : tipo === "saida"
                               ? "bg-red-500/20 text-red-400 border border-red-500/40"
                               : "bg-blue-500/20 text-blue-400 border border-blue-500/40"
-                            : "bg-[#252525] text-[#A1A1A1] border border-white/5 hover:text-white"
+                            : "bg-input-background text-muted-foreground border border-border hover:text-foreground"
                         }`}
                       >
                         {tipo === "entrada" ? "Entrada" : tipo === "saida" ? "Saída" : "Ajuste"}
@@ -628,7 +628,7 @@ export function Estoque() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[#A1A1A1] text-sm mb-1 block">
+                    <label className="text-muted-foreground text-sm mb-1 block">
                       {movTipo === "ajuste" ? "Nova quantidade *" : "Quantidade *"}
                     </label>
                     <input
@@ -638,27 +638,27 @@ export function Estoque() {
                       onChange={(e) => setMovQuantidade(e.target.value)}
                       placeholder="0"
                       required
-                      className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50"
+                      className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
                     />
                   </div>
                   <div>
-                    <label className="text-[#A1A1A1] text-sm mb-1 block">Data *</label>
+                    <label className="text-muted-foreground text-sm mb-1 block">Data *</label>
                     <input
                       type="date"
                       value={movData}
                       onChange={(e) => setMovData(e.target.value)}
                       required
-                      className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#2DDB81]/50"
+                      className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[#A1A1A1] text-sm mb-1 block">Motivo</label>
+                  <label className="text-muted-foreground text-sm mb-1 block">Motivo</label>
                   <select
                     value={movMotivo}
                     onChange={(e) => setMovMotivo(e.target.value as MovementReason | "")}
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#2DDB81]/50"
+                    className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50"
                   >
                     <option value="">Selecione...</option>
                     {MOVEMENT_REASONS.map((r) => (
@@ -668,20 +668,20 @@ export function Estoque() {
                 </div>
 
                 <div>
-                  <label className="text-[#A1A1A1] text-sm mb-1 block">Anotações (opcional)</label>
+                  <label className="text-muted-foreground text-sm mb-1 block">Anotações (opcional)</label>
                   <textarea
                     value={movAnotacoes}
                     onChange={(e) => setMovAnotacoes(e.target.value)}
                     placeholder="Observações..."
                     rows={2}
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-[#555] focus:outline-none focus:border-[#2DDB81]/50 resize-none"
+                    className="w-full bg-input-background border border-border rounded-xl px-4 py-2.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50 resize-none"
                   />
                 </div>
 
                 {movTipo !== "ajuste" && movQuantidade && (
                   <div className={`text-xs px-3 py-2 rounded-lg ${
                     movTipo === "entrada"
-                      ? "bg-[#2DDB81]/10 text-[#2DDB81]"
+                      ? "bg-primary/10 text-primary"
                       : "bg-red-500/10 text-red-400"
                   }`}>
                     Novo saldo: {
@@ -696,13 +696,13 @@ export function Estoque() {
                   <button
                     type="button"
                     onClick={() => { setModal(null); setSelectedItem(null); }}
-                    className="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 py-2.5 rounded-xl transition-colors"
+                    className="flex-1 bg-white/5 hover:bg-white/10 text-foreground px-4 py-2.5 rounded-xl transition-colors"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-[#2DDB81] hover:bg-[#28C974] text-black font-semibold px-4 py-2.5 rounded-xl transition-colors"
+                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 py-2.5 rounded-xl transition-colors"
                   >
                     Confirmar
                   </button>

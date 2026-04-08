@@ -61,12 +61,12 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         {/* Back to home */}
         <Link
           to="/"
-          className="inline-flex items-center text-[#686F6F] hover:text-[#A1A1A1] mb-8 transition-colors"
+          className="inline-flex items-center text-[rgba(0,21,41,0.5)] hover:text-[rgba(0,21,41,0.7)] mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar para o início
@@ -75,20 +75,20 @@ export function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
-            <LogIn className="w-8 h-8 text-[#2DDB81]" />
+            <LogIn className="w-8 h-8 text-[#28A263]" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-[#001529] mb-2">
             Bem-vindo de volta!
           </h1>
-          <p className="text-[#A1A1A1]">
+          <p className="text-[rgba(0,21,41,0.6)]">
             Entre para acessar suas ferramentas
           </p>
         </div>
 
-        <Card className="p-8 border border-white/10 bg-[#1B1B1B] shadow-xl">
+        <Card className="p-8 border border-[rgba(0,0,0,0.1)] bg-white shadow-xl">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-white">
+              <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-[#001529]">
                 <Mail className="w-4 h-4" />
                 Email
               </Label>
@@ -99,20 +99,20 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
+                className="h-12 bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)]"
                 autoComplete="email"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <Label htmlFor="password" className="flex items-center gap-2 text-white">
+                <Label htmlFor="password" className="flex items-center gap-2 text-[#001529]">
                   <Lock className="w-4 h-4" />
                   Senha
                 </Label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#2DDB81] hover:text-[#28A263] transition-colors"
+                  className="text-sm text-[#28A263] hover:text-[#1F8C50] transition-colors"
                 >
                   Esqueceu?
                 </Link>
@@ -124,7 +124,7 @@ export function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
+                className="h-12 bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)]"
                 autoComplete="current-password"
               />
             </div>
@@ -132,7 +132,7 @@ export function Login() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-12 font-semibold"
+              className="w-full bg-[#28A263] hover:bg-[#1F8C50] text-white h-12 font-semibold"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
@@ -140,15 +140,15 @@ export function Login() {
           </form>
 
 
-          <div className="mt-6 text-center text-sm text-[#A1A1A1]">
+          <div className="mt-6 text-center text-sm text-[rgba(0,21,41,0.6)]">
             Não tem uma conta?{" "}
-            <Link to="/signup" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
+            <Link to="/signup" className="text-[#28A263] hover:text-[#1F8C50] font-semibold transition-colors">
               Cadastre-se grátis
             </Link>
           </div>
         </Card>
 
-        <p className="text-center text-sm text-[#686F6F] mt-6">
+        <p className="text-center text-sm text-[rgba(0,21,41,0.5)] mt-6">
           Ao entrar, você concorda com nossos Termos de Uso
         </p>
       </div>

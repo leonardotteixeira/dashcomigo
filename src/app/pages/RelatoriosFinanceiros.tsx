@@ -57,11 +57,11 @@ interface Proposal {
 }
 
 const STATUS_LABEL: Record<ProposalStatus, { label: string; color: string }> = {
-  aguardando: { label: "Aguardando", color: "bg-yellow-500/20 text-yellow-400" },
-  aprovada:   { label: "Aprovada",   color: "bg-blue-500/20 text-blue-400" },
-  paga:       { label: "Paga",       color: "bg-green-500/20 text-green-400" },
-  vencida:    { label: "Vencida",    color: "bg-red-500/20 text-red-400" },
-  recusada:   { label: "Recusada",   color: "bg-orange-500/20 text-orange-400" },
+  aguardando: { label: "Aguardando", color: "bg-yellow-100 text-yellow-700" },
+  aprovada:   { label: "Aprovada",   color: "bg-blue-100 text-blue-700" },
+  paga:       { label: "Paga",       color: "bg-green-100 text-green-700" },
+  vencida:    { label: "Vencida",    color: "bg-red-100 text-red-700" },
+  recusada:   { label: "Recusada",   color: "bg-orange-100 text-orange-700" },
 };
 
 export function RelatoriosFinanceiros() {
@@ -97,16 +97,16 @@ export function RelatoriosFinanceiros() {
   if (user?.plan !== "pro") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
-        <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center mb-6">
-          <Lock className="w-8 h-8 text-[#2DDB81]" />
+        <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-6">
+          <Lock className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-3">Relatórios são exclusivos do PRO</h2>
-        <p className="text-[#A1A1A1] mb-8 max-w-md">
+        <h2 className="text-2xl font-bold text-foreground mb-3">Relatórios são exclusivos do PRO</h2>
+        <p className="text-muted-foreground mb-8 max-w-md">
           Acesse relatórios completos, gráficos avançados, exportação em PDF e Excel com o plano PRO.
         </p>
         <button
           onClick={() => navigate("/checkout")}
-          className="flex items-center gap-2 bg-[#2DDB81] hover:bg-[#28C974] text-black font-bold px-6 py-3 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 py-3 rounded-xl transition-colors"
         >
           <Crown className="w-5 h-5" />
           Fazer Upgrade para PRO
@@ -368,12 +368,12 @@ export function RelatoriosFinanceiros() {
   }), [proposals]);
 
   return (
-    <div className="min-h-screen bg-[#141414] px-4 md:px-8 py-8">
+    <div className="min-h-screen bg-background px-4 md:px-8 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Relatórios Financeiros</h1>
-          <p className="text-[#A1A1A1]">Visualize e analise seus dados financeiros em um período específico</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Relatórios Financeiros</h1>
+          <p className="text-muted-foreground">Visualize e analise seus dados financeiros em um período específico</p>
         </div>
 
         {/* Period Filter */}
@@ -383,15 +383,15 @@ export function RelatoriosFinanceiros() {
 
         {/* Tabs */}
         <div className="mb-6">
-          <div className="flex gap-2 border-b border-white/10 overflow-x-auto">
+          <div className="flex gap-2 border-b border-border overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabType)}
                 className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? "border-[#28A263] text-[#28A263]"
-                    : "border-transparent text-[#A1A1A1] hover:text-white"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {tab.label}
@@ -423,7 +423,7 @@ export function RelatoriosFinanceiros() {
                     <div className="text-4xl md:text-5xl font-bold mb-3" style={{ color: heroColor }}>
                       {formatCurrency(Math.abs(periodSummary.fluxo))}
                     </div>
-                    <p className="text-[#A1A1A1] text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {periodSummary.receitas > 0
                         ? `${formatCurrency(periodSummary.receitas)} em receitas · ${formatCurrency(periodSummary.despesas)} em despesas · margem de ${formatPercentage(periodSummary.margem)}`
                         : "Nenhuma transação registrada neste período."}
@@ -483,13 +483,13 @@ export function RelatoriosFinanceiros() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                 {/* Insights */}
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-5">
+                <div className="bg-card border border-border rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-4">
-                    <Lightbulb className="w-5 h-5 text-[#F4B23C]" />
-                    <h3 className="font-semibold text-white">Análise do Período</h3>
+                    <Lightbulb className="w-5 h-5 text-yellow-600" />
+                    <h3 className="font-semibold text-foreground">Análise do Período</h3>
                   </div>
                   {insights.length === 0 ? (
-                    <p className="text-[#686F6F] text-sm">Sem dados suficientes para análise.</p>
+                    <p className="text-muted-foreground text-sm">Sem dados suficientes para análise.</p>
                   ) : (
                     <ul className="space-y-3">
                       {insights.map((insight, i) => (
@@ -500,10 +500,10 @@ export function RelatoriosFinanceiros() {
                           <span
                             className={
                               insight.type === "warning"
-                                ? "text-[#F4B23C]"
+                                ? "text-yellow-600"
                                 : insight.type === "success"
-                                ? "text-[#2DDB81]"
-                                : "text-[#A1A1A1]"
+                                ? "text-primary"
+                                : "text-muted-foreground"
                             }
                           >
                             {insight.message}
@@ -515,13 +515,13 @@ export function RelatoriosFinanceiros() {
                 </div>
 
                 {/* Recommendations */}
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-5">
+                <div className="bg-card border border-border rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-4">
-                    <Target className="w-5 h-5 text-[#2DDB81]" />
-                    <h3 className="font-semibold text-white">Recomendações</h3>
+                    <Target className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-foreground">Recomendações</h3>
                   </div>
                   {recommendations.length === 0 ? (
-                    <p className="text-[#686F6F] text-sm">Nenhuma recomendação no momento.</p>
+                    <p className="text-muted-foreground text-sm">Nenhuma recomendação no momento.</p>
                   ) : (
                     <ul className="space-y-3">
                       {recommendations.map((rec, i) => (
@@ -529,13 +529,13 @@ export function RelatoriosFinanceiros() {
                           <ChevronRight
                             className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
                               rec.priority === "alta"
-                                ? "text-[#F74C4C]"
+                                ? "text-destructive"
                                 : rec.priority === "media"
-                                ? "text-[#F4B23C]"
-                                : "text-[#2DDB81]"
+                                ? "text-yellow-600"
+                                : "text-primary"
                             }`}
                           />
-                          <span className="text-[#A1A1A1]">{rec.action}</span>
+                          <span className="text-muted-foreground">{rec.action}</span>
                         </li>
                       ))}
                     </ul>
@@ -545,13 +545,13 @@ export function RelatoriosFinanceiros() {
 
               {/* Advanced Indicators */}
               <div>
-                <h3 className="text-sm font-medium text-[#A1A1A1] uppercase tracking-wider mb-3">
+                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3">
                   Indicadores Avançados
                 </h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Liquidez */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                    <p className="text-xs text-[#686F6F] mb-1">Índice de Cobertura</p>
+                  <div className="bg-card border border-border rounded-xl p-4">
+                    <p className="text-xs text-muted-foreground mb-1">Índice de Cobertura</p>
                     <p
                       className="text-2xl font-bold mb-1"
                       style={{
@@ -564,7 +564,7 @@ export function RelatoriosFinanceiros() {
                     >
                       {pendingPayablesTotal === 0 ? "—" : liquidez >= 99 ? "∞" : liquidez.toFixed(2) + "×"}
                     </p>
-                    <p className="text-xs text-[#686F6F]">
+                    <p className="text-xs text-muted-foreground">
                       {pendingPayablesTotal === 0
                         ? "Sem contas a pagar"
                         : liquidez >= 1
@@ -574,12 +574,12 @@ export function RelatoriosFinanceiros() {
                   </div>
 
                   {/* Ponto de equilíbrio */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                    <p className="text-xs text-[#686F6F] mb-1">Ponto de Equilíbrio</p>
-                    <p className="text-2xl font-bold text-white mb-1">
+                  <div className="bg-card border border-border rounded-xl p-4">
+                    <p className="text-xs text-muted-foreground mb-1">Ponto de Equilíbrio</p>
+                    <p className="text-2xl font-bold text-foreground mb-1">
                       {periodSummary.despesas > 0 ? formatCurrency(pontoEquilibrio) : "—"}
                     </p>
-                    <p className="text-xs text-[#686F6F]">
+                    <p className="text-xs text-muted-foreground">
                       {periodSummary.receitas >= pontoEquilibrio && periodSummary.despesas > 0
                         ? "Receita cobre as despesas ✓"
                         : periodSummary.despesas > 0
@@ -589,26 +589,26 @@ export function RelatoriosFinanceiros() {
                   </div>
 
                   {/* Valor estimado do negócio */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                    <p className="text-xs text-[#686F6F] mb-1">Valor Estimado do Negócio</p>
-                    <p className="text-2xl font-bold text-white mb-1">
+                  <div className="bg-card border border-border rounded-xl p-4">
+                    <p className="text-xs text-muted-foreground mb-1">Valor Estimado do Negócio</p>
+                    <p className="text-2xl font-bold text-foreground mb-1">
                       {valorNegocio > 0 ? formatCurrency(valorNegocio) : "—"}
                     </p>
-                    <p className="text-xs text-[#686F6F]">
+                    <p className="text-xs text-muted-foreground">
                       {valorNegocio > 0 ? "Múltiplo de 12× lucro médio" : "Sem lucro nos últimos meses"}
                     </p>
                   </div>
 
                   {/* Projeção 30 dias */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                    <p className="text-xs text-[#686F6F] mb-1">Projeção 30 Dias</p>
+                  <div className="bg-card border border-border rounded-xl p-4">
+                    <p className="text-xs text-muted-foreground mb-1">Projeção 30 Dias</p>
                     <p
                       className="text-2xl font-bold mb-1"
                       style={{ color: projecao30.fluxo >= 0 ? "#2DDB81" : "#F74C4C" }}
                     >
                       {projecao30.receitas > 0 ? formatCurrency(projecao30.fluxo) : "—"}
                     </p>
-                    <p className="text-xs text-[#686F6F]">
+                    <p className="text-xs text-muted-foreground">
                       {projecao30.receitas > 0
                         ? `Média dos últimos 3 meses`
                         : "Sem histórico suficiente"}
@@ -619,8 +619,8 @@ export function RelatoriosFinanceiros() {
 
               {/* Contas a pagar summary */}
               {payables.length > 0 && (
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-5">
-                  <h3 className="text-sm font-semibold text-white mb-4">Contas a Pagar</h3>
+                <div className="bg-card border border-border rounded-xl p-5">
+                  <h3 className="text-sm font-semibold text-foreground mb-4">Contas a Pagar</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <CompactReportCard label="Total" value={payables.reduce((sum, p) => sum + p.valor, 0)} color="#FF9500" />
                     <CompactReportCard label="Pendentes" value={pendingPayablesTotal} color="#F74C4C" />
@@ -681,41 +681,41 @@ export function RelatoriosFinanceiros() {
                 colors={{ primary: periodSummary.fluxo >= 0 ? "#28A263" : "#F74C4C" }}
               />
 
-              <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Resumo Mensal</h3>
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Resumo Mensal</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="border-b border-white/10">
+                    <thead className="border-b border-border">
                       <tr>
-                        <th className="text-left py-3 text-[#A1A1A1]">Mês</th>
-                        <th className="text-right py-3 text-[#A1A1A1]">Receitas</th>
-                        <th className="text-right py-3 text-[#A1A1A1]">Despesas</th>
-                        <th className="text-right py-3 text-[#A1A1A1]">Fluxo</th>
-                        <th className="text-right py-3 text-[#A1A1A1]">Margem</th>
+                        <th className="text-left py-3 text-muted-foreground">Mês</th>
+                        <th className="text-right py-3 text-muted-foreground">Receitas</th>
+                        <th className="text-right py-3 text-muted-foreground">Despesas</th>
+                        <th className="text-right py-3 text-muted-foreground">Fluxo</th>
+                        <th className="text-right py-3 text-muted-foreground">Margem</th>
                       </tr>
                     </thead>
                     <tbody>
                       {monthlyFlowData
                         .filter((row) => row.receitas > 0 || row.despesas > 0)
                         .map((row, idx) => (
-                          <tr key={idx} className="border-b border-white/5 hover:bg-white/5">
-                            <td className="py-3 text-white">{row.name}</td>
-                            <td className="text-right py-3 text-[#2DDB81]">{formatCurrency(row.receitas)}</td>
-                            <td className="text-right py-3 text-[#F74C4C]">{formatCurrency(row.despesas)}</td>
+                          <tr key={idx} className="border-b border-white/5 hover:bg-accent">
+                            <td className="py-3 text-foreground">{row.name}</td>
+                            <td className="text-right py-3 text-primary">{formatCurrency(row.receitas)}</td>
+                            <td className="text-right py-3 text-destructive">{formatCurrency(row.despesas)}</td>
                             <td
                               className="text-right py-3 font-medium"
                               style={{ color: row.fluxo >= 0 ? "#2DDB81" : "#F74C4C" }}
                             >
                               {formatCurrency(row.fluxo)}
                             </td>
-                            <td className="text-right py-3 text-[#F4B23C]">
+                            <td className="text-right py-3 text-yellow-600">
                               {row.receitas > 0 ? formatPercentage((row.fluxo / row.receitas) * 100) : "—"}
                             </td>
                           </tr>
                         ))}
                       {monthlyFlowData.every((r) => r.receitas === 0 && r.despesas === 0) && (
                         <tr>
-                          <td colSpan={5} className="py-6 text-center text-[#686F6F]">
+                          <td colSpan={5} className="py-6 text-center text-muted-foreground">
                             Nenhuma transação nos últimos 6 meses
                           </td>
                         </tr>
@@ -731,47 +731,47 @@ export function RelatoriosFinanceiros() {
           {activeTab === "dre" && (
             <div className="space-y-6">
               {periodTransactions.length === 0 ? (
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-8 text-center">
-                  <BarChart2 className="w-12 h-12 text-[#686F6F] mx-auto mb-4" />
-                  <p className="text-[#A1A1A1] text-lg mb-2">Sem transações no período</p>
-                  <p className="text-[#686F6F] text-sm">Selecione um período com lançamentos no Fluxo de Caixa.</p>
+                <div className="bg-card border border-border rounded-xl p-8 text-center">
+                  <BarChart2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg mb-2">Sem transações no período</p>
+                  <p className="text-muted-foreground text-sm">Selecione um período com lançamentos no Fluxo de Caixa.</p>
                 </div>
               ) : (
                 <>
                   {/* DRE summary cards */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Receita Bruta</p>
-                      <p className="text-xl font-bold text-[#2DDB81]">{formatCurrency(dre.receitaBruta)}</p>
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Receita Bruta</p>
+                      <p className="text-xl font-bold text-primary">{formatCurrency(dre.receitaBruta)}</p>
                     </div>
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Lucro Bruto</p>
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Lucro Bruto</p>
                       <p className="text-xl font-bold" style={{ color: dre.lucroBruto >= 0 ? "#2DDB81" : "#F74C4C" }}>
                         {formatCurrency(dre.lucroBruto)}
                       </p>
-                      <p className="text-xs text-[#686F6F]">Margem {formatPercentage(dre.margemBruta)}</p>
+                      <p className="text-xs text-muted-foreground">Margem {formatPercentage(dre.margemBruta)}</p>
                     </div>
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Resultado Líquido</p>
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Resultado Líquido</p>
                       <p className="text-xl font-bold" style={{ color: dre.resultadoLiquido >= 0 ? "#2DDB81" : "#F74C4C" }}>
                         {formatCurrency(dre.resultadoLiquido)}
                       </p>
-                      <p className="text-xs text-[#686F6F]">Margem {formatPercentage(dre.margemLiquida)}</p>
+                      <p className="text-xs text-muted-foreground">Margem {formatPercentage(dre.margemLiquida)}</p>
                     </div>
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Total Despesas</p>
-                      <p className="text-xl font-bold text-[#F74C4C]">
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Total Despesas</p>
+                      <p className="text-xl font-bold text-destructive">
                         {formatCurrency(dre.cpv + dre.despesasOperacionais + dre.despesasAdministrativas + dre.impostos + dre.retirada)}
                       </p>
                     </div>
                   </div>
 
                   {/* DRE table */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
-                    <div className="p-5 border-b border-white/10 flex items-center justify-between">
+                  <div className="bg-card border border-border rounded-xl overflow-hidden">
+                    <div className="p-5 border-b border-border flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-white">Demonstração do Resultado do Exercício</h3>
-                        <p className="text-xs text-[#686F6F] mt-0.5">Baseado nas categorias lançadas no Fluxo de Caixa</p>
+                        <h3 className="font-semibold text-foreground">Demonstração do Resultado do Exercício</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">Baseado nas categorias lançadas no Fluxo de Caixa</p>
                       </div>
                     </div>
                     <div className="overflow-x-auto">
@@ -793,10 +793,10 @@ export function RelatoriosFinanceiros() {
                             return (
                               <tr
                                 key={idx}
-                                className={`border-b border-white/5 ${isResultado ? "bg-white/5" : "hover:bg-white/3"}`}
+                                className={`border-b border-white/5 ${isResultado ? "bg-accent" : "hover:bg-white/3"}`}
                               >
                                 <td
-                                  className={`py-2.5 pr-4 ${isResultado ? "font-bold text-white" : indent === 2 ? "text-[#686F6F]" : "text-[#A1A1A1]"}`}
+                                  className={`py-2.5 pr-4 ${isResultado ? "font-bold text-foreground" : indent === 2 ? "text-muted-foreground" : "text-muted-foreground"}`}
                                   style={{ paddingLeft: `${(indent + 1) * 16}px` }}
                                 >
                                   {linha.label}
@@ -822,12 +822,12 @@ export function RelatoriosFinanceiros() {
 
                   {/* Centro de Custos */}
                   <div>
-                    <h3 className="text-sm font-medium text-[#A1A1A1] uppercase tracking-wider mb-3">Centro de Custos</h3>
-                    <p className="text-xs text-[#686F6F] mb-4">Despesas classificadas automaticamente por área do negócio</p>
+                    <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3">Centro de Custos</h3>
+                    <p className="text-xs text-muted-foreground mb-4">Despesas classificadas automaticamente por área do negócio</p>
 
                     {centrosCusto.length === 0 ? (
-                      <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-6 text-center">
-                        <p className="text-[#686F6F] text-sm">Nenhuma despesa no período para classificar.</p>
+                      <div className="bg-card border border-border rounded-xl p-6 text-center">
+                        <p className="text-muted-foreground text-sm">Nenhuma despesa no período para classificar.</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -844,13 +844,13 @@ export function RelatoriosFinanceiros() {
                           const color = ccColors[cc.nome] ?? "#A1A1A1";
 
                           return (
-                            <div key={cc.nome} className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
+                            <div key={cc.nome} className="bg-card border border-border rounded-xl p-4">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
                                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
-                                  <span className="font-medium text-white text-sm">{cc.nome}</span>
+                                  <span className="font-medium text-foreground text-sm">{cc.nome}</span>
                                 </div>
-                                <span className="text-xs text-[#686F6F]">{formatPercentage(pct)} das despesas</span>
+                                <span className="text-xs text-muted-foreground">{formatPercentage(pct)} das despesas</span>
                               </div>
 
                               {cc.despesas > 0 && (
@@ -867,18 +867,18 @@ export function RelatoriosFinanceiros() {
                               <div className="space-y-1.5">
                                 {cc.despesas > 0 && (
                                   <div className="flex justify-between text-sm">
-                                    <span className="text-[#686F6F]">Despesas</span>
-                                    <span className="text-[#F74C4C] font-medium">{formatCurrency(cc.despesas)}</span>
+                                    <span className="text-muted-foreground">Despesas</span>
+                                    <span className="text-destructive font-medium">{formatCurrency(cc.despesas)}</span>
                                   </div>
                                 )}
                                 {cc.receitas > 0 && (
                                   <div className="flex justify-between text-sm">
-                                    <span className="text-[#686F6F]">Receitas</span>
-                                    <span className="text-[#2DDB81] font-medium">{formatCurrency(cc.receitas)}</span>
+                                    <span className="text-muted-foreground">Receitas</span>
+                                    <span className="text-primary font-medium">{formatCurrency(cc.receitas)}</span>
                                   </div>
                                 )}
                                 <div className="flex justify-between text-sm border-t border-white/5 pt-1.5">
-                                  <span className="text-[#686F6F]">Resultado</span>
+                                  <span className="text-muted-foreground">Resultado</span>
                                   <span className="font-semibold" style={{ color: cc.resultado >= 0 ? "#2DDB81" : "#F74C4C" }}>
                                     {formatCurrency(cc.resultado)}
                                   </span>
@@ -893,8 +893,8 @@ export function RelatoriosFinanceiros() {
                                     .slice(0, 3)
                                     .map((cat) => (
                                       <div key={cat.nome} className="flex justify-between text-xs">
-                                        <span className="text-[#686F6F] truncate mr-2">{cat.nome}</span>
-                                        <span className="text-[#A1A1A1] whitespace-nowrap">{formatCurrency(cat.valor)}</span>
+                                        <span className="text-muted-foreground truncate mr-2">{cat.nome}</span>
+                                        <span className="text-muted-foreground whitespace-nowrap">{formatCurrency(cat.valor)}</span>
                                       </div>
                                     ))}
                                 </div>
@@ -916,13 +916,13 @@ export function RelatoriosFinanceiros() {
               {/* Header + init button */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h3 className="text-white font-semibold">Planejamento por Cenários</h3>
-                  <p className="text-[#686F6F] text-sm mt-0.5">Simule receitas esperadas e veja o impacto no resultado</p>
+                  <h3 className="text-foreground font-semibold">Planejamento por Cenários</h3>
+                  <p className="text-muted-foreground text-sm mt-0.5">Simule receitas esperadas e veja o impacto no resultado</p>
                 </div>
                 <button
                   onClick={initCenarios}
                   disabled={periodSummary.receitas === 0}
-                  className="text-sm px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[#A1A1A1] hover:text-white border border-white/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="text-sm px-4 py-2 rounded-lg bg-accent hover:bg-muted text-muted-foreground hover:text-foreground border border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Usar dados do período atual
                 </button>
@@ -939,19 +939,19 @@ export function RelatoriosFinanceiros() {
                   return (
                     <div
                       key={cenario.nome}
-                      className="bg-[#1B1B1B] border rounded-xl overflow-hidden"
+                      className="bg-card border rounded-xl overflow-hidden"
                       style={{ borderColor: cenario.cor + "44" }}
                     >
                       {/* Card header */}
                       <div className="px-5 py-3 flex items-center gap-2" style={{ background: cenario.cor + "18" }}>
                         <span className="text-lg">{cenario.emoji}</span>
-                        <span className="font-bold text-white">{cenario.nome}</span>
+                        <span className="font-bold text-foreground">{cenario.nome}</span>
                       </div>
 
                       <div className="p-5 space-y-4">
                         {/* Receita esperada */}
                         <div>
-                          <label className="text-xs text-[#686F6F] mb-1.5 block">Receita esperada (R$)</label>
+                          <label className="text-xs text-muted-foreground mb-1.5 block">Receita esperada (R$)</label>
                           <input
                             type="number"
                             min={0}
@@ -961,13 +961,13 @@ export function RelatoriosFinanceiros() {
                               setCenarios((prev) => prev.map((c, i) => i === idx ? { ...c, receita: val } : c));
                             }}
                             placeholder="0,00"
-                            className="w-full bg-[#141414] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-white/30"
+                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:outline-none focus:border-white/30"
                           />
                         </div>
 
                         {/* Ajuste de despesas */}
                         <div>
-                          <label className="text-xs text-[#686F6F] mb-1.5 block">
+                          <label className="text-xs text-muted-foreground mb-1.5 block">
                             Ajuste nas despesas: <span style={{ color: cenario.cor }} className="font-medium">
                               {cenario.ajusteDespesas > 0 ? "+" : ""}{cenario.ajusteDespesas}%
                             </span>
@@ -985,23 +985,23 @@ export function RelatoriosFinanceiros() {
                             className="w-full accent-current"
                             style={{ accentColor: cenario.cor }}
                           />
-                          <div className="flex justify-between text-xs text-[#686F6F] mt-0.5">
+                          <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
                             <span>-50%</span><span>0%</span><span>+50%</span>
                           </div>
                         </div>
 
                         {/* Projected results */}
-                        <div className="pt-3 border-t border-white/10 space-y-2">
+                        <div className="pt-3 border-t border-border space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span className="text-[#686F6F]">Despesas proj.</span>
-                            <span className="text-[#F74C4C]">{formatCurrency(despesasAjustadas)}</span>
+                            <span className="text-muted-foreground">Despesas proj.</span>
+                            <span className="text-destructive">{formatCurrency(despesasAjustadas)}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-[#686F6F]">Margem</span>
+                            <span className="text-muted-foreground">Margem</span>
                             <span style={{ color: margem >= 0 ? cenario.cor : "#F74C4C" }}>{formatPercentage(margem)}</span>
                           </div>
                           <div className="flex justify-between font-bold">
-                            <span className="text-white text-sm">Resultado</span>
+                            <span className="text-foreground text-sm">Resultado</span>
                             <span style={{ color: resultado >= 0 ? cenario.cor : "#F74C4C" }}>
                               {formatCurrency(resultado)}
                             </span>
@@ -1015,15 +1015,15 @@ export function RelatoriosFinanceiros() {
 
               {/* Comparison table */}
               {cenarios.some((c) => c.receita > 0) && (
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
-                  <div className="p-5 border-b border-white/10">
-                    <h3 className="font-semibold text-white">Comparação entre Cenários</h3>
+                <div className="bg-card border border-border rounded-xl overflow-hidden">
+                  <div className="p-5 border-b border-border">
+                    <h3 className="font-semibold text-foreground">Comparação entre Cenários</h3>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                      <thead className="border-b border-white/10">
+                      <thead className="border-b border-border">
                         <tr>
-                          <th className="text-left px-5 py-3 text-[#A1A1A1]">Indicador</th>
+                          <th className="text-left px-5 py-3 text-muted-foreground">Indicador</th>
                           {cenarios.map((c) => (
                             <th key={c.nome} className="text-right px-5 py-3 font-semibold" style={{ color: c.cor }}>
                               {c.emoji} {c.nome}
@@ -1058,7 +1058,7 @@ export function RelatoriosFinanceiros() {
                           },
                         ].map((row) => (
                           <tr key={row.label} className="border-b border-white/5 hover:bg-white/3">
-                            <td className="px-5 py-3 text-[#A1A1A1]">{row.label}</td>
+                            <td className="px-5 py-3 text-muted-foreground">{row.label}</td>
                             {row.values.map((val, i) => (
                               <td key={i} className="px-5 py-3 text-right font-medium" style={{ color: val.color }}>
                                 {"isPct" in val && val.isPct ? formatPercentage(val.v) : formatCurrency(val.v)}
@@ -1073,10 +1073,10 @@ export function RelatoriosFinanceiros() {
               )}
 
               {/* Tip */}
-              <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4 flex gap-3">
+              <div className="bg-card border border-border rounded-xl p-4 flex gap-3">
                 <span className="text-xl flex-shrink-0">💡</span>
-                <p className="text-[#686F6F] text-sm">
-                  Clique em <strong className="text-[#A1A1A1]">"Usar dados do período atual"</strong> para preencher automaticamente com os valores reais como ponto de partida. Depois ajuste as receitas esperadas e o slider de despesas para simular cada cenário.
+                <p className="text-muted-foreground text-sm">
+                  Clique em <strong className="text-muted-foreground">"Usar dados do período atual"</strong> para preencher automaticamente com os valores reais como ponto de partida. Depois ajuste as receitas esperadas e o slider de despesas para simular cada cenário.
                 </p>
               </div>
             </div>
@@ -1086,14 +1086,14 @@ export function RelatoriosFinanceiros() {
           {activeTab === "propostas" && (
             <div className="space-y-6">
               {loadingProposals ? (
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-8 text-center">
-                  <p className="text-[#A1A1A1]">Carregando propostas…</p>
+                <div className="bg-card border border-border rounded-xl p-8 text-center">
+                  <p className="text-muted-foreground">Carregando propostas…</p>
                 </div>
               ) : proposals.length === 0 ? (
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-8 text-center">
-                  <FileText className="w-12 h-12 text-[#686F6F] mx-auto mb-4" />
-                  <p className="text-[#A1A1A1] text-lg mb-2">Nenhuma proposta criada ainda</p>
-                  <p className="text-[#686F6F] text-sm">
+                <div className="bg-card border border-border rounded-xl p-8 text-center">
+                  <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg mb-2">Nenhuma proposta criada ainda</p>
+                  <p className="text-muted-foreground text-sm">
                     Crie propostas no Gerador de Propostas e acompanhe o desempenho aqui.
                   </p>
                 </div>
@@ -1101,33 +1101,33 @@ export function RelatoriosFinanceiros() {
                 <>
                   {/* Stats cards */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Total de Propostas</p>
-                      <p className="text-2xl font-bold text-white">{proposalStats.total}</p>
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Total de Propostas</p>
+                      <p className="text-2xl font-bold text-foreground">{proposalStats.total}</p>
                     </div>
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Taxa de Conversão</p>
-                      <p className="text-2xl font-bold text-[#2DDB81]">
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Taxa de Conversão</p>
+                      <p className="text-2xl font-bold text-primary">
                         {formatPercentage(proposalStats.taxaConversao)}
                       </p>
                     </div>
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Valor Aprovado</p>
-                      <p className="text-2xl font-bold text-[#2DDB81]">
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Valor Aprovado</p>
+                      <p className="text-2xl font-bold text-primary">
                         {formatCurrency(proposalStats.valorAprovado)}
                       </p>
                     </div>
-                    <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-4">
-                      <p className="text-xs text-[#686F6F] mb-1">Valor Recebido</p>
-                      <p className="text-2xl font-bold text-white">
+                    <div className="bg-card border border-border rounded-xl p-4">
+                      <p className="text-xs text-muted-foreground mb-1">Valor Recebido</p>
+                      <p className="text-2xl font-bold text-foreground">
                         {formatCurrency(proposalStats.valorPago)}
                       </p>
                     </div>
                   </div>
 
                   {/* Status breakdown */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-5">
-                    <h3 className="text-sm font-semibold text-white mb-4">Por Status</h3>
+                  <div className="bg-card border border-border rounded-xl p-5">
+                    <h3 className="text-sm font-semibold text-foreground mb-4">Por Status</h3>
                     <div className="flex flex-wrap gap-3">
                       {(["aguardando", "aprovada", "paga", "recusada", "vencida"] as ProposalStatus[]).map((status) => {
                         const count = proposals.filter((p) => p.status === status).length;
@@ -1144,32 +1144,32 @@ export function RelatoriosFinanceiros() {
                   </div>
 
                   {/* Proposals table */}
-                  <div className="bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden">
-                    <div className="p-5 border-b border-white/10">
-                      <h3 className="font-semibold text-white">Todas as Propostas</h3>
+                  <div className="bg-card border border-border rounded-xl overflow-hidden">
+                    <div className="p-5 border-b border-border">
+                      <h3 className="font-semibold text-foreground">Todas as Propostas</h3>
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead className="border-b border-white/10">
+                        <thead className="border-b border-border">
                           <tr>
-                            <th className="text-left px-5 py-3 text-[#A1A1A1]">Cliente</th>
-                            <th className="text-left px-5 py-3 text-[#A1A1A1]">Serviço</th>
-                            <th className="text-right px-5 py-3 text-[#A1A1A1]">Valor</th>
-                            <th className="text-left px-5 py-3 text-[#A1A1A1]">Data</th>
-                            <th className="text-left px-5 py-3 text-[#A1A1A1]">Status</th>
+                            <th className="text-left px-5 py-3 text-muted-foreground">Cliente</th>
+                            <th className="text-left px-5 py-3 text-muted-foreground">Serviço</th>
+                            <th className="text-right px-5 py-3 text-muted-foreground">Valor</th>
+                            <th className="text-left px-5 py-3 text-muted-foreground">Data</th>
+                            <th className="text-left px-5 py-3 text-muted-foreground">Status</th>
                           </tr>
                         </thead>
                         <tbody>
                           {proposals.map((p) => {
-                            const cfg = STATUS_LABEL[p.status] ?? { label: p.status, color: "text-[#A1A1A1]" };
+                            const cfg = STATUS_LABEL[p.status] ?? { label: p.status, color: "text-muted-foreground" };
                             return (
-                              <tr key={p.id} className="border-b border-white/5 hover:bg-white/5">
-                                <td className="px-5 py-3 text-white">{p.nome_cliente}</td>
-                                <td className="px-5 py-3 text-[#A1A1A1]">{p.nome_servico}</td>
-                                <td className="px-5 py-3 text-right text-[#2DDB81] font-medium">
+                              <tr key={p.id} className="border-b border-white/5 hover:bg-accent">
+                                <td className="px-5 py-3 text-foreground">{p.nome_cliente}</td>
+                                <td className="px-5 py-3 text-muted-foreground">{p.nome_servico}</td>
+                                <td className="px-5 py-3 text-right text-primary font-medium">
                                   {formatCurrency(Number(p.valor))}
                                 </td>
-                                <td className="px-5 py-3 text-[#A1A1A1]">
+                                <td className="px-5 py-3 text-muted-foreground">
                                   {new Date(p.created).toLocaleDateString("pt-BR")}
                                 </td>
                                 <td className="px-5 py-3">
@@ -1205,9 +1205,9 @@ export function RelatoriosFinanceiros() {
                   }}
                 />
               ) : (
-                <div className="bg-[#1B1B1B] border border-white/10 rounded-xl p-8 text-center">
-                  <CheckCircle className="w-12 h-12 text-[#28A263] mx-auto mb-4" />
-                  <p className="text-[#A1A1A1] text-lg">Nenhuma conta a pagar registrada</p>
+                <div className="bg-card border border-border rounded-xl p-8 text-center">
+                  <CheckCircle className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg">Nenhuma conta a pagar registrada</p>
                 </div>
               )}
             </div>
@@ -1215,8 +1215,8 @@ export function RelatoriosFinanceiros() {
         </div>
 
         {/* Export Buttons */}
-        <div className="mt-8 flex justify-between items-center border-t border-white/10 pt-8">
-          <p className="text-[#A1A1A1] text-sm">Exportar relatório para análise externa</p>
+        <div className="mt-8 flex justify-between items-center border-t border-border pt-8">
+          <p className="text-muted-foreground text-sm">Exportar relatório para análise externa</p>
           <ExportButtons
             filename={`relatorio_financeiro_${period}`}
             onExportExcel={handleExportExcel}
