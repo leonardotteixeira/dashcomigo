@@ -77,27 +77,27 @@ export function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <Button
           variant="ghost"
           onClick={() => navigate("/pricing")}
-          className="mb-6 text-[#A1A1A1] hover:text-white hover:bg-white/5 rounded-xl"
+          className="mb-6 text-[#001529] hover:text-[#28A263] hover:bg-[#F0F8F5] rounded-xl"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar aos planos
         </Button>
 
-        <div className="p-8 bg-[#1B1B1B] rounded-3xl border border-white/5 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl mb-4">
-            <Crown className="w-8 h-8 text-[#2DDB81]" />
+        <div className="p-8 bg-white rounded-3xl border border-[#E8EBF1] shadow-sm text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/10 rounded-2xl mb-4">
+            <Crown className="w-8 h-8 text-[#28A263]" />
           </div>
 
-          <h1 className="text-3xl font-bold text-white mb-2">Upgrade para PRO</h1>
-          <p className="text-[#A1A1A1] mb-6">Desbloqueie todas as funcionalidades</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-2">Upgrade para PRO</h1>
+          <p className="text-[rgba(0,21,41,0.6)] mb-6">Desbloqueie todas as funcionalidades</p>
 
           <form onSubmit={handleSubmit} className="mt-6">
-            <label className="block text-sm font-medium text-[#A1A1A1] text-left mb-2">
+            <label className="block text-sm font-medium text-[#001529] text-left mb-2">
               CPF ou CNPJ
             </label>
             <input
@@ -106,14 +106,14 @@ export function Checkout() {
               onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
               placeholder="000.000.000-00"
               maxLength={18}
-              className="w-full px-4 py-3 bg-[#141414] border border-white/10 text-white placeholder:text-[#686F6F] rounded-xl focus:border-[#28A263] focus:outline-none transition-colors mb-4"
+              className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors mb-4"
               disabled={loading}
               required
             />
 
             {error && (
-              <Alert className="bg-red-500/10 border border-red-500/20 text-left mb-4">
-                <AlertDescription className="text-red-300">
+              <Alert className="bg-red-50 border border-red-200 text-left mb-4">
+                <AlertDescription className="text-red-700">
                   {error}
                 </AlertDescription>
               </Alert>
@@ -122,7 +122,7 @@ export function Checkout() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#28A263] hover:bg-[#2DDB81] text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+              className="w-full py-3 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
             >
               {loading ? (
                 <>
@@ -136,12 +136,12 @@ export function Checkout() {
           </form>
 
           {/* Price highlight */}
-          <div className="mb-6 p-4 bg-[#28A263]/10 border border-[#28A263]/20 rounded-2xl">
+          <div className="mb-6 p-4 bg-[#F0F8F5] border border-[#28A263]/20 rounded-2xl">
             <div className="flex items-baseline justify-center gap-2 mb-2">
-              <span className="text-4xl font-bold text-[#2DDB81]">R$ 9,90</span>
-              <span className="text-[#A1A1A1]">/mês</span>
+              <span className="text-4xl font-bold text-[#28A263]">R$ 9,90</span>
+              <span className="text-[rgba(0,21,41,0.6)]">/mês</span>
             </div>
-            <p className="text-xs text-[#A1A1A1]">Apenas no 1º mês • Depois R$ 29,90/mês</p>
+            <p className="text-xs text-[rgba(0,21,41,0.6)]">Apenas no 1º mês • Depois R$ 29,90/mês</p>
           </div>
 
           {/* Benefits list */}
@@ -156,13 +156,13 @@ export function Checkout() {
               "Cancele quando quiser",
             ].map((item) => (
               <div key={item} className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-[#A1A1A1]">{item}</span>
+                <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-[rgba(0,21,41,0.6)]">{item}</span>
               </div>
             ))}
           </div>
 
-          <p className="text-xs text-[#686F6F] mt-6">
+          <p className="text-xs text-[rgba(0,21,41,0.4)] mt-6">
             🔒 Pagamento 100% seguro processado pela <strong>Asaas</strong>
           </p>
         </div>

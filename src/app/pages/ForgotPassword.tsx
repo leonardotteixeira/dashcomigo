@@ -28,19 +28,19 @@ export function ForgotPassword() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-white flex items-center justify-center p-6">
         <div className="w-full max-w-md text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-[#28A263]/20 rounded-2xl shadow-lg mb-6">
-            <MailCheck className="w-10 h-10 text-[#2DDB81]" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-[#28A263]/10 rounded-2xl shadow-sm mb-6">
+            <MailCheck className="w-10 h-10 text-[#28A263]" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-3">Email enviado!</h1>
-          <p className="text-[#A1A1A1] mb-2 text-lg">Enviamos as instruções para:</p>
-          <p className="font-bold text-[#2DDB81] text-lg mb-6">{email}</p>
-          <p className="text-[#686F6F] mb-8">
+          <h1 className="text-3xl font-bold text-[#001529] mb-3">Email enviado!</h1>
+          <p className="text-[rgba(0,21,41,0.6)] mb-2 text-lg">Enviamos as instruções para:</p>
+          <p className="font-bold text-[#28A263] text-lg mb-6">{email}</p>
+          <p className="text-[rgba(0,21,41,0.5)] mb-8">
             Clique no link do email para redefinir sua senha. Verifique também a pasta de spam.
           </p>
           <Link to="/login">
-            <Button className="w-full h-12 border border-white/10 bg-[#1B1B1B] text-white hover:bg-white/5">
+            <Button className="w-full h-12 border border-[#E8EBF1] bg-white text-[#001529] hover:bg-[#F9FAFB]">
               Voltar para o login
             </Button>
           </Link>
@@ -50,30 +50,30 @@ export function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <Link
           to="/login"
-          className="inline-flex items-center text-[#686F6F] hover:text-[#A1A1A1] mb-8 transition-colors"
+          className="inline-flex items-center text-[rgba(0,21,41,0.5)] hover:text-[#001529] mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar para o login
         </Link>
 
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
-            <Mail className="w-8 h-8 text-[#2DDB81]" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/10 rounded-2xl shadow-sm mb-4">
+            <Mail className="w-8 h-8 text-[#28A263]" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Esqueceu a senha?</h1>
-          <p className="text-[#A1A1A1]">
+          <h1 className="text-3xl font-bold text-[#001529] mb-2">Esqueceu a senha?</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">
             Digite seu email e enviaremos um link para redefinir sua senha.
           </p>
         </div>
 
-        <Card className="p-8 border border-white/10 bg-[#1B1B1B] shadow-xl">
+        <Card className="p-8 border border-[#E8EBF1] bg-white shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-white">
+              <Label htmlFor="email" className="flex items-center gap-2 mb-2 text-[#001529]">
                 <Mail className="w-4 h-4" />
                 Email
               </Label>
@@ -84,7 +84,7 @@ export function ForgotPassword() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
+                className="h-12 bg-white border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
                 autoComplete="email"
               />
             </div>
@@ -92,16 +92,16 @@ export function ForgotPassword() {
             <Button
               type="submit"
               size="lg"
-              className="w-full bg-[#28A263] hover:bg-[#2DDB81] text-white h-12 font-semibold"
+              className="w-full bg-[#28A263] hover:bg-[#1f7a4a] text-white h-12 font-semibold"
               disabled={loading}
             >
               {loading ? "Enviando..." : "Enviar link de redefinição"}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-[#A1A1A1]">
+          <div className="mt-6 text-center text-sm text-[rgba(0,21,41,0.6)]">
             Lembrou a senha?{" "}
-            <Link to="/login" className="text-[#2DDB81] hover:text-[#28A263] font-semibold transition-colors">
+            <Link to="/login" className="text-[#28A263] hover:text-[#1f7a4a] font-semibold transition-colors">
               Fazer login
             </Link>
           </div>

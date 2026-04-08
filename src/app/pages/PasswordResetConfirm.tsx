@@ -44,20 +44,20 @@ export function PasswordResetConfirm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/20 rounded-2xl shadow-lg mb-4">
-            <KeyRound className="w-8 h-8 text-[#2DDB81]" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/10 rounded-2xl shadow-sm mb-4">
+            <KeyRound className="w-8 h-8 text-[#28A263]" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Nova senha</h1>
-          <p className="text-[#A1A1A1]">Digite sua nova senha abaixo.</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-2">Nova senha</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Digite sua nova senha abaixo.</p>
         </div>
 
-        <Card className="p-8 border border-white/10 bg-[#1B1B1B] shadow-xl">
+        <Card className="p-8 border border-[#E8EBF1] bg-white shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="password" className="flex items-center gap-2 mb-2 text-white">
+              <Label htmlFor="password" className="flex items-center gap-2 mb-2 text-[#001529]">
                 <Lock className="w-4 h-4" />
                 Nova senha
               </Label>
@@ -69,13 +69,13 @@ export function PasswordResetConfirm() {
                 placeholder="Mínimo 8 caracteres"
                 required
                 minLength={8}
-                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
+                className="h-12 bg-white border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
                 autoComplete="new-password"
               />
             </div>
 
             <div>
-              <Label htmlFor="confirm" className="flex items-center gap-2 mb-2 text-white">
+              <Label htmlFor="confirm" className="flex items-center gap-2 mb-2 text-[#001529]">
                 <Lock className="w-4 h-4" />
                 Confirmar senha
               </Label>
@@ -87,7 +87,7 @@ export function PasswordResetConfirm() {
                 placeholder="Confirme sua nova senha"
                 required
                 minLength={8}
-                className="h-12 bg-[#141414] border-white/10 text-white placeholder:text-[#686F6F]"
+                className="h-12 bg-white border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
                 autoComplete="new-password"
               />
             </div>
@@ -95,17 +95,17 @@ export function PasswordResetConfirm() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-[#28A263] hover:bg-[#2DDB81] text-black font-semibold rounded-xl transition-colors disabled:opacity-50"
+              className="w-full h-12 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
             >
               {loading ? "Alterando senha..." : "Redefinir senha"}
             </Button>
           </form>
 
-          <p className="text-center text-sm text-[#686F6F] mt-6">
+          <p className="text-center text-sm text-[rgba(0,21,41,0.5)] mt-6">
             Lembrou da senha?{" "}
             <button
               onClick={() => navigate("/login")}
-              className="text-[#2DDB81] hover:underline font-medium"
+              className="text-[#28A263] hover:text-[#1f7a4a] hover:underline font-medium transition-colors"
             >
               Voltar ao login
             </button>
