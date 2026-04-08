@@ -116,38 +116,47 @@ export function ClientesFornecedores() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Clientes & Fornecedores</h1>
-          <p className="text-muted-foreground text-sm mt-1">Gerencie seus contatos comerciais</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-1">Clientes & Fornecedores</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Gerencie seus contatos comerciais</p>
         </div>
         <button
           onClick={() => { if (!canAddContact()) { toast.error("Limite atingido — faça upgrade para PRO"); return; } resetForm(); setModalOpen(true); }}
-          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Novo Contato
         </button>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-card border border-border rounded-2xl p-4">
-          <p className="text-muted-foreground text-sm">Total de Contatos</p>
-          <p className="text-foreground text-xl font-bold mt-1">{contacts.length}</p>
-          <p className="text-muted-foreground text-xs mt-1">ativos e inativos</p>
+      {/* Summary Cards */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
+            <Users className="w-5 h-5 text-[#0066FF]" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total de Contatos</p>
+          <p className="text-2xl font-bold text-[#001529]">{contacts.length}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">ativos e inativos</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4">
-          <p className="text-muted-foreground text-sm">Clientes</p>
-          <p className="text-primary text-xl font-bold mt-1">{totalClientes}</p>
-          <p className="text-muted-foreground text-xs mt-1">ativos</p>
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
+            <Users className="w-5 h-5 text-[#28A263]" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Clientes</p>
+          <p className="text-2xl font-bold text-[#28A263]">{totalClientes}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">ativos</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4">
-          <p className="text-muted-foreground text-sm">Fornecedores</p>
-          <p className="text-blue-400 text-xl font-bold mt-1">{totalFornecedores}</p>
-          <p className="text-muted-foreground text-xs mt-1">ativos</p>
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
+            <Users className="w-5 h-5 text-[#0066FF]" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Fornecedores</p>
+          <p className="text-2xl font-bold text-[#0066FF]">{totalFornecedores}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">ativos</p>
         </div>
       </div>
 
