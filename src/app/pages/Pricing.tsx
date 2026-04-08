@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { Check, Zap, Crown, ArrowRight } from "lucide-react";
+import { useNavigate, Link } from "react-router";
+import { Check, Zap, Crown, ArrowRight, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -24,14 +24,13 @@ export function Pricing() {
 
   const priceMonthly = 29.90;
   const priceFirstMonth = 9.90;
-  const priceAnnual = priceMonthly * 10; // 10 meses no ano (desconto)
+  const priceAnnual = priceMonthly * 10;
 
   const displayPrice = billingCycle === "annual" ? priceAnnual : priceMonthly;
-  const displayFirstMonthPrice = billingCycle === "annual" ? priceAnnual * 0.5 : priceFirstMonth;
   const savings = billingCycle === "annual" ? Math.round((priceMonthly * 12) - (priceMonthly * 10)) : 0;
 
   const FREE_FEATURES = [
-    "Dashboard e Relatórios básicos",
+    "Dashboard com relatórios básicos",
     "Simulador MEI → ME ilimitado",
     "Fluxo de Caixa: 30 lançamentos/mês",
     "Contas a Pagar: 30 itens",
@@ -43,14 +42,14 @@ export function Pricing() {
   ];
 
   const PRO_FEATURES = [
-    "Tudo do Gratuito com limites ilimitados",
+    "Tudo do plano Gratuito com limites ilimitados",
     "Fluxo de caixa: lançamentos ilimitados",
     "Contas a Pagar/Receber: ilimitados",
     "Clientes/Fornecedores: ilimitados",
     "Orçamentos: ilimitados",
     "Estoque: ilimitado",
     "Propostas: ilimitadas",
-    "Simulador de Preço Ideal (exclusivo)",
+    "Simulador de Preço Ideal",
     "Simulador de Lucro com projeções",
     "Metas de Receita com histórico",
     "Relatórios e exportações completos",
@@ -58,215 +57,260 @@ export function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#141414] py-20 px-6">
+    <div className="min-h-screen bg-white py-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-block px-4 py-2 bg-[#28A263]/20 border border-[#28A263]/20 rounded-full mb-6">
-            <span className="text-xs text-[#2DDB81] font-bold uppercase tracking-wider">
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <div className="inline-flex px-4 py-2 bg-[#28A263]/10 border border-[#28A263]/15 rounded-full mb-8">
+            <span className="text-xs text-[#28A263] font-bold uppercase tracking-widest">
               Planos e Preços
             </span>
           </div>
-          <h1 className="text-5xl lg:text-6xl font-bold text-white mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-6 leading-tight">
             Escolha o plano ideal para você
           </h1>
-          <p className="text-lg text-[#A1A1A1] max-w-2xl mx-auto mb-8">
-            Comece grátis e faça upgrade quando precisar de mais recursos
+          <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto">
+            Comece grátis, faça upgrade quando precisar. Sem compromisso a longo prazo.
           </p>
+        </div>
 
-          {/* Billing Cycle Toggle */}
-          <div className="flex items-center justify-center gap-4 mb-12">
-            <button
-              onClick={() => setBillingCycle("monthly")}
-              className={`px-6 py-2 rounded-xl font-medium transition-all ${
-                billingCycle === "monthly"
-                  ? "bg-[#28A263] text-white"
-                  : "bg-white/5 text-[#A1A1A1] hover:bg-white/10"
-              }`}
-            >
-              Mensal
-            </button>
-            <button
-              onClick={() => setBillingCycle("annual")}
-              className={`px-6 py-2 rounded-xl font-medium transition-all relative ${
-                billingCycle === "annual"
-                  ? "bg-[#28A263] text-white"
-                  : "bg-white/5 text-[#A1A1A1] hover:bg-white/10"
-              }`}
-            >
-              Anual
-              {billingCycle === "annual" && (
-                <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
-                  {savings > 0 && `Economize R$ ${savings.toFixed(0)}`}
-                </span>
-              )}
-            </button>
-          </div>
+        {/* Billing Toggle */}
+        <div className="flex items-center justify-center gap-3 mb-16">
+          <button
+            onClick={() => setBillingCycle("monthly")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              billingCycle === "monthly"
+                ? "bg-[#28A263] text-white shadow-md"
+                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[rgba(0,0,0,0.08)]"
+            }`}
+          >
+            Mensal
+          </button>
+          <button
+            onClick={() => setBillingCycle("annual")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all relative ${
+              billingCycle === "annual"
+                ? "bg-[#28A263] text-white shadow-md"
+                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[rgba(0,0,0,0.08)]"
+            }`}
+          >
+            Anual
+            {billingCycle === "annual" && savings > 0 && (
+              <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap">
+                Economize R$ {savings}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* Plans Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
           {/* Free Plan */}
-          <div className="p-8 bg-[#1B1B1B] rounded-3xl border border-white/5 hover:border-white/10 transition-all">
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-[#A1A1A1]" />
+          <div className="group relative p-10 bg-white border border-[rgba(0,0,0,0.08)] rounded-3xl hover:border-[rgba(0,0,0,0.12)] hover:shadow-lg transition-all duration-300">
+            <div className="mb-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-[#28A263]/12 rounded-2xl flex items-center justify-center">
+                  <Zap className="w-7 h-7 text-[#28A263]" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">Gratuito</h3>
-                  <p className="text-sm text-[#A1A1A1]">Para começar</p>
+                  <h3 className="text-2xl font-bold text-[#001529]">Gratuito</h3>
+                  <p className="text-sm text-[rgba(0,21,41,0.6)]">Começar sem limite</p>
+                </div>
+              </div>
+
+              <div className="mb-10">
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-6xl font-bold text-[#001529]">R$ 0</span>
+                  <span className="text-[rgba(0,21,41,0.65)]">/mês</span>
+                </div>
+                <p className="text-sm text-[rgba(0,21,41,0.6)]">Para sempre grátis</p>
+              </div>
+
+              <Button
+                onClick={() => handleSelectPlan("free")}
+                disabled={user?.plan === "free"}
+                className={`w-full h-12 rounded-lg font-semibold transition-all ${
+                  user?.plan === "free"
+                    ? "bg-[#F8F9FA] text-[rgba(0,21,41,0.5)] cursor-default"
+                    : "bg-white text-[#28A263] hover:bg-[#F8F9FA] border border-[#28A263]/20 shadow-sm"
+                }`}
+              >
+                {user?.plan === "free" ? "Seu plano atual" : "Começar grátis"}
+              </Button>
+            </div>
+
+            <div className="space-y-4 border-t border-[rgba(0,0,0,0.08)] pt-10">
+              <p className="font-bold text-[#001529]">O que está incluso:</p>
+              <ul className="space-y-3">
+                {FREE_FEATURES.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[rgba(0,21,41,0.65)]">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* PRO Plan - Featured */}
+          <div className="group relative p-10 bg-gradient-to-br from-[#28A263]/8 to-white border-2 border-[#28A263]/30 rounded-3xl hover:border-[#28A263]/50 hover:shadow-xl transition-all duration-300 shadow-lg md:ring-2 md:ring-[#28A263]/20">
+            {/* Badge */}
+            <div className="absolute -top-4 right-8 bg-[#28A263] text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+              Mais Popular
+            </div>
+
+            <div className="mb-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-[#28A263]/15 rounded-2xl flex items-center justify-center">
+                  <Crown className="w-7 h-7 text-[#28A263]" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-[#001529]">PRO</h3>
+                  <p className="text-sm text-[#28A263] font-semibold">Acesso completo</p>
                 </div>
               </div>
 
               <div className="mb-8">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-white">R$ 0</span>
-                  <span className="text-[#A1A1A1]">/mês</span>
-                </div>
-                <p className="text-sm text-[#686F6F] mt-2">Para sempre grátis</p>
-              </div>
-
-              <Button
-                size="lg"
-                onClick={() => handleSelectPlan("free")}
-                disabled={user?.plan === "free"}
-                className={`w-full rounded-xl h-12 font-medium transition-all ${
-                  user?.plan === "free"
-                    ? "bg-white/10 text-[#A1A1A1] cursor-default"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
-                {user?.plan === "free" ? "Plano Atual" : "Começar Grátis"}
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              <p className="font-bold text-white text-sm">O que está incluso:</p>
-              <ul className="space-y-3">
-                {FREE_FEATURES.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[#A1A1A1]">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* PRO Plan */}
-          <div className="p-8 bg-gradient-to-br from-[#28A263]/20 to-[#2DDB81]/10 rounded-3xl border-2 border-[#28A263]/30 relative overflow-hidden hover:border-[#28A263]/50 transition-all shadow-xl">
-            {/* Popular badge */}
-            <div className="absolute top-0 right-0 bg-[#28A263] text-black text-xs font-bold px-4 py-1.5 rounded-bl-2xl">
-              MAIS POPULAR
-            </div>
-
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-[#28A263]/30 rounded-2xl flex items-center justify-center">
-                  <Crown className="w-6 h-6 text-[#2DDB81]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">PRO</h3>
-                  <p className="text-sm text-[#2DDB81]">Acesso completo</p>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-5xl font-bold text-[#2DDB81]">
+                <div className="flex items-baseline gap-2 mb-3">
+                  <span className="text-6xl font-bold text-[#28A263]">
                     R$ {displayPrice.toFixed(2)}
                   </span>
-                  <span className="text-[#A1A1A1]">/mês</span>
+                  <span className="text-[rgba(0,21,41,0.65)]">/mês</span>
                 </div>
 
                 {billingCycle === "monthly" ? (
-                  <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-xl px-3 py-2 inline-block mb-3">
-                    <p className="text-sm font-bold text-yellow-300">
-                      🔥 Apenas 1º mês R$ {priceFirstMonth.toFixed(2)}
-                    </p>
+                  <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mb-4">
+                    <span className="text-sm font-bold text-amber-800">
+                      🔥 1º mês: R$ {priceFirstMonth.toFixed(2)}
+                    </span>
                   </div>
                 ) : (
-                  <div className="bg-[#28A263]/20 border border-[#28A263]/30 rounded-xl px-3 py-2 inline-block mb-3">
-                    <p className="text-sm font-bold text-[#2DDB81]">
-                      💰 Economize R$ {savings.toFixed(0)}/ano
-                    </p>
+                  <div className="inline-flex items-center gap-2 bg-[#28A263]/10 border border-[#28A263]/20 rounded-lg px-4 py-2 mb-4">
+                    <span className="text-sm font-bold text-[#28A263]">
+                      Economize R$ {savings}/ano
+                    </span>
                   </div>
                 )}
 
-                <p className="text-sm text-[#2DDB81] font-medium">
-                  ✓ Cancele quando quiser
-                </p>
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#28A263]">
+                  <Check className="w-4 h-4" />
+                  Cancele quando quiser
+                </div>
               </div>
 
               <Button
-                size="lg"
                 onClick={() => handleSelectPlan("pro")}
                 disabled={user?.plan === "pro"}
-                className={`w-full rounded-xl h-12 font-medium transition-all ${
+                className={`w-full h-12 rounded-lg font-semibold transition-all shadow-md ${
                   user?.plan === "pro"
-                    ? "bg-white/10 text-[#A1A1A1] cursor-default"
-                    : "bg-[#28A263] hover:bg-[#2DDB81] text-black"
+                    ? "bg-[#F8F9FA] text-[rgba(0,21,41,0.5)] cursor-default"
+                    : "bg-[#28A263] hover:bg-[#1F8C50] text-white hover:shadow-lg"
                 }`}
               >
                 {user?.plan === "pro" ? (
                   <>
-                    <Crown className="w-4 h-4 mr-2" />
-                    Plano Atual
+                    <Crown className="w-4 h-4 mr-2 inline" />
+                    Seu plano atual
                   </>
                 ) : (
                   <>
                     Assinar Plano PRO
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <ArrowRight className="ml-2 w-4 h-4 inline" />
                   </>
                 )}
               </Button>
             </div>
 
-            <div className="space-y-4">
-              <p className="font-bold text-white text-sm">Tudo do Gratuito, mais:</p>
+            <div className="space-y-4 border-t border-[#28A263]/15 pt-10">
+              <p className="font-bold text-[#001529]">Tudo do plano Gratuito, mais:</p>
               <ul className="space-y-3">
                 {PRO_FEATURES.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[#A1A1A1]">{feature}</span>
+                    <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[rgba(0,21,41,0.65)]">{feature}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Footer */}
-            <div className="mt-8 pt-6 border-t border-white/10">
-              <p className="text-xs text-[#686F6F] text-center">
-                🔒 Pagamento 100% seguro processado pela <strong>Asaas</strong>
-              </p>
+            {/* Security Badge */}
+            <div className="mt-10 pt-8 border-t border-[#28A263]/15 flex items-center justify-center gap-2 text-xs text-[rgba(0,21,41,0.6)]">
+              <Shield className="w-4 h-4 text-[#28A263]" />
+              Pagamento 100% seguro via <strong>Asaas</strong>
             </div>
           </div>
         </div>
 
-        {/* FAQ / CTA Section */}
-        <div className="mt-20 max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Perguntas frequentes</h2>
-          <div className="grid gap-6">
+        {/* FAQ Section */}
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#001529] mb-2">Perguntas frequentes</h2>
+            <p className="text-[rgba(0,21,41,0.65)]">Encontre respostas para as dúvidas mais comuns</p>
+          </div>
+
+          <div className="grid gap-4">
             {[
               {
                 q: "Posso cancelar a qualquer momento?",
-                a: "Sim! Você pode cancelar sua assinatura a qualquer momento sem taxas ou penalidades.",
+                a: "Sim! Cancele sua assinatura a qualquer momento sem taxas, multas ou compromissos adicionais. Você mantém o acesso até o fim do período pago.",
               },
               {
                 q: "Qual é a diferença entre os planos?",
-                a: "O plano gratuito inclui 30 lançamentos mensais e 2 propostas/dia. PRO oferece lançamentos ilimitados, acesso aos simuladores avançados e propostas ilimitadas.",
+                a: "O plano Gratuito inclui 30 lançamentos/mês e 2 propostas/dia. PRO oferece lançamentos ilimitados, propostas ilimitadas e acesso aos simuladores avançados (Preço Ideal, Lucro, etc).",
               },
               {
                 q: "Como faço para fazer upgrade?",
-                a: "Clique em 'Assinar Plano PRO', preencha seus dados e escolha o método de pagamento (PIX, boleto ou cartão).",
+                a: "Clique em 'Assinar Plano PRO', preencha seus dados pessoais e escolha o método de pagamento (PIX, boleto ou cartão de crédito). O acesso é imediato.",
               },
             ].map((item, idx) => (
-              <div key={idx} className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5 text-left">
-                <p className="font-bold text-white mb-2">{item.q}</p>
-                <p className="text-[#A1A1A1] text-sm">{item.a}</p>
+              <div key={idx} className="p-6 bg-[#F8F9FA] border border-[rgba(0,0,0,0.08)] rounded-xl hover:border-[rgba(0,0,0,0.12)] hover:shadow-sm transition-all">
+                <p className="font-semibold text-[#001529] mb-3">{item.q}</p>
+                <p className="text-[rgba(0,21,41,0.65)] leading-relaxed">{item.a}</p>
               </div>
             ))}
+          </div>
+
+          {/* CTA Section */}
+          <div className="mt-16 p-10 bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-2xl text-center">
+            <h3 className="text-2xl font-bold text-[#001529] mb-3">Pronto para começar?</h3>
+            <p className="text-[rgba(0,21,41,0.65)] mb-8 max-w-2xl mx-auto">
+              Crie sua conta gratuitamente e acesse todas as ferramentas. Faça upgrade para PRO quando estiver pronto para usar recursos avançados.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {isAuthenticated ? (
+                <>
+                  <Button
+                    onClick={() => navigate("/app")}
+                    className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-lg font-semibold h-12 transition-all shadow-md hover:shadow-lg"
+                  >
+                    Ir para o Dashboard
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/pricing")}
+                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-lg font-semibold h-12 transition-all"
+                  >
+                    Comparar Planos
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => navigate("/signup")}
+                    className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-lg font-semibold h-12 transition-all shadow-md hover:shadow-lg"
+                  >
+                    Começar Grátis
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/login")}
+                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-lg font-semibold h-12 transition-all"
+                  >
+                    Fazer Login
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
