@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, CheckCircle, Clock, AlertCircle, Crown } from "lucide-react";
+import { Plus, Trash2, CheckCircle, Clock, AlertCircle, Crown, Zap } from "lucide-react";
 import { useReceivables, CATEGORIAS_RECEIVABLES, Receivable } from "../contexts/ReceivablesContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -128,183 +128,198 @@ export function ContasAReceber() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[#001529]">Contas a Receber</h1>
-          <p className="text-[rgba(0,21,41,0.6)] text-sm mt-1">Controle seus recebimentos e vencimentos</p>
+      <div>
+        <h1 className="text-3xl font-bold text-[#001529] mb-1">Contas a Receber</h1>
+        <p className="text-[rgba(0,21,41,0.6)]">Controle seus recebimentos e vencimentos</p>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
+            <Clock className="w-5 h-5 text-[#0066FF]" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Pendente</p>
+          <p className="text-2xl font-bold text-[#0066FF]">{fmt(totalPendente)}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
+            {receivables.filter((r) => r.status === "pendente").length} contas
+          </p>
+        </div>
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
+            <CheckCircle className="w-5 h-5 text-[#28A263]" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Recebido</p>
+          <p className="text-2xl font-bold text-[#28A263]">{fmt(totalRecebido)}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
+            {receivables.filter((r) => r.status === "recebido").length} contas
+          </p>
+        </div>
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+            <AlertCircle className="w-5 h-5 text-yellow-600" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Vencem em 7 dias</p>
+          <p className="text-2xl font-bold text-yellow-600">{proximasAReceber.length}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
+            {fmt(proximasAReceber.reduce((s, r) => s + r.valor, 0))}
+          </p>
+        </div>
+      </div>
+
+      {/* Alerts */}
+      {proximasAReceber.length > 0 && (
+        <div className="p-6 bg-yellow-50 rounded-2xl border border-yellow-200">
+          <div className="flex items-start gap-3 mb-4">
+            <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-bold text-yellow-900">{proximasAReceber.length} conta(s) vencem nos próximos 7 dias</h3>
+              <div className="space-y-1.5 mt-3">
+                {proximasAReceber.map((r) => (
+                  <p key={r.id} className="text-sm text-yellow-700">
+                    {r.descricao} — {fmt(r.valor)} — Vence {format(new Date(r.dataVencimento + "T00:00:00"), "dd/MM", { locale: ptBR })}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Filters and Actions */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex gap-2">
+          {(["todas", "pendente", "recebido"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFiltro(f)}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                filtro === f
+                  ? "bg-[#28A263] text-white"
+                  : "bg-[#F8F9FA] text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] border border-[rgba(0,0,0,0.1)]"
+              }`}
+            >
+              {f === "todas" ? "Todas" : f === "pendente" ? "Pendentes" : "Recebidas"}
+            </button>
+          ))}
         </div>
         <button
           onClick={() => {
             if (!canAddReceivable()) { toast.error("Limite atingido — faça upgrade para PRO"); return; }
             setDialogOpen(true);
           }}
-          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Nova Conta
         </button>
       </div>
 
-      {/* Cards resumo */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Total Pendente</p>
-          <p className="text-[#0066FF] text-xl font-bold mt-1">{fmt(totalPendente)}</p>
-          <p className="text-[rgba(0,21,41,0.6)] text-xs mt-1">
-            {receivables.filter((r) => r.status === "pendente").length} contas
-          </p>
+      {/* Receivables List */}
+      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[rgba(0,0,0,0.05)]">
+          <h3 className="font-bold text-lg text-[#001529]">Contas a Receber</h3>
         </div>
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Total Recebido</p>
-          <p className="text-[#28A263] text-xl font-bold mt-1">{fmt(totalRecebido)}</p>
-          <p className="text-[rgba(0,21,41,0.6)] text-xs mt-1">
-            {receivables.filter((r) => r.status === "recebido").length} contas
-          </p>
-        </div>
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Vencem em 7 dias</p>
-          <p className="text-yellow-600 text-xl font-bold mt-1">{proximasAReceber.length}</p>
-          <p className="text-[rgba(0,21,41,0.6)] text-xs mt-1">
-            {fmt(proximasAReceber.reduce((s, r) => s + r.valor, 0))}
-          </p>
-        </div>
-      </div>
 
-      {/* Alertas */}
-      {proximasAReceber.length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-300 rounded-2xl p-4 mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertCircle className="w-4 h-4 text-yellow-600" />
-            <span className="text-yellow-700 font-semibold text-sm">
-              {proximasAReceber.length} conta(s) vencem nos próximos 7 dias
-            </span>
-          </div>
-          {proximasAReceber.map((r) => (
-            <p key={r.id} className="text-[rgba(0,21,41,0.6)] text-xs ml-6">
-              • {r.descricao} — {fmt(r.valor)} —{" "}
-              <span className="text-yellow-700">
-                {format(new Date(r.dataVencimento + "T00:00:00"), "dd/MM", { locale: ptBR })}
-              </span>
+        {loading ? (
+          <div className="text-center py-12 text-[rgba(0,21,41,0.6)]">Carregando...</div>
+        ) : receivablesFiltradas.length === 0 ? (
+          <div className="text-center py-12 px-6">
+            <Clock className="w-10 h-10 text-[rgba(0,21,41,0.3)] mx-auto mb-3" />
+            <p className="text-[rgba(0,21,41,0.6)]">
+              {filtro === "todas" ? "Nenhuma conta cadastrada ainda." : `Nenhuma conta ${filtro === "pendente" ? "pendente" : "recebida"}.`}
             </p>
-          ))}
-        </div>
-      )}
-
-      {/* Filtros */}
-      <div className="flex gap-2 mb-4">
-        {(["todas", "pendente", "recebido"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFiltro(f)}
-            className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-colors ${
-              filtro === f
-                ? "bg-[#28A263] text-white"
-                : "bg-[#F8F9FA] text-[rgba(0,21,41,0.6)] hover:text-[#001529] border border-[rgba(0,0,0,0.1)]"
-            }`}
-          >
-            {f === "todas" ? "Todas" : f === "pendente" ? "Pendentes" : "Recebidas"}
-          </button>
-        ))}
-      </div>
-
-      {/* Lista */}
-      {loading ? (
-        <div className="text-center py-12 text-[rgba(0,21,41,0.6)]">Carregando...</div>
-      ) : receivablesFiltradas.length === 0 ? (
-        <div className="text-center py-12 bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-2xl">
-          <p className="text-[rgba(0,21,41,0.6)]">
-            {filtro === "todas" ? "Nenhuma conta cadastrada ainda." : `Nenhuma conta ${filtro === "pendente" ? "pendente" : "recebida"}.`}
-          </p>
-          {filtro === "todas" && (
-            <button onClick={() => setDialogOpen(true)} className="mt-3 text-[#28A263] text-sm hover:underline">
-              Adicionar primeira conta
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {receivablesFiltradas.map((receivable) => {
-            const venc = getVencimentoLabel(receivable.dataVencimento);
-            return (
-              <div
-                key={receivable.id}
-                className={`bg-white border rounded-2xl p-4 flex items-center justify-between gap-4 ${
-                  receivable.status === "recebido" ? "border-[rgba(0,0,0,0.1)] opacity-60" : "border-[rgba(0,0,0,0.1)]"
-                }`}
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    receivable.status === "recebido" ? "bg-[#28A263]/10" : "bg-blue-100"
-                  }`}>
-                    {receivable.status === "recebido"
-                      ? <CheckCircle className="w-4 h-4 text-[#28A263]" />
-                      : <Clock className="w-4 h-4 text-[#0066FF]" />
-                    }
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[#001529] font-medium truncate">{receivable.descricao}</p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[rgba(0,21,41,0.6)] text-xs">{receivable.categoria}</span>
-                      <span className="text-[rgba(0,21,41,0.6)] text-xs">•</span>
-                      <span className={`text-xs ${venc.color}`}>{venc.label}</span>
-                      {receivable.ehRecorrente && (
-                        <>
-                          <span className="text-[rgba(0,21,41,0.6)] text-xs">•</span>
-                          <span className="text-blue-600 text-xs">🔄 {receivable.frequenciaRecorrencia}</span>
-                        </>
-                      )}
+            {filtro === "todas" && (
+              <button onClick={() => setDialogOpen(true)} className="mt-3 text-[#28A263] text-sm font-medium hover:underline">
+                Adicionar primeira conta
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
+            {receivablesFiltradas.map((receivable) => {
+              const venc = getVencimentoLabel(receivable.dataVencimento);
+              return (
+                <div
+                  key={receivable.id}
+                  className={`px-6 py-4 flex items-center justify-between gap-4 hover:bg-[#F8F9FA]/50 transition-colors ${
+                    receivable.status === "recebido" ? "opacity-60" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      receivable.status === "recebido" ? "bg-[#28A263]/20" : "bg-[#0066FF]/20"
+                    }`}>
+                      {receivable.status === "recebido"
+                        ? <CheckCircle className="w-5 h-5 text-[#28A263]" />
+                        : <Clock className="w-5 h-5 text-[#0066FF]" />
+                      }
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[#001529] font-medium">{receivable.descricao}</p>
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-[rgba(0,21,41,0.5)] mt-1">
+                        <span>{receivable.categoria}</span>
+                        <span>•</span>
+                        <span className={venc.color}>{venc.label}</span>
+                        {receivable.ehRecorrente && (
+                          <>
+                            <span>•</span>
+                            <span>🔄 {receivable.frequenciaRecorrencia}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className={`font-bold ${receivable.status === "recebido" ? "text-[#28A263]" : "text-[#0066FF]"}`}>
-                    {fmt(receivable.valor)}
-                  </span>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className={`font-bold text-lg ${receivable.status === "recebido" ? "text-[#28A263]" : "text-[#0066FF]"}`}>
+                      {fmt(receivable.valor)}
+                    </span>
 
-                  {receivable.status === "pendente" ? (
-                    <button
-                      onClick={() => handleMarcarRecebido(receivable)}
-                      className="text-xs bg-[#28A263]/10 hover:bg-[#28A263]/20 text-[#28A263] px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      Receber ✓
+                    {receivable.status === "pendente" ? (
+                      <button
+                        onClick={() => handleMarcarRecebido(receivable)}
+                        className="text-xs bg-[#28A263] hover:bg-[#1f7d4a] text-white px-3 py-1.5 rounded-lg font-medium transition-colors"
+                      >
+                        Marcar Recebido
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleMarcarPendente(receivable)}
+                        className="text-xs bg-[#F8F9FA] hover:bg-[#F5F7FA] text-[rgba(0,21,41,0.6)] px-3 py-1.5 rounded-lg font-medium transition-colors border border-[rgba(0,0,0,0.1)]"
+                      >
+                        Desfazer
+                      </button>
+                    )}
+
+                    <button onClick={() => handleDelete(receivable.id)} className="text-[rgba(0,21,41,0.5)] hover:text-[#FF4F3D] transition-colors p-1">
+                      <Trash2 className="w-4 h-4" />
                     </button>
-                  ) : (
-                    <button
-                      onClick={() => handleMarcarPendente(receivable)}
-                      className="text-xs bg-[#F8F9FA] hover:bg-[#F5F7FA] text-[rgba(0,21,41,0.6)] px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      Desfazer
-                    </button>
-                  )}
-
-                  <button onClick={() => handleDelete(receivable.id)} className="text-[rgba(0,21,41,0.6)] hover:text-red-500 transition-colors">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
 
-      {/* Limite FREE */}
+      {/* Free Plan Limit */}
       {limitStatus.limit !== Infinity && (
-        <div className={`mt-6 rounded-2xl p-4 border ${
+        <div className={`p-6 rounded-2xl border ${
           limitStatus.percentage >= 100
-            ? "bg-red-50 border-red-300"
+            ? "bg-red-50 border-red-200"
             : limitStatus.percentage >= 80
-            ? "bg-yellow-50 border-yellow-300"
+            ? "bg-yellow-50 border-yellow-200"
             : "bg-[#F8F9FA] border-[rgba(0,0,0,0.1)]"
         }`}>
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <span className="text-sm text-[#001529] font-medium">Recebimentos este mês</span>
-              <span className="text-xs text-[rgba(0,21,41,0.6)] ml-2">(reseta todo dia 1)</span>
+              <h3 className="font-bold text-[#001529]">Recebimentos este mês</h3>
+              <p className="text-xs text-[rgba(0,21,41,0.5)] mt-0.5">Reseta todo dia 1</p>
             </div>
-            <span className={`text-sm font-bold ${
+            <span className={`text-lg font-bold ${
               limitStatus.percentage >= 100 ? "text-red-500" :
               limitStatus.percentage >= 80 ? "text-yellow-600" : "text-[#001529]"
             }`}>
@@ -322,16 +337,16 @@ export function ContasAReceber() {
           </div>
           {limitStatus.percentage >= 80 && (
             <div className="flex items-center justify-between">
-              <p className="text-xs text-[rgba(0,21,41,0.6)]">
+              <p className="text-sm text-[rgba(0,21,41,0.6)]">
                 {limitStatus.percentage >= 100
                   ? "Limite atingido! Faça upgrade para continuar."
-                  : `Restam apenas ${limitStatus.limit - limitStatus.used} lançamentos.`}
+                  : `Restam ${limitStatus.limit - limitStatus.used} contas este mês.`}
               </p>
               <button
                 onClick={() => navigate("/checkout")}
-                className="flex items-center gap-1 text-xs bg-[#28A263] hover:bg-[#1f7a4a] text-white font-bold px-3 py-1.5 rounded-lg transition-colors"
+                className="flex items-center gap-2 text-sm bg-[#28A263] hover:bg-[#1f7d4a] text-white font-bold px-4 py-2 rounded-lg transition-colors"
               >
-                <Crown className="w-3 h-3" />
+                <Crown className="w-4 h-4" />
                 Upgrade PRO
               </button>
             </div>
@@ -342,9 +357,11 @@ export function ContasAReceber() {
       {/* Modal */}
       {dialogOpen && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg">
+            <div className="p-6 border-b border-[rgba(0,0,0,0.05)]">
+              <h2 className="text-[#001529] font-bold text-xl">Nova Conta a Receber</h2>
+            </div>
             <div className="p-6">
-              <h2 className="text-[#001529] font-bold text-lg mb-4">Nova Conta a Receber</h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="text-[rgba(0,21,41,0.6)] text-sm mb-1 block">Descrição *</label>

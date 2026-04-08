@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, AlertTriangle, X, PieChart, Crown, Lock } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, X, PieChart, Crown, Lock, TrendingUp } from "lucide-react";
 import { useBudgets } from "../contexts/BudgetsContext";
 import { CATEGORIAS_PAYABLES } from "../contexts/PayablesContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -118,28 +118,29 @@ export function Orcamentos() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#001529]">Orçamentos</h1>
-          <p className="text-[rgba(0,21,41,0.6)] text-sm mt-1">Planeje seus gastos por categoria</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-1">Orçamentos</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Planeje seus gastos por categoria</p>
         </div>
         <button
           onClick={() => { resetForm(); setModalOpen(true); }}
-          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Novo Orçamento
         </button>
       </div>
 
-      {/* Seletor de mês */}
-      <div className="mb-6">
+      {/* Month Selector */}
+      <div>
+        <label className="text-sm font-medium text-[rgba(0,21,41,0.6)] mb-2 block">Mês</label>
         <select
           value={mesSelecionado}
           onChange={(e) => setMesSelecionado(e.target.value)}
-          className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-2.5 text-[#001529] focus:outline-none focus:border-[#28A263]/50"
+          className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-2.5 text-[#001529] focus:outline-none focus:border-[#28A263]/50 max-w-xs"
         >
           {opcoesMeses.map((m) => (
             <option key={m} value={m}>{formatMes(m)}</option>
@@ -147,89 +148,105 @@ export function Orcamentos() {
         </select>
       </div>
 
-      {/* Cards totais */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Total Orçado</p>
-          <p className="text-[#001529] text-xl font-bold mt-1">{fmt(totais.planejado)}</p>
+      {/* Summary Cards */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
+            <PieChart className="w-5 h-5 text-[#0066FF]" />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Orçado</p>
+          <p className="text-2xl font-bold text-[#001529]">{fmt(totais.planejado)}</p>
         </div>
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Total Gasto</p>
-          <p className={`text-xl font-bold mt-1 ${totais.realizado > totais.planejado ? "text-red-500" : "text-[#28A263]"}`}>
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${totais.realizado > totais.planejado ? "bg-[#FF4F3D]/20" : "bg-[#28A263]/20"}`}>
+            <AlertTriangle className={`w-5 h-5 ${totais.realizado > totais.planejado ? "text-[#FF4F3D]" : "text-[#28A263]"}`} />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Gasto</p>
+          <p className={`text-2xl font-bold ${totais.realizado > totais.planejado ? "text-[#FF4F3D]" : "text-[#28A263]"}`}>
             {fmt(totais.realizado)}
           </p>
         </div>
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Saldo Restante</p>
-          <p className={`text-xl font-bold mt-1 ${totais.restante < 0 ? "text-red-500" : "text-[#28A263]"}`}>
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${totais.restante < 0 ? "bg-red-500/20" : "bg-[#28A263]/20"}`}>
+            <TrendingUp className={`w-5 h-5 ${totais.restante < 0 ? "text-red-500" : "text-[#28A263]"}`} />
+          </div>
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Saldo Restante</p>
+          <p className={`text-2xl font-bold ${totais.restante < 0 ? "text-red-500" : "text-[#28A263]"}`}>
             {fmt(totais.restante)}
           </p>
         </div>
       </div>
 
-      {/* Alertas */}
+      {/* Alerts */}
       {alertas.length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-300 rounded-2xl p-4 mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-4 h-4 text-yellow-600" />
-            <span className="text-yellow-700 font-semibold text-sm">
-              {alertas.length} categoria(s) com alerta
-            </span>
+        <div className="p-6 bg-yellow-50 rounded-2xl border border-yellow-200">
+          <div className="flex items-start gap-3 mb-4">
+            <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-bold text-yellow-900">{alertas.length} categoria(s) com alerta</h3>
+              <div className="space-y-1.5 mt-3">
+                {alertas.map((a) => (
+                  <p key={a.id} className="text-sm text-yellow-700">
+                    {a.categoria} — {a.percentual.toFixed(0)}% do orçado
+                    {a.status === "excedido" && <span className="text-red-600 font-medium"> (excedido!)</span>}
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
-          {alertas.map((a) => (
-            <p key={a.id} className="text-[rgba(0,21,41,0.6)] text-xs ml-6">
-              • {a.categoria} — {a.percentual.toFixed(0)}% do orçado{" "}
-              {a.status === "excedido" && <span className="text-red-600">(excedido!)</span>}
-            </p>
-          ))}
         </div>
       )}
 
-      {/* Lista */}
-      {loading ? (
-        <div className="text-center py-12 text-[rgba(0,21,41,0.6)]">Carregando...</div>
-      ) : items.length === 0 ? (
-        <div className="text-center py-12 bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-2xl">
-          <PieChart className="w-10 h-10 text-[rgba(0,21,41,0.6)] mx-auto mb-3" />
-          <p className="text-[rgba(0,21,41,0.6)]">Nenhum orçamento para {formatMes(mesSelecionado)}.</p>
-          <button onClick={() => { resetForm(); setModalOpen(true); }} className="mt-3 text-[#28A263] text-sm hover:underline">
-            Criar primeiro orçamento
-          </button>
+      {/* Budgets List */}
+      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[rgba(0,0,0,0.05)]">
+          <h3 className="font-bold text-lg text-[#001529]">Orçamentos — {formatMes(mesSelecionado)}</h3>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {items.map((item) => (
-            <div key={item.id} className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <p className="text-[#001529] font-medium">{item.categoria}</p>
-                  {statusBadge(item.status)}
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className={`text-sm font-bold ${statusColor(item.status)}`}>
-                      {fmt(item.valorRealizado)} / {fmt(item.valorPlanejado)}
-                    </p>
-                    <p className="text-[rgba(0,21,41,0.6)] text-xs">{item.percentual.toFixed(0)}% utilizado</p>
+
+        {loading ? (
+          <div className="text-center py-12 text-[rgba(0,21,41,0.6)]">Carregando...</div>
+        ) : items.length === 0 ? (
+          <div className="text-center py-12 px-6">
+            <PieChart className="w-10 h-10 text-[rgba(0,21,41,0.3)] mx-auto mb-3" />
+            <p className="text-[rgba(0,21,41,0.6)]">Nenhum orçamento para {formatMes(mesSelecionado)}.</p>
+            <button onClick={() => { resetForm(); setModalOpen(true); }} className="mt-3 text-[#28A263] text-sm font-medium hover:underline">
+              Criar primeiro orçamento
+            </button>
+          </div>
+        ) : (
+          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
+            {items.map((item) => (
+              <div key={item.id} className="px-6 py-4 hover:bg-[#F8F9FA]/50 transition-colors">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <p className="text-[#001529] font-medium">{item.categoria}</p>
+                    {statusBadge(item.status)}
                   </div>
-                  <button onClick={() => handleDelete(item.id)} className="text-[rgba(0,21,41,0.6)] hover:text-red-500 transition-colors">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <p className={`text-sm font-bold ${statusColor(item.status)}`}>
+                        {fmt(item.valorRealizado)} / {fmt(item.valorPlanejado)}
+                      </p>
+                      <p className="text-[rgba(0,21,41,0.6)] text-xs">{item.percentual.toFixed(0)}% utilizado</p>
+                    </div>
+                    <button onClick={() => handleDelete(item.id)} className="text-[rgba(0,21,41,0.5)] hover:text-[#FF4F3D] transition-colors p-1">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="w-full bg-[#E8E8E8] rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      item.status === "excedido" ? "bg-red-500" : item.status === "alerta" ? "bg-yellow-500" : "bg-[#28A263]"
+                    }`}
+                    style={{ width: `${Math.min(item.percentual, 100)}%` }}
+                  />
                 </div>
               </div>
-              {/* Barra de progresso */}
-              <div className="w-full bg-[#E8E8E8] rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    item.status === "excedido" ? "bg-red-500" : item.status === "alerta" ? "bg-yellow-500" : "bg-[#28A263]"
-                  }`}
-                  style={{ width: `${Math.min(item.percentual, 100)}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Modal */}
       {modalOpen && (

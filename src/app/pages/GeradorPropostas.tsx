@@ -413,12 +413,12 @@ export function GeradorPropostas() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Propostas</h1>
-            <p className="text-muted-foreground mt-1">Gerencie seus contratos e orçamentos com precisão editorial</p>
+            <h1 className="text-3xl font-bold text-[#001529] mb-1">Propostas</h1>
+            <p className="text-[rgba(0,21,41,0.6)]">Gerencie seus contratos e orçamentos com precisão</p>
           </div>
           <Button
             size="lg"
-            className="bg-[#28A263] hover:bg-primary text-foreground rounded-xl"
+            className="bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
             onClick={() => { resetForm(); setViewMode("create"); }}
           >
             <Plus className="w-5 h-5 mr-2" />

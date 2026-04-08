@@ -128,27 +128,27 @@ export function Metas() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#001529]">Metas de Receita</h1>
-          <p className="text-[rgba(0,21,41,0.6)] text-sm mt-1">Defina e acompanhe suas metas mensais</p>
+          <h1 className="text-3xl font-bold text-[#001529] mb-1">Metas de Receita</h1>
+          <p className="text-[rgba(0,21,41,0.6)]">Defina e acompanhe suas metas mensais</p>
         </div>
         <button
           onClick={() => { resetForm(); setModalOpen(true); }}
-          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Nova Meta
         </button>
       </div>
 
-      {/* Card principal — mês atual */}
+      {/* Current Month Card */}
       {loading ? (
         <div className="text-center py-12 text-[rgba(0,21,41,0.6)]">Carregando...</div>
       ) : metaMesAtual ? (
-        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl p-6 mb-6">
+        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
           <div className="flex items-start justify-between mb-4">
             <div>
               <p className="text-[rgba(0,21,41,0.6)] text-sm">{formatMes(mesAtual())}</p>

@@ -113,14 +113,12 @@ export function DASMei() {
   const atividadeInfo = ATIVIDADES.find((a) => a.id === atividade)!;
 
   return (
-    <div className="min-h-screen bg-white px-4 md:px-8 py-8">
-      <div className="max-w-3xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-1">DAS-MEI</h1>
-          <p className="text-[rgba(0,21,41,0.6)]">Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional</p>
-        </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-[#001529] mb-1">DAS-MEI</h1>
+        <p className="text-[rgba(0,21,41,0.6)]">Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional</p>
+      </div>
 
         {/* Atividade selector */}
         <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-5">
