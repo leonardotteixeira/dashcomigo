@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Plus, Trash2, CheckCircle, Clock, AlertCircle, ChevronDown, ChevronUp, Crown, Zap } from "lucide-react";
+import { Plus, Trash2, CheckCircle, Clock, AlertCircle, ChevronDown, ChevronUp, Crown, Zap, Receipt } from "lucide-react";
 import { usePayables, CATEGORIAS_PAYABLES, Payable } from "../contexts/PayablesContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { format, isPast, isToday, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { PageHeader } from "../components/PageHeader";
+import { KPICard } from "../components/KPICard";
+import { KPISection } from "../components/KPISection";
+import { DataTable } from "../components/DataTable";
 
 export function ContasAPagar() {
   const {
@@ -146,12 +150,34 @@ export function ContasAPagar() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="font-bold text-[#001529] mb-1">Contas a Pagar</h1>
-        <p className="text-[#001529]/60">Controle suas despesas e vencimentos</p>
-      </div>
+      <PageHeader
+        title="Contas a Pagar"
+        description="Controle suas despesas e vencimentos com precisão"
+      />
+
+      {/* KPI Cards */}
+      <KPISection columns={3}>
+        <KPICard
+          icon={Receipt}
+          label="Total Pendente"
+          value={fmt(totalPendente)}
+          color="blue"
+        />
+        <KPICard
+          icon={CheckCircle}
+          label="Total Pago"
+          value={fmt(totalPago)}
+          color="green"
+        />
+        <KPICard
+          icon={AlertCircle}
+          label="Vencendo em 7 dias"
+          value={proximasAVencer.length}
+          color="orange"
+        />
+      </KPISection>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

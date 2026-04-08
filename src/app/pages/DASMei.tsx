@@ -5,7 +5,7 @@ import { useCashFlow } from "../contexts/CashFlowContext";
 import { pb } from "../../lib/pocketbase";
 import { toast } from "sonner";
 
-// ─── DAS-MEI 2026 values (salário mínimo R$1.518,00) ────────────────────────
+// DAS-MEI 2026 values (salário mínimo R$1.518,00)
 const SALARIO_MINIMO = 1518.0;
 const INSS = parseFloat((SALARIO_MINIMO * 0.05).toFixed(2)); // 5% = R$75,90
 
@@ -25,7 +25,7 @@ function getValorDAS(atividadeId: AtividadeId): number {
   return parseFloat((INSS + a.icms + a.iss).toFixed(2));
 }
 
-// ─── Month helpers ───────────────────────────────────────────────────────────
+// Month helpers
 function getMesKey(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
@@ -49,7 +49,7 @@ function getLast12Months(): Date[] {
   return months;
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// Component
 export function DASMei() {
   const { user } = useAuth();
   const { transactions, addTransaction } = useCashFlow();

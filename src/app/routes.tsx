@@ -34,6 +34,11 @@ import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
 import { PasswordResetRedirect } from "./pages/PasswordResetRedirect";
 import { GuiaInvestimentos } from "./pages/GuiaInvestimentos";
+import { Suppliers } from "./pages/Suppliers";
+import { Reports } from "./pages/Reports";
+import { Budgets } from "./pages/Budgets";
+import { Customers } from "./pages/Customers";
+import { Simulators } from "./pages/Simulators";
 
 export const router = createHashRouter([
   {
@@ -175,6 +180,14 @@ export const router = createHashRouter([
       {
         path: "investimentos",
         Component: GuiaInvestimentos,
+      },
+      {
+        path: "fornecedores",
+        Component: Suppliers,
+      },
+      {
+        path: "simuladores",
+        Component: Simulators,
       },
     ],
   },

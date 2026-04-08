@@ -1,33 +1,35 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { colors } from "../../utils/designTokens";
 
 export function Privacidade() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div style={{ backgroundColor: colors.bgLight }}>
       {/* Header */}
-      <header className="sticky top-0 bg-white border-b border-[rgba(0,0,0,0.1)] z-10">
+      <header style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }} className="sticky top-0 border-b z-10">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-[#28A263] hover:text-[#1f7a4a] transition-colors mb-4"
+            style={{ color: colors.primary }}
+            className="flex items-center hover:opacity-80 transition-all mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar
           </button>
-          <h1 className="text-4xl font-bold text-[#001529]">Política de Privacidade</h1>
-          <p className="text-[rgba(0,21,41,0.6)] mt-2">Última atualização: 26 de março de 2026</p>
+          <h1 className="text-4xl font-bold mb-2" style={{ color: colors.textPrimary }}>Política de Privacidade</h1>
+          <p style={{ color: colors.textSecondary }}>Última atualização: 26 de março de 2026</p>
         </div>
       </header>
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-6 py-12">
-        <div className="space-y-12 text-[rgba(0,21,41,0.6)]">
+        <div className="space-y-12" style={{ color: colors.textSecondary }}>
           {/* Introdução */}
           <section>
-            <h2 className="text-2xl font-bold text-[#001529] mb-4">Introdução</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: colors.textPrimary }}>Introdução</h2>
             <p className="mb-4">
               A privacidade e segurança de seus dados são prioridades máximas para o Meu Fluxo ("nós", "nosso" ou "Plataforma").
               Esta Política de Privacidade descreve como coletamos, usamos, protegemos e compartilhamos suas informações pessoais.
@@ -40,9 +42,9 @@ export function Privacidade() {
 
           {/* 1. Informações que Coletamos */}
           <section>
-            <h2 className="text-2xl font-bold text-[#001529] mb-4">1. Informações que Coletamos</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: colors.textPrimary }}>1. Informações que Coletamos</h2>
 
-            <h3 className="text-lg font-semibold text-[#001529] mt-6 mb-3">1.1 Informações Fornecidas Diretamente</h3>
+            <h3 className="text-lg font-semibold mt-6 mb-3" style={{ color: colors.textPrimary }}>1.1 Informações Fornecidas Diretamente</h3>
             <p className="mb-4">Quando você cria uma conta ou usa a Plataforma, podemos coletar:</p>
             <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
               <li>Nome completo e informações de contato (email, telefone)</li>
@@ -53,7 +55,7 @@ export function Privacidade() {
               <li>Documentos enviados (propostas, arquivos)</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-[#001529] mt-6 mb-3">1.2 Informações Coletadas Automaticamente</h3>
+            <h3 className="text-lg font-semibold mt-6 mb-3" style={{ color: colors.textPrimary }}>1.2 Informações Coletadas Automaticamente</h3>
             <p className="mb-4">Quando você acessa a Plataforma, podemos coletar automaticamente:</p>
             <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
               <li>Endereço de IP e tipo de navegador</li>

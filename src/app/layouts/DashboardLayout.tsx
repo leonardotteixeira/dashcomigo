@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate, Navigate, useLocation } from "react-router";
+import { Outlet, useNavigate, Navigate, useLocation } from "react-router";
 import {
   LayoutDashboard,
   ArrowRightLeft,
@@ -16,12 +16,12 @@ import {
   BarChart3,
   Package,
   Users,
-  PieChart,
   Target,
-  Truck,
   Calculator,
   Landmark,
   FileSpreadsheet,
+  Handshake,
+  Truck,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -29,6 +29,8 @@ import { useAuth } from "../contexts/AuthContext";
 import LimitedOfferBanner from "../components/LimitedOfferBanner";
 import NotificationCenter from "../components/NotificationCenter";
 import FreePlanUsage from "../components/FreePlanUsage";
+import { MenuSection } from "../components/MenuSection";
+import { MenuItem } from "../components/MenuItem";
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -59,7 +61,7 @@ export function DashboardLayout() {
 
   const navigationGroups = [
     {
-      label: "OPERACIONAL",
+      label: "PRINCIPAL",
       items: [
         { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
         { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
@@ -70,24 +72,24 @@ export function DashboardLayout() {
       items: [
         { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
         { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
-        { name: "DAS-MEI", href: "/app/das-mei", icon: FileText },
+        { name: "DAS-MEI", href: "/app/das-mei", icon: FileText, badge: "novo", badgeColor: "green" },
         { name: "Relatórios", href: "/app/relatorios", icon: BarChart3, isPro: true },
-        { name: "Investimentos", href: "/app/investimentos", icon: Landmark },
       ],
     },
     {
-      label: "VENDAS & CLIENTES",
+      label: "CLIENTES",
       items: [
-        { name: "Clientes", href: "/app/clientes", icon: Users },
-        { name: "Orçamentos", href: "/app/orcamentos", icon: FileSpreadsheet, isPro: true },
-        { name: "Propostas", href: "/app/propostas", icon: FileText },
+        { name: "Meus Clientes", href: "/app/clientes", icon: Users },
+        { name: "Fornecedores", href: "/app/fornecedores", icon: Truck },
+        { name: "Propostas", href: "/app/propostas", icon: Handshake, badge: "novo", badgeColor: "green" },
       ],
     },
     {
       label: "PLANEJAMENTO",
       items: [
-        { name: "Metas", href: "/app/metas", icon: Target, isPro: true },
-        { name: "Estoque", href: "/app/estoque", icon: Package },
+        { name: "Orçamentos", href: "/app/orcamentos", icon: FileSpreadsheet },
+        { name: "Metas", href: "/app/metas", icon: Target, badge: "novo", badgeColor: "green" },
+        { name: "Investimentos", href: "/app/investimentos", icon: Landmark },
       ],
     },
     {
@@ -123,7 +125,7 @@ export function DashboardLayout() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 z-50 w-[266px] bg-white border-r border-[#E5E7EB] transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed left-0 z-50 w-[256px] bg-[#FFFFFF] border-r border-[#E5E7EB] transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ top: "52px", bottom: 0 }}
@@ -147,49 +149,31 @@ export function DashboardLayout() {
 
           {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
-            {navigationGroups.map((group) => (
+            {navigationGroups.map((group, index) => (
               <div key={group.label}>
-                <div className="px-3 py-1 text-xs font-semibold text-[rgba(0,21,41,0.45)] uppercase tracking-wider">
-                  {group.label}
-                </div>
-                <div className="space-y-0.5">
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <NavLink
-                        key={item.name}
-                        to={item.href}
-                        end={item.end}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm ${
-                            isActive
-                              ? "bg-[#003a6d] text-white font-medium"
-                              : "text-[#001529] hover:bg-[#F5F7FA]"
-                          }`
-                        }
-                        onClick={() => setSidebarOpen(false)}
-                      >
-                        {({ isActive }) => (
-                          <>
-                            <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-white" : "text-[#001529]"}`} />
-                            <span className="flex-1">{item.name}</span>
-                            {item.isPro && !isActive && (
-                              <span className="text-[7px] px-1.5 py-0.5 bg-[#10b981] text-white rounded-full font-semibold">
-                                PRO
-                              </span>
-                            )}
-                          </>
-                        )}
-                      </NavLink>
-                    );
-                  })}
-                </div>
+                <MenuSection title={group.label}>
+                  {group.items.map((item) => (
+                    <MenuItem
+                      key={item.name}
+                      name={item.name}
+                      href={item.href}
+                      icon={item.icon}
+                      badge={item.badge}
+                      badgeColor={item.badgeColor as "green" | "purple" | undefined}
+                      end={item.end}
+                      onClick={() => setSidebarOpen(false)}
+                    />
+                  ))}
+                </MenuSection>
+                {index < navigationGroups.length - 1 && (
+                  <div className="h-px bg-[#E5E7EB] my-3" />
+                )}
               </div>
             ))}
 
             {/* Free plan usage widget */}
             {user.plan === "free" && (
-              <div className="px-1 pt-2">
+              <div className="px-1 pt-2 mt-4 border-t border-[#E5E7EB]">
                 <FreePlanUsage />
               </div>
             )}
@@ -244,7 +228,7 @@ export function DashboardLayout() {
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-[266px]" style={{ marginTop: "52px" }}>
+      <div className="lg:pl-[256px]" style={{ marginTop: "52px" }}>
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]">
           <div className="flex items-center justify-between px-4 lg:px-6 py-4">

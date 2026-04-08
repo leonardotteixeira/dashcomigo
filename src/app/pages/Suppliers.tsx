@@ -1,4 +1,7 @@
 import { Plus, Search, Building2, Mail, Phone } from "lucide-react";
+import { PremiumPageLayout } from "../components/PremiumPageLayout";
+import { colors } from "../../utils/designTokens";
+import { useState } from "react";
 
 const suppliers = [
   {
@@ -40,78 +43,111 @@ const suppliers = [
 ];
 
 export default function Suppliers() {
+  const [search, setSearch] = useState("");
+
+  const filtered = suppliers.filter(s =>
+    s.name.toLowerCase().includes(search.toLowerCase()) ||
+    s.email.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-bold text-foreground mb-1">Fornecedores</h1>
-          <p className="text-muted-foreground">
-            Gerencie seus fornecedores e despesas
-          </p>
-        </div>
-        <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors font-medium">
+    <PremiumPageLayout
+      title="Fornecedores"
+      description="Gerencie seus fornecedores e despesas"
+      actions={
+        <button
+          style={{ backgroundColor: colors.primary }}
+          className="flex items-center gap-2 text-white font-semibold px-4 py-2.5 rounded-lg hover:opacity-90 transition-all"
+        >
           <Plus className="w-4 h-4" />
           Novo Fornecedor
         </button>
-      </div>
-
-      <div className="bg-card border border-border rounded-xl p-4">
-        <div className="flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
-          <Search className="w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Buscar fornecedores..."
-            className="bg-transparent border-none outline-none text-sm flex-1 text-foreground placeholder:text-muted-foreground"
-          />
+      }
+    >
+      <div className="space-y-8">
+        <div
+          className="rounded-2xl p-6 shadow-sm border"
+          style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+        >
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg" style={{ backgroundColor: colors.bgLighter }}>
+            <Search className="w-4 h-4" style={{ color: colors.textSecondary }} />
+            <input
+              type="text"
+              placeholder="Buscar fornecedores..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-transparent border-none outline-none text-sm flex-1"
+              style={{ color: colors.textPrimary }}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {suppliers.map((supplier) => (
-          <div
-            key={supplier.id}
-            className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-muted-foreground" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-foreground">{supplier.name}</h3>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-accent/10 text-accent">
-                    {supplier.category}
-                  </span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filtered.map((supplier) => (
+            <div
+              key={supplier.id}
+              className="rounded-2xl p-6 shadow-sm border hover:shadow-md transition-all cursor-pointer"
+              style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+            >
+              <div className="flex items-start gap-4">
+                <div
+                  className="w-12 h-12 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: `${colors.primary}/10` }}
+                >
+                  <Building2 className="w-6 h-6" style={{ color: colors.primary }} />
                 </div>
-                <div className="space-y-1 mb-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="w-3 h-3" />
-                    {supplier.email}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="font-semibold" style={{ color: colors.textPrimary }}>
+                      {supplier.name}
+                    </h3>
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                      style={{
+                        backgroundColor: `${colors.secondary}/10`,
+                        color: colors.secondary,
+                      }}
+                    >
+                      {supplier.category}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="w-3 h-3" />
-                    {supplier.phone}
+                  <div className="space-y-1 mb-4">
+                    <div className="flex items-center gap-2 text-sm" style={{ color: colors.textSecondary }}>
+                      <Mail className="w-3 h-3" />
+                      {supplier.email}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm" style={{ color: colors.textSecondary }}>
+                      <Phone className="w-3 h-3" />
+                      {supplier.phone}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center justify-between pt-3 border-t border-border">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Gasto Total</p>
-                    <p className="font-semibold text-expense">
-                      R$ {supplier.totalExpense.toLocaleString("pt-BR")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground">Última Compra</p>
-                    <p className="text-sm text-foreground">
-                      {new Date(supplier.lastTransaction).toLocaleDateString("pt-BR")}
-                    </p>
+                  <div
+                    className="flex items-center justify-between pt-4"
+                    style={{ borderTop: `1px solid ${colors.borderDefault}` }}
+                  >
+                    <div>
+                      <p className="text-xs" style={{ color: colors.textSecondary }}>
+                        Gasto Total
+                      </p>
+                      <p className="font-semibold" style={{ color: colors.danger }}>
+                        R$ {supplier.totalExpense.toLocaleString("pt-BR")}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs" style={{ color: colors.textSecondary }}>
+                        Última Compra
+                      </p>
+                      <p className="text-sm" style={{ color: colors.textPrimary }}>
+                        {new Date(supplier.lastTransaction).toLocaleDateString("pt-BR")}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </PremiumPageLayout>
   );
 }
