@@ -7,13 +7,17 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   DollarSign,
+  Calendar,
+  Users,
   Target,
   Sparkles,
-  User,
+  PiggyBank,
   Building2,
-  Wallet,
+  User,
 } from "lucide-react";
 import {
+  LineChart,
+  Line,
   BarChart,
   Bar,
   XAxis,
@@ -33,10 +37,8 @@ import QuickActions from "../components/QuickActions";
 import AchievementCard from "../components/AchievementCard";
 import OnboardingChecklist from "../components/OnboardingChecklist";
 import WelcomeBackModal from "../components/WelcomeBackModal";
+import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
-import { PageHeader } from "../components/PageHeader";
-import { KPICard } from "../components/KPICard";
-import { KPISection } from "../components/KPISection";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -80,24 +82,30 @@ export function Dashboard() {
 
   return (
     <ObligationsProvider>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <WelcomeBackModal />
 
-        {/* Header */}
-        <PageHeader
-          title={`${greeting}, ${firstName}! 👋`}
-          description="Aqui está o resumo do seu negócio hoje"
-          badge={
-            user?.plan === "pro"
-              ? { text: "Plano PRO", color: "blue" }
-              : undefined
-          }
-        />
+        {/* Header with personalized greeting */}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="font-bold text-[#001529] mb-1">
+              {greeting}, {firstName}! 👋
+            </h1>
+            <p className="text-[#001529]/60">
+              Aqui está o resumo do seu negócio hoje
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs bg-[#F5F7FA] px-3 py-1.5 rounded-full font-medium text-[#001529]/60">
+              {user?.plan === "pro" ? "Plano PRO" : "Plano Gratuito"}
+            </span>
+          </div>
+        </div>
 
-        {/* Usage limit card */}
+        {/* NOVO: Card de Limitação - Destaque no topo */}
         <UsageLimitCard />
 
-        {/* KPI Cards */}
+        {/* KPI Cards - Premium Financial Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-4">
@@ -211,57 +219,115 @@ export function Dashboard() {
           <AchievementCard />
         </div>
 
-        {/* Alerts */}
-        {alerts.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
-              <div className="flex items-center gap-2 mb-5">
-                <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
-                <h3 className="font-bold text-lg text-[#001529]">Alertas Importantes</h3>
-              </div>
-              <div className="space-y-3">
-                {alerts.map((alert) => (
-                  <div key={alert.id} className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F7FA]">
-                    <div className={`w-2 h-2 rounded-full mt-2 ${alert.type === "warning" ? "bg-[#f59e0b]" : "bg-[#10b981]"}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[#001529] font-medium mb-1.5">{alert.message}</p>
-                      <button className="text-sm text-[#003a6d] hover:underline font-medium">{alert.action}</button>
-                    </div>
+        {/* PF vs PJ and Alerts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Alerts */}
+          <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+            <div className="flex items-center gap-2 mb-5">
+              <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
+              <h3 className="font-bold text-lg text-[#001529]">Alertas Importantes</h3>
+            </div>
+            <div className="space-y-3">
+              {alerts.map((alert) => (
+                <div key={alert.id} className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F7FA]">
+                  <div className={`w-2 h-2 rounded-full mt-2 ${alert.type === "warning" ? "bg-[#f59e0b]" : "bg-[#10b981]"}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-[#001529] font-medium mb-1.5">{alert.message}</p>
+                    <button className="text-sm text-[#003a6d] hover:underline font-medium">{alert.action}</button>
                   </div>
-                ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* PF vs PJ Distribution - Placeholder */}
+          <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+            <h3 className="font-bold text-lg text-[#001529] mb-5">Distribuição PF vs PJ</h3>
+            <div className="space-y-5">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-purple-500" />
+                    <span className="text-sm text-[#001529] font-medium">Pessoa Física</span>
+                  </div>
+                  <span className="text-sm font-bold text-[#001529]">35%</span>
+                </div>
+                <div className="h-2.5 bg-[#F5F7FA] rounded-full overflow-hidden">
+                  <div className="h-full bg-purple-500 w-[35%] transition-all duration-500" />
+                </div>
+                <p className="text-xs text-[#001529]/60 mt-2 font-medium">
+                  R$ 4.356,00 este mês
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500" />
+                    <span className="text-sm text-[#001529] font-medium">Pessoa Jurídica</span>
+                  </div>
+                  <span className="text-sm font-bold text-[#001529]">65%</span>
+                </div>
+                <div className="h-2.5 bg-[#F5F7FA] rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 w-[65%] transition-all duration-500" />
+                </div>
+                <p className="text-xs text-[#001529]/60 mt-2 font-medium">
+                  R$ 8.094,00 este mês
+                </p>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Cash Flow Chart */}
-        <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="font-bold text-lg text-[#001529] mb-1">Fluxo de Caixa</h3>
-              <p className="text-sm text-[#001529]/60 font-medium">Receitas vs Despesas (últimos 4 meses)</p>
+            <div className="mt-6 pt-5 border-t border-[#E5E7EB]">
+              <p className="text-xs text-[#001529]/60 mb-2 font-medium">
+                Dica: Separar PF de PJ facilita declaração de impostos
+              </p>
+              <button className="text-sm text-[#003a6d] hover:underline font-medium">
+                Saiba mais sobre categorização
+              </button>
             </div>
-            <button
-              className="text-sm text-[#003a6d] hover:underline font-semibold"
-              onClick={() => navigate("/app")}
-            >
-              Ver completo
-            </button>
           </div>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={cashFlowData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-              <XAxis dataKey="month" stroke="#6B7280" fontSize={12} />
-              <YAxis stroke="#6B7280" fontSize={12} tickFormatter={(v) => `R$${(v/1000).toFixed(0)}k`} />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px" }}
-                formatter={(v: number) => [fmt(v)]}
-              />
-              <Legend />
-              <Bar dataKey="receitas" fill="#10b981" radius={[8, 8, 0, 0]} name="Receitas" />
-              <Bar dataKey="despesas" fill="#EF4444" radius={[8, 8, 0, 0]} name="Despesas" />
-            </BarChart>
-          </ResponsiveContainer>
+        </div>
+
+        {/* Cash Flow Chart and Savings */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="font-bold text-lg text-[#001529] mb-1">
+                  Fluxo de Caixa
+                </h3>
+                <p className="text-sm text-[#001529]/60 font-medium">
+                  Receitas vs Despesas (últimos 4 meses)
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="px-4 py-2 text-sm font-semibold rounded-xl bg-[#003a6d] text-white shadow-sm">
+                  4 meses
+                </button>
+                <button className="px-4 py-2 text-sm font-semibold rounded-xl hover:bg-[#F5F7FA] text-[#001529] transition-colors">
+                  Ano
+                </button>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={cashFlowData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                <XAxis dataKey="month" stroke="#6B7280" fontSize={12} />
+                <YAxis stroke="#6B7280" fontSize={12} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: "8px",
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="receitas" fill="#10b981" radius={[8, 8, 0, 0]} name="Receitas" />
+                <Bar dataKey="despesas" fill="#EF4444" radius={[8, 8, 0, 0]} name="Despesas" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Savings Calculator */}
+          <SavingsCalculator />
         </div>
 
         {/* Recent Transactions */}
