@@ -11,6 +11,7 @@ import {
   Sparkles,
   User,
   Building2,
+  Wallet,
 } from "lucide-react";
 import {
   BarChart,
@@ -33,6 +34,9 @@ import AchievementCard from "../components/AchievementCard";
 import OnboardingChecklist from "../components/OnboardingChecklist";
 import WelcomeBackModal from "../components/WelcomeBackModal";
 import UsageLimitCard from "../components/UsageLimitCard";
+import { PageHeader } from "../components/PageHeader";
+import { KPICard } from "../components/KPICard";
+import { KPISection } from "../components/KPISection";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -76,25 +80,19 @@ export function Dashboard() {
 
   return (
     <ObligationsProvider>
-      <div className="space-y-6">
+      <div className="space-y-8">
         <WelcomeBackModal />
 
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="font-bold text-[#001529] mb-1">
-              {greeting}, {firstName}! 👋
-            </h1>
-            <p className="text-[#001529]/60">
-              Aqui está o resumo do seu negócio hoje
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs bg-[#F5F7FA] px-3 py-1.5 rounded-full font-medium text-[#001529]/60 border border-[#E5E7EB]">
-              {user?.plan === "pro" ? "Plano PRO ✨" : "Plano Gratuito"}
-            </span>
-          </div>
-        </div>
+        <PageHeader
+          title={`${greeting}, ${firstName}! 👋`}
+          description="Aqui está o resumo do seu negócio hoje"
+          badge={
+            user?.plan === "pro"
+              ? { text: "Plano PRO", color: "blue" }
+              : undefined
+          }
+        />
 
         {/* Usage limit card */}
         <UsageLimitCard />

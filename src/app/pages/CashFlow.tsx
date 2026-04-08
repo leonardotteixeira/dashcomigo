@@ -12,6 +12,8 @@ import {
   Crown,
 } from "lucide-react";
 import { useState } from "react";
+import { PremiumPageLayout } from "../components/PremiumPageLayout";
+import { colors } from "../../utils/designTokens";
 
 const transactions = [
   {
@@ -131,290 +133,328 @@ export default function CashFlow() {
   const limitPercentage = (currentTransactionCount / transactionLimit) * 100;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-bold text-foreground mb-1">Fluxo de Caixa</h1>
-          <p className="text-muted-foreground">
-            Gerencie todas as entradas e saídas do seu negócio
-          </p>
-        </div>
-        <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors font-medium">
+    <PremiumPageLayout
+      title="Fluxo de Caixa"
+      description="Gerencie todas as entradas e saídas do seu negócio"
+      actions={
+        <button
+          style={{ backgroundColor: colors.primary }}
+          className="flex items-center gap-2 text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-all font-medium"
+        >
           <Plus className="w-4 h-4" />
           Nova Transação
         </button>
-      </div>
-
-      {/* Transaction Limit Warning */}
-      {limitPercentage > 70 && (
-        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <Crown className="w-5 h-5 text-amber-500" />
-                <h3 className="font-semibold text-foreground">
-                  {limitPercentage >= 100 ? "Limite Atingido" : "Atenção: Limite Próximo"}
-                </h3>
-              </div>
-              <p className="text-sm text-muted-foreground mb-3">
-                Você usou {currentTransactionCount} de {transactionLimit} transações mensais do plano gratuito.
-                {limitPercentage >= 100 && " Upgrade para PRO e tenha transações ilimitadas!"}
-              </p>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${
-                      limitPercentage >= 100 ? "bg-destructive" :
-                      limitPercentage > 90 ? "bg-warning" : "bg-amber-500"
-                    }`}
-                    style={{ width: `${Math.min(limitPercentage, 100)}%` }}
-                  />
+      }
+    >
+      <div className="space-y-8">
+        {/* Transaction Limit Warning */}
+        {limitPercentage > 70 && (
+          <div
+            className="rounded-2xl p-6 border"
+            style={{
+              backgroundColor: "rgba(251, 191, 36, 0.05)",
+              borderColor: "rgba(251, 191, 36, 0.2)",
+            }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <Crown className="w-5 h-5" style={{ color: colors.warning }} />
+                  <h3 className="font-bold text-lg" style={{ color: colors.textPrimary }}>
+                    {limitPercentage >= 100 ? "Limite Atingido" : "Atenção: Limite Próximo"}
+                  </h3>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {Math.round(limitPercentage)}%
-                </span>
+                <p className="text-sm mb-4" style={{ color: colors.textSecondary }}>
+                  Você usou {currentTransactionCount} de {transactionLimit} transações mensais do plano gratuito.
+                  {limitPercentage >= 100 && " Upgrade para PRO e tenha transações ilimitadas!"}
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: colors.borderDefault }}>
+                    <div
+                      className="h-full"
+                      style={{
+                        width: `${Math.min(limitPercentage, 100)}%`,
+                        backgroundColor:
+                          limitPercentage >= 100
+                            ? colors.danger
+                            : limitPercentage > 90
+                              ? colors.warning
+                              : colors.warning,
+                      }}
+                    />
+                  </div>
+                  <span className="text-sm font-bold" style={{ color: colors.textPrimary }}>
+                    {Math.round(limitPercentage)}%
+                  </span>
+                </div>
+              </div>
+              <button
+                style={{ backgroundColor: colors.warning }}
+                className="text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-all font-semibold text-sm whitespace-nowrap"
+              >
+                Upgrade PRO
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            className="rounded-2xl p-6 shadow-sm border"
+            style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: colors.textSecondary }}>
+                Total Receitas
+              </p>
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${colors.success}/10` }}
+              >
+                <ArrowUpRight className="w-5 h-5" style={{ color: colors.success }} />
               </div>
             </div>
-            <button className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-amber-600 hover:to-orange-700 transition-all font-semibold text-sm whitespace-nowrap">
-              Upgrade PRO
+            <p className="text-2xl font-bold mb-2" style={{ color: colors.textPrimary }}>
+              +R$ {totalIncome.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </p>
+            <div className="flex items-center gap-1.5 text-sm font-medium" style={{ color: colors.success }}>
+              <ArrowUpRight className="w-4 h-4" />
+              <span>Total do mês</span>
+            </div>
+          </div>
+
+          <div
+            className="rounded-2xl p-6 shadow-sm border"
+            style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: colors.textSecondary }}>
+                Total Despesas
+              </p>
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${colors.danger}/10` }}
+              >
+                <ArrowDownRight className="w-5 h-5" style={{ color: colors.danger }} />
+              </div>
+            </div>
+            <p className="text-2xl font-bold mb-2" style={{ color: colors.textPrimary }}>
+              -R$ {totalExpense.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </p>
+            <div className="flex items-center gap-1.5 text-sm font-medium" style={{ color: colors.textSecondary }}>
+              <span>Total do mês</span>
+            </div>
+          </div>
+
+          <div
+            className="rounded-2xl p-6 shadow-sm border"
+            style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: colors.textSecondary }}>
+                Saldo Período
+              </p>
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${colors.primary}/10` }}
+              >
+                <Calendar className="w-5 h-5" style={{ color: colors.primary }} />
+              </div>
+            </div>
+            <p className="text-2xl font-bold" style={{ color: balance >= 0 ? colors.success : colors.danger }}>
+              {balance >= 0 ? "+" : ""}R${" "}
+              {Math.abs(balance).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </p>
+          </div>
+        </div>
+
+        {/* Filters and Search */}
+        <div
+          className="rounded-2xl p-6 shadow-sm border"
+          style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+        >
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div
+              className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-lg"
+              style={{ backgroundColor: colors.bgLighter }}
+            >
+              <Search className="w-4 h-4" style={{ color: colors.textSecondary }} />
+              <input
+                type="text"
+                placeholder="Buscar por descrição ou categoria..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="bg-transparent border-none outline-none text-sm flex-1"
+                style={{ color: colors.textPrimary }}
+              />
+            </div>
+
+            {/* Filters */}
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4" style={{ color: colors.textSecondary }} />
+              <div className="flex gap-2">
+                {["all", "income", "expense", "PF", "PJ"].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+                    style={{
+                      backgroundColor:
+                        filter === f
+                          ? f === "income"
+                            ? colors.success
+                            : f === "expense"
+                              ? colors.danger
+                              : colors.primary
+                          : colors.bgLighter,
+                      color: filter === f ? "white" : colors.textPrimary,
+                    }}
+                  >
+                    {f === "all"
+                      ? "Todos"
+                      : f === "income"
+                        ? "Receitas"
+                        : f === "expense"
+                          ? "Despesas"
+                          : f}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Export */}
+            <button
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg hover:opacity-90 transition-all text-sm font-medium"
+              style={{
+                backgroundColor: colors.bgLighter,
+                color: colors.textPrimary,
+                border: `1px solid ${colors.borderDefault}`,
+              }}
+            >
+              <Download className="w-4 h-4" />
+              Exportar
             </button>
           </div>
         </div>
-      )}
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-card border border-border rounded-xl p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
-              <ArrowUpRight className="w-4 h-4 text-success" />
-            </div>
-            <span className="text-sm text-muted-foreground">
-              Total Receitas
-            </span>
-          </div>
-          <p className="font-bold text-success">
-            +R$ {totalIncome.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </p>
-        </div>
-
-        <div className="bg-card border border-border rounded-xl p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-expense/10 flex items-center justify-center">
-              <ArrowDownRight className="w-4 h-4 text-expense" />
-            </div>
-            <span className="text-sm text-muted-foreground">
-              Total Despesas
-            </span>
-          </div>
-          <p className="font-bold text-expense">
-            -R$ {totalExpense.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </p>
-        </div>
-
-        <div className="bg-card border border-border rounded-xl p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-primary" />
-            </div>
-            <span className="text-sm text-muted-foreground">Saldo Período</span>
-          </div>
-          <p
-            className={`font-bold ${
-              balance >= 0 ? "text-success" : "text-expense"
-            }`}
-          >
-            {balance >= 0 ? "+" : ""}R${" "}
-            {Math.abs(balance).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </p>
-        </div>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="bg-card border border-border rounded-xl p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
-            <Search className="w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Buscar por descrição ou categoria..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm flex-1 text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <div className="flex gap-2">
-              <button
-                onClick={() => setFilter("all")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                Todos
-              </button>
-              <button
-                onClick={() => setFilter("income")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "income"
-                    ? "bg-success text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                Receitas
-              </button>
-              <button
-                onClick={() => setFilter("expense")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "expense"
-                    ? "bg-expense text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                Despesas
-              </button>
-              <button
-                onClick={() => setFilter("PF")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "PF"
-                    ? "bg-pf text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                PF
-              </button>
-              <button
-                onClick={() => setFilter("PJ")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "PJ"
-                    ? "bg-pj text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                PJ
-              </button>
-            </div>
-          </div>
-
-          {/* Export */}
-          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors text-sm font-medium text-foreground">
-            <Download className="w-4 h-4" />
-            Exportar
-          </button>
-        </div>
-      </div>
-
-      {/* Transactions List */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-secondary border-b border-border">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Data
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Descrição
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Categoria
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Tipo
-                </th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Valor
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredTransactions.map((transaction) => (
-                <tr
-                  key={transaction.id}
-                  className="hover:bg-secondary/50 transition-colors cursor-pointer"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-foreground">
-                      {new Date(transaction.date).toLocaleDateString("pt-BR")}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium text-foreground">
-                        {transaction.description}
-                      </p>
-                      <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
-                          transaction.pfpj === "PF"
-                            ? "bg-pf/10 text-pf"
-                            : "bg-pj/10 text-pj"
-                        }`}
-                      >
-                        {transaction.pfpj === "PF" ? (
-                          <User className="w-3 h-3" />
-                        ) : (
-                          <Building2 className="w-3 h-3" />
-                        )}
-                        {transaction.pfpj}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-muted-foreground">
-                      {transaction.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
-                        transaction.type === "income"
-                          ? "bg-success/10 text-success"
-                          : "bg-expense/10 text-expense"
-                      }`}
-                    >
-                      {transaction.type === "income" ? (
-                        <ArrowUpRight className="w-3 h-3" />
-                      ) : (
-                        <ArrowDownRight className="w-3 h-3" />
-                      )}
-                      {transaction.type === "income" ? "Receita" : "Despesa"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <span
-                      className={`font-semibold ${
-                        transaction.type === "income"
-                          ? "text-success"
-                          : "text-expense"
-                      }`}
-                    >
-                      {transaction.type === "income" ? "+" : "-"}R${" "}
-                      {transaction.amount.toLocaleString("pt-BR", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </span>
-                  </td>
+        {/* Transactions List */}
+        <div
+          className="rounded-2xl shadow-sm border overflow-hidden"
+          style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead style={{ backgroundColor: colors.bgLighter }}>
+                <tr style={{ borderBottom: `1px solid ${colors.borderDefault}` }}>
+                  <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>
+                    Data
+                  </th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>
+                    Descrição
+                  </th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>
+                    Categoria
+                  </th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>
+                    Tipo
+                  </th>
+                  <th className="text-right px-6 py-4 text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>
+                    Valor
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {filteredTransactions.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              Nenhuma transação encontrada
-            </p>
+              </thead>
+              <tbody>
+                {filteredTransactions.map((transaction, idx) => (
+                  <tr
+                    key={transaction.id}
+                    className="hover:opacity-75 transition-opacity"
+                    style={{
+                      borderBottom: idx < filteredTransactions.length - 1 ? `1px solid ${colors.borderDefault}` : "none",
+                    }}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm" style={{ color: colors.textPrimary }}>
+                        {new Date(transaction.date).toLocaleDateString("pt-BR")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium" style={{ color: colors.textPrimary }}>
+                          {transaction.description}
+                        </p>
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium"
+                          style={{
+                            backgroundColor:
+                              transaction.pfpj === "PF"
+                                ? `${colors.secondary}/10`
+                                : `${colors.info}/10`,
+                            color: transaction.pfpj === "PF" ? colors.secondary : colors.info,
+                          }}
+                        >
+                          {transaction.pfpj === "PF" ? (
+                            <User className="w-3 h-3" />
+                          ) : (
+                            <Building2 className="w-3 h-3" />
+                          )}
+                          {transaction.pfpj}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm" style={{ color: colors.textSecondary }}>
+                        {transaction.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium"
+                        style={{
+                          backgroundColor:
+                            transaction.type === "income"
+                              ? `${colors.success}/10`
+                              : `${colors.danger}/10`,
+                          color: transaction.type === "income" ? colors.success : colors.danger,
+                        }}
+                      >
+                        {transaction.type === "income" ? (
+                          <ArrowUpRight className="w-3 h-3" />
+                        ) : (
+                          <ArrowDownRight className="w-3 h-3" />
+                        )}
+                        {transaction.type === "income" ? "Receita" : "Despesa"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <span
+                        className="font-bold"
+                        style={{
+                          color: transaction.type === "income" ? colors.success : colors.danger,
+                        }}
+                      >
+                        {transaction.type === "income" ? "+" : "-"}R${" "}
+                        {transaction.amount.toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
+
+          {filteredTransactions.length === 0 && (
+            <div className="text-center py-12">
+              <p style={{ color: colors.textSecondary }}>
+                Nenhuma transação encontrada
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </PremiumPageLayout>
   );
 }

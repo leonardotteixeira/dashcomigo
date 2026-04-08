@@ -5,6 +5,8 @@ import { CATEGORIAS_PAYABLES } from "../contexts/PayablesContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import { PremiumPageLayout } from "../components/PremiumPageLayout";
+import { colors } from "../../utils/designTokens";
 
 const MESES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -118,205 +120,353 @@ export function Orcamentos() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-1">Orçamentos</h1>
-          <p className="text-[rgba(0,21,41,0.6)]">Planeje seus gastos por categoria</p>
-        </div>
+    <PremiumPageLayout
+      title="Orçamentos"
+      description="Planeje seus gastos por categoria"
+      actions={
         <button
           onClick={() => { resetForm(); setModalOpen(true); }}
-          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
+          style={{ backgroundColor: colors.primary }}
+          className="flex items-center gap-2 text-white font-semibold px-4 py-2.5 rounded-lg hover:opacity-90 transition-all"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           Novo Orçamento
         </button>
-      </div>
+      }
+    >
+      <div className="space-y-8">
 
-      {/* Month Selector */}
-      <div>
-        <label className="text-sm font-medium text-[rgba(0,21,41,0.6)] mb-2 block">Mês</label>
-        <select
-          value={mesSelecionado}
-          onChange={(e) => setMesSelecionado(e.target.value)}
-          className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-2.5 text-[#001529] focus:outline-none focus:border-[#28A263]/50 max-w-xs"
-        >
-          {opcoesMeses.map((m) => (
-            <option key={m} value={m}>{formatMes(m)}</option>
-          ))}
-        </select>
-      </div>
+        {/* Month Selector */}
+        <div>
+          <label className="text-sm font-medium mb-2 block" style={{ color: colors.textSecondary }}>Mês</label>
+          <select
+            value={mesSelecionado}
+            onChange={(e) => setMesSelecionado(e.target.value)}
+            className="max-w-xs rounded-xl px-4 py-2.5 focus:outline-none transition-colors"
+            style={{
+              backgroundColor: colors.bgLight,
+              borderColor: colors.borderDefault,
+              color: colors.textPrimary,
+              border: `1px solid ${colors.borderDefault}`,
+            }}
+          >
+            {opcoesMeses.map((m) => (
+              <option key={m} value={m}>{formatMes(m)}</option>
+            ))}
+          </select>
+        </div>
 
-      {/* Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
-            <PieChart className="w-5 h-5 text-[#0066FF]" />
+        {/* Summary Cards */}
+        <div className="grid md:grid-cols-3 gap-6">
+          <div
+            className="rounded-2xl p-6 shadow-sm border"
+            style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+          >
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+              style={{ backgroundColor: `${colors.secondary}/10` }}
+            >
+              <PieChart className="w-5 h-5" style={{ color: colors.secondary }} />
+            </div>
+            <p className="text-sm mb-2" style={{ color: colors.textSecondary }}>Total Orçado</p>
+            <p className="text-2xl font-bold" style={{ color: colors.textPrimary }}>{fmt(totais.planejado)}</p>
           </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Orçado</p>
-          <p className="text-2xl font-bold text-[#001529]">{fmt(totais.planejado)}</p>
-        </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${totais.realizado > totais.planejado ? "bg-[#FF4F3D]/20" : "bg-[#28A263]/20"}`}>
-            <AlertTriangle className={`w-5 h-5 ${totais.realizado > totais.planejado ? "text-[#FF4F3D]" : "text-[#28A263]"}`} />
+          <div
+            className="rounded-2xl p-6 shadow-sm border"
+            style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+          >
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+              style={{
+                backgroundColor: totais.realizado > totais.planejado ? `${colors.danger}/10` : `${colors.primary}/10`,
+              }}
+            >
+              <AlertTriangle
+                className="w-5 h-5"
+                style={{
+                  color: totais.realizado > totais.planejado ? colors.danger : colors.primary,
+                }}
+              />
+            </div>
+            <p className="text-sm mb-2" style={{ color: colors.textSecondary }}>Total Gasto</p>
+            <p
+              className="text-2xl font-bold"
+              style={{
+                color: totais.realizado > totais.planejado ? colors.danger : colors.primary,
+              }}
+            >
+              {fmt(totais.realizado)}
+            </p>
           </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Gasto</p>
-          <p className={`text-2xl font-bold ${totais.realizado > totais.planejado ? "text-[#FF4F3D]" : "text-[#28A263]"}`}>
-            {fmt(totais.realizado)}
-          </p>
-        </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${totais.restante < 0 ? "bg-red-500/20" : "bg-[#28A263]/20"}`}>
-            <TrendingUp className={`w-5 h-5 ${totais.restante < 0 ? "text-red-500" : "text-[#28A263]"}`} />
+          <div
+            className="rounded-2xl p-6 shadow-sm border"
+            style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+          >
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+              style={{
+                backgroundColor: totais.restante < 0 ? `${colors.danger}/10` : `${colors.success}/10`,
+              }}
+            >
+              <TrendingUp
+                className="w-5 h-5"
+                style={{
+                  color: totais.restante < 0 ? colors.danger : colors.success,
+                }}
+              />
+            </div>
+            <p className="text-sm mb-2" style={{ color: colors.textSecondary }}>Saldo Restante</p>
+            <p
+              className="text-2xl font-bold"
+              style={{
+                color: totais.restante < 0 ? colors.danger : colors.success,
+              }}
+            >
+              {fmt(totais.restante)}
+            </p>
           </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Saldo Restante</p>
-          <p className={`text-2xl font-bold ${totais.restante < 0 ? "text-red-500" : "text-[#28A263]"}`}>
-            {fmt(totais.restante)}
-          </p>
         </div>
-      </div>
 
-      {/* Alerts */}
-      {alertas.length > 0 && (
-        <div className="p-6 bg-yellow-50 rounded-2xl border border-yellow-200">
-          <div className="flex items-start gap-3 mb-4">
-            <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-bold text-yellow-900">{alertas.length} categoria(s) com alerta</h3>
-              <div className="space-y-1.5 mt-3">
-                {alertas.map((a) => (
-                  <p key={a.id} className="text-sm text-yellow-700">
-                    {a.categoria} — {a.percentual.toFixed(0)}% do orçado
-                    {a.status === "excedido" && <span className="text-red-600 font-medium"> (excedido!)</span>}
-                  </p>
-                ))}
+        {/* Alerts */}
+        {alertas.length > 0 && (
+          <div
+            className="rounded-2xl p-6 border"
+            style={{
+              backgroundColor: `${colors.warning}/10`,
+              borderColor: `${colors.warning}/20`,
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: colors.warning }} />
+              <div>
+                <h3 className="font-bold" style={{ color: colors.textPrimary }}>
+                  {alertas.length} categoria(s) com alerta
+                </h3>
+                <div className="space-y-1.5 mt-3">
+                  {alertas.map((a) => (
+                    <p key={a.id} className="text-sm" style={{ color: colors.textSecondary }}>
+                      {a.categoria} — {a.percentual.toFixed(0)}% do orçado
+                      {a.status === "excedido" && (
+                        <span className="font-medium ml-1" style={{ color: colors.danger }}>
+                          (excedido!)
+                        </span>
+                      )}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Budgets List */}
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[rgba(0,0,0,0.05)]">
-          <h3 className="font-bold text-lg text-[#001529]">Orçamentos — {formatMes(mesSelecionado)}</h3>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-12 text-[rgba(0,21,41,0.6)]">Carregando...</div>
-        ) : items.length === 0 ? (
-          <div className="text-center py-12 px-6">
-            <PieChart className="w-10 h-10 text-[rgba(0,21,41,0.3)] mx-auto mb-3" />
-            <p className="text-[rgba(0,21,41,0.6)]">Nenhum orçamento para {formatMes(mesSelecionado)}.</p>
-            <button onClick={() => { resetForm(); setModalOpen(true); }} className="mt-3 text-[#28A263] text-sm font-medium hover:underline">
-              Criar primeiro orçamento
-            </button>
+        {/* Budgets List */}
+        <div
+          className="rounded-2xl shadow-sm border overflow-hidden"
+          style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+        >
+          <div
+            className="px-6 py-4"
+            style={{
+              borderBottom: `1px solid ${colors.borderDefault}`,
+            }}
+          >
+            <h3 className="font-bold text-lg" style={{ color: colors.textPrimary }}>
+              Orçamentos — {formatMes(mesSelecionado)}
+            </h3>
           </div>
-        ) : (
-          <div className="divide-y divide-[rgba(0,0,0,0.05)]">
-            {items.map((item) => (
-              <div key={item.id} className="px-6 py-4 hover:bg-[#F8F9FA]/50 transition-colors">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <p className="text-[#001529] font-medium">{item.categoria}</p>
-                    {statusBadge(item.status)}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className={`text-sm font-bold ${statusColor(item.status)}`}>
-                        {fmt(item.valorRealizado)} / {fmt(item.valorPlanejado)}
+
+          {loading ? (
+            <div className="text-center py-12" style={{ color: colors.textSecondary }}>
+              Carregando...
+            </div>
+          ) : items.length === 0 ? (
+            <div className="text-center py-12 px-6">
+              <PieChart className="w-10 h-10 mx-auto mb-3" style={{ color: `${colors.textSecondary}` }} />
+              <p style={{ color: colors.textSecondary }}>Nenhum orçamento para {formatMes(mesSelecionado)}.</p>
+              <button
+                onClick={() => { resetForm(); setModalOpen(true); }}
+                className="mt-3 text-sm font-medium hover:opacity-80 transition-opacity"
+                style={{ color: colors.primary }}
+              >
+                Criar primeiro orçamento
+              </button>
+            </div>
+          ) : (
+            <div style={{ borderTop: `1px solid ${colors.borderDefault}` }}>
+              {items.map((item, idx) => (
+                <div
+                  key={item.id}
+                  className="px-6 py-4 hover:opacity-75 transition-opacity"
+                  style={{
+                    borderBottom: idx < items.length - 1 ? `1px solid ${colors.borderDefault}` : "none",
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="font-medium" style={{ color: colors.textPrimary }}>
+                        {item.categoria}
                       </p>
-                      <p className="text-[rgba(0,21,41,0.6)] text-xs">{item.percentual.toFixed(0)}% utilizado</p>
+                      {statusBadge(item.status)}
                     </div>
-                    <button onClick={() => handleDelete(item.id)} className="text-[rgba(0,21,41,0.5)] hover:text-[#FF4F3D] transition-colors p-1">
-                      <Trash2 className="w-4 h-4" />
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="text-sm font-bold" style={{ color: statusColorValue(item.status) }}>
+                          {fmt(item.valorRealizado)} / {fmt(item.valorPlanejado)}
+                        </p>
+                        <p className="text-xs" style={{ color: colors.textSecondary }}>
+                          {item.percentual.toFixed(0)}% utilizado
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="hover:opacity-70 transition-opacity p-1"
+                        style={{ color: colors.textSecondary }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full rounded-full h-2" style={{ backgroundColor: colors.borderDefault }}>
+                    <div
+                      className="h-2 rounded-full transition-all"
+                      style={{
+                        width: `${Math.min(item.percentual, 100)}%`,
+                        backgroundColor:
+                          item.status === "excedido"
+                            ? colors.danger
+                            : item.status === "alerta"
+                              ? colors.warning
+                              : colors.primary,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Modal */}
+        {modalOpen && (
+          <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
+            <div
+              className="rounded-2xl w-full max-w-sm border"
+              style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-bold text-lg" style={{ color: colors.textPrimary }}>
+                    Novo Orçamento
+                  </h2>
+                  <button
+                    onClick={() => { resetForm(); setModalOpen(false); }}
+                    style={{ color: colors.textSecondary }}
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>
+                      Mês *
+                    </label>
+                    <select
+                      value={formMes}
+                      onChange={(e) => setFormMes(e.target.value)}
+                      required
+                      className="w-full rounded-xl px-4 py-2.5 focus:outline-none transition-colors"
+                      style={{
+                        backgroundColor: colors.bgLighter,
+                        borderColor: colors.borderDefault,
+                        color: colors.textPrimary,
+                        border: `1px solid ${colors.borderDefault}`,
+                      }}
+                    >
+                      {opcoesMeses.map((m) => (
+                        <option key={m} value={m}>{formatMes(m)}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>
+                      Categoria *
+                    </label>
+                    <select
+                      value={formCategoria}
+                      onChange={(e) => setFormCategoria(e.target.value)}
+                      required
+                      className="w-full rounded-xl px-4 py-2.5 focus:outline-none transition-colors"
+                      style={{
+                        backgroundColor: colors.bgLighter,
+                        borderColor: colors.borderDefault,
+                        color: colors.textPrimary,
+                        border: `1px solid ${colors.borderDefault}`,
+                      }}
+                    >
+                      <option value="">Selecione...</option>
+                      {CATEGORIAS_PAYABLES.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>
+                      Valor Planejado (R$) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      value={formValor}
+                      onChange={(e) => setFormValor(e.target.value)}
+                      placeholder="0,00"
+                      required
+                      className="w-full rounded-xl px-4 py-2.5 focus:outline-none transition-colors"
+                      style={{
+                        backgroundColor: colors.bgLighter,
+                        borderColor: colors.borderDefault,
+                        color: colors.textPrimary,
+                        border: `1px solid ${colors.borderDefault}`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => { resetForm(); setModalOpen(false); }}
+                      className="flex-1 px-4 py-2.5 rounded-xl transition-opacity hover:opacity-90"
+                      style={{
+                        backgroundColor: colors.bgLighter,
+                        color: colors.textPrimary,
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      style={{ backgroundColor: colors.primary }}
+                      className="flex-1 text-white font-semibold px-4 py-2.5 rounded-xl transition-opacity hover:opacity-90"
+                    >
+                      Adicionar
                     </button>
                   </div>
-                </div>
-                <div className="w-full bg-[#E8E8E8] rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all ${
-                      item.status === "excedido" ? "bg-red-500" : item.status === "alerta" ? "bg-yellow-500" : "bg-[#28A263]"
-                    }`}
-                    style={{ width: `${Math.min(item.percentual, 100)}%` }}
-                  />
-                </div>
+                </form>
               </div>
-            ))}
+            </div>
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-2xl w-full max-w-sm">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-[#001529] font-bold text-lg">Novo Orçamento</h2>
-                <button onClick={() => { resetForm(); setModalOpen(false); }} className="text-[rgba(0,21,41,0.6)] hover:text-[#001529]">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="text-[rgba(0,21,41,0.6)] text-sm mb-1 block">Mês *</label>
-                  <select
-                    value={formMes}
-                    onChange={(e) => setFormMes(e.target.value)}
-                    required
-                    className="w-full bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-2.5 text-[#001529] focus:outline-none focus:border-[#28A263]/50"
-                  >
-                    {opcoesMeses.map((m) => (
-                      <option key={m} value={m}>{formatMes(m)}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[rgba(0,21,41,0.6)] text-sm mb-1 block">Categoria *</label>
-                  <select
-                    value={formCategoria}
-                    onChange={(e) => setFormCategoria(e.target.value)}
-                    required
-                    className="w-full bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-2.5 text-[#001529] focus:outline-none focus:border-[#28A263]/50"
-                  >
-                    <option value="">Selecione...</option>
-                    {CATEGORIAS_PAYABLES.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[rgba(0,21,41,0.6)] text-sm mb-1 block">Valor Planejado (R$) *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    value={formValor}
-                    onChange={(e) => setFormValor(e.target.value)}
-                    placeholder="0,00"
-                    required
-                    className="w-full bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-2.5 text-[#001529] placeholder-[rgba(0,21,41,0.4)] focus:outline-none focus:border-[#28A263]/50"
-                  />
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => { resetForm(); setModalOpen(false); }} className="flex-1 bg-[#F8F9FA] hover:bg-[#F5F7FA] text-[#001529] px-4 py-2.5 rounded-xl transition-colors">
-                    Cancelar
-                  </button>
-                  <button type="submit" className="flex-1 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-semibold px-4 py-2.5 rounded-xl transition-colors">
-                    Adicionar
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </PremiumPageLayout>
   );
+
+  function statusColorValue(status: "ok" | "alerta" | "excedido") {
+    if (status === "excedido") return colors.danger;
+    if (status === "alerta") return colors.warning;
+    return colors.primary;
+  }
 }

@@ -1,4 +1,7 @@
 import { Plus, Search, User, Building2, Mail, Phone } from "lucide-react";
+import { PremiumPageLayout } from "../components/PremiumPageLayout";
+import { colors } from "../../utils/designTokens";
+import { useState } from "react";
 
 const customers = [
   {
@@ -40,92 +43,123 @@ const customers = [
 ];
 
 export default function Customers() {
+  const [search, setSearch] = useState("");
+
+  const filtered = customers.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.email.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-bold text-foreground mb-1">Clientes</h1>
-          <p className="text-muted-foreground">
-            Gerencie seus clientes e acompanhe o histórico
-          </p>
-        </div>
-        <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors font-medium">
+    <PremiumPageLayout
+      title="Clientes"
+      description="Gerencie seus clientes e acompanhe o histórico"
+      actions={
+        <button
+          style={{ backgroundColor: colors.primary }}
+          className="flex items-center gap-2 text-white font-semibold px-4 py-2.5 rounded-lg hover:opacity-90 transition-all"
+        >
           <Plus className="w-4 h-4" />
           Novo Cliente
         </button>
-      </div>
-
-      <div className="bg-card border border-border rounded-xl p-4">
-        <div className="flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
-          <Search className="w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Buscar clientes..."
-            className="bg-transparent border-none outline-none text-sm flex-1 text-foreground placeholder:text-muted-foreground"
-          />
+      }
+    >
+      <div className="space-y-8">
+        <div
+          className="rounded-2xl p-6 shadow-sm border"
+          style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+        >
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg" style={{ backgroundColor: colors.bgLighter }}>
+            <Search className="w-4 h-4" style={{ color: colors.textSecondary }} />
+            <input
+              type="text"
+              placeholder="Buscar clientes..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-transparent border-none outline-none text-sm flex-1"
+              style={{ color: colors.textPrimary }}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {customers.map((customer) => (
-          <div
-            key={customer.id}
-            className="bg-card border border-border rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="flex items-start gap-4">
-              <div
-                className={`w-12 h-12 rounded-lg ${
-                  customer.type === "PF" ? "bg-pf/10" : "bg-pj/10"
-                } flex items-center justify-center`}
-              >
-                {customer.type === "PF" ? (
-                  <User className={`w-6 h-6 text-pf`} />
-                ) : (
-                  <Building2 className={`w-6 h-6 text-pj`} />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-foreground">{customer.name}</h3>
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                      customer.type === "PF"
-                        ? "bg-pf/10 text-pf"
-                        : "bg-pj/10 text-pj"
-                    }`}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filtered.map((customer) => (
+            <div
+              key={customer.id}
+              className="rounded-2xl p-6 shadow-sm border hover:shadow-md transition-all cursor-pointer"
+              style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
+            >
+              <div className="flex items-start gap-4">
+                <div
+                  className="w-12 h-12 rounded-lg flex items-center justify-center"
+                  style={{
+                    backgroundColor: customer.type === "PF" ? `${colors.secondary}/10` : `${colors.info}/10`,
+                  }}
+                >
+                  {customer.type === "PF" ? (
+                    <User
+                      className="w-6 h-6"
+                      style={{ color: colors.secondary }}
+                    />
+                  ) : (
+                    <Building2
+                      className="w-6 h-6"
+                      style={{ color: colors.info }}
+                    />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="font-semibold" style={{ color: colors.textPrimary }}>
+                      {customer.name}
+                    </h3>
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                      style={{
+                        backgroundColor: customer.type === "PF" ? `${colors.secondary}/10` : `${colors.info}/10`,
+                        color: customer.type === "PF" ? colors.secondary : colors.info,
+                      }}
+                    >
+                      {customer.type}
+                    </span>
+                  </div>
+                  <div className="space-y-1 mb-4">
+                    <div className="flex items-center gap-2 text-sm" style={{ color: colors.textSecondary }}>
+                      <Mail className="w-3 h-3" />
+                      {customer.email}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm" style={{ color: colors.textSecondary }}>
+                      <Phone className="w-3 h-3" />
+                      {customer.phone}
+                    </div>
+                  </div>
+                  <div
+                    className="flex items-center justify-between pt-4"
+                    style={{ borderTop: `1px solid ${colors.borderDefault}` }}
                   >
-                    {customer.type}
-                  </span>
-                </div>
-                <div className="space-y-1 mb-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="w-3 h-3" />
-                    {customer.email}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="w-3 h-3" />
-                    {customer.phone}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-3 border-t border-border">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Receita Total</p>
-                    <p className="font-semibold text-success">
-                      R$ {customer.totalRevenue.toLocaleString("pt-BR")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground">Última Transação</p>
-                    <p className="text-sm text-foreground">
-                      {new Date(customer.lastTransaction).toLocaleDateString("pt-BR")}
-                    </p>
+                    <div>
+                      <p className="text-xs" style={{ color: colors.textSecondary }}>
+                        Receita Total
+                      </p>
+                      <p className="font-semibold" style={{ color: colors.success }}>
+                        R$ {customer.totalRevenue.toLocaleString("pt-BR")}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs" style={{ color: colors.textSecondary }}>
+                        Última Transação
+                      </p>
+                      <p className="text-sm" style={{ color: colors.textPrimary }}>
+                        {new Date(customer.lastTransaction).toLocaleDateString("pt-BR")}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </PremiumPageLayout>
   );
 }
