@@ -1,31 +1,23 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
-  ArrowRightLeft,
-  Tag,
   TrendingUp,
   TrendingDown,
-  FileText,
-  AlertCircle,
-  CheckCircle,
-  CheckCircle2,
   ArrowRight,
-  Lock,
   Crown,
   Wallet,
-  AlertTriangle,
-  Sparkles,
-  Target,
+  Filter,
+  Download,
+  Plus,
   Calendar,
-  Zap,
+  AlertTriangle,
+  CheckCircle,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Progress } from "../components/ui/progress";
 import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
+import { usePFPJ } from "../contexts/PFPJContext";
 import { ObligationsProvider } from "../contexts/ObligationsContext";
-import { ObligationsSection } from "../components/ObligationsSection";
-import { ProximasAVencerWidget } from "../components/ProximasAVencerWidget";
 import {
   AreaChart,
   Area,
@@ -34,12 +26,14 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from "recharts";
 import { motion } from "motion/react";
 
 const MEI_LIMIT_ANNUAL = 81000;
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function buildFaturamentoData(transactions: any[]) {
   const months = Array.from({ length: 6 }, (_, i) => {
@@ -63,7 +57,7 @@ function buildFaturamentoData(transactions: any[]) {
   }
 
   const lastReal = months[months.length - 1].valor;
-  months[months.length - 1].projecao = lastReal; // ponto de conexão
+  months[months.length - 1].projecao = lastReal;
 
   for (let i = 1; i <= 3; i++) {
     const d = new Date();
@@ -79,534 +73,366 @@ function buildFaturamentoData(transactions: any[]) {
   return { data: months, growthRate };
 }
 
-function buildAcoes(meiPct: number, margemLucro: number, totalSaidas: number, totalEntradas: number) {
-  const acoes: {
-    prioridade: "alta" | "media" | "baixa";
-    titulo: string;
-    descricao: string;
-    prazo: string;
-    concluido: boolean;
-    impacto: string;
-    href: string;
-  }[] = [];
-
-  if (meiPct > 80) {
-    acoes.push({
-      prioridade: "alta",
-      titulo: "Avaliar migração para ME",
-      descricao: `Faturamento em ${meiPct.toFixed(0)}% do limite MEI`,
-      prazo: meiPct > 100 ? "Urgente" : "Este mês",
-      concluido: false,
-      impacto: "Evitar multas e impostos extras",
-      href: "/app/mei-me",
-    });
-  }
-
-  if (margemLucro > 0 && margemLucro < 20) {
-    acoes.push({
-      prioridade: "alta",
-      titulo: "Revisar preços de serviços",
-      descricao: `Margem atual ${margemLucro.toFixed(0)}% — abaixo do ideal`,
-      prazo: "Este mês",
-      concluido: false,
-      impacto: "Aumentar rentabilidade",
-      href: "/app/preco",
-    });
-  }
-
-  if (totalEntradas > 0 && totalSaidas > totalEntradas * 0.7) {
-    acoes.push({
-      prioridade: "media",
-      titulo: "Reduzir custos operacionais",
-      descricao: "Custos acima de 70% da receita",
-      prazo: "30 dias",
-      concluido: false,
-      impacto: "Melhorar fluxo de caixa",
-      href: "/app",
-    });
-  }
-
-  if (acoes.length === 0) {
-    acoes.push({
-      prioridade: "baixa",
-      titulo: "Manter lançamentos atualizados",
-      descricao: "Registros regulares geram insights precisos",
-      prazo: "Contínuo",
-      concluido: true,
-      impacto: "Decisões mais precisas",
-      href: "/app",
-    });
-  }
-
-  return acoes;
-}
-
-
-const chartStyle = {
-  cartesian: "rgba(0,0,0,0.1)",
-  axis: "rgba(0,21,41,0.6)",
-  tooltip: { background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.1)", borderRadius: "12px", color: "#001529" },
-};
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { summary, insights, getLimitStatus, transactions } = useCashFlow();
-  const limitStatus = getLimitStatus();
+  const { summary, insights, transactions } = useCashFlow();
+  const { pfpjSummary, getVerifiedPlan } = usePFPJ();
+  const [viewMode, setViewMode] = useState<"integrated" | "separated">("integrated");
+  const [selectedPeriod, setSelectedPeriod] = useState("6m");
 
-  const [acoesChecked, setAcoesChecked] = useState<Record<number, boolean>>({});
+  const fmt = (v: number) =>
+    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
+
+  const { data: faturamentoData } = useMemo(
+    () => buildFaturamentoData(transactions),
+    [transactions]
+  );
+
+  // Get display data based on view mode
+  const displaySummary = viewMode === "separated" ? pfpjSummary : summary;
+  const saldoAtual = viewMode === "separated" ? pfpjSummary.pj?.balance ?? 0 : summary.saldoAtual;
+  const totalEntradas = viewMode === "separated" ? pfpjSummary.pj?.totalIncoming ?? 0 : summary.totalEntradas;
+  const totalSaidas = viewMode === "separated" ? pfpjSummary.pj?.totalOutgoing ?? 0 : summary.totalSaidas;
 
   const meiPercentage = summary.totalEntradas > 0
     ? (summary.totalEntradas / MEI_LIMIT_ANNUAL) * 100
     : 0;
 
-  const perdasAnuais = Math.max(0, (summary.totalEntradas - MEI_LIMIT_ANNUAL) * 0.15);
+  const limitStatus = getVerifiedPlan();
 
-  // Scores
-  const saudeScore = summary.margemLucro >= 40 ? Math.min(95, 78 + summary.margemLucro * 0.2)
-    : summary.margemLucro >= 20 ? 45 + summary.margemLucro
-    : Math.max(10, summary.margemLucro * 2);
+  // Filter transactions for display
+  const displayTransactions = viewMode === "separated"
+    ? transactions.filter((t) => t.pf_pj_type === "pj")
+    : transactions;
 
-  const tributacaoScore = meiPercentage < 50 ? 80
-    : meiPercentage <= 100 ? Math.max(45, 80 - meiPercentage * 0.4)
-    : Math.max(10, 45 - (meiPercentage - 100) * 0.3);
+  const recentTransactions = displayTransactions.slice(0, 10);
 
-  const crescimentoScore = summary.margemLucro >= 30 && transactions.length > 5 ? 82
-    : summary.margemLucro >= 15 ? 55
-    : 30;
-
-  const { data: faturamentoData, growthRate } = useMemo(
-    () => buildFaturamentoData(transactions),
-    [transactions]
-  );
-
-  const acoes = useMemo(
-    () => buildAcoes(meiPercentage, summary.margemLucro, summary.totalSaidas, summary.totalEntradas),
-    [meiPercentage, summary]
-  );
-
-  const progressoAcoes = Math.round(
-    (Object.values(acoesChecked).filter(Boolean).length + acoes.filter((a) => a.concluido).length)
-    / Math.max(acoes.length, 1) * 100
-  );
-
-  const fmt = (v: number) =>
-    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
-
-  const tools = [
-    { id: "fluxo", icon: Wallet, title: "Fluxo de Caixa", description: "Registre entradas e saídas e visualize a saúde financeira", accent: "#2DDB81", stats: user?.plan === "pro" ? "Ilimitado" : `${limitStatus.used}/${limitStatus.limit} este mês`, path: "/app", isPro: false, isLocked: false },
-    { id: "mei-me", icon: ArrowRightLeft, title: "Simulador MEI → ME", description: "Compare impostos e descubra quando migrar do MEI", accent: "#28A263", stats: "Economia média: R$ 3.480/ano", path: "/app/mei-me", isPro: false, isLocked: false },
-    { id: "preco", icon: Tag, title: "Simulador de Preço Ideal", description: "Calcule o preço perfeito considerando custos e margem", accent: "#C0F497", stats: "Margem ideal: 40-60%", path: "/app/preco", isPro: true, isLocked: user?.plan !== "pro" },
-    { id: "lucro", icon: TrendingUp, title: "Simulador de Lucro", description: "Projete receitas, custos e descubra seu ponto de equilíbrio", accent: "#3AFF99", stats: "Break-even em 6 meses", path: "/app/lucro", isPro: true, isLocked: user?.plan !== "pro" },
-    { id: "propostas", icon: FileText, title: "Gerador de Propostas", description: "Crie propostas comerciais profissionais em minutos", accent: "#2DDB81", stats: user?.plan === "pro" ? "Ilimitado" : `${user?.proposalUsageToday || 0}/2 hoje`, path: "/app/propostas", isPro: false, isLocked: false },
-  ];
-
-  const alertActionMap: Record<string, { href: string; label: string }> = {
-    "limite-mei":      { href: "/app/mei-me",   label: "Simular MEI→ME" },
-    "margem-baixa":    { href: "/app/preco",     label: "Ver Simulador de Preço" },
-    "custos-altos":    { href: "/app/lucro",     label: "Ver Simulador de Lucro" },
-    "saldo-negativo":  { href: "/app",           label: "Ver Fluxo de Caixa" },
-    "comece-agora":    { href: "/app",           label: "Adicionar lançamento" },
+  const chartStyle = {
+    cartesian: "rgba(0,0,0,0.1)",
+    axis: "rgba(0,21,41,0.6)",
+    tooltip: {
+      background: "#FFFFFF",
+      border: "1px solid rgba(0,0,0,0.1)",
+      borderRadius: "12px",
+      color: "#001529",
+    },
   };
 
   return (
     <ObligationsProvider>
-      <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#001529] mb-1">
-          Olá, <span className="capitalize">{user?.name?.split(" ")[0] ?? ""}!</span> 👋
-        </h1>
-        <p className="text-[rgba(0,21,41,0.6)]">Acompanhe seus indicadores e acesse ferramentas essenciais</p>
-      </div>
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* ── Header with Fluxo de Caixa Title ── */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+        >
+          <div>
+            <h1 className="text-4xl font-bold text-[#001529]">Fluxo de Caixa</h1>
+            <p className="text-[rgba(0,21,41,0.6)] mt-1">
+              Controle suas entradas e saídas
+            </p>
+          </div>
 
-      {/* ── Hero Banner MEI ── */}
-      {meiPercentage > 80 && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <div className="p-8 md:p-10 bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white relative overflow-hidden rounded-2xl border-2 border-red-400">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="h-5 w-5 animate-pulse" />
-                <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full">
-                  {meiPercentage > 100 ? "Alerta Crítico" : "Atenção"}
-                </span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+          {/* Toggle: Integrado vs Separado */}
+          <div className="flex items-center gap-2 bg-[#F8F9FA] p-1 rounded-xl border border-[rgba(0,0,0,0.1)]">
+            <button
+              onClick={() => setViewMode("integrated")}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                viewMode === "integrated"
+                  ? "bg-white text-[#001529] border border-[rgba(0,0,0,0.1)]"
+                  : "text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
+              }`}
+            >
+              Integrado
+            </button>
+            <button
+              onClick={() => setViewMode("separated")}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                viewMode === "separated"
+                  ? "bg-white text-[#001529] border border-[rgba(0,0,0,0.1)]"
+                  : "text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
+              }`}
+            >
+              Separado PF/PJ
+            </button>
+          </div>
+        </motion.div>
+
+        {/* ── MEI Alert Banner ── */}
+        {meiPercentage > 80 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-5 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-4"
+          >
+            <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-red-900 mb-1">
                 {meiPercentage > 100
-                  ? `Você está perdendo ${fmt(perdasAnuais)} por ano!`
+                  ? "Você ultrapassou o limite MEI!"
                   : `Você está em ${meiPercentage.toFixed(0)}% do limite MEI`}
-              </h2>
-              <p className="text-lg mb-4 opacity-95">
+              </h3>
+              <p className="text-sm text-red-800 mb-3">
                 {meiPercentage > 100
-                  ? `Seu faturamento ultrapassou o limite MEI. Cada mês sem migrar para ME custa mais em impostos e multas.`
-                  : `Você está se aproximando do limite anual de R$ 81.000. Considere planejar a migração para ME.`}
+                  ? "Seu faturamento ultrapassou o limite anual. Cada mês sem migrar para ME custa mais em impostos."
+                  : "Você está se aproximando do limite anual de R$ 81.000. Considere planejar a migração para ME."}
               </p>
-              {meiPercentage > 100 && (
-                <div className="p-3 bg-white/10 rounded-xl mb-5 backdrop-blur flex items-center gap-4 text-sm flex-wrap">
-                  <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 bg-yellow-300 rounded-full animate-pulse inline-block" />Impostos extras estimados: {fmt(perdasAnuais)}/ano</span>
+              <Button
+                size="sm"
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={() => navigate("/app/mei-me")}
+              >
+                Simular MEI → ME <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Quick Stats: 3 Cards (Saldo, Entradas, Saídas) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid md:grid-cols-3 gap-4"
+        >
+          {/* Saldo Atual */}
+          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-[#28A263]/30 transition-colors">
+            <p className="text-[rgba(0,21,41,0.6)] text-sm font-medium mb-2">Saldo Atual</p>
+            <p className="text-3xl font-bold text-[#001529]">{fmt(saldoAtual)}</p>
+            <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Disponível agora</p>
+          </div>
+
+          {/* Entradas */}
+          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-[#28A263]/30 transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[rgba(0,21,41,0.6)] text-sm font-medium">Entradas</p>
+              <TrendingUp className="w-4 h-4 text-[#28A263]" />
+            </div>
+            <p className="text-3xl font-bold text-[#28A263]">{fmt(totalEntradas)}</p>
+            <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Este mês</p>
+          </div>
+
+          {/* Saídas */}
+          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-red-300 transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[rgba(0,21,41,0.6)] text-sm font-medium">Saídas</p>
+              <TrendingDown className="w-4 h-4 text-red-500" />
+            </div>
+            <p className="text-3xl font-bold text-red-500">{fmt(totalSaidas)}</p>
+            <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Este mês</p>
+          </div>
+        </motion.div>
+
+        {/* ── Insights / Alerts ── */}
+        {insights.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-3"
+          >
+            {insights.map((insight) => (
+              <div
+                key={insight.id}
+                className={`p-4 rounded-2xl border flex items-start gap-3 ${
+                  insight.tipo === "alerta"
+                    ? "bg-red-50 border-red-200"
+                    : insight.tipo === "sucesso"
+                      ? "bg-[#28A263]/10 border-[#28A263]/20"
+                      : "bg-blue-50 border-blue-200"
+                }`}
+              >
+                <CheckCircle
+                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                    insight.tipo === "alerta"
+                      ? "text-red-600"
+                      : insight.tipo === "sucesso"
+                        ? "text-[#28A263]"
+                        : "text-blue-600"
+                  }`}
+                />
+                <div>
+                  <p
+                    className={`text-sm font-medium ${
+                      insight.tipo === "alerta"
+                        ? "text-red-800"
+                        : insight.tipo === "sucesso"
+                          ? "text-[#28A263]"
+                          : "text-blue-800"
+                    }`}
+                  >
+                    {insight.icone} {insight.mensagem}
+                  </p>
                 </div>
-              )}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-bold rounded-xl" onClick={() => navigate("/app/mei-me")}>
-                  Simular migração para ME <ArrowRight className="ml-2 h-4 w-4" />
+              </div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* ── Análise do Período ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-[#001529]">Análise do Período</h2>
+              <p className="text-sm text-[rgba(0,21,41,0.6)] mt-1">Últimos 6 meses + próximos 3 meses (projeção)</p>
+            </div>
+            <div className="flex gap-2">
+              <button className="flex items-center gap-2 px-3 py-2 text-sm text-[#001529] bg-[#F8F9FA] hover:bg-[#F5F7FA] rounded-lg border border-[rgba(0,0,0,0.1)] transition-colors">
+                <Calendar className="w-4 h-4" />
+                Período
+              </button>
+              <button className="flex items-center gap-2 px-3 py-2 text-sm text-[#001529] bg-[#F8F9FA] hover:bg-[#F5F7FA] rounded-lg border border-[rgba(0,0,0,0.1)] transition-colors">
+                <Download className="w-4 h-4" />
+                Exportar
+              </button>
+            </div>
+          </div>
+
+          {transactions.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={faturamentoData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#28A263" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#28A263" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={chartStyle.cartesian} vertical={false} />
+                <XAxis dataKey="mes" stroke={chartStyle.axis} style={{ fontSize: "12px" }} />
+                <YAxis stroke={chartStyle.axis} style={{ fontSize: "12px" }} />
+                <Tooltip
+                  contentStyle={chartStyle.tooltip}
+                  formatter={(value) => (typeof value === "number" ? fmt(value) : value)}
+                  labelFormatter={(label) => `Mês: ${label}`}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="valor"
+                  stroke="#28A263"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorValor)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-64 flex items-center justify-center text-center">
+              <p className="text-[rgba(0,21,41,0.6)]">Nenhuma transação registrada ainda</p>
+            </div>
+          )}
+        </motion.div>
+
+        {/* ── Últimas Transações ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h2 className="text-xl font-bold text-[#001529]">Últimas Transações</h2>
+            <div className="flex gap-2 flex-wrap">
+              <Button
+                size="sm"
+                onClick={() => navigate("/app")}
+                className="bg-[#28A263] hover:bg-[#20915a] text-white flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Nova Entrada
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => navigate("/app")}
+                className="border-[rgba(0,0,0,0.1)] text-[#001529] hover:bg-[#F8F9FA] flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Nova Saída
+              </Button>
+              <button className="flex items-center gap-2 px-3 py-2 text-sm text-[#001529] bg-[#F8F9FA] hover:bg-[#F5F7FA] rounded-lg border border-[rgba(0,0,0,0.1)] transition-colors">
+                <Filter className="w-4 h-4" />
+                Filtros
+              </button>
+            </div>
+          </div>
+
+          {recentTransactions.length > 0 ? (
+            <div className="space-y-2">
+              {recentTransactions.map((t, i) => (
+                <div key={i} className="flex items-center justify-between p-4 rounded-lg hover:bg-[#F8F9FA] transition-colors border border-transparent hover:border-[rgba(0,0,0,0.05)]">
+                  <div className="flex-1">
+                    <p className="font-medium text-[#001529]">{t.descricao}</p>
+                    <p className="text-xs text-[rgba(0,21,41,0.6)]">
+                      {new Date(t.data).toLocaleDateString("pt-BR")}
+                      {t.pf_pj_type === "pj" && " • PJ"}
+                      {t.pf_pj_type === "pf" && " • PF"}
+                    </p>
+                  </div>
+                  <p
+                    className={`font-semibold text-lg ${
+                      t.tipo === "entrada" ? "text-[#28A263]" : "text-red-500"
+                    }`}
+                  >
+                    {t.tipo === "entrada" ? "+" : "-"}
+                    {fmt(t.valor)}
+                  </p>
+                </div>
+              ))}
+              <button
+                onClick={() => navigate("/app")}
+                className="w-full mt-4 py-3 text-[#0066FF] hover:text-[#003fa6] font-medium flex items-center justify-center gap-2 transition-colors"
+              >
+                Ver todas as transações <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-[rgba(0,21,41,0.6)] mb-4">Nenhuma transação registrada</p>
+              <Button
+                onClick={() => navigate("/app")}
+                className="bg-[#28A263] hover:bg-[#20915a] text-white"
+              >
+                Adicionar primeira transação
+              </Button>
+            </div>
+          )}
+        </motion.div>
+
+        {/* ── Upgrade CTA ── */}
+        {user?.plan === "free" && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="p-6 bg-gradient-to-r from-[#28A263]/10 to-[#0066FF]/10 rounded-2xl border border-[#28A263]/20"
+          >
+            <div className="flex items-start gap-4">
+              <Crown className="w-6 h-6 text-[#28A263] flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="font-bold text-[#001529] text-lg mb-1">Upgrade para PRO</h3>
+                <p className="text-sm text-[rgba(0,21,41,0.6)] mb-4">
+                  Desbloqueie lançamentos ilimitados, relatórios avançados e mais ferramentas premium
+                </p>
+                <Button
+                  onClick={() => navigate("/checkout")}
+                  className="bg-[#28A263] hover:bg-[#20915a] text-white"
+                >
+                  Ver Planos <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </div>
             </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* ── Score Cards ── */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <h2 className="text-xl font-bold text-[#001529] mb-4">Diagnóstico do Seu Negócio</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          {[
-            {
-              pergunta: "Seu dinheiro está sob controle?",
-              score: Math.round(saudeScore),
-              progressClass: "[&>div]:bg-[#28A263]",
-              scoreColor: saudeScore >= 60 ? "text-[#28A263]" : saudeScore >= 40 ? "text-yellow-600" : "text-[#FF4F3D]",
-              verdict: saudeScore >= 60 ? "Sim, está saudável" : saudeScore >= 40 ? "Pode melhorar" : "Margem baixa",
-              sub: saudeScore >= 60 ? "Continue assim para crescer" : "Revise preços e custos",
-              icon: saudeScore >= 60 ? CheckCircle2 : AlertCircle,
-              iconColor: saudeScore >= 60 ? "text-[#28A263]" : "text-[#FF973E]",
-              border: saudeScore >= 60 ? "" : saudeScore >= 40 ? "border-yellow-400" : "border-[#FF4F3D]/30",
-            },
-            {
-              pergunta: "Você paga imposto demais?",
-              score: Math.round(tributacaoScore),
-              progressClass: tributacaoScore >= 60 ? "[&>div]:bg-[#28A263]" : tributacaoScore >= 40 ? "[&>div]:bg-orange-500" : "[&>div]:bg-[#FF4F3D]",
-              scoreColor: tributacaoScore >= 60 ? "text-[#28A263]" : tributacaoScore >= 40 ? "text-[#FF973E]" : "text-[#FF4F3D]",
-              verdict: tributacaoScore >= 60 ? "Não, está eficiente" : tributacaoScore >= 40 ? "Fique atento" : "Sim, pode reduzir!",
-              sub: tributacaoScore >= 60 ? "Tributação dentro do ideal" : "Use o Simulador MEI→ME",
-              icon: tributacaoScore >= 60 ? CheckCircle2 : AlertCircle,
-              iconColor: tributacaoScore >= 60 ? "text-[#28A263]" : "text-[#FF973E]",
-              border: tributacaoScore < 60 ? "border-orange-500/30" : "",
-            },
-            {
-              pergunta: "Seu negócio pode crescer mais?",
-              score: Math.round(crescimentoScore),
-              progressClass: "[&>div]:bg-[#0066FF]",
-              scoreColor: "text-[#0066FF]",
-              verdict: crescimentoScore >= 70 ? "Sim, muito potencial!" : crescimentoScore >= 50 ? "Potencial moderado" : "Adicione mais dados",
-              sub: crescimentoScore >= 70 ? "Projeção de crescimento positiva" : "Continue registrando lançamentos",
-              icon: TrendingUp,
-              iconColor: "text-[#0066FF]",
-              border: "",
-            },
-          ].map((card, i) => {
-            const Icon = card.icon;
-            return (
-              <div key={i} className={`p-6 bg-white rounded-2xl border ${card.border || "border-[rgba(0,0,0,0.1)]"} hover:border-[#28A263]/20 transition-colors`}>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="font-semibold text-[#001529] text-sm leading-snug pr-4">{card.pergunta}</span>
-                  <Icon className={`w-5 h-5 flex-shrink-0 ${card.iconColor}`} />
-                </div>
-                <div className="flex items-end gap-2 mb-2">
-                  <span className={`text-4xl font-bold ${card.scoreColor}`}>{card.score}</span>
-                  <span className="text-[rgba(0,21,41,0.5)] mb-1">/100</span>
-                </div>
-                <Progress value={card.score} className={`h-2 mb-3 bg-[#F8F9FA] ${card.progressClass}`} />
-                <p className={`text-sm font-medium ${card.scoreColor}`}>{card.verdict}</p>
-                <p className="text-xs text-[rgba(0,21,41,0.5)] mt-1">{card.sub}</p>
-              </div>
-            );
-          })}
-        </div>
-      </motion.div>
-
-      {/* ── Alertas Inteligentes ── */}
-      {insights.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <h2 className="text-xl font-bold text-[#001529] mb-4">Alertas Inteligentes</h2>
-          <div className="grid gap-3">
-            {insights.map((insight) => {
-              const action = alertActionMap[insight.id];
-              const cardClass = insight.tipo === "alerta" ? "bg-red-100 border-red-200"
-                : insight.tipo === "sucesso" ? "bg-[#28A263]/10 border-[#28A263]/20"
-                : "bg-blue-100 border-blue-200";
-              const iconColor = insight.tipo === "alerta" ? "text-red-600"
-                : insight.tipo === "sucesso" ? "text-[#28A263]" : "text-blue-600";
-              const badgeClass = insight.tipo === "alerta" ? "bg-red-200 text-red-700"
-                : insight.tipo === "sucesso" ? "bg-[#28A263]/20 text-[#28A263]"
-                : "bg-blue-200 text-blue-700";
-              const badgeLabel = insight.tipo === "alerta" ? "Urgente"
-                : insight.tipo === "sucesso" ? "Oportunidade" : "Atenção";
-              const textColor = insight.tipo === "alerta" ? "text-red-700"
-                : insight.tipo === "sucesso" ? "text-[#28A263]" : "text-blue-700";
-
-              return (
-                <div key={insight.id} className={`flex gap-4 p-5 rounded-2xl border ${cardClass}`}>
-                  <div className="w-11 h-11 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-                    {insight.tipo === "sucesso"
-                      ? <CheckCircle className={`h-5 w-5 ${iconColor}`} />
-                      : <AlertCircle className={`h-5 w-5 ${iconColor}`} />}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className={`text-sm font-medium ${textColor}`}>
-                        <span className="mr-1">{insight.icone}</span>
-                        {insight.mensagem}
-                      </p>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold whitespace-nowrap ${badgeClass}`}>
-                        {badgeLabel}
-                      </span>
-                    </div>
-                    {action && (
-                      <button
-                        className={`mt-2 text-xs font-semibold flex items-center gap-1 ${iconColor} hover:opacity-80 transition-opacity`}
-                        onClick={() => navigate(action.href)}
-                      >
-                        {action.label} <ArrowRight className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
-      )}
-
-      {/* ── Main 2-column layout ── */}
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left column */}
-        <div className="lg:col-span-2 space-y-8">
-
-          {/* Projeção de faturamento */}
-          {transactions.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-                {/* Auto-insight */}
-                <div className="mb-4 p-3 bg-[#28A263]/10 border border-[#28A263]/20 rounded-xl flex items-start gap-2">
-                  <Sparkles className="h-4 w-4 text-[#28A263] mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-[#28A263]">
-                    <strong>Projeção automática:</strong> Com base no histórico, seu faturamento
-                    {growthRate >= 0
-                      ? ` cresce ~${(growthRate * 100).toFixed(0)}% ao mês`
-                      : ` reduziu ~${(Math.abs(growthRate) * 100).toFixed(0)}% ao mês`}
-                    . A linha tracejada mostra os próximos 3 meses.
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <h2 className="text-lg font-bold text-[#001529]">Projeção de Faturamento</h2>
-                    <p className="text-sm text-[rgba(0,21,41,0.6)]">Últimos 6 meses + próximos 3 meses</p>
-                  </div>
-                  {growthRate > 0 && (
-                    <span className="text-xs bg-[#28A263]/20 text-[#28A263] px-2 py-1 rounded-full font-semibold flex items-center gap-1">
-                      <TrendingUp className="w-3 h-3" />+{(growthRate * 100).toFixed(0)}%
-                    </span>
-                  )}
-                </div>
-
-                <ResponsiveContainer width="100%" height={260}>
-                  <AreaChart data={faturamentoData}>
-                    <defs>
-                      <linearGradient id="gradValor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#28A263" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#28A263" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="gradProj" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#5B5FFF" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#5B5FFF" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={chartStyle.cartesian} />
-                    <XAxis dataKey="mes" stroke={chartStyle.axis} tick={{ fontSize: 11, fill: chartStyle.axis }} />
-                    <YAxis stroke={chartStyle.axis} tick={{ fontSize: 11, fill: chartStyle.axis }} tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip
-                      formatter={(v: number) => fmt(v)}
-                      contentStyle={chartStyle.tooltip}
-                      labelStyle={{ color: "#fff" }}
-                    />
-                    <Area type="monotone" dataKey="valor" stroke="#28A263" strokeWidth={2} fillOpacity={1} fill="url(#gradValor)" name="Real" connectNulls />
-                    <Area type="monotone" dataKey="projecao" stroke="#5B5FFF" strokeWidth={2} strokeDasharray="5 5" fillOpacity={1} fill="url(#gradProj)" name="Projeção" connectNulls />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Quick Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: "Lucro do mês", value: fmt(summary.lucro), trend: summary.lucro >= 0 ? "up" : "down", color: summary.lucro >= 0 ? "#28A263" : "#FF4F3D", sub: summary.lucro >= 0 ? "positivo" : "negativo" },
-              { label: "Margem de lucro", value: `${summary.margemLucro.toFixed(1)}%`, trend: summary.margemLucro >= 20 ? "up" : "down", color: summary.margemLucro >= 20 ? "#28A263" : "#FF4F3D", sub: summary.margemLucro >= 20 ? "saudável" : "baixa" },
-              { label: "Total de entradas", value: fmt(summary.totalEntradas), trend: "up", color: "#28A263", sub: "receita total" },
-              { label: "Lançamentos", value: user?.plan === "pro" ? `${limitStatus.used}` : `${limitStatus.used}/${limitStatus.limit}`, trend: limitStatus.percentage > 80 ? "warning" : "up", color: limitStatus.percentage > 80 ? "#FF973E" : "#28A263", sub: user?.plan === "pro" ? "ilimitado" : limitStatus.percentage > 80 ? "Atenção" : "disponível" },
-            ].map((m, i) => (
-              <div key={i} className="p-5 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-[#28A263]/20 transition-colors">
-                <div className="flex items-start justify-between mb-2">
-                  <span className="text-xs text-[rgba(0,21,41,0.6)] font-medium">{m.label}</span>
-                  {m.trend === "up" && <TrendingUp className="w-4 h-4" style={{ color: m.color }} />}
-                  {m.trend === "down" && <TrendingDown className="w-4 h-4 text-[#FF4F3D]" />}
-                  {m.trend === "warning" && <AlertCircle className="w-4 h-4 text-[#FF973E]" />}
-                </div>
-                <div className="text-2xl font-bold mb-1" style={{ color: m.color }}>{m.value}</div>
-                <div className="text-xs text-[rgba(0,21,41,0.5)]">{m.sub}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Tools Grid */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-[#001529]">Ferramentas Disponíveis</h2>
-              <button className="text-sm text-[#28A263] border border-[rgba(0,0,0,0.1)] rounded-full px-4 py-2 hover:bg-[#F8F9FA] transition-colors" onClick={() => navigate("/app/mei-me")}>
-                Ver todas
-              </button>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              {tools.map((tool) => {
-                const Icon = tool.icon;
-                return (
-                  <div key={tool.id} className="relative">
-                    <div
-                      className={`p-6 bg-[#F8F9FA] rounded-2xl border border-[rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer group ${tool.isLocked ? "opacity-60" : "hover:border-[#28A263]/30 hover:bg-white"}`}
-                      onClick={() => tool.isLocked ? navigate("/checkout") : navigate(tool.path)}
-                    >
-                      {tool.isPro && (
-                        <span className="absolute top-4 right-4 text-[9px] px-2 py-1 bg-[#28A263]/20 text-[#28A263] rounded-full font-semibold flex items-center gap-1">
-                          <Crown className="w-2.5 h-2.5" /> PRO
-                        </span>
-                      )}
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform" style={{ backgroundColor: `${tool.accent}20` }}>
-                          <Icon className="w-6 h-6" style={{ color: tool.accent }} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-[#001529] mb-1 group-hover:text-[#28A263] transition-colors">{tool.title}</h3>
-                          <p className="text-[rgba(0,21,41,0.6)] text-sm mb-3 leading-relaxed">{tool.description}</p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-[rgba(0,21,41,0.5)]">{tool.stats}</span>
-                            {!tool.isLocked && <ArrowRight className="w-4 h-4 text-[#28A263] group-hover:translate-x-1 transition-transform" />}
-                          </div>
-                        </div>
-                      </div>
-                      {tool.isLocked && (
-                        <div className="absolute inset-0 bg-white/70 rounded-2xl flex flex-col items-center justify-center backdrop-blur-sm">
-                          <Lock className="w-10 h-10 text-[rgba(0,21,41,0.6)] mb-3" />
-                          <p className="text-[#001529] font-bold text-sm mb-2">Disponível no PRO</p>
-                          <Button size="sm" className="bg-[#28A263] hover:bg-[#1f7d4a] text-white text-xs rounded-xl" onClick={(e) => { e.stopPropagation(); navigate("/checkout"); }}>
-                            <Crown className="w-3 h-3 mr-1" /> Ver Planos
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Right sidebar */}
-        <div className="space-y-6">
-
-          {/* Plano de Ação */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-            <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-[#28A263]" />
-                  <h3 className="font-bold text-[#001529]">Plano de Ação</h3>
-                </div>
-                <div className="text-sm">
-                  <span className="font-bold text-[#28A263]">{progressoAcoes}%</span>
-                  <span className="text-[rgba(0,21,41,0.5)]"> completo</span>
-                </div>
-              </div>
-
-              <Progress value={progressoAcoes} className="h-2 mb-5 bg-[#F8F9FA] [&>div]:bg-[#28A263]" />
-
-              <div className="space-y-3">
-                {acoes.map((acao, idx) => {
-                  const isChecked = acoesChecked[idx] ?? acao.concluido;
-                  const borderColor = acao.prioridade === "alta" ? "border-l-red-500 border-red-100" : acao.prioridade === "media" ? "border-l-yellow-500 border-yellow-100" : "border-l-blue-500 border-blue-100";
-                  const bgColor = acao.prioridade === "alta" ? "bg-red-50" : acao.prioridade === "media" ? "bg-yellow-50" : "bg-blue-50";
-                  const badgeColor = acao.prioridade === "alta" ? "bg-red-200 text-red-700" : acao.prioridade === "media" ? "bg-yellow-200 text-yellow-700" : "bg-blue-200 text-blue-700";
-
-                  return (
-                    <div
-                      key={idx}
-                      className={`p-3 rounded-xl border-l-4 border ${borderColor} ${bgColor} ${isChecked ? "opacity-50" : ""} transition-all`}
-                    >
-                      <div className="flex items-start gap-2">
-                        <button
-                          className="mt-0.5 flex-shrink-0"
-                          onClick={() => setAcoesChecked((prev) => ({ ...prev, [idx]: !prev[idx] }))}
-                        >
-                          {isChecked
-                            ? <CheckCircle2 className="h-4 w-4 text-[#28A263]" />
-                            : <div className={`h-4 w-4 rounded border-2 ${acao.prioridade === "alta" ? "border-red-500" : acao.prioridade === "media" ? "border-yellow-500" : "border-blue-500"}`} />}
-                        </button>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-1">
-                            <span className={`font-semibold text-sm text-[#001529] ${isChecked ? "line-through" : ""}`}>{acao.titulo}</span>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold whitespace-nowrap ${badgeColor}`}>{acao.prazo}</span>
-                          </div>
-                          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-0.5">{acao.descricao}</p>
-                          <div className="flex items-center justify-between mt-1">
-                            <span className="text-xs text-[#28A263] font-medium">💰 {acao.impacto}</span>
-                            {!isChecked && (
-                              <button onClick={() => navigate(acao.href)} className="text-[10px] text-[rgba(0,21,41,0.6)] hover:text-[#001529] flex items-center gap-0.5">
-                                Ver <ArrowRight className="w-3 h-3" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-4 p-3 bg-[#28A263]/10 border border-[#28A263]/20 rounded-xl">
-                <p className="text-xs text-[#28A263]">
-                  <strong>💡 Dica:</strong> Completar todas as ações melhora os scores do seu negócio.
-                </p>
-              </div>
-            </div>
           </motion.div>
-
-          {/* Próximas a Vencer */}
-          <ProximasAVencerWidget />
-
-          {/* Próximas Obrigações */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}>
-            <ObligationsSection />
-          </motion.div>
-
-          {/* Quick value props */}
-          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-            <div className="grid grid-cols-3 gap-6">
-              {[
-                { icon: TrendingUp, title: "Análise Completa", desc: "Combine todas as ferramentas para uma visão 360°" },
-                { icon: Zap, title: "Decisões Rápidas", desc: "Resultados em tempo real para decidir com confiança" },
-                { icon: Target, title: "Metas Claras", desc: "Saiba exatamente o que fazer para crescer" }
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.title} className="text-center">
-                    <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <Icon className="w-5 h-5 text-[#28A263]" />
-                    </div>
-                    <h4 className="font-bold text-[#001529] text-sm">{item.title}</h4>
-                    <p className="text-xs text-[rgba(0,21,41,0.6)] mt-1">{item.desc}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-        </div>
-      </div>
+        )}
       </div>
     </ObligationsProvider>
   );
