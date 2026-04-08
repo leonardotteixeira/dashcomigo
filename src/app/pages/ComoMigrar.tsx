@@ -39,30 +39,32 @@ export function ComoMigrar() {
   ];
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-white">
       <Header onScrollToSimulator={() => {}} />
       <main className="pt-24 pb-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-[#A1A1A1] hover:text-white mb-8 transition-colors">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Voltar ao início
           </Link>
 
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Como migrar de <span className="text-[#2DDB81]">MEI para ME</span>
-          </h1>
-          <p className="text-lg text-[#A1A1A1] mb-12 max-w-2xl">
-            Guia completo passo a passo para fazer a transição do Microempreendedor Individual para Microempresa.
-          </p>
+          <div className="mb-12">
+            <h1 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-4">
+              Como migrar de <span className="text-[#28A263]">MEI para ME</span>
+            </h1>
+            <p className="text-lg text-[rgba(0,21,41,0.6)] max-w-2xl">
+              Guia completo passo a passo para fazer a transição do Microempreendedor Individual para Microempresa.
+            </p>
+          </div>
 
           {/* Quando migrar */}
-          <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-8 mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-yellow-400" />
+          <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-yellow-600" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Quando é hora de migrar?</h2>
+              <h2 className="text-2xl font-bold text-[#001529]">Quando é hora de migrar?</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div className="grid md:grid-cols-2 gap-4">
               {[
                 "Faturamento acima de R$ 81.000/ano",
                 "Necessidade de mais de 1 funcionário",
@@ -71,9 +73,9 @@ export function ComoMigrar() {
                 "Necessidade de abrir filiais",
                 "Crescimento exige maior estrutura fiscal",
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 bg-[#141414] rounded-xl p-4 border border-white/5">
-                  <CheckCircle className="w-5 h-5 text-yellow-400 flex-shrink-0" />
-                  <span className="text-[#C8C9D0]">{item}</span>
+                <div key={i} className="flex items-center gap-3 bg-[#F8F9FA] rounded-xl p-4 border border-[rgba(0,0,0,0.05)]">
+                  <CheckCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+                  <span className="text-[rgba(0,21,41,0.6)]">{item}</span>
                 </div>
               ))}
             </div>
@@ -81,20 +83,20 @@ export function ComoMigrar() {
 
           {/* Steps */}
           <div className="space-y-6 mb-12">
-            <h2 className="text-2xl font-bold text-white">Passo a passo da migração</h2>
+            <h2 className="text-2xl font-bold text-[#001529]">Passo a passo da migração</h2>
             {steps.map((step) => {
               const Icon = step.icon;
               return (
-                <div key={step.number} className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-8">
+                <div key={step.number} className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0">
                       <div className="w-14 h-14 bg-[#28A263]/20 rounded-2xl flex items-center justify-center">
-                        <span className="text-[#2DDB81] font-bold text-lg">{step.number}</span>
+                        <span className="text-[#28A263] font-bold text-lg">{step.number}</span>
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-                      <p className="text-[#C8C9D0] leading-relaxed">{step.desc}</p>
+                      <h3 className="text-xl font-bold text-[#001529] mb-2">{step.title}</h3>
+                      <p className="text-[rgba(0,21,41,0.6)] leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -103,9 +105,9 @@ export function ComoMigrar() {
           </div>
 
           {/* Custos */}
-          <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-8 mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Custos da migração</h2>
-            <div className="text-[#C8C9D0] space-y-3 leading-relaxed">
+          <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
+            <h2 className="text-2xl font-bold text-[#001529] mb-4">Custos da migração</h2>
+            <div className="text-[rgba(0,21,41,0.6)] space-y-3 leading-relaxed">
               <p>Os custos podem variar conforme o estado e a complexidade do negócio:</p>
               <div className="grid md:grid-cols-3 gap-4 mt-4">
                 {[
@@ -113,10 +115,10 @@ export function ComoMigrar() {
                   { item: "Junta Comercial", valor: "R$ 100 a R$ 300", desc: "Varia por estado" },
                   { item: "Contador", valor: "R$ 200 a R$ 800/mês", desc: "Obrigatório para ME" },
                 ].map((c) => (
-                  <div key={c.item} className="bg-[#141414] rounded-xl p-5 border border-white/5">
-                    <p className="text-xs text-[#A1A1A1] mb-1">{c.item}</p>
-                    <p className="text-xl font-bold text-[#2DDB81] mb-1">{c.valor}</p>
-                    <p className="text-xs text-[#686F6F]">{c.desc}</p>
+                  <div key={c.item} className="bg-[#F8F9FA] rounded-xl p-5 border border-[rgba(0,0,0,0.05)]">
+                    <p className="text-xs text-[rgba(0,21,41,0.5)] mb-1">{c.item}</p>
+                    <p className="text-xl font-bold text-[#28A263] mb-1">{c.valor}</p>
+                    <p className="text-xs text-[rgba(0,21,41,0.5)]">{c.desc}</p>
                   </div>
                 ))}
               </div>
@@ -124,8 +126,8 @@ export function ComoMigrar() {
           </div>
 
           {/* Dicas */}
-          <div className="bg-[#1B1B1B] rounded-2xl border border-white/5 p-8 mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Dicas importantes</h2>
+          <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
+            <h2 className="text-2xl font-bold text-[#001529] mb-4">Dicas importantes</h2>
             <ul className="space-y-3">
               {[
                 "Faça a simulação antes de migrar para garantir que será vantajoso financeiramente",
@@ -135,8 +137,8 @@ export function ComoMigrar() {
                 "O desenquadramento pode ser retroativo se o faturamento já ultrapassou o limite",
                 "Você não perde o CNPJ — ele apenas muda de categoria",
               ].map((tip, i) => (
-                <li key={i} className="flex items-start gap-3 text-[#C8C9D0]">
-                  <CheckCircle className="w-5 h-5 text-[#2DDB81] flex-shrink-0 mt-0.5" />
+                <li key={i} className="flex items-start gap-3 text-[rgba(0,21,41,0.6)]">
+                  <CheckCircle className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
                   <span>{tip}</span>
                 </li>
               ))}
@@ -144,13 +146,13 @@ export function ComoMigrar() {
           </div>
 
           {/* CTA */}
-          <div className="bg-gradient-to-r from-[#28A263]/20 to-[#2DDB81]/10 rounded-2xl border border-[#28A263]/20 p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-3">Descubra se vale a pena migrar</h2>
-            <p className="text-[#C8C9D0] mb-6">
+          <div className="bg-[#28A263]/10 rounded-2xl border border-[#28A263]/20 p-8 text-center">
+            <h2 className="text-2xl font-bold text-[#001529] mb-3">Descubra se vale a pena migrar</h2>
+            <p className="text-[rgba(0,21,41,0.6)] mb-6">
               Use nosso simulador gratuito e compare os impostos do MEI vs ME em segundos.
             </p>
             <Link to="/app/mei-me">
-              <Button size="lg" className="bg-[#28A263] hover:bg-[#2DDB81] text-white rounded-xl px-8">
+              <Button size="lg" className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-xl px-8">
                 Simular Agora — Grátis
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
