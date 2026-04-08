@@ -33,7 +33,7 @@ import { FAQ } from "./pages/FAQ";
 import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
 import { PasswordResetRedirect } from "./pages/PasswordResetRedirect";
-import { RecomendacoesInvestimento } from "./pages/RecomendacoesInvestimento";
+import { GuiaInvestimentos } from "./pages/GuiaInvestimentos";
 
 export const router = createHashRouter([
   {
@@ -174,7 +174,7 @@ export const router = createHashRouter([
       },
       {
         path: "investimentos",
-        Component: RecomendacoesInvestimento,
+        Component: GuiaInvestimentos,
       },
     ],
   },
