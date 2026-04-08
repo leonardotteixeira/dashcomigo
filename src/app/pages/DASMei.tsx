@@ -131,11 +131,7 @@ export function DASMei() {
                 <button
                   key={a.id}
                   onClick={() => setAtividade(a.id)}
-                  className={`flex items-center justify-between p-3 rounded-lg border text-left transition-all ${
-                    selected
-                      ? "border-[#28A263] bg-[#28A263]/10"
-                      : "border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.15)]"
-                  }`}
+                  className={`flex items-center justify-between p-3 rounded-lg border text-left transition-all ${selected ? "border-[#28A263] bg-[#28A263]/10" : "border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.15)]"}`}
                 >
                   <div>
                     <p className={`text-sm font-medium ${selected ? "text-[#28A263]" : "text-[#001529]"}`}>{a.label}</p>
@@ -159,15 +155,7 @@ export function DASMei() {
 
           return (
             <div
-              className={`rounded-xl border p-6 ${
-                isPago
-                  ? "border-[#28A263]/30 bg-[#28A263]/8"
-                  : isVencido
-                  ? "border-red-500/30 bg-red-50"
-                  : diasRestantes <= 5
-                  ? "border-yellow-400/30 bg-yellow-50"
-                  : "border-[rgba(0,0,0,0.1)] bg-[#F8F9FA]"
-              }`}
+              className={`rounded-xl border p-6 ${isPago ? "border-[#28A263]/30 bg-[#28A263]/8" : isVencido ? "border-red-500/30 bg-red-50" : diasRestantes <= 5 ? "border-yellow-400/30 bg-yellow-50" : "border-[rgba(0,0,0,0.1)] bg-[#F8F9FA]"}`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -183,7 +171,7 @@ export function DASMei() {
                   </div>
                   <h2 className="text-xl font-bold text-[#001529] capitalize">{getMesLabel(now)}</h2>
                   <p className="text-[rgba(0,21,41,0.5)] text-sm mt-0.5">
-                    Vencimento: dia 20/{String(venc.getMonth() + 1).padStart(2, "0")}/{venc.getFullYear()} · {atividadeInfo.label}
+                    {`Vencimento: dia 20/${String(venc.getMonth() + 1).padStart(2, "0")}/${venc.getFullYear()}`} · {atividadeInfo.label}
                   </p>
                 </div>
 
@@ -266,7 +254,7 @@ export function DASMei() {
                         {isCurrent && <span className="ml-2 text-xs text-[#28A263] font-normal">mês atual</span>}
                       </p>
                       <p className="text-xs text-[rgba(0,21,41,0.5)]">
-                        Venc. 20/{String(venc.getMonth() + 1).padStart(2, "0")}/{venc.getFullYear()}
+                        {`Venc. 20/${String(venc.getMonth() + 1).padStart(2, "0")}/${venc.getFullYear()}`}
                         {pago && ` · Pago em ${new Date(pago.data).toLocaleDateString("pt-BR")}`}
                       </p>
                     </div>
@@ -283,11 +271,7 @@ export function DASMei() {
                       <button
                         onClick={() => handlePagar(date)}
                         disabled={paying === mesKey}
-                        className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                          isVencido
-                            ? "bg-red-100 text-red-600 hover:bg-red-200"
-                            : "bg-[#28A263]/10 text-[#28A263] hover:bg-[#28A263]/20"
-                        } disabled:opacity-50`}
+                        className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${isVencido ? "bg-red-100 text-red-600 hover:bg-red-200" : "bg-[#28A263]/10 text-[#28A263] hover:bg-[#28A263]/20"} disabled:opacity-50`}
                       >
                         {paying === mesKey ? "..." : "Marcar pago"}
                       </button>

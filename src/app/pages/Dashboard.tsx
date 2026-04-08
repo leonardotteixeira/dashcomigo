@@ -1,438 +1,328 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
   TrendingUp,
   TrendingDown,
-  ArrowRight,
-  Crown,
-  Wallet,
-  Filter,
-  Download,
-  Plus,
-  Calendar,
-  AlertTriangle,
-  CheckCircle,
+  AlertCircle,
+  ArrowUpRight,
+  ArrowDownRight,
+  DollarSign,
+  Target,
+  Sparkles,
+  User,
+  Building2,
 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { useAuth } from "../contexts/AuthContext";
-import { useCashFlow } from "../contexts/CashFlowContext";
-import { usePFPJ } from "../contexts/PFPJContext";
-import { ObligationsProvider } from "../contexts/ObligationsContext";
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
+  Legend,
 } from "recharts";
-import { motion } from "motion/react";
+import { useAuth } from "../contexts/AuthContext";
+import { useCashFlow } from "../contexts/CashFlowContext";
+import { ObligationsProvider } from "../contexts/ObligationsContext";
+import UpgradeCard from "../components/UpgradeCard";
+import StreakCard from "../components/StreakCard";
+import DailyInsights from "../components/DailyInsights";
+import QuickActions from "../components/QuickActions";
+import AchievementCard from "../components/AchievementCard";
+import OnboardingChecklist from "../components/OnboardingChecklist";
+import WelcomeBackModal from "../components/WelcomeBackModal";
+import UsageLimitCard from "../components/UsageLimitCard";
 
-const MEI_LIMIT_ANNUAL = 81000;
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function buildFaturamentoData(transactions: any[]) {
-  const months = Array.from({ length: 6 }, (_, i) => {
+function buildCashFlowChart(transactions: any[]) {
+  return Array.from({ length: 4 }, (_, i) => {
     const d = new Date();
     d.setDate(1);
-    d.setMonth(d.getMonth() - (5 - i));
+    d.setMonth(d.getMonth() - (3 - i));
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const label = d.toLocaleDateString("pt-BR", { month: "short" });
-    const valor = transactions
+    const month = d.toLocaleDateString("pt-BR", { month: "short" });
+    const receitas = transactions
       .filter((t) => t.tipo === "entrada" && t.data.startsWith(key))
       .reduce((s: number, t: any) => s + t.valor, 0);
-    return { mes: label, valor, projecao: undefined as number | undefined };
+    const despesas = transactions
+      .filter((t) => t.tipo === "saida" && t.data.startsWith(key))
+      .reduce((s: number, t: any) => s + t.valor, 0);
+    return { month, receitas, despesas };
   });
-
-  const values = months.map((m) => m.valor);
-  const nonZero = values.filter((v) => v > 0);
-  let growthRate = 0.05;
-  if (nonZero.length >= 2) {
-    const rates = nonZero.slice(1).map((v, i) => (v - nonZero[i]) / Math.max(nonZero[i], 1));
-    growthRate = Math.max(-0.1, Math.min(0.3, rates.reduce((a, b) => a + b, 0) / rates.length));
-  }
-
-  const lastReal = months[months.length - 1].valor;
-  months[months.length - 1].projecao = lastReal;
-
-  for (let i = 1; i <= 3; i++) {
-    const d = new Date();
-    d.setMonth(d.getMonth() + i);
-    const label = d.toLocaleDateString("pt-BR", { month: "short" });
-    months.push({
-      mes: label,
-      valor: undefined as any,
-      projecao: lastReal * Math.pow(1 + growthRate, i),
-    });
-  }
-
-  return { data: months, growthRate };
 }
-
-// ── Component ─────────────────────────────────────────────────────────────────
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { summary, insights, transactions } = useCashFlow();
-  const { pfpjSummary, getVerifiedPlan } = usePFPJ();
-  const [viewMode, setViewMode] = useState<"integrated" | "separated">("integrated");
-  const [selectedPeriod, setSelectedPeriod] = useState("6m");
+
+  const currentHour = new Date().getHours();
+  const greeting = currentHour < 12 ? "Bom dia" : currentHour < 18 ? "Boa tarde" : "Boa noite";
+  const firstName = user?.name?.split(" ")[0] ?? "usuário";
 
   const fmt = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
 
-  const { data: faturamentoData } = useMemo(
-    () => buildFaturamentoData(transactions),
-    [transactions]
-  );
+  const cashFlowData = useMemo(() => buildCashFlowChart(transactions), [transactions]);
 
-  // Get display data based on view mode
-  const displaySummary = viewMode === "separated" ? pfpjSummary : summary;
-  const saldoAtual = viewMode === "separated" ? pfpjSummary.pj?.balance ?? 0 : summary.saldoAtual;
-  const totalEntradas = viewMode === "separated" ? pfpjSummary.pj?.totalIncoming ?? 0 : summary.totalEntradas;
-  const totalSaidas = viewMode === "separated" ? pfpjSummary.pj?.totalOutgoing ?? 0 : summary.totalSaidas;
+  const recentTransactions = transactions.slice(0, 4);
 
-  const meiPercentage = summary.totalEntradas > 0
-    ? (summary.totalEntradas / MEI_LIMIT_ANNUAL) * 100
-    : 0;
-
-  const limitStatus = getVerifiedPlan();
-
-  // Filter transactions for display
-  const displayTransactions = viewMode === "separated"
-    ? transactions.filter((t) => t.pf_pj_type === "pj")
-    : transactions;
-
-  const recentTransactions = displayTransactions.slice(0, 10);
-
-  const chartStyle = {
-    cartesian: "rgba(0,0,0,0.1)",
-    axis: "rgba(0,21,41,0.6)",
-    tooltip: {
-      background: "#FFFFFF",
-      border: "1px solid rgba(0,0,0,0.1)",
-      borderRadius: "12px",
-      color: "#001529",
-    },
-  };
+  const alerts = insights.slice(0, 3).map((ins, i) => ({
+    id: i,
+    message: ins.mensagem,
+    type: ins.tipo === "alerta" ? "warning" : "success",
+    action: "Ver detalhes",
+  }));
 
   return (
     <ObligationsProvider>
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* ── Header with Fluxo de Caixa Title ── */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-        >
+      <div className="space-y-6">
+        <WelcomeBackModal />
+
+        {/* Header */}
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-[#001529]">Fluxo de Caixa</h1>
-            <p className="text-[rgba(0,21,41,0.6)] mt-1">
-              Controle suas entradas e saídas
+            <h1 className="font-bold text-[#001529] mb-1">
+              {greeting}, {firstName}! 👋
+            </h1>
+            <p className="text-[#001529]/60">
+              Aqui está o resumo do seu negócio hoje
             </p>
           </div>
-
-          {/* Toggle: Integrado vs Separado */}
-          <div className="flex items-center gap-2 bg-[#F8F9FA] p-1 rounded-xl border border-[rgba(0,0,0,0.1)]">
-            <button
-              onClick={() => setViewMode("integrated")}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                viewMode === "integrated"
-                  ? "bg-white text-[#001529] border border-[rgba(0,0,0,0.1)]"
-                  : "text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
-              }`}
-            >
-              Integrado
-            </button>
-            <button
-              onClick={() => setViewMode("separated")}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                viewMode === "separated"
-                  ? "bg-white text-[#001529] border border-[rgba(0,0,0,0.1)]"
-                  : "text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
-              }`}
-            >
-              Separado PF/PJ
-            </button>
+          <div className="flex items-center gap-2">
+            <span className="text-xs bg-[#F5F7FA] px-3 py-1.5 rounded-full font-medium text-[#001529]/60 border border-[#E5E7EB]">
+              {user?.plan === "pro" ? "Plano PRO ✨" : "Plano Gratuito"}
+            </span>
           </div>
-        </motion.div>
+        </div>
 
-        {/* ── MEI Alert Banner ── */}
-        {meiPercentage > 80 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-5 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-4"
-          >
-            <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <h3 className="font-semibold text-red-900 mb-1">
-                {meiPercentage > 100
-                  ? "Você ultrapassou o limite MEI!"
-                  : `Você está em ${meiPercentage.toFixed(0)}% do limite MEI`}
-              </h3>
-              <p className="text-sm text-red-800 mb-3">
-                {meiPercentage > 100
-                  ? "Seu faturamento ultrapassou o limite anual. Cada mês sem migrar para ME custa mais em impostos."
-                  : "Você está se aproximando do limite anual de R$ 81.000. Considere planejar a migração para ME."}
-              </p>
-              <Button
-                size="sm"
-                className="bg-red-600 hover:bg-red-700 text-white"
-                onClick={() => navigate("/app/mei-me")}
-              >
-                Simular MEI → ME <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-          </motion.div>
-        )}
+        {/* Usage limit card */}
+        <UsageLimitCard />
 
-        {/* ── Quick Stats: 3 Cards (Saldo, Entradas, Saídas) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid md:grid-cols-3 gap-4"
-        >
-          {/* Saldo Atual */}
-          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-[#28A263]/30 transition-colors">
-            <p className="text-[rgba(0,21,41,0.6)] text-sm font-medium mb-2">Saldo Atual</p>
-            <p className="text-3xl font-bold text-[#001529]">{fmt(saldoAtual)}</p>
-            <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Disponível agora</p>
-          </div>
-
-          {/* Entradas */}
-          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-[#28A263]/30 transition-colors">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[rgba(0,21,41,0.6)] text-sm font-medium">Entradas</p>
-              <TrendingUp className="w-4 h-4 text-[#28A263]" />
-            </div>
-            <p className="text-3xl font-bold text-[#28A263]">{fmt(totalEntradas)}</p>
-            <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Este mês</p>
-          </div>
-
-          {/* Saídas */}
-          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] hover:border-red-300 transition-colors">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[rgba(0,21,41,0.6)] text-sm font-medium">Saídas</p>
-              <TrendingDown className="w-4 h-4 text-red-500" />
-            </div>
-            <p className="text-3xl font-bold text-red-500">{fmt(totalSaidas)}</p>
-            <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Este mês</p>
-          </div>
-        </motion.div>
-
-        {/* ── Insights / Alerts ── */}
-        {insights.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-3"
-          >
-            {insights.map((insight) => (
-              <div
-                key={insight.id}
-                className={`p-4 rounded-2xl border flex items-start gap-3 ${
-                  insight.tipo === "alerta"
-                    ? "bg-red-50 border-red-200"
-                    : insight.tipo === "sucesso"
-                      ? "bg-[#28A263]/10 border-[#28A263]/20"
-                      : "bg-blue-50 border-blue-200"
-                }`}
-              >
-                <CheckCircle
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                    insight.tipo === "alerta"
-                      ? "text-red-600"
-                      : insight.tipo === "sucesso"
-                        ? "text-[#28A263]"
-                        : "text-blue-600"
-                  }`}
-                />
-                <div>
-                  <p
-                    className={`text-sm font-medium ${
-                      insight.tipo === "alerta"
-                        ? "text-red-800"
-                        : insight.tipo === "sucesso"
-                          ? "text-[#28A263]"
-                          : "text-blue-800"
-                    }`}
-                  >
-                    {insight.icone} {insight.mensagem}
-                  </p>
-                </div>
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Saldo Atual</p>
+              <div className="w-11 h-11 rounded-xl bg-[#003a6d]/10 flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-[#003a6d]" />
               </div>
-            ))}
-          </motion.div>
+            </div>
+            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.saldoAtual)}</p>
+            <div className={`flex items-center gap-1.5 text-sm font-medium ${summary.saldoAtual >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
+              {summary.saldoAtual >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+              <span>{summary.saldoAtual >= 0 ? "Saldo positivo" : "Saldo negativo"}</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Receitas (mês)</p>
+              <div className="w-11 h-11 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-[#10b981]" />
+              </div>
+            </div>
+            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.totalEntradas)}</p>
+            <div className="flex items-center gap-1.5 text-sm text-[#10b981] font-medium">
+              <ArrowUpRight className="w-4 h-4" />
+              <span>Total do mês</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Despesas (mês)</p>
+              <div className="w-11 h-11 rounded-xl bg-[#ef4444]/10 flex items-center justify-center">
+                <TrendingDown className="w-5 h-5 text-[#ef4444]" />
+              </div>
+            </div>
+            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.totalSaidas)}</p>
+            <div className="flex items-center gap-1.5 text-sm text-[#001529]/60 font-medium">
+              <span>Total do mês</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Lucro Líquido</p>
+              <div className="w-11 h-11 rounded-xl bg-[#003a6d]/10 flex items-center justify-center">
+                <Target className="w-5 h-5 text-[#003a6d]" />
+              </div>
+            </div>
+            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.lucro)}</p>
+            <div className={`flex items-center gap-1.5 text-sm font-medium ${summary.lucro >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
+              {summary.lucro >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+              <span>{summary.lucro >= 0 ? "Resultado positivo" : "Resultado negativo"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Onboarding Checklist */}
+        <OnboardingChecklist />
+
+        {/* Engagement Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <StreakCard />
+          <QuickActions />
+          <UpgradeCard variant="compact" />
+        </div>
+
+        {/* Daily Insights */}
+        <DailyInsights />
+
+        {/* Insights and Achievements */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Investment suggestion */}
+          <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] text-white rounded-2xl p-7 shadow-md">
+            <div className="flex items-start gap-3 mb-5">
+              <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg mb-1">Guia de Investimentos</h3>
+                <p className="text-sm text-white/90">
+                  Aprenda a fazer seu dinheiro trabalhar por você
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3 mb-5">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold">Reserva de Emergência</span>
+                  <span className="text-sm font-medium">6 meses</span>
+                </div>
+                <p className="text-xs text-white/80">Proteja seu negócio de imprevistos</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold">Investimento Curto Prazo</span>
+                  <span className="text-sm font-medium">~110% CDI</span>
+                </div>
+                <p className="text-xs text-white/80">Liquidez diária com rendimento</p>
+              </div>
+            </div>
+            <button
+              className="w-full bg-white text-[#003a6d] font-semibold py-3 rounded-xl hover:bg-white/95 transition-all shadow-sm"
+              onClick={() => navigate("/app/investimentos")}
+            >
+              Ver Guia Completo
+            </button>
+          </div>
+
+          {/* Achievements */}
+          <AchievementCard />
+        </div>
+
+        {/* Alerts */}
+        {alerts.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+              <div className="flex items-center gap-2 mb-5">
+                <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
+                <h3 className="font-bold text-lg text-[#001529]">Alertas Importantes</h3>
+              </div>
+              <div className="space-y-3">
+                {alerts.map((alert) => (
+                  <div key={alert.id} className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F7FA]">
+                    <div className={`w-2 h-2 rounded-full mt-2 ${alert.type === "warning" ? "bg-[#f59e0b]" : "bg-[#10b981]"}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-[#001529] font-medium mb-1.5">{alert.message}</p>
+                      <button className="text-sm text-[#003a6d] hover:underline font-medium">{alert.action}</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         )}
 
-        {/* ── Análise do Período ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        {/* Cash Flow Chart */}
+        <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-bold text-[#001529]">Análise do Período</h2>
-              <p className="text-sm text-[rgba(0,21,41,0.6)] mt-1">Últimos 6 meses + próximos 3 meses (projeção)</p>
+              <h3 className="font-bold text-lg text-[#001529] mb-1">Fluxo de Caixa</h3>
+              <p className="text-sm text-[#001529]/60 font-medium">Receitas vs Despesas (últimos 4 meses)</p>
             </div>
-            <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-3 py-2 text-sm text-[#001529] bg-[#F8F9FA] hover:bg-[#F5F7FA] rounded-lg border border-[rgba(0,0,0,0.1)] transition-colors">
-                <Calendar className="w-4 h-4" />
-                Período
-              </button>
-              <button className="flex items-center gap-2 px-3 py-2 text-sm text-[#001529] bg-[#F8F9FA] hover:bg-[#F5F7FA] rounded-lg border border-[rgba(0,0,0,0.1)] transition-colors">
-                <Download className="w-4 h-4" />
-                Exportar
-              </button>
-            </div>
+            <button
+              className="text-sm text-[#003a6d] hover:underline font-semibold"
+              onClick={() => navigate("/app")}
+            >
+              Ver completo
+            </button>
           </div>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={cashFlowData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+              <XAxis dataKey="month" stroke="#6B7280" fontSize={12} />
+              <YAxis stroke="#6B7280" fontSize={12} tickFormatter={(v) => `R$${(v/1000).toFixed(0)}k`} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px" }}
+                formatter={(v: number) => [fmt(v)]}
+              />
+              <Legend />
+              <Bar dataKey="receitas" fill="#10b981" radius={[8, 8, 0, 0]} name="Receitas" />
+              <Bar dataKey="despesas" fill="#EF4444" radius={[8, 8, 0, 0]} name="Despesas" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-          {transactions.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={faturamentoData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#28A263" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#28A263" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={chartStyle.cartesian} vertical={false} />
-                <XAxis dataKey="mes" stroke={chartStyle.axis} style={{ fontSize: "12px" }} />
-                <YAxis stroke={chartStyle.axis} style={{ fontSize: "12px" }} />
-                <Tooltip
-                  contentStyle={chartStyle.tooltip}
-                  formatter={(value) => (typeof value === "number" ? fmt(value) : value)}
-                  labelFormatter={(label) => `Mês: ${label}`}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="valor"
-                  stroke="#28A263"
-                  strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#colorValor)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+        {/* Recent Transactions */}
+        <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-lg text-[#001529]">Transações Recentes</h3>
+            <button
+              className="text-sm text-[#003a6d] hover:underline font-semibold"
+              onClick={() => navigate("/app")}
+            >
+              Ver todas
+            </button>
+          </div>
+          {recentTransactions.length === 0 ? (
+            <div className="text-center py-10 text-[#001529]/50">
+              <p className="text-sm">Nenhuma transação registrada ainda.</p>
+              <button
+                className="mt-2 text-[#003a6d] text-sm font-medium hover:underline"
+                onClick={() => navigate("/app")}
+              >
+                Adicionar transação
+              </button>
+            </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-center">
-              <p className="text-[rgba(0,21,41,0.6)]">Nenhuma transação registrada ainda</p>
-            </div>
-          )}
-        </motion.div>
-
-        {/* ── Últimas Transações ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <h2 className="text-xl font-bold text-[#001529]">Últimas Transações</h2>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                size="sm"
-                onClick={() => navigate("/app")}
-                className="bg-[#28A263] hover:bg-[#20915a] text-white flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Nova Entrada
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => navigate("/app")}
-                className="border-[rgba(0,0,0,0.1)] text-[#001529] hover:bg-[#F8F9FA] flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Nova Saída
-              </Button>
-              <button className="flex items-center gap-2 px-3 py-2 text-sm text-[#001529] bg-[#F8F9FA] hover:bg-[#F5F7FA] rounded-lg border border-[rgba(0,0,0,0.1)] transition-colors">
-                <Filter className="w-4 h-4" />
-                Filtros
-              </button>
-            </div>
-          </div>
-
-          {recentTransactions.length > 0 ? (
             <div className="space-y-2">
-              {recentTransactions.map((t, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-lg hover:bg-[#F8F9FA] transition-colors border border-transparent hover:border-[rgba(0,0,0,0.05)]">
-                  <div className="flex-1">
-                    <p className="font-medium text-[#001529]">{t.descricao}</p>
-                    <p className="text-xs text-[rgba(0,21,41,0.6)]">
+              {recentTransactions.map((t) => (
+                <div key={t.id} className="flex items-center gap-4 p-4 rounded-xl hover:bg-[#F5F7FA] transition-all">
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${t.tipo === "entrada" ? "bg-[#10b981]/10" : "bg-[#ef4444]/10"}`}>
+                    {t.tipo === "entrada" ? (
+                      <ArrowUpRight className="w-5 h-5 text-[#10b981]" />
+                    ) : (
+                      <ArrowDownRight className="w-5 h-5 text-[#ef4444]" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-sm font-semibold text-[#001529]">{t.descricao || t.categoria}</p>
+                      {t.pf_pj_type && (
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${
+                          t.pf_pj_type === "pf" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
+                        }`}>
+                          {t.pf_pj_type === "pf" ? <User className="w-3 h-3" /> : <Building2 className="w-3 h-3" />}
+                          {t.pf_pj_type.toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[#001529]/60 font-medium">
                       {new Date(t.data).toLocaleDateString("pt-BR")}
-                      {t.pf_pj_type === "pj" && " • PJ"}
-                      {t.pf_pj_type === "pf" && " • PF"}
                     </p>
                   </div>
-                  <p
-                    className={`font-semibold text-lg ${
-                      t.tipo === "entrada" ? "text-[#28A263]" : "text-red-500"
-                    }`}
-                  >
-                    {t.tipo === "entrada" ? "+" : "-"}
-                    {fmt(t.valor)}
+                  <p className={`font-bold text-lg ${t.tipo === "entrada" ? "text-[#10b981]" : "text-[#ef4444]"}`}
+                     style={{ fontVariantNumeric: "tabular-nums" }}>
+                    {t.tipo === "entrada" ? "+" : "-"}{fmt(t.valor)}
                   </p>
                 </div>
               ))}
-              <button
-                onClick={() => navigate("/app")}
-                className="w-full mt-4 py-3 text-[#0066FF] hover:text-[#003fa6] font-medium flex items-center justify-center gap-2 transition-colors"
-              >
-                Ver todas as transações <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-[rgba(0,21,41,0.6)] mb-4">Nenhuma transação registrada</p>
-              <Button
-                onClick={() => navigate("/app")}
-                className="bg-[#28A263] hover:bg-[#20915a] text-white"
-              >
-                Adicionar primeira transação
-              </Button>
             </div>
           )}
-        </motion.div>
-
-        {/* ── Upgrade CTA ── */}
-        {user?.plan === "free" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="p-6 bg-gradient-to-r from-[#28A263]/10 to-[#0066FF]/10 rounded-2xl border border-[#28A263]/20"
-          >
-            <div className="flex items-start gap-4">
-              <Crown className="w-6 h-6 text-[#28A263] flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="font-bold text-[#001529] text-lg mb-1">Upgrade para PRO</h3>
-                <p className="text-sm text-[rgba(0,21,41,0.6)] mb-4">
-                  Desbloqueie lançamentos ilimitados, relatórios avançados e mais ferramentas premium
-                </p>
-                <Button
-                  onClick={() => navigate("/checkout")}
-                  className="bg-[#28A263] hover:bg-[#20915a] text-white"
-                >
-                  Ver Planos <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
+        </div>
       </div>
     </ObligationsProvider>
   );
