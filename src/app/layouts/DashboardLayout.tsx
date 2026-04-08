@@ -17,7 +17,6 @@ import {
   Receipt,
   BarChart3,
   Package,
-  TrendingUp,
   Users,
   PieChart,
   Target
@@ -75,6 +74,12 @@ export function DashboardLayout() {
       items: [
         { name: "Orçamentos", href: "/app/orcamentos", icon: PieChart, isPro: true },
         { name: "Metas", href: "/app/metas", icon: Target, isPro: true },
+      ],
+    },
+    {
+      label: "Investimentos",
+      items: [
+        { name: "Recomendações", href: "/app/investimentos", icon: TrendingUp },
       ],
     },
     {
