@@ -89,30 +89,37 @@ export function SimuladorLucro() {
   const inputClass = "bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-xl focus:border-[#28A263]";
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#001529] mb-2 flex items-center gap-3">
-          <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center">
-            <TrendingUp className="w-6 h-6 text-blue-600" />
+      <div className="border-b border-[rgba(0,0,0,0.1)] px-4 sm:px-6 py-6 sm:py-8 mb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-[#001529]">Simulador de Lucro</h1>
+              <p className="text-[rgba(0,21,41,0.6)] mt-2">
+                Calcule seu lucro líquido, descubra o ponto de equilíbrio e projete cenários futuros
+              </p>
+            </div>
           </div>
-          Simulador de Lucro
-        </h1>
-        <p className="text-[rgba(0,21,41,0.6)]">
-          Calcule seu lucro líquido, descubra o ponto de equilíbrio e projete cenários futuros
-        </p>
+        </div>
       </div>
 
-      {/* Info Alert */}
-      <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-        <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-blue-800">
-          <strong className="text-blue-900">Dica:</strong> Uma margem de lucro saudável está entre{" "}
-          <strong className="text-blue-900">20-40%</strong>. O ponto de equilíbrio indica quanto você precisa faturar para cobrir todos os custos.
-        </p>
-      </div>
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 space-y-8">
 
-      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Info Alert */}
+        <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+          <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-blue-800">
+            <strong className="text-blue-900">Dica:</strong> Uma margem de lucro saudável está entre{" "}
+            <strong className="text-blue-900">20-40%</strong>. O ponto de equilíbrio indica quanto você precisa faturar para cobrir todos os custos.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
         {/* Inputs */}
         <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
           <h3 className="text-lg font-bold text-[#001529] mb-6">Dados Financeiros</h3>
@@ -258,8 +265,8 @@ export function SimuladorLucro() {
         </div>
       </div>
 
-      {/* Projections */}
-      <div className="p-8 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
+        {/* Projections */}
+        <div className="p-8 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
         <div className="mb-6">
           <h3 className="text-xl font-bold text-[#001529] mb-4">Projeção de Cenários</h3>
 
@@ -350,8 +357,8 @@ export function SimuladorLucro() {
             <div className="text-sm text-[rgba(0,21,41,0.6)] mt-1">Margem projetada (mês 12)</div>
           </div>
         </div>
+        </div>
       </div>
-
     </div>
   );
 }

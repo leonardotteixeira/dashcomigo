@@ -67,30 +67,37 @@ export function SimuladorPreco() {
   const inputClass = "bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-xl focus:border-[#28A263]";
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#001529] mb-2 flex items-center gap-3">
-          <div className="w-12 h-12 bg-[#C0F497]/20 rounded-2xl flex items-center justify-center">
-            <Tag className="w-6 h-6 text-[#28A263]" />
+      <div className="border-b border-[rgba(0,0,0,0.1)] px-4 sm:px-6 py-6 sm:py-8 mb-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-[#C0F497]/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <Tag className="w-6 h-6 text-[#28A263]" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-[#001529]">Simulador de Preço Ideal</h1>
+              <p className="text-[rgba(0,21,41,0.6)] mt-2">
+                Calcule o preço perfeito para seus produtos ou serviços considerando custos e margem desejada
+              </p>
+            </div>
           </div>
-          Simulador de Preço Ideal
-        </h1>
-        <p className="text-[rgba(0,21,41,0.6)]">
-          Calcule o preço perfeito para seus produtos ou serviços considerando custos e margem desejada
-        </p>
+        </div>
       </div>
 
-      {/* Info Alert */}
-      <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-        <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-blue-800">
-          A margem ideal para serviços é entre <strong className="text-blue-900">40-60%</strong> e para produtos físicos entre{" "}
-          <strong className="text-blue-900">30-50%</strong>
-        </p>
-      </div>
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 space-y-8">
 
-      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Info Alert */}
+        <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+          <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-blue-800">
+            A margem ideal para serviços é entre <strong className="text-blue-900">40-60%</strong> e para produtos físicos entre{" "}
+            <strong className="text-blue-900">30-50%</strong>
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
         {/* Input Card */}
         <div className="space-y-6">
           <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">

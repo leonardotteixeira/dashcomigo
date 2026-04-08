@@ -373,11 +373,11 @@ export function Onboarding() {
     <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-2xl">
         {/* Progress bar */}
-        <div className="flex gap-1.5 mb-6">
+        <div className="flex gap-1.5 mb-8">
           {FEATURES.map((_, i) => (
             <div
               key={i}
-              className="h-1 flex-1 rounded-full transition-all duration-500"
+              className="h-1.5 flex-1 rounded-full transition-all duration-500"
               style={{
                 backgroundColor: i <= step ? current.color : "rgba(0,0,0,0.1)",
               }}
@@ -386,7 +386,7 @@ export function Onboarding() {
         </div>
 
         {/* Main card */}
-        <div className="bg-white rounded-3xl border border-[rgba(0,0,0,0.1)] overflow-hidden shadow-lg">
+        <div className="bg-white rounded-3xl border border-[rgba(0,0,0,0.1)] overflow-hidden shadow-lg transition-all duration-300">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={step}
@@ -399,29 +399,29 @@ export function Onboarding() {
               className="p-8"
             >
               {/* Header */}
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-start gap-4 mb-4">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: `${current.color}20` }}
                 >
-                  <current.icon className="w-5 h-5" style={{ color: current.color }} />
+                  <current.icon className="w-6 h-6" style={{ color: current.color }} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-[#001529]">{current.title}</h2>
+                  <h2 className="text-3xl font-bold text-[#001529]">{current.title}</h2>
+                  <p className="text-[rgba(0,21,41,0.6)] text-sm mt-1">{current.subtitle}</p>
                 </div>
               </div>
-              <p className="text-[rgba(0,21,41,0.6)] text-sm mb-6 leading-relaxed">{current.subtitle}</p>
 
               {/* Preview */}
-              <div className="mb-6">
+              <div className="mb-8 p-6 bg-[#F8F9FA] rounded-2xl border border-[rgba(0,0,0,0.05)]">
                 {current.preview}
               </div>
 
               {/* Highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {current.highlights.map((h, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <Shield className="w-3.5 h-3.5 flex-shrink-0" style={{ color: current.color }} />
+                  <div key={i} className="flex items-start gap-3 p-3 bg-[#F8F9FA] rounded-lg border border-[rgba(0,0,0,0.05)]">
+                    <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: current.color }} />
                     <span className="text-sm text-[rgba(0,21,41,0.6)]">{h}</span>
                   </div>
                 ))}
@@ -430,8 +430,8 @@ export function Onboarding() {
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="px-8 pb-8 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+          <div className="px-8 pb-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[rgba(0,0,0,0.1)] pt-6">
+            <div className="flex items-center gap-2">
               {step > 0 && (
                 <Button
                   variant="ghost"
@@ -445,7 +445,7 @@ export function Onboarding() {
               <button
                 onClick={handleSkip}
                 disabled={saving}
-                className="text-xs text-[rgba(0,21,41,0.5)] hover:text-[rgba(0,21,41,0.7)] transition-colors"
+                className="text-sm text-[rgba(0,21,41,0.6)] hover:text-[#001529] transition-colors font-medium"
               >
                 Pular tour
               </button>
@@ -454,7 +454,7 @@ export function Onboarding() {
             {!isLast ? (
               <Button
                 onClick={goNext}
-                className="text-white rounded-xl px-6"
+                className="text-white rounded-xl px-6 font-medium"
                 style={{ backgroundColor: current.color }}
               >
                 Próximo
@@ -464,7 +464,7 @@ export function Onboarding() {
               <Button
                 onClick={handleFinish}
                 disabled={saving}
-                className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-xl px-6"
+                className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-xl px-6 font-medium"
               >
                 {saving ? "Carregando..." : "Começar a usar"}
                 {!saving && <ArrowRight className="w-4 h-4 ml-2" />}
