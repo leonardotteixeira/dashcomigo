@@ -16,6 +16,7 @@ import {
 import { Button } from "../components/ui/button";
 import { useCashFlow, TransactionType, CATEGORIAS_ENTRADA, CATEGORIAS_SAIDA } from "../contexts/CashFlowContext";
 import { useAuth } from "../contexts/AuthContext";
+import { usePFPJ } from "../contexts/PFPJContext";
 import { useNavigate } from "react-router";
 import {
   Dialog,
@@ -46,6 +47,10 @@ import {
   exportCashFlowToCSV,
   type CashFlowTransaction,
 } from "../utils/export";
+import { PFPJToggle } from "../components/FluxoCaixa/PFPJToggle";
+import { PFPJSummaryCards } from "../components/FluxoCaixa/PFPJSummaryCards";
+import { TransactionTypeIcon } from "../components/FluxoCaixa/TransactionTypeIcon";
+import type { PFPJType } from "../types/pfpj";
 
 // Build last-6-months grouped data from all transactions
 function buildMonthlyData(transactions: { data: string; valor: number; tipo: string }[]) {
@@ -97,9 +102,11 @@ export function FluxoCaixa() {
     getLimitStatus,
     canAddTransaction
   } = useCashFlow();
+  const { calculateSummary } = usePFPJ();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [limitDialogOpen, setLimitDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'integrado' | 'separado'>('integrado');
   const [periodo, setPeriodo] = useState<"dia" | "semana" | "mes" | "ano">("mes");
   const [transactionType, setTransactionType] = useState<TransactionType>("entrada");
 
@@ -107,6 +114,7 @@ export function FluxoCaixa() {
   const [formCategoria, setFormCategoria] = useState("");
   const [formData, setFormData] = useState(new Date().toISOString().split("T")[0]);
   const [formDescricao, setFormDescricao] = useState("");
+  const [formPFPJType, setFormPFPJType] = useState<PFPJType>("pf");
 
   const limitStatus = getLimitStatus();
   const filteredTransactions = getTransactionsByPeriod(periodo);
@@ -134,6 +142,9 @@ export function FluxoCaixa() {
     ano: "1ano",
   }[periodo];
 
+  // Get PF/PJ summary for separated view
+  const pfpjSummary = useMemo(() => calculateSummary(), [transactions, calculateSummary]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +161,8 @@ export function FluxoCaixa() {
         tipo: transactionType,
         categoria: formCategoria,
         data: formData,
-        descricao: formDescricao
+        descricao: formDescricao,
+        pf_pj_type: formPFPJType
       });
 
       // Incrementar contador de lançamentos se estiver no plano FREE
@@ -162,6 +174,7 @@ export function FluxoCaixa() {
       setFormCategoria("");
       setFormData(new Date().toISOString().split("T")[0]);
       setFormDescricao("");
+      setFormPFPJType("pf");
       setDialogOpen(false);
     } catch {
       setDialogOpen(false);
@@ -187,15 +200,19 @@ export function FluxoCaixa() {
           <p className="text-[#A1A1A1]">Controle suas entradas e saídas de forma simples</p>
         </div>
 
-        {user?.plan !== "pro" && (
-          <span className={`text-xs px-3 py-1.5 rounded-full border font-medium ${
-            limitStatus.percentage > 80
-              ? "bg-red-500/10 text-red-400 border-red-500/20"
-              : "bg-[#28A263]/10 text-[#2DDB81] border-[#28A263]/20"
-          }`}>
-            {limitStatus.used}/{limitStatus.limit} lançamentos este mês
-          </span>
-        )}
+        <div className="flex items-center gap-4 flex-wrap">
+          <PFPJToggle view={viewMode} onChange={setViewMode} />
+
+          {user?.plan !== "pro" && (
+            <span className={`text-xs px-3 py-1.5 rounded-full border font-medium ${
+              limitStatus.percentage > 80
+                ? "bg-red-500/10 text-red-400 border-red-500/20"
+                : "bg-[#28A263]/10 text-[#2DDB81] border-[#28A263]/20"
+            }`}>
+              {limitStatus.used}/{limitStatus.limit} lançamentos este mês
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Insights */}
@@ -231,7 +248,13 @@ export function FluxoCaixa() {
         </div>
       )}
 
-      {/* Summary Cards */}
+      {/* PF/PJ Summary Cards (when in separated view) */}
+      {viewMode === 'separado' && (
+        <PFPJSummaryCards summary={pfpjSummary} loading={false} />
+      )}
+
+      {/* Summary Cards (integrated view) */}
+      {viewMode === 'integrado' && (
       <div className="grid md:grid-cols-4 gap-4">
         <div className="p-6 bg-[#1B1B1B] rounded-2xl border border-white/5">
           <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
@@ -279,6 +302,7 @@ export function FluxoCaixa() {
           </p>
         </div>
       </div>
+      )}
 
       {/* Monthly Chart — entradas vs saídas */}
       {!isEmpty && (
@@ -488,6 +512,50 @@ export function FluxoCaixa() {
               />
             </div>
 
+            <div>
+              <Label className="text-[#A1A1A1] mb-2 block">Tipo de Transação</Label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormPFPJType('pf')}
+                  className={`p-3 rounded-lg border transition-all ${
+                    formPFPJType === 'pf'
+                      ? 'bg-[#5B5FFF]/20 border-[#5B5FFF] text-[#5B5FFF]'
+                      : 'bg-[#0F0F0F] border-white/10 text-[#A1A1A1] hover:border-white/20'
+                  }`}
+                >
+                  <div className="text-xl mb-1">👤</div>
+                  <div className="text-xs font-medium">Pessoal</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormPFPJType('pj')}
+                  className={`p-3 rounded-lg border transition-all ${
+                    formPFPJType === 'pj'
+                      ? 'bg-[#28A263]/20 border-[#28A263] text-[#28A263]'
+                      : 'bg-[#0F0F0F] border-white/10 text-[#A1A1A1] hover:border-white/20'
+                  }`}
+                >
+                  <div className="text-xl mb-1">🏢</div>
+                  <div className="text-xs font-medium">Empresa</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormPFPJType('misto')}
+                  className={`p-3 rounded-lg border transition-all ${
+                    formPFPJType === 'misto'
+                      ? 'bg-[#F4B23C]/20 border-[#F4B23C] text-[#F4B23C]'
+                      : 'bg-[#0F0F0F] border-white/10 text-[#A1A1A1] hover:border-white/20'
+                  }`}
+                >
+                  <div className="text-xl mb-1">⚡</div>
+                  <div className="text-xs font-medium">Misto</div>
+                </button>
+              </div>
+            </div>
+
             <div className="flex gap-3 pt-2">
               <Button
                 type="submit"
@@ -562,7 +630,12 @@ export function FluxoCaixa() {
                   </div>
 
                   <div>
-                    <p className="font-medium text-white">{transaction.categoria}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium text-white">{transaction.categoria}</p>
+                      {transaction.pf_pj_type && (
+                        <TransactionTypeIcon type={transaction.pf_pj_type} size="sm" />
+                      )}
+                    </div>
                     <p className="text-sm text-[#686F6F]">
                       {new Date(transaction.data).toLocaleDateString("pt-BR")}
                       {transaction.descricao && ` • ${transaction.descricao}`}
