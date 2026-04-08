@@ -5,6 +5,8 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { format, isPast, isToday, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { PremiumPageLayout } from "../components/PremiumPageLayout";
+import { colors } from "../../utils/designTokens";
 
 export function ContasAReceber() {
   const {
@@ -128,12 +130,24 @@ export function ContasAReceber() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#001529] mb-1">Contas a Receber</h1>
-        <p className="text-[rgba(0,21,41,0.6)]">Controle seus recebimentos e vencimentos</p>
-      </div>
+    <PremiumPageLayout
+      title="Contas a Receber"
+      description="Controle seus recebimentos e vencimentos"
+      actions={
+        <button
+          onClick={() => {
+            if (!canAddReceivable()) { toast.error("Limite atingido — faça upgrade para PRO"); return; }
+            setDialogOpen(true);
+          }}
+          style={{ backgroundColor: colors.primary }}
+          className="flex items-center gap-2 text-white font-semibold px-4 py-2.5 rounded-lg hover:opacity-90 transition-all"
+        >
+          <Plus className="w-4 h-4" />
+          Nova Conta
+        </button>
+      }
+    >
+      <div className="space-y-6">
 
       {/* Summary Cards */}
       <div className="grid md:grid-cols-3 gap-4">
@@ -188,33 +202,22 @@ export function ContasAReceber() {
         </div>
       )}
 
-      {/* Filters and Actions */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex gap-2">
-          {(["todas", "pendente", "recebido"] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFiltro(f)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                filtro === f
-                  ? "bg-[#28A263] text-white"
-                  : "bg-[#F8F9FA] text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] border border-[rgba(0,0,0,0.1)]"
-              }`}
-            >
-              {f === "todas" ? "Todas" : f === "pendente" ? "Pendentes" : "Recebidas"}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => {
-            if (!canAddReceivable()) { toast.error("Limite atingido — faça upgrade para PRO"); return; }
-            setDialogOpen(true);
-          }}
-          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          Nova Conta
-        </button>
+      {/* Filters */}
+      <div className="flex gap-2">
+        {(["todas", "pendente", "recebido"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFiltro(f)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              filtro === f
+                ? "text-white"
+                : "bg-[#F8F9FA] text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] border border-[rgba(0,0,0,0.1)]"
+            }`}
+            style={filtro === f ? { backgroundColor: colors.primary } : undefined}
+          >
+            {f === "todas" ? "Todas" : f === "pendente" ? "Pendentes" : "Recebidas"}
+          </button>
+        ))}
       </div>
 
       {/* Receivables List */}
@@ -475,6 +478,7 @@ export function ContasAReceber() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </PremiumPageLayout>
   );
 }
