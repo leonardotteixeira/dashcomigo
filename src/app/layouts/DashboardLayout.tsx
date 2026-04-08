@@ -80,7 +80,7 @@ export function DashboardLayout() {
     {
       label: "Investimentos",
       items: [
-        { name: "Recomendações", href: "/app/investimentos", icon: TrendingUp },
+        { name: "Guia de Investimentos", href: "/app/investimentos", icon: TrendingUp },
       ],
     },
     {
