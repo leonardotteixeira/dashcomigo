@@ -29,14 +29,13 @@ app.use(
     },
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'none'"],
-        scriptSrc: ["'none'"],
-        styleSrc: ["'none'"],
-        imgSrc: ["'none'"],
-        connectSrc: ["'none'"],
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https:"],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
-        formAction: ["'none'"],
       },
     },
   })
