@@ -5,6 +5,7 @@ interface KPICardProps {
   icon: LucideIcon;
   label: string;
   value: string | number;
+  description?: string;
   trend?: {
     direction: "up" | "down" | "neutral";
     percentage: number;
@@ -13,7 +14,7 @@ interface KPICardProps {
   onClick?: () => void;
 }
 
-export function KPICard({ icon: Icon, label, value, trend, color = "blue", onClick }: KPICardProps) {
+export function KPICard({ icon: Icon, label, value, description, trend, color = "blue", onClick }: KPICardProps) {
   const colorStyles = {
     green: "bg-[#10b981]/10 text-[#10b981]",
     blue: "bg-[#0066FF]/10 text-[#0066FF]",
@@ -47,6 +48,7 @@ export function KPICard({ icon: Icon, label, value, trend, color = "blue", onCli
       </div>
       <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">{label}</p>
       <p className="text-2xl font-bold text-[#001529]">{value}</p>
+      {description && <p className="text-xs text-[rgba(0,21,41,0.4)] mt-1">{description}</p>}
     </div>
   );
 }

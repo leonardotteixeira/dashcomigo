@@ -13,8 +13,12 @@ import { exportToXlsx } from "../../utils/exportXlsx";
 const fmtBRL = (v: number) =>
   `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
 
-const fmtDate = (iso: string) => {
-  const [y, m, d] = iso.split("T")[0].split("-");
+const fmtDate = (iso?: string) => {
+  if (!iso) return "—";
+  const datePart = iso.split("T")[0].split(" ")[0];
+  const parts = datePart.split("-");
+  if (parts.length < 3) return iso;
+  const [y, m, d] = parts;
   return `${d}/${m}/${y}`;
 };
 

@@ -93,8 +93,12 @@ const CATEGORIES_EXPENSE = [
 const fmtBRL = (v: number) =>
   v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const fmtDate = (iso: string) => {
-  const [y, m, d] = iso.split("T")[0].split("-");
+const fmtDate = (iso?: string) => {
+  if (!iso) return "—";
+  const datePart = iso.split("T")[0].split(" ")[0];
+  const parts = datePart.split("-");
+  if (parts.length < 3) return iso;
+  const [y, m, d] = parts;
   return `${d}/${m}/${y}`;
 };
 
@@ -149,7 +153,7 @@ export function FluxoCaixa() {
           valor: r.valor,
           tipo: r.tipo as TipoTransacao,
           categoria: r.categoria,
-          data: r.data,
+          data: r.data?.split("T")[0]?.split(" ")[0] ?? "",
           descricao: r.descricao ?? "",
           pfpj: (r.pfpj as PfPj) ?? "PJ",
           pfpj_score: r.pfpj_score ?? 100,
@@ -228,7 +232,7 @@ export function FluxoCaixa() {
           valor: record.valor,
           tipo: record.tipo,
           categoria: record.categoria,
-          data: record.data,
+          data: record.data?.split("T")[0]?.split(" ")[0] ?? "",
           descricao: record.descricao ?? "",
           pfpj: record.pfpj ?? "PJ",
           pfpj_score: record.pfpj_score ?? 100,
