@@ -1,603 +1,343 @@
+import {
+  Plus,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Calendar,
+  Filter,
+  Download,
+  User,
+  Building2,
+} from "lucide-react";
 import { useState } from "react";
-import { Plus, Trash2, CheckCircle, Clock, AlertCircle, ChevronDown, ChevronUp, Crown, Zap, Receipt, X } from "lucide-react";
-import { usePayables, CATEGORIAS_PAYABLES, Payable } from "../contexts/PayablesContext";
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
-import { format, isPast, isToday, differenceInDays } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { colors, spacing } from "../../utils/designTokens";
-import { PremiumPageLayout } from "../components/PremiumPageLayout";
 import { KPICard } from "../components/KPICard";
-import { KPISection } from "../components/KPISection";
+import { PageHeader } from "../components/PageHeader";
+
+const bills = [
+  {
+    id: 1,
+    description: "Aluguel Escritório",
+    supplier: "Imobiliária ABC",
+    amount: 2500,
+    dueDate: "2026-04-10",
+    status: "pending",
+    pfpj: "PJ",
+    recurrent: true,
+  },
+  {
+    id: 2,
+    description: "Internet e Telefonia",
+    supplier: "Telecom XYZ",
+    amount: 180,
+    dueDate: "2026-04-12",
+    status: "pending",
+    pfpj: "PJ",
+    recurrent: true,
+  },
+  {
+    id: 3,
+    description: "Software e Licenças",
+    supplier: "Tech Solutions",
+    amount: 450,
+    dueDate: "2026-04-15",
+    status: "pending",
+    pfpj: "PJ",
+    recurrent: true,
+  },
+  {
+    id: 4,
+    description: "Fornecedor Material",
+    supplier: "Fornecedor ABC",
+    amount: 1200,
+    dueDate: "2026-04-05",
+    status: "paid",
+    pfpj: "PJ",
+    recurrent: false,
+  },
+  {
+    id: 5,
+    description: "Conta de Luz",
+    supplier: "Energia S.A.",
+    amount: 280,
+    dueDate: "2026-04-08",
+    status: "paid",
+    pfpj: "PJ",
+    recurrent: true,
+  },
+  {
+    id: 6,
+    description: "Contador",
+    supplier: "Contabilidade Pro",
+    amount: 350,
+    dueDate: "2026-04-05",
+    status: "overdue",
+    pfpj: "PJ",
+    recurrent: true,
+  },
+];
 
 export function ContasAPagar() {
-  const {
-    payables,
-    loading,
-    addPayable,
-    updatePayable,
-    deletePayable,
-    getProximasAVencer,
-    getLimitStatus,
-    canAddPayable,
-  } = usePayables();
+  const [filter, setFilter] = useState("all");
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [filtro, setFiltro] = useState<"todas" | "pendente" | "pago">("todas");
+  const filteredBills = bills.filter((bill) => {
+    if (filter === "all") return true;
+    return bill.status === filter;
+  });
 
-  // Form state
-  const [formDescricao, setFormDescricao] = useState("");
-  const [formValor, setFormValor] = useState("");
-  const [formCategoria, setFormCategoria] = useState("");
-  const [formVencimento, setFormVencimento] = useState("");
-  const [formRecorrente, setFormRecorrente] = useState(false);
-  const [formFrequencia, setFormFrequencia] = useState<"mensal" | "anual" | "">("");
-  const [formAnotacoes, setFormAnotacoes] = useState("");
+  const totalPending = bills
+    .filter((b) => b.status === "pending")
+    .reduce((sum, b) => sum + b.amount, 0);
 
-  const limitStatus = getLimitStatus();
-  const proximasAVencer = getProximasAVencer(7);
-  const navigate = useNavigate();
+  const totalOverdue = bills
+    .filter((b) => b.status === "overdue")
+    .reduce((sum, b) => sum + b.amount, 0);
 
-  const payablesFiltradas = filtro === "todas"
-    ? payables
-    : payables.filter((p) => p.status === filtro);
+  const totalPaid = bills
+    .filter((b) => b.status === "paid")
+    .reduce((sum, b) => sum + b.amount, 0);
 
-  const totalPendente = payables
-    .filter((p) => p.status === "pendente")
-    .reduce((sum, p) => sum + p.valor, 0);
-
-  const totalPago = payables
-    .filter((p) => p.status === "pago")
-    .reduce((sum, p) => sum + p.valor, 0);
-
-  const fmt = (v: number) =>
-    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-  function resetForm() {
-    setFormDescricao("");
-    setFormValor("");
-    setFormCategoria("");
-    setFormVencimento("");
-    setFormRecorrente(false);
-    setFormFrequencia("");
-    setFormAnotacoes("");
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    if (!formDescricao || !formValor || !formCategoria || !formVencimento) {
-      toast.error("Preencha todos os campos obrigatórios");
-      return;
+  const getStatusInfo = (status: string) => {
+    switch (status) {
+      case "pending":
+        return {
+          label: "Pendente",
+          color: "text-[#f59e0b]",
+          bgColor: "bg-[#f59e0b]/10",
+          icon: Clock,
+        };
+      case "paid":
+        return {
+          label: "Pago",
+          color: "text-[#10b981]",
+          bgColor: "bg-[#10b981]/10",
+          icon: CheckCircle,
+        };
+      case "overdue":
+        return {
+          label: "Vencido",
+          color: "text-[#ef4444]",
+          bgColor: "bg-[#ef4444]/10",
+          icon: AlertCircle,
+        };
+      default:
+        return {
+          label: status,
+          color: "text-[#001529]/60",
+          bgColor: "bg-[#F5F7FA]",
+          icon: Clock,
+        };
     }
+  };
 
-    if (!canAddPayable()) {
-      toast.error("Limite atingido", {
-        description: "Faça upgrade para PRO para adicionar mais contas.",
-      });
-      return;
-    }
-
-    try {
-      await addPayable({
-        descricao: formDescricao,
-        valor: parseFloat(formValor),
-        categoria: formCategoria,
-        dataVencimento: formVencimento,
-        status: "pendente",
-        ehRecorrente: formRecorrente,
-        frequenciaRecorrencia: formRecorrente && formFrequencia ? formFrequencia as "mensal" | "anual" : undefined,
-        anotacoes: formAnotacoes || undefined,
-      });
-
-      toast.success("Conta adicionada!", {
-        description: `${formDescricao} — ${fmt(parseFloat(formValor))}`,
-      });
-
-      resetForm();
-      setDialogOpen(false);
-    } catch (error: any) {
-      toast.error("Erro ao adicionar conta", {
-        description: error?.message || "Tente novamente",
-      });
-    }
-  }
-
-  async function handleMarcarPago(payable: Payable) {
-    try {
-      await updatePayable(payable.id, {
-        status: "pago",
-        dataPagamento: new Date().toISOString().split("T")[0],
-      });
-      toast.success("Marcada como paga! ✅");
-    } catch {
-      toast.error("Erro ao atualizar conta");
-    }
-  }
-
-  async function handleMarcarPendente(payable: Payable) {
-    try {
-      await updatePayable(payable.id, {
-        status: "pendente",
-        dataPagamento: undefined,
-      });
-      toast.info("Marcada como pendente");
-    } catch {
-      toast.error("Erro ao atualizar conta");
-    }
-  }
-
-  async function handleDelete(id: string) {
-    try {
-      await deletePayable(id);
-      toast.success("Conta removida");
-    } catch {
-      toast.error("Erro ao remover conta");
-    }
-  }
-
-  function getVencimentoLabel(dataVencimento: string) {
-    const data = new Date(dataVencimento + "T00:00:00");
-    if (isToday(data)) return { label: "Vence hoje", color: colors.warning };
-    if (isPast(data)) return { label: "Vencida", color: colors.danger };
-    const dias = differenceInDays(data, new Date());
-    if (dias <= 3) return { label: `${dias}d para vencer`, color: colors.danger };
-    if (dias <= 7) return { label: `${dias}d para vencer`, color: colors.warning };
-    return {
-      label: format(data, "dd/MM/yyyy", { locale: ptBR }),
-      color: colors.textSecondary,
-    };
-  }
+  const getDaysUntilDue = (dueDate: string) => {
+    const today = new Date();
+    const due = new Date(dueDate);
+    const diffTime = due.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
 
   return (
-    <PremiumPageLayout
-      title="Contas a Pagar"
-      description="Controle suas despesas e vencimentos com precisão"
-      actions={
-        <button
-          onClick={() => {
-            if (!canAddPayable()) {
-              toast.error("Limite atingido — faça upgrade para PRO");
-              return;
-            }
-            setDialogOpen(true);
+    <div className="space-y-6">
+      {/* Header with PageHeader component */}
+      <PageHeader
+        title="Contas a Pagar"
+        subtitle="Gerencie e acompanhe suas obrigações financeiras"
+        action={{
+          label: "Nova Conta",
+          icon: Plus,
+        }}
+      />
+
+      {/* KPI Cards - Premium Financial Display */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <KPICard
+          title="Total a Pagar"
+          value={`R$ ${totalPending.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+          icon={Clock}
+          iconColor="blue"
+          status={{
+            label: `${bills.filter((b) => b.status === "pending").length} pendentes`,
+            color: "blue",
           }}
-          className="flex items-center gap-2 text-white font-semibold px-4 py-2.5 rounded-lg hover:opacity-90 transition-all"
-          style={{ backgroundColor: colors.primary }}
-        >
-          <Plus className="w-5 h-5" />
-          Nova Conta
-        </button>
-      }
-    >
-      <div className={spacing.sectionGap}>
-        {/* KPI Cards */}
-        <KPISection columns={3}>
-          <KPICard
-            icon={Receipt}
-            label="Total Pendente"
-            value={fmt(totalPendente)}
-            color="blue"
-          />
-          <KPICard
-            icon={CheckCircle}
-            label="Total Pago"
-            value={fmt(totalPago)}
-            color="green"
-          />
-          <KPICard
-            icon={AlertCircle}
-            label="Vencendo em 7 dias"
-            value={proximasAVencer.length}
-            color="orange"
-          />
-        </KPISection>
+        />
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: colors.textSecondary }}>Total Pendente</p>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${colors.danger}/10` }}>
-                <AlertCircle className="w-5 h-5" style={{ color: colors.danger }} />
-              </div>
-            </div>
-            <p className="text-2xl font-bold mb-2" style={{ color: colors.textPrimary }}>{fmt(totalPendente)}</p>
-            <p className="text-xs" style={{ color: colors.textSecondary }}>
-              {payables.filter((p) => p.status === "pendente").length} contas
-            </p>
-          </div>
-          <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: colors.textSecondary }}>Total Pago</p>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${colors.success}/10` }}>
-                <CheckCircle className="w-5 h-5" style={{ color: colors.success }} />
-              </div>
-            </div>
-            <p className="text-2xl font-bold mb-2" style={{ color: colors.textPrimary }}>{fmt(totalPago)}</p>
-            <p className="text-xs" style={{ color: colors.textSecondary }}>
-              {payables.filter((p) => p.status === "pago").length} contas
-            </p>
-          </div>
-          <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: colors.textSecondary }}>Vencem em 7 dias</p>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${colors.warning}/10` }}>
-                <Clock className="w-5 h-5" style={{ color: colors.warning }} />
-              </div>
-            </div>
-            <p className="text-2xl font-bold mb-2" style={{ color: colors.textPrimary }}>{proximasAVencer.length}</p>
-            <p className="text-xs" style={{ color: colors.textSecondary }}>
-              {fmt(proximasAVencer.reduce((s, p) => s + p.valor, 0))}
-            </p>
-          </div>
-        </div>
+        <KPICard
+          title="Vencidas"
+          value={`R$ ${totalOverdue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+          icon={AlertCircle}
+          iconColor="red"
+          status={{
+            label: `${bills.filter((b) => b.status === "overdue").length} atrasadas`,
+            color: "red",
+          }}
+        />
 
-        {/* Alerts */}
-        {proximasAVencer.length > 0 && (
-          <div className="p-6 rounded-2xl border shadow-sm" style={{ backgroundColor: `${colors.warning}/10`, borderColor: colors.warning }}>
-            <div className="flex items-start gap-3 mb-4">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: colors.warning }} />
-              <div>
-                <h3 className="font-bold" style={{ color: colors.warning }}>{proximasAVencer.length} conta(s) vencem nos próximos 7 dias</h3>
-                <div className="space-y-1.5 mt-3">
-                  {proximasAVencer.map((p) => (
-                    <p key={p.id} className="text-sm" style={{ color: colors.textSecondary }}>
-                      {p.descricao} — {fmt(p.valor)} — Vence {format(new Date(p.dataVencimento + "T00:00:00"), "dd/MM", { locale: ptBR })}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <KPICard
+          title="Pagas (mês)"
+          value={`R$ ${totalPaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+          icon={CheckCircle}
+          iconColor="green"
+          status={{
+            label: `${bills.filter((b) => b.status === "paid").length} quitadas`,
+            color: "green",
+          }}
+        />
+      </div>
 
-        {/* Filters */}
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex gap-2">
-            {(["todas", "pendente", "pago"] as const).map((f) => (
+      {/* Filters */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-[#001529]/60" />
+            <div className="flex gap-2">
               <button
-                key={f}
-                onClick={() => setFiltro(f)}
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                style={{
-                  backgroundColor: filtro === f ? colors.primary : colors.bgLighter,
-                  color: filtro === f ? "white" : colors.textSecondary,
-                  border: `1px solid ${filtro === f ? colors.primary : colors.borderDefault}`
-                }}
+                onClick={() => setFilter("all")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "all"
+                    ? "bg-[#003a6d] text-white"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                }`}
               >
-                {f === "todas" ? "Todas" : f === "pendente" ? "Pendentes" : "Pagas"}
+                Todas
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Accounts List */}
-        <div className="rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
-          <div className="px-6 py-4" style={{ borderBottom: `1px solid ${colors.borderDefault}` }}>
-            <h3 className="font-bold text-lg" style={{ color: colors.textPrimary }}>Contas</h3>
-          </div>
-
-          {loading ? (
-            <div className="text-center py-12" style={{ color: colors.textSecondary }}>Carregando...</div>
-          ) : payablesFiltradas.length === 0 ? (
-            <div className="text-center py-12 px-6">
-              <Zap className="w-10 h-10 mx-auto mb-3" style={{ color: `${colors.textSecondary}66` }} />
-              <p style={{ color: colors.textSecondary }}>
-                {filtro === "todas"
-                  ? "Nenhuma conta cadastrada ainda."
-                  : `Nenhuma conta ${filtro === "pendente" ? "pendente" : "paga"}.`}
-              </p>
-              {filtro === "todas" && (
-                <button
-                  onClick={() => setDialogOpen(true)}
-                  className="mt-3 text-sm font-medium hover:opacity-80 transition-opacity"
-                  style={{ color: colors.primary }}
-                >
-                  Adicionar primeira conta
-                </button>
-              )}
+              <button
+                onClick={() => setFilter("pending")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "pending"
+                    ? "bg-[#f59e0b] text-white"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                }`}
+              >
+                Pendentes
+              </button>
+              <button
+                onClick={() => setFilter("overdue")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "overdue"
+                    ? "bg-[#ef4444] text-white"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                }`}
+              >
+                Vencidas
+              </button>
+              <button
+                onClick={() => setFilter("paid")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "paid"
+                    ? "bg-[#10b981] text-white"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                }`}
+              >
+                Pagas
+              </button>
             </div>
-          ) : (
-            <div>
-              {payablesFiltradas.map((payable) => {
-                const venc = getVencimentoLabel(payable.dataVencimento);
-                return (
-                  <div
-                    key={payable.id}
-                    className="px-6 py-4 flex items-center justify-between gap-4 border-b transition-colors hover:opacity-80"
-                    style={{
-                      borderColor: colors.borderDefault,
-                      backgroundColor: payable.status === "pago" ? colors.bgLighter : colors.bgLight,
-                      opacity: payable.status === "pago" ? 0.7 : 1
-                    }}
-                  >
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: payable.status === "pago" ? `${colors.success}/20` : `${colors.danger}/20` }}
-                      >
-                        {payable.status === "pago" ? (
-                          <CheckCircle className="w-5 h-5" style={{ color: colors.success }} />
-                        ) : (
-                          <Clock className="w-5 h-5" style={{ color: colors.danger }} />
+          </div>
+
+          <button className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-colors text-sm font-medium text-[#001529]">
+            <Download className="w-4 h-4" />
+            Exportar
+          </button>
+        </div>
+      </div>
+
+      {/* Bills List */}
+      <div className="space-y-3">
+        {filteredBills.map((bill) => {
+          const statusInfo = getStatusInfo(bill.status);
+          const StatusIcon = statusInfo.icon;
+          const daysUntil = getDaysUntilDue(bill.dueDate);
+
+          return (
+            <div
+              key={bill.id}
+              className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div
+                      className={`w-10 h-10 rounded-lg ${statusInfo.bgColor} flex items-center justify-center`}
+                    >
+                      <StatusIcon className={`w-5 h-5 ${statusInfo.color}`} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-[#001529]">
+                          {bill.description}
+                        </h3>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
+                            bill.pfpj === "PF"
+                              ? "bg-pf/10 text-pf"
+                              : "bg-pj/10 text-pj"
+                          }`}
+                        >
+                          {bill.pfpj === "PF" ? (
+                            <User className="w-3 h-3" />
+                          ) : (
+                            <Building2 className="w-3 h-3" />
+                          )}
+                          {bill.pfpj}
+                        </span>
+                        {bill.recurrent && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#003a6d]/10 text-[#003a6d]">
+                            Recorrente
+                          </span>
                         )}
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium" style={{ color: colors.textPrimary }}>{payable.descricao}</p>
-                        <div className="flex items-center gap-2 flex-wrap text-xs mt-1" style={{ color: colors.textSecondary }}>
-                          <span>{payable.categoria}</span>
-                          <span>•</span>
-                          <span style={{ color: venc.color }}>{venc.label}</span>
-                          {payable.ehRecorrente && (
-                            <>
-                              <span>•</span>
-                              <span>🔄 {payable.frequenciaRecorrencia}</span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 flex-shrink-0">
-                      <span className="font-bold text-lg" style={{ color: payable.status === "pago" ? colors.success : colors.danger }}>
-                        {fmt(payable.valor)}
-                      </span>
-
-                      {payable.status === "pendente" ? (
-                        <button
-                          onClick={() => handleMarcarPago(payable)}
-                          className="text-xs text-white px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-90"
-                          style={{ backgroundColor: colors.primary }}
-                        >
-                          Marcar Pago
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleMarcarPendente(payable)}
-                          className="text-xs px-3 py-1.5 rounded-lg font-medium transition-colors border"
-                          style={{ backgroundColor: colors.bgLighter, color: colors.textSecondary, borderColor: colors.borderDefault }}
-                        >
-                          Desfazer
-                        </button>
-                      )}
-
-                      <button
-                        onClick={() => handleDelete(payable.id)}
-                        className="p-1 hover:opacity-80 transition-opacity"
-                        style={{ color: colors.danger }}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <p className="text-sm text-[#001529]/60">
+                        {bill.supplier}
+                      </p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
 
-        {/* Free Plan Limit */}
-        {limitStatus.limit !== Infinity && (
-          <div
-            className="p-6 rounded-2xl border shadow-sm"
-            style={{
-              backgroundColor: limitStatus.percentage >= 100 ? `${colors.danger}/10` : limitStatus.percentage >= 80 ? `${colors.warning}/10` : colors.bgLighter,
-              borderColor: limitStatus.percentage >= 100 ? colors.danger : limitStatus.percentage >= 80 ? colors.warning : colors.borderDefault
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h3 className="font-bold" style={{ color: colors.textPrimary }}>Contas este mês</h3>
-                <p className="text-xs mt-0.5" style={{ color: colors.textSecondary }}>Reseta todo dia 1</p>
-              </div>
-              <span className="text-lg font-bold" style={{
-                color: limitStatus.percentage >= 100 ? colors.danger : limitStatus.percentage >= 80 ? colors.warning : colors.textPrimary
-              }}>
-                {limitStatus.used}/{limitStatus.limit}
-              </span>
-            </div>
-            <div className="w-full rounded-full h-2 mb-3" style={{ backgroundColor: colors.bgLighter }}>
-              <div
-                className="h-2 rounded-full transition-all"
-                style={{
-                  width: `${Math.min(limitStatus.percentage, 100)}%`,
-                  backgroundColor: limitStatus.percentage >= 100 ? colors.danger : limitStatus.percentage >= 80 ? colors.warning : colors.success
-                }}
-              />
-            </div>
-            {limitStatus.percentage >= 80 && (
-              <div className="flex items-center justify-between">
-                <p className="text-sm" style={{ color: colors.textSecondary }}>
-                  {limitStatus.percentage >= 100
-                    ? "Limite atingido! Faça upgrade para continuar."
-                    : `Restam ${limitStatus.limit - limitStatus.used} contas este mês.`}
-                </p>
-                <button
-                  onClick={() => navigate("/checkout")}
-                  className="flex items-center gap-2 text-sm text-white font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
-                  style={{ backgroundColor: colors.primary }}
-                >
-                  <Crown className="w-4 h-4" />
-                  Upgrade PRO
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+                  <div className="flex items-center gap-6 ml-13">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-[#001529]/60" />
+                      <span className="text-sm text-[#001529]">
+                        Vencimento: {new Date(bill.dueDate).toLocaleDateString("pt-BR")}
+                      </span>
+                      {bill.status === "pending" && daysUntil <= 5 && daysUntil > 0 && (
+                        <span className="text-xs text-[#f59e0b] font-medium">
+                          (em {daysUntil} {daysUntil === 1 ? "dia" : "dias"})
+                        </span>
+                      )}
+                      {bill.status === "pending" && daysUntil === 0 && (
+                        <span className="text-xs text-[#f59e0b] font-medium">
+                          (vence hoje)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-        {/* Modal */}
-        {dialogOpen && (
-          <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-            <div className="rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
-              <div className="p-6" style={{ borderBottom: `1px solid ${colors.borderDefault}` }}>
-                <div className="flex items-center justify-between">
-                  <h2 className="font-bold text-xl" style={{ color: colors.textPrimary }}>Nova Conta a Pagar</h2>
-                  <button onClick={() => { resetForm(); setDialogOpen(false); }} className="hover:opacity-70 transition-opacity" style={{ color: colors.textSecondary }}>
-                    <X className="w-5 h-5" />
-                  </button>
+                <div className="text-right">
+                  <p className="font-bold text-[#001529] mb-2">
+                    R$ {bill.amount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                  <span
+                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium ${statusInfo.bgColor} ${statusInfo.color}`}
+                  >
+                    {statusInfo.label}
+                  </span>
+                  {bill.status === "pending" && (
+                    <button className="mt-3 w-full bg-[#003a6d] text-white px-4 py-1.5 rounded-lg hover:bg-[#002a50] transition-colors text-xs font-medium">
+                      Pagar Agora
+                    </button>
+                  )}
                 </div>
               </div>
-              <div className="p-6">
-                <form onSubmit={handleSubmit} className={spacing.elementGap}>
-                  {/* Description */}
-                  <div>
-                    <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>Descrição *</label>
-                    <input
-                      type="text"
-                      value={formDescricao}
-                      onChange={(e) => setFormDescricao(e.target.value)}
-                      placeholder="Ex: Aluguel do escritório"
-                      required
-                      className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors"
-                      style={{
-                        backgroundColor: colors.bgLighter,
-                        borderColor: colors.borderDefault,
-                        color: colors.textPrimary,
-                        border: `1px solid ${colors.borderDefault}`
-                      }}
-                    />
-                  </div>
-
-                  {/* Value + Due Date */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>Valor (R$) *</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0.01"
-                        value={formValor}
-                        onChange={(e) => setFormValor(e.target.value)}
-                        placeholder="0,00"
-                        required
-                        className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors"
-                        style={{
-                          backgroundColor: colors.bgLighter,
-                          borderColor: colors.borderDefault,
-                          color: colors.textPrimary,
-                          border: `1px solid ${colors.borderDefault}`
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>Vencimento *</label>
-                      <input
-                        type="date"
-                        value={formVencimento}
-                        onChange={(e) => setFormVencimento(e.target.value)}
-                        required
-                        className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors"
-                        style={{
-                          backgroundColor: colors.bgLighter,
-                          borderColor: colors.borderDefault,
-                          color: colors.textPrimary,
-                          border: `1px solid ${colors.borderDefault}`
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Category */}
-                  <div>
-                    <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>Categoria *</label>
-                    <select
-                      value={formCategoria}
-                      onChange={(e) => setFormCategoria(e.target.value)}
-                      required
-                      className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors"
-                      style={{
-                        backgroundColor: colors.bgLighter,
-                        borderColor: colors.borderDefault,
-                        color: colors.textPrimary,
-                        border: `1px solid ${colors.borderDefault}`
-                      }}
-                    >
-                      <option value="">Selecione...</option>
-                      {CATEGORIAS_PAYABLES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Recurring */}
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      id="recorrente"
-                      checked={formRecorrente}
-                      onChange={(e) => setFormRecorrente(e.target.checked)}
-                      className="w-4 h-4"
-                      style={{ accentColor: colors.primary }}
-                    />
-                    <label htmlFor="recorrente" className="text-sm cursor-pointer" style={{ color: colors.textSecondary }}>
-                      Conta recorrente
-                    </label>
-                  </div>
-
-                  {formRecorrente && (
-                    <div>
-                      <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>Frequência</label>
-                      <select
-                        value={formFrequencia}
-                        onChange={(e) => setFormFrequencia(e.target.value as "mensal" | "anual")}
-                        className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors"
-                        style={{
-                          backgroundColor: colors.bgLighter,
-                          borderColor: colors.borderDefault,
-                          color: colors.textPrimary,
-                          border: `1px solid ${colors.borderDefault}`
-                        }}
-                      >
-                        <option value="">Selecione...</option>
-                        <option value="mensal">Mensal</option>
-                        <option value="anual">Anual</option>
-                      </select>
-                    </div>
-                  )}
-
-                  {/* Notes */}
-                  <div>
-                    <label className="text-sm mb-1 block" style={{ color: colors.textSecondary }}>Anotações (opcional)</label>
-                    <textarea
-                      value={formAnotacoes}
-                      onChange={(e) => setFormAnotacoes(e.target.value)}
-                      placeholder="Observações..."
-                      rows={2}
-                      className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors resize-none"
-                      style={{
-                        backgroundColor: colors.bgLighter,
-                        borderColor: colors.borderDefault,
-                        color: colors.textPrimary,
-                        border: `1px solid ${colors.borderDefault}`
-                      }}
-                    />
-                  </div>
-
-                  {/* Buttons */}
-                  <div className="flex gap-3 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => { resetForm(); setDialogOpen(false); }}
-                      className="flex-1 px-4 py-2.5 rounded-lg transition-colors hover:opacity-80"
-                      style={{ backgroundColor: colors.bgLighter, color: colors.textPrimary }}
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 text-white font-semibold px-4 py-2.5 rounded-lg transition-all hover:opacity-90"
-                      style={{ backgroundColor: colors.primary }}
-                    >
-                      Adicionar
-                    </button>
-                  </div>
-                </form>
-              </div>
             </div>
-          </div>
-        )}
+          );
+        })}
       </div>
-    </PremiumPageLayout>
+
+      {filteredBills.length === 0 && (
+        <div className="bg-white border border-[#E5E7EB] rounded-xl p-12 text-center">
+          <p className="text-[#001529]/60">Nenhuma conta encontrada</p>
+        </div>
+      )}
+    </div>
   );
 }
