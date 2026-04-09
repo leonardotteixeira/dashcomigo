@@ -264,13 +264,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }) => {
     if (!user) return;
     try {
-      const record = await pb.collection("profiles").update(user.id, {
-        cpf_cnpj: data.cpfCnpj ?? null,
-        tipo_negocio: data.tipoNegocio ?? null,
-        faturamento_mensal: data.faturamentoMensal ?? null,
-        objetivo: data.objetivo ?? null,
-        onboarding_completed: true,
-      });
+      const updateData: Record<string, unknown> = { onboarding_completed: true };
+      if (data.cpfCnpj) updateData.cpf_cnpj = data.cpfCnpj;
+      if (data.tipoNegocio) updateData.tipo_negocio = data.tipoNegocio;
+      if (data.faturamentoMensal) updateData.faturamento_mensal = data.faturamentoMensal;
+      if (data.objetivo) updateData.objetivo = data.objetivo;
+
+      const record = await pb.collection("profiles").update(user.id, updateData);
       setUser(mapProfile(record));
     } catch (error) {
       throw new Error(error instanceof Error ? error.message : "Onboarding failed");
