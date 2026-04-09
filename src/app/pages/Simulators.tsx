@@ -1,5 +1,7 @@
 import { Calculator, DollarSign, TrendingUp, Target } from "lucide-react";
 import { useState } from "react";
+import { KPICard } from "../components/KPICard";
+import { PageHeader } from "../components/PageHeader";
 
 export function Simulators() {
   const [meiRevenue, setMeiRevenue] = useState("");
@@ -40,12 +42,11 @@ export function Simulators() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-bold text-foreground mb-1">Simuladores</h1>
-        <p className="text-muted-foreground">
-          Ferramentas para ajudar no planejamento financeiro
-        </p>
-      </div>
+      {/* Header with PageHeader component */}
+      <PageHeader
+        title="Simuladores"
+        subtitle="Ferramentas para ajudar no planejamento financeiro"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* MEI Limit Simulator */}
