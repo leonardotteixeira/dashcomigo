@@ -133,36 +133,27 @@ export function GuiaInvestimentos() {
       {/* KPI Cards - Premium Financial Display */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <KPICard
-          title="Opções Disponíveis"
-          value={investmentOptions.length}
+          label="Opções Disponíveis"
+          value={`${investmentOptions.length} investimentos`}
+          description="Produtos financeiros selecionados para MEIs e pequenos empresários"
           icon={TrendingUp}
-          iconColor="blue"
-          status={{
-            label: "Investimentos",
-            color: "blue",
-          }}
+          color="blue"
         />
 
         <KPICard
-          title="Baixo Risco"
-          value={lowRiskInvestments}
+          label="Baixo Risco"
+          value={`${lowRiskInvestments} opções`}
+          description="Segurança máxima com cobertura do FGC ou garantia do governo federal"
           icon={Shield}
-          iconColor="green"
-          status={{
-            label: "Segurança máxima",
-            color: "green",
-          }}
+          color="green"
         />
 
         <KPICard
-          title="Risco Moderado"
-          value={mediumRiskInvestments}
+          label="Alto Retorno"
+          value={`${mediumRiskInvestments} oportunidades`}
+          description="Maior potencial de rendimento para quem busca crescimento no longo prazo"
           icon={Sparkles}
-          iconColor="blue"
-          status={{
-            label: "Maior retorno",
-            color: "blue",
-          }}
+          color="purple"
         />
       </div>
 

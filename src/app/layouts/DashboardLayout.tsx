@@ -1,10 +1,7 @@
 import { Outlet, useNavigate, Navigate, useLocation, Link } from "react-router";
 import {
   LayoutDashboard,
-  ArrowRightLeft,
-  Tag,
   TrendingUp,
-  FileText,
   Menu,
   X,
   LogOut,
@@ -14,9 +11,7 @@ import {
   Settings,
   Receipt,
   BarChart3,
-  Package,
   Users,
-  Target,
   Calculator,
   Landmark,
   FileSpreadsheet,
@@ -29,7 +24,6 @@ import { useAuth } from "../contexts/AuthContext";
 import LimitedOfferBanner from "../components/LimitedOfferBanner";
 import NotificationCenter from "../components/NotificationCenter";
 import FreePlanUsage from "../components/FreePlanUsage";
-import { MenuSection } from "../components/MenuSection";
 import { MenuItem } from "../components/MenuItem";
 
 export function DashboardLayout() {
@@ -59,48 +53,18 @@ export function DashboardLayout() {
     return <Navigate to="/app/onboarding" replace />;
   }
 
-  const navigationGroups = [
-    {
-      label: "PRINCIPAL",
-      items: [
-        { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
-        { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
-      ],
-    },
-    {
-      label: "FINANÇAS",
-      items: [
-        { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
-        { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
-        { name: "DAS-MEI", href: "/app/das-mei", icon: FileText, badge: "novo", badgeColor: "green" },
-        { name: "Relatórios", href: "/app/relatorios", icon: BarChart3, isPro: true },
-      ],
-    },
-    {
-      label: "CLIENTES",
-      items: [
-        { name: "Meus Clientes", href: "/app/clientes", icon: Users },
-        { name: "Fornecedores", href: "/app/fornecedores", icon: Truck },
-        { name: "Propostas", href: "/app/propostas", icon: Handshake, badge: "novo", badgeColor: "green" },
-      ],
-    },
-    {
-      label: "PLANEJAMENTO",
-      items: [
-        { name: "Orçamentos", href: "/app/orcamentos", icon: FileSpreadsheet },
-        { name: "Metas", href: "/app/metas", icon: Target, badge: "novo", badgeColor: "green" },
-        { name: "Investimentos", href: "/app/investimentos", icon: Landmark },
-      ],
-    },
-    {
-      label: "FERRAMENTAS",
-      items: [
-        { name: "Simuladores", href: "/app/simuladores", icon: Calculator },
-        { name: "MEI → ME", href: "/app/mei-me", icon: ArrowRightLeft },
-        { name: "Preço Ideal", href: "/app/preco", icon: Tag, isPro: true },
-        { name: "Simulador de Lucro", href: "/app/lucro", icon: TrendingUp, isPro: true },
-      ],
-    },
+  const navItems = [
+    { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
+    { name: "Fluxo de Caixa", href: "/app", icon: Wallet, end: true },
+    { name: "Contas a Pagar", href: "/app/contas-a-pagar", icon: Receipt },
+    { name: "Contas a Receber", href: "/app/contas-a-receber", icon: TrendingUp },
+    { name: "Relatórios", href: "/app/relatorios", icon: BarChart3 },
+    { name: "Clientes", href: "/app/clientes", icon: Users },
+    { name: "Fornecedores", href: "/app/fornecedores", icon: Truck },
+    { name: "Propostas", href: "/app/propostas", icon: Handshake, badge: "novo", badgeColor: "green" as const },
+    { name: "Orçamentos", href: "/app/orcamentos", icon: FileSpreadsheet },
+    { name: "Simuladores", href: "/app/simuladores", icon: Calculator },
+    { name: "Investimentos", href: "/app/investimentos", icon: Landmark },
   ];
 
   const handleLogout = () => {
@@ -149,26 +113,17 @@ export function DashboardLayout() {
 
           {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
-            {navigationGroups.map((group, index) => (
-              <div key={group.label}>
-                <MenuSection title={group.label}>
-                  {group.items.map((item) => (
-                    <MenuItem
-                      key={item.name}
-                      name={item.name}
-                      href={item.href}
-                      icon={item.icon}
-                      badge={item.badge}
-                      badgeColor={item.badgeColor as "green" | "purple" | undefined}
-                      end={item.end}
-                      onClick={() => setSidebarOpen(false)}
-                    />
-                  ))}
-                </MenuSection>
-                {index < navigationGroups.length - 1 && (
-                  <div className="h-px bg-[#E5E7EB] my-3" />
-                )}
-              </div>
+            {navItems.map((item) => (
+              <MenuItem
+                key={item.name}
+                name={item.name}
+                href={item.href}
+                icon={item.icon}
+                badge={item.badge}
+                badgeColor={item.badgeColor}
+                end={item.end}
+                onClick={() => setSidebarOpen(false)}
+              />
             ))}
 
             {/* Free plan usage widget */}

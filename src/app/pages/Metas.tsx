@@ -49,6 +49,12 @@ export function Metas() {
   const navigate = useNavigate();
   const { goals, loading, addGoal, deleteGoal, getGoalByMes, getHistorico } = useGoals();
 
+  // All hooks MUST be declared before any conditional return
+  const [modalOpen, setModalOpen] = useState(false);
+  const [formMes, setFormMes] = useState(mesAtual());
+  const [formValor, setFormValor] = useState("");
+  const [formCategoria, setFormCategoria] = useState("");
+
   if (user?.plan !== "pro") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
@@ -70,11 +76,6 @@ export function Metas() {
       </div>
     );
   }
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [formMes, setFormMes] = useState(mesAtual());
-  const [formValor, setFormValor] = useState("");
-  const [formCategoria, setFormCategoria] = useState("");
 
   const metaMesAtual = getGoalByMes(mesAtual());
   const historico = getHistorico(6);
