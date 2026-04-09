@@ -1,4 +1,4 @@
-import { Outlet, useNavigate, Navigate, useLocation } from "react-router";
+import { Outlet, useNavigate, Navigate, useLocation, Link } from "react-router";
 import {
   LayoutDashboard,
   ArrowRightLeft,
@@ -198,7 +198,7 @@ export function DashboardLayout() {
               </div>
             )}
 
-            <NavLink
+            <Link
               to="/app/profile"
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#F5F7FA] transition-colors mb-1"
               onClick={() => setSidebarOpen(false)}
@@ -214,7 +214,7 @@ export function DashboardLayout() {
                 <p className="text-sm font-medium text-[#001529] truncate">{user.name}</p>
                 <p className="text-xs text-[rgba(0,21,41,0.6)] truncate">{user.plan === "pro" ? "Plano PRO" : "Plano Gratuito"}</p>
               </div>
-            </NavLink>
+            </Link>
 
             <button
               className="w-full flex items-center gap-3 px-3 py-2.5 text-[#001529] hover:bg-[#F5F7FA] transition-colors text-sm rounded-lg"
