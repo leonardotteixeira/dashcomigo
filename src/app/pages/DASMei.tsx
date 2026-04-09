@@ -92,9 +92,9 @@ export function DASMei() {
 
     setPaying(mesKey);
     try {
-      // Due date: 20th of next month — we register as the 20th of next month
-      const venc = getVencimento(date.getFullYear(), date.getMonth() + 1);
-      const dataStr = `${venc.getFullYear()}-${String(venc.getMonth() + 1).padStart(2, "0")}-20`;
+      // Store the transaction under the competency month (not the due-date month)
+      // so that paidMonths[mesKey] resolves to the correct month.
+      const dataStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-20`;
       const mesLabel = getMesLabel(date);
 
       await addTransaction({

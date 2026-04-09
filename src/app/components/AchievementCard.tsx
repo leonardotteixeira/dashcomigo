@@ -1,60 +1,89 @@
 import { Trophy, Star, Award, Target, Zap, TrendingUp } from "lucide-react";
-
-const achievements = [
-  {
-    id: 1,
-    title: "Primeira Receita",
-    description: "Registrou sua primeira receita",
-    icon: Star,
-    color: "text-amber-500",
-    bgColor: "bg-amber-500/10",
-    completed: true,
-    progress: 100,
-  },
-  {
-    id: 2,
-    title: "Sequência de 7 Dias",
-    description: "Acessou o sistema por 7 dias seguidos",
-    icon: Zap,
-    color: "text-orange-500",
-    bgColor: "bg-orange-500/10",
-    completed: true,
-    progress: 100,
-  },
-  {
-    id: 3,
-    title: "Meta Mensal",
-    description: "Atingiu a meta de receita do mês",
-    icon: Target,
-    color: "text-success",
-    bgColor: "bg-success/10",
-    completed: true,
-    progress: 100,
-  },
-  {
-    id: 4,
-    title: "Crescimento 20%",
-    description: "Aumentou receitas em 20% vs mês anterior",
-    icon: TrendingUp,
-    color: "text-accent",
-    bgColor: "bg-accent/10",
-    completed: false,
-    progress: 68,
-  },
-  {
-    id: 5,
-    title: "100 Transações",
-    description: "Registrou 100 transações no sistema",
-    icon: Award,
-    color: "text-purple-500",
-    bgColor: "bg-purple-500/10",
-    completed: false,
-    progress: 42,
-  },
-];
+import { useAuth } from "../contexts/AuthContext";
+import { useCashFlow } from "../contexts/CashFlowContext";
 
 export default function AchievementCard() {
-  const completedCount = achievements.filter(a => a.completed).length;
+  const { user } = useAuth();
+  const { transactions } = useCashFlow();
+
+  const hasFirstIncome = transactions.some((t) => t.tipo === "entrada");
+  const hasFirstExpense = transactions.some((t) => t.tipo === "saida");
+  const totalTransactions = transactions.length;
+  const streak = user?.loginStreak ?? 0;
+
+  // Month-over-month growth
+  const now = new Date();
+  const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthKey = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, "0")}`;
+
+  const thisMonthIncome = transactions
+    .filter((t) => t.tipo === "entrada" && t.data.startsWith(thisMonthKey))
+    .reduce((s, t) => s + t.valor, 0);
+  const lastMonthIncome = transactions
+    .filter((t) => t.tipo === "entrada" && t.data.startsWith(lastMonthKey))
+    .reduce((s, t) => s + t.valor, 0);
+
+  const growthPct =
+    lastMonthIncome > 0
+      ? ((thisMonthIncome - lastMonthIncome) / lastMonthIncome) * 100
+      : 0;
+  const has20Growth = growthPct >= 20;
+
+  const achievements = [
+    {
+      id: 1,
+      title: "Primeira Receita",
+      description: "Registrou sua primeira receita",
+      icon: Star,
+      color: "text-amber-500",
+      bgColor: "bg-amber-500/10",
+      completed: hasFirstIncome,
+      progress: hasFirstIncome ? 100 : 0,
+    },
+    {
+      id: 2,
+      title: "Sequência de 7 Dias",
+      description: "Acessou o sistema por 7 dias seguidos",
+      icon: Zap,
+      color: "text-orange-500",
+      bgColor: "bg-orange-500/10",
+      completed: streak >= 7,
+      progress: Math.min(Math.round((streak / 7) * 100), 100),
+    },
+    {
+      id: 3,
+      title: "Meta Mensal",
+      description: "Registrou receita e despesa no mesmo mês",
+      icon: Target,
+      color: "text-success",
+      bgColor: "bg-success/10",
+      completed: hasFirstIncome && hasFirstExpense,
+      progress: hasFirstIncome && hasFirstExpense ? 100 : hasFirstIncome || hasFirstExpense ? 50 : 0,
+    },
+    {
+      id: 4,
+      title: "Crescimento 20%",
+      description: "Aumentou receitas em 20% vs mês anterior",
+      icon: TrendingUp,
+      color: "text-accent",
+      bgColor: "bg-accent/10",
+      completed: has20Growth,
+      progress: lastMonthIncome > 0 ? Math.min(Math.round((growthPct / 20) * 100), 100) : 0,
+    },
+    {
+      id: 5,
+      title: "100 Transações",
+      description: "Registrou 100 transações no sistema",
+      icon: Award,
+      color: "text-purple-500",
+      bgColor: "bg-purple-500/10",
+      completed: totalTransactions >= 100,
+      progress: Math.min(Math.round((totalTransactions / 100) * 100), 100),
+    },
+  ];
+
+  const completedCount = achievements.filter((a) => a.completed).length;
 
   return (
     <div className="bg-card border border-border rounded-xl p-6">
@@ -80,16 +109,20 @@ export default function AchievementCard() {
                   : "border-dashed border-border"
               }`}
             >
-              <div className={`w-10 h-10 rounded-lg ${achievement.bgColor} flex items-center justify-center flex-shrink-0 ${
-                !achievement.completed && "opacity-50"
-              }`}>
+              <div
+                className={`w-10 h-10 rounded-lg ${achievement.bgColor} flex items-center justify-center flex-shrink-0 ${
+                  !achievement.completed && "opacity-50"
+                }`}
+              >
                 <Icon className={`w-5 h-5 ${achievement.color}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <h4 className={`font-semibold text-sm ${
-                    achievement.completed ? "text-foreground" : "text-muted-foreground"
-                  }`}>
+                  <h4
+                    className={`font-semibold text-sm ${
+                      achievement.completed ? "text-foreground" : "text-muted-foreground"
+                    }`}
+                  >
                     {achievement.title}
                   </h4>
                   {achievement.completed && (
@@ -100,14 +133,12 @@ export default function AchievementCard() {
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground mb-2">
-                  {achievement.description}
-                </p>
+                <p className="text-xs text-muted-foreground mb-2">{achievement.description}</p>
                 {!achievement.completed && (
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
                       <div
-                        className={`h-full ${achievement.bgColor.replace('/10', '')}`}
+                        className={`h-full ${achievement.bgColor.replace("/10", "")}`}
                         style={{ width: `${achievement.progress}%` }}
                       />
                     </div>

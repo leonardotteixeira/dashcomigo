@@ -1,8 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
-import type { PFPJType } from "../types/pfpj";
-
 export type TransactionType = "entrada" | "saida";
 
 export interface Transaction {
@@ -12,7 +10,7 @@ export interface Transaction {
   categoria: string;
   data: string;
   descricao?: string;
-  pf_pj_type?: PFPJType;
+  pfpj?: "PF" | "PJ";
   createdAt: Date;
 }
 
@@ -97,7 +95,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
             categoria: t.categoria,
             data: t.data?.split(" ")[0] ?? t.data,
             descricao: t.descricao ?? undefined,
-            pf_pj_type: (t.pf_pj_type ?? "pf") as PFPJType,
+            pfpj: ((t.pfpj ?? "PJ") as "PF" | "PJ"),
             createdAt: new Date(t.created),
           }))
         );
@@ -263,7 +261,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         categoria: transaction.categoria,
         data: transaction.data,
         descricao: transaction.descricao ?? null,
-        pf_pj_type: transaction.pf_pj_type ?? "pf",
+        pfpj: transaction.pfpj ?? "PJ",
       });
 
       const newTransaction: Transaction = {
@@ -273,7 +271,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         categoria: record.categoria,
         data: record.data?.split(" ")[0] ?? record.data,
         descricao: record.descricao ?? undefined,
-        pf_pj_type: (record.pf_pj_type ?? "pf") as PFPJType,
+        pfpj: ((record.pfpj ?? "PJ") as "PF" | "PJ"),
         createdAt: new Date(record.created),
       };
 

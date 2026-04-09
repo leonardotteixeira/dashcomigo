@@ -1,341 +1,468 @@
 import {
-  Plus,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Calendar,
-  Filter,
-  Download,
-  User,
-  Building2,
+  Plus, AlertCircle, CheckCircle, Clock, Calendar,
+  Filter, Download, Loader2, X, Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { KPICard } from "../components/KPICard";
+import { toast } from "sonner";
 import { PageHeader } from "../components/PageHeader";
+import { usePayables, CATEGORIAS_PAYABLES, type Payable } from "../contexts/PayablesContext";
+import { exportToXlsx } from "../../utils/exportXlsx";
 
-const bills = [
-  {
-    id: 1,
-    description: "Aluguel Escritório",
-    supplier: "Imobiliária ABC",
-    amount: 2500,
-    dueDate: "2026-04-10",
-    status: "pending",
-    pfpj: "PJ",
-    recurrent: true,
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const fmtBRL = (v: number) =>
+  `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+
+const fmtDate = (iso: string) => {
+  const [y, m, d] = iso.split("T")[0].split("-");
+  return `${d}/${m}/${y}`;
+};
+
+function getDaysUntilDue(dueDate: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dueDate + "T00:00:00");
+  return Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function computeStatus(payable: Payable): "pendente" | "pago" | "vencido" {
+  if (payable.status === "pago") return "pago";
+  const days = getDaysUntilDue(payable.dataVencimento);
+  if (days < 0) return "vencido";
+  return "pendente";
+}
+
+const STATUS_CFG = {
+  pendente: {
+    label: "Pendente",
+    color: "text-amber-600",
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    icon: Clock,
   },
-  {
-    id: 2,
-    description: "Internet e Telefonia",
-    supplier: "Telecom XYZ",
-    amount: 180,
-    dueDate: "2026-04-12",
-    status: "pending",
-    pfpj: "PJ",
-    recurrent: true,
+  pago: {
+    label: "Pago",
+    color: "text-green-600",
+    bg: "bg-green-50",
+    border: "border-green-200",
+    icon: CheckCircle,
   },
-  {
-    id: 3,
-    description: "Software e Licenças",
-    supplier: "Tech Solutions",
-    amount: 450,
-    dueDate: "2026-04-15",
-    status: "pending",
-    pfpj: "PJ",
-    recurrent: true,
+  vencido: {
+    label: "Vencido",
+    color: "text-red-600",
+    bg: "bg-red-50",
+    border: "border-red-200",
+    icon: AlertCircle,
   },
-  {
-    id: 4,
-    description: "Fornecedor Material",
-    supplier: "Fornecedor ABC",
-    amount: 1200,
-    dueDate: "2026-04-05",
-    status: "paid",
-    pfpj: "PJ",
-    recurrent: false,
-  },
-  {
-    id: 5,
-    description: "Conta de Luz",
-    supplier: "Energia S.A.",
-    amount: 280,
-    dueDate: "2026-04-08",
-    status: "paid",
-    pfpj: "PJ",
-    recurrent: true,
-  },
-  {
-    id: 6,
-    description: "Contador",
-    supplier: "Contabilidade Pro",
-    amount: 350,
-    dueDate: "2026-04-05",
-    status: "overdue",
-    pfpj: "PJ",
-    recurrent: true,
-  },
-];
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ContasAPagar() {
-  const [filter, setFilter] = useState("all");
+  const { payables, loading, addPayable, updatePayable, deletePayable } = usePayables();
 
-  const filteredBills = bills.filter((bill) => {
-    if (filter === "all") return true;
-    return bill.status === filter;
+  const [filter, setFilter] = useState<"all" | "pendente" | "vencido" | "pago">("all");
+  const [showModal, setShowModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [payingId, setPayingId] = useState<string | null>(null);
+
+  // Form state
+  const [form, setForm] = useState({
+    descricao: "",
+    valor: "",
+    categoria: "",
+    dataVencimento: "",
+    ehRecorrente: false,
+    frequenciaRecorrencia: "mensal" as "mensal" | "anual",
+    anotacoes: "",
   });
 
-  const totalPending = bills
-    .filter((b) => b.status === "pending")
-    .reduce((sum, b) => sum + b.amount, 0);
+  // ─── Derived data ───────────────────────────────────────────────────────────
 
-  const totalOverdue = bills
-    .filter((b) => b.status === "overdue")
-    .reduce((sum, b) => sum + b.amount, 0);
+  const withStatus = payables.map((p) => ({ ...p, computedStatus: computeStatus(p) }));
 
-  const totalPaid = bills
-    .filter((b) => b.status === "paid")
-    .reduce((sum, b) => sum + b.amount, 0);
+  const filtered = withStatus.filter((p) => {
+    if (filter === "all") return true;
+    return p.computedStatus === filter;
+  });
 
-  const getStatusInfo = (status: string) => {
-    switch (status) {
-      case "pending":
-        return {
-          label: "Pendente",
-          color: "text-[#f59e0b]",
-          bgColor: "bg-[#f59e0b]/10",
-          icon: Clock,
-        };
-      case "paid":
-        return {
-          label: "Pago",
-          color: "text-[#10b981]",
-          bgColor: "bg-[#10b981]/10",
-          icon: CheckCircle,
-        };
-      case "overdue":
-        return {
-          label: "Vencido",
-          color: "text-[#ef4444]",
-          bgColor: "bg-[#ef4444]/10",
-          icon: AlertCircle,
-        };
-      default:
-        return {
-          label: status,
-          color: "text-[#001529]/60",
-          bgColor: "bg-[#F5F7FA]",
-          icon: Clock,
-        };
+  const totalPending = withStatus
+    .filter((p) => p.computedStatus === "pendente")
+    .reduce((s, p) => s + p.valor, 0);
+  const totalOverdue = withStatus
+    .filter((p) => p.computedStatus === "vencido")
+    .reduce((s, p) => s + p.valor, 0);
+  const totalPaid = withStatus
+    .filter((p) => p.computedStatus === "pago")
+    .reduce((s, p) => s + p.valor, 0);
+
+  const pendingCount = withStatus.filter((p) => p.computedStatus === "pendente").length;
+  const overdueCount = withStatus.filter((p) => p.computedStatus === "vencido").length;
+  const paidCount = withStatus.filter((p) => p.computedStatus === "pago").length;
+
+  // ─── Actions ────────────────────────────────────────────────────────────────
+
+  const handlePayNow = async (id: string) => {
+    if (!confirm("Confirmar pagamento desta conta?")) return;
+    setPayingId(id);
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      await updatePayable(id, { status: "pago", dataPagamento: today });
+      toast.success("Conta marcada como paga!");
+    } catch {
+      toast.error("Erro ao registrar pagamento.");
+    } finally {
+      setPayingId(null);
     }
   };
 
-  const getDaysUntilDue = (dueDate: string) => {
-    const today = new Date();
-    const due = new Date(dueDate);
-    const diffTime = due.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+  const handleDelete = async (id: string) => {
+    if (!confirm("Excluir esta conta?")) return;
+    try {
+      await deletePayable(id);
+      toast.success("Conta excluída.");
+    } catch {
+      toast.error("Erro ao excluir conta.");
+    }
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const valor = parseFloat(form.valor);
+    if (!valor || valor <= 0) { toast.error("Informe um valor válido."); return; }
+    if (!form.categoria) { toast.error("Selecione uma categoria."); return; }
+    if (!form.dataVencimento) { toast.error("Informe a data de vencimento."); return; }
+
+    setSaving(true);
+    try {
+      await addPayable({
+        descricao: form.descricao,
+        valor,
+        categoria: form.categoria,
+        dataVencimento: form.dataVencimento,
+        status: "pendente",
+        ehRecorrente: form.ehRecorrente,
+        frequenciaRecorrencia: form.ehRecorrente ? form.frequenciaRecorrencia : undefined,
+        anotacoes: form.anotacoes || undefined,
+      });
+      toast.success("Conta adicionada!");
+      setShowModal(false);
+      setForm({ descricao: "", valor: "", categoria: "", dataVencimento: "", ehRecorrente: false, frequenciaRecorrencia: "mensal", anotacoes: "" });
+    } catch (err: any) {
+      toast.error(err?.message ?? "Erro ao salvar conta.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleExport = () => {
+    const rows = filtered.map((p) => ({
+      Descrição: p.descricao,
+      Categoria: p.categoria,
+      Valor: p.valor,
+      Vencimento: fmtDate(p.dataVencimento),
+      Status: STATUS_CFG[p.computedStatus].label,
+      "Data Pagamento": p.dataPagamento ? fmtDate(p.dataPagamento) : "",
+      Recorrente: p.ehRecorrente ? "Sim" : "Não",
+      Observações: p.anotacoes ?? "",
+    }));
+    exportToXlsx(rows, "contas-a-pagar");
+    toast.success("Arquivo exportado!");
+  };
+
+  // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-6">
-      {/* Header with PageHeader component */}
       <PageHeader
         title="Contas a Pagar"
-        subtitle="Gerencie e acompanhe suas obrigações financeiras"
-        action={{
-          label: "Nova Conta",
-          icon: Plus,
-        }}
+        description="Gerencie e acompanhe suas obrigações financeiras"
+        actions={
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-[#28A263] hover:bg-[#20915a] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Conta
+          </button>
+        }
       />
 
-      {/* KPI Cards - Premium Financial Display */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <KPICard
-          title="Total a Pagar"
-          value={`R$ ${totalPending.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
-          icon={Clock}
-          iconColor="blue"
-          status={{
-            label: `${bills.filter((b) => b.status === "pending").length} pendentes`,
-            color: "blue",
-          }}
-        />
-
-        <KPICard
-          title="Vencidas"
-          value={`R$ ${totalOverdue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
-          icon={AlertCircle}
-          iconColor="red"
-          status={{
-            label: `${bills.filter((b) => b.status === "overdue").length} atrasadas`,
-            color: "red",
-          }}
-        />
-
-        <KPICard
-          title="Pagas (mês)"
-          value={`R$ ${totalPaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
-          icon={CheckCircle}
-          iconColor="green"
-          status={{
-            label: `${bills.filter((b) => b.status === "paid").length} quitadas`,
-            color: "green",
-          }}
-        />
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          { label: "A Pagar", value: fmtBRL(totalPending), count: pendingCount, sub: "contas pendentes", color: "text-amber-600", bg: "bg-amber-50", icon: Clock },
+          { label: "Vencidas", value: fmtBRL(totalOverdue), count: overdueCount, sub: "contas atrasadas", color: "text-red-600", bg: "bg-red-50", icon: AlertCircle },
+          { label: "Pagas (mês)", value: fmtBRL(totalPaid), count: paidCount, sub: "contas quitadas", color: "text-green-600", bg: "bg-green-50", icon: CheckCircle },
+        ].map(({ label, value, count, sub, color, bg, icon: Icon }) => (
+          <div key={label} className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center`}>
+                <Icon className={`w-5 h-5 ${color}`} />
+              </div>
+              <span className="text-xs font-semibold text-[#001529]/60 uppercase tracking-wider">{label}</span>
+            </div>
+            <p className="text-2xl font-bold text-[#001529] mb-1">{value}</p>
+            <p className="text-xs text-[#001529]/50">{count} {sub}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Filters */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-[#001529]/60" />
-            <div className="flex gap-2">
+      {/* Filters + Export */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Filter className="w-4 h-4 text-[#001529]/50" />
+          <div className="flex gap-2">
+            {(
+              [
+                { key: "all", label: "Todas", active: "bg-[#003a6d] text-white" },
+                { key: "pendente", label: "Pendentes", active: "bg-amber-500 text-white" },
+                { key: "vencido", label: "Vencidas", active: "bg-red-500 text-white" },
+                { key: "pago", label: "Pagas", active: "bg-green-500 text-white" },
+              ] as const
+            ).map(({ key, label, active }) => (
               <button
-                onClick={() => setFilter("all")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "all"
-                    ? "bg-[#003a6d] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                  filter === key ? active : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
                 }`}
               >
-                Todas
+                {label}
               </button>
-              <button
-                onClick={() => setFilter("pending")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "pending"
-                    ? "bg-[#f59e0b] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
-                }`}
-              >
-                Pendentes
-              </button>
-              <button
-                onClick={() => setFilter("overdue")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "overdue"
-                    ? "bg-[#ef4444] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
-                }`}
-              >
-                Vencidas
-              </button>
-              <button
-                onClick={() => setFilter("paid")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "paid"
-                    ? "bg-[#10b981] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
-                }`}
-              >
-                Pagas
-              </button>
-            </div>
+            ))}
           </div>
-
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-colors text-sm font-medium text-[#001529]">
-            <Download className="w-4 h-4" />
-            Exportar
-          </button>
         </div>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-2 px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-colors text-xs font-semibold text-[#001529]"
+        >
+          <Download className="w-3.5 h-3.5" />
+          Exportar
+        </button>
       </div>
 
       {/* Bills List */}
-      <div className="space-y-3">
-        {filteredBills.map((bill) => {
-          const statusInfo = getStatusInfo(bill.status);
-          const StatusIcon = statusInfo.icon;
-          const daysUntil = getDaysUntilDue(bill.dueDate);
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-6 h-6 animate-spin text-[#28A263]" />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-white border border-[#E5E7EB] rounded-xl p-12 text-center">
+          <p className="text-[#001529]/50 text-sm">
+            {payables.length === 0
+              ? "Nenhuma conta cadastrada. Clique em \"Nova Conta\" para começar."
+              : "Nenhuma conta com este filtro."}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((bill) => {
+            const cfg = STATUS_CFG[bill.computedStatus];
+            const StatusIcon = cfg.icon;
+            const daysUntil = getDaysUntilDue(bill.dataVencimento);
 
-          return (
-            <div
-              key={bill.id}
-              className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div
-                      className={`w-10 h-10 rounded-lg ${statusInfo.bgColor} flex items-center justify-center`}
-                    >
-                      <StatusIcon className={`w-5 h-5 ${statusInfo.color}`} />
+            return (
+              <div
+                key={bill.id}
+                className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow group"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3 flex-1">
+                    <div className={`w-10 h-10 rounded-lg ${cfg.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                      <StatusIcon className={`w-5 h-5 ${cfg.color}`} />
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-[#001529]">
-                          {bill.description}
-                        </h3>
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
-                            bill.pfpj === "PF"
-                              ? "bg-pf/10 text-pf"
-                              : "bg-pj/10 text-pj"
-                          }`}
-                        >
-                          {bill.pfpj === "PF" ? (
-                            <User className="w-3 h-3" />
-                          ) : (
-                            <Building2 className="w-3 h-3" />
-                          )}
-                          {bill.pfpj}
-                        </span>
-                        {bill.recurrent && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#003a6d]/10 text-[#003a6d]">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <h3 className="font-semibold text-[#001529]">{bill.descricao}</h3>
+                        {bill.ehRecorrente && (
+                          <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#003a6d]/10 text-[#003a6d]">
                             Recorrente
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-[#001529]/60">
-                        {bill.supplier}
-                      </p>
+                      <p className="text-xs text-[#001529]/60 mb-2">{bill.categoria}</p>
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-[#001529]/40" />
+                        <span className="text-xs text-[#001529]/70">
+                          Vencimento: {fmtDate(bill.dataVencimento)}
+                        </span>
+                        {bill.computedStatus === "pendente" && daysUntil <= 5 && daysUntil > 0 && (
+                          <span className="text-xs text-amber-600 font-semibold">
+                            (em {daysUntil} {daysUntil === 1 ? "dia" : "dias"})
+                          </span>
+                        )}
+                        {bill.computedStatus === "pendente" && daysUntil === 0 && (
+                          <span className="text-xs text-amber-600 font-semibold">(vence hoje)</span>
+                        )}
+                        {bill.computedStatus === "pago" && bill.dataPagamento && (
+                          <span className="text-xs text-green-600">
+                            • Pago em {fmtDate(bill.dataPagamento)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-6 ml-13">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-[#001529]/60" />
-                      <span className="text-sm text-[#001529]">
-                        Vencimento: {new Date(bill.dueDate).toLocaleDateString("pt-BR")}
-                      </span>
-                      {bill.status === "pending" && daysUntil <= 5 && daysUntil > 0 && (
-                        <span className="text-xs text-[#f59e0b] font-medium">
-                          (em {daysUntil} {daysUntil === 1 ? "dia" : "dias"})
-                        </span>
-                      )}
-                      {bill.status === "pending" && daysUntil === 0 && (
-                        <span className="text-xs text-[#f59e0b] font-medium">
-                          (vence hoje)
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <p className="font-bold text-[#001529] mb-2">
-                    R$ {bill.amount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                  </p>
-                  <span
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium ${statusInfo.bgColor} ${statusInfo.color}`}
-                  >
-                    {statusInfo.label}
-                  </span>
-                  {bill.status === "pending" && (
-                    <button className="mt-3 w-full bg-[#003a6d] text-white px-4 py-1.5 rounded-lg hover:bg-[#002a50] transition-colors text-xs font-medium">
-                      Pagar Agora
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-bold text-[#001529] mb-2">{fmtBRL(bill.valor)}</p>
+                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold ${cfg.bg} ${cfg.color} border ${cfg.border}`}>
+                      {cfg.label}
+                    </span>
+                    {bill.computedStatus !== "pago" && (
+                      <button
+                        onClick={() => handlePayNow(bill.id)}
+                        disabled={payingId === bill.id}
+                        className="mt-2 flex items-center gap-1 w-full justify-center bg-[#003a6d] hover:bg-[#002a50] text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-60"
+                      >
+                        {payingId === bill.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-3 h-3" />
+                        )}
+                        Pagar Agora
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(bill.id)}
+                      className="mt-1 opacity-0 group-hover:opacity-100 p-1 text-[#001529]/30 hover:text-red-500 transition-all block ml-auto"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {filteredBills.length === 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-12 text-center">
-          <p className="text-[#001529]/60">Nenhuma conta encontrada</p>
+      {/* ─── Nova Conta Modal ─────────────────────────────────────────────── */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
+              <h2 className="text-lg font-bold text-[#001529]">Nova Conta a Pagar</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1.5 text-[#001529]/40 hover:text-[#001529] rounded-lg hover:bg-[#F5F7FA] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+              <div>
+                <label className="block text-sm font-semibold text-[#001529] mb-2">Descrição</label>
+                <input
+                  type="text"
+                  value={form.descricao}
+                  onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
+                  placeholder="Ex: Aluguel Escritório"
+                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[#001529]/40 outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#001529] mb-2">Valor (R$)</label>
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value={form.valor}
+                    onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
+                    placeholder="0,00"
+                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#001529] mb-2">Vencimento</label>
+                  <input
+                    type="date"
+                    value={form.dataVencimento}
+                    onChange={(e) => setForm((f) => ({ ...f, dataVencimento: e.target.value }))}
+                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-[#001529] mb-2">Categoria</label>
+                <select
+                  value={form.categoria}
+                  onChange={(e) => setForm((f) => ({ ...f, categoria: e.target.value }))}
+                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] bg-white transition-all"
+                  required
+                >
+                  <option value="">Selecionar...</option>
+                  {CATEGORIAS_PAYABLES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-[#001529] mb-2">Observações</label>
+                <textarea
+                  value={form.anotacoes}
+                  onChange={(e) => setForm((f) => ({ ...f, anotacoes: e.target.value }))}
+                  placeholder="Informações adicionais..."
+                  rows={2}
+                  className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[#001529]/40 outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all resize-none"
+                />
+              </div>
+
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.ehRecorrente}
+                  onChange={(e) => setForm((f) => ({ ...f, ehRecorrente: e.target.checked }))}
+                  className="w-4 h-4 accent-[#28A263]"
+                />
+                <span className="text-sm font-medium text-[#001529]">Conta recorrente</span>
+              </label>
+
+              {form.ehRecorrente && (
+                <div>
+                  <label className="block text-sm font-semibold text-[#001529] mb-2">Frequência</label>
+                  <select
+                    value={form.frequenciaRecorrencia}
+                    onChange={(e) => setForm((f) => ({ ...f, frequenciaRecorrencia: e.target.value as "mensal" | "anual" }))}
+                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] bg-white"
+                  >
+                    <option value="mensal">Mensal</option>
+                    <option value="anual">Anual</option>
+                  </select>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-2.5 border border-[#E5E7EB] rounded-xl text-sm font-semibold text-[#001529]/60 hover:bg-[#F5F7FA] transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 py-2.5 bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl text-sm font-semibold transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {saving ? "Salvando..." : "Salvar Conta"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

@@ -17,6 +17,10 @@ export interface User {
   phone?: string;
   company?: string;
   bio?: string;
+  loginStreak: number;
+  bestStreak: number;
+  lastLoginDate?: string;
+  streakRewardClaimed: boolean;
 }
 
 interface AuthContextType {
@@ -60,7 +64,53 @@ function mapProfile(pbRecord: RecordModel): User {
     phone: pbRecord.phone,
     company: pbRecord.company,
     bio: pbRecord.bio,
+    loginStreak: pbRecord.login_streak ?? 0,
+    bestStreak: pbRecord.best_streak ?? 0,
+    lastLoginDate: pbRecord.last_login_date ?? undefined,
+    streakRewardClaimed: pbRecord.streak_reward_claimed ?? false,
   };
+}
+
+async function updateLoginStreak(userId: string, currentUser: User): Promise<void> {
+  const today = new Date().toISOString().split("T")[0];
+  const lastLogin = currentUser.lastLoginDate;
+
+  let newStreak = currentUser.loginStreak;
+  let newBest = currentUser.bestStreak;
+  let rewardClaimed = currentUser.streakRewardClaimed;
+
+  if (lastLogin === today) return; // Already logged in today
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+  if (lastLogin === yesterdayStr) {
+    newStreak = currentUser.loginStreak + 1;
+  } else {
+    newStreak = 1; // Reset streak — broke the chain
+  }
+
+  if (newStreak > newBest) newBest = newStreak;
+
+  // Grant 1 free month PRO to NEW users who reach 7-day streak (only once)
+  const updates: Record<string, unknown> = {
+    login_streak: newStreak,
+    best_streak: newBest,
+    last_login_date: today,
+  };
+
+  if (newStreak >= 7 && !rewardClaimed && currentUser.plan === "free") {
+    updates.plan = "pro";
+    updates.streak_reward_claimed = true;
+    // Note: in production, set a pro_expires_at date 30 days from now
+  }
+
+  try {
+    await pb.collection("profiles").update(userId, updates);
+  } catch (err) {
+    console.error("Failed to update streak:", err);
+  }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -70,7 +120,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function fetchProfile(userId: string) {
     try {
       const record = await pb.collection("profiles").getOne(userId, { requestKey: null });
-      setUser(mapProfile(record));
+      const mapped = mapProfile(record);
+      setUser(mapped);
+      // Fire-and-forget streak update on each auth load (deduplicated by "today" check inside)
+      updateLoginStreak(userId, mapped);
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("autocancelled")) return;
       console.error("Error fetching profile:", error);

@@ -1,409 +1,926 @@
+import { useState, useEffect, useCallback, Fragment } from "react";
 import {
-  Filter,
-  Download,
-  Plus,
-  ArrowUpRight,
-  ArrowDownRight,
-  Calendar,
-  Search,
-  User,
-  Building2,
-  Lock,
-  Crown,
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
+  Plus, ArrowUpRight, ArrowDownRight, Search, User, Building2,
+  Crown, TrendingUp, TrendingDown, DollarSign, Trash2, X, Loader2,
+  AlertTriangle, CheckCircle2, Download, ChevronDown, ChevronUp,
+  Paperclip, FileText, ExternalLink,
 } from "lucide-react";
-import { useState } from "react";
 import { KPICard } from "../components/KPICard";
 import { PageHeader } from "../components/PageHeader";
+import { useAuth } from "../contexts/AuthContext";
+import { pb } from "../../lib/pocketbase";
+import { toast } from "sonner";
+import { exportToXlsx } from "../../utils/exportXlsx";
 
-const transactions = [
-  {
-    id: 1,
-    date: "2026-04-08",
-    description: "Pagamento Cliente A - Projeto Website",
-    category: "Serviços",
-    type: "income",
-    amount: 3500,
-    pfpj: "PJ",
-    status: "paid",
-  },
-  {
-    id: 2,
-    date: "2026-04-08",
-    description: "Fornecedor XYZ - Material de Escritório",
-    category: "Despesas Operacionais",
-    type: "expense",
-    amount: 1200,
-    pfpj: "PJ",
-    status: "paid",
-  },
-  {
-    id: 3,
-    date: "2026-04-07",
-    description: "Freelance - Design de Logo",
-    category: "Serviços",
-    type: "income",
-    amount: 850,
-    pfpj: "PF",
-    status: "paid",
-  },
-  {
-    id: 4,
-    date: "2026-04-07",
-    description: "Aluguel Escritório",
-    category: "Infraestrutura",
-    type: "expense",
-    amount: 2500,
-    pfpj: "PJ",
-    status: "paid",
-  },
-  {
-    id: 5,
-    date: "2026-04-06",
-    description: "Consultoria MEI - Cliente B",
-    category: "Serviços",
-    type: "income",
-    amount: 1200,
-    pfpj: "PF",
-    status: "paid",
-  },
-  {
-    id: 6,
-    date: "2026-04-06",
-    description: "Internet e Telefonia",
-    category: "Despesas Operacionais",
-    type: "expense",
-    amount: 180,
-    pfpj: "PJ",
-    status: "paid",
-  },
-  {
-    id: 7,
-    date: "2026-04-05",
-    description: "Desenvolvimento App Mobile",
-    category: "Serviços",
-    type: "income",
-    amount: 5000,
-    pfpj: "PJ",
-    status: "paid",
-  },
-  {
-    id: 8,
-    date: "2026-04-05",
-    description: "Software e Licenças",
-    category: "Tecnologia",
-    type: "expense",
-    amount: 450,
-    pfpj: "PJ",
-    status: "paid",
-  },
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type PfPj = "PF" | "PJ";
+type TipoTransacao = "entrada" | "saida";
+type ActiveTab = "all" | "PJ" | "PF";
+
+interface Transaction {
+  id: string;
+  user_id: string;
+  valor: number;
+  tipo: TipoTransacao;
+  categoria: string;
+  data: string;
+  descricao: string;
+  pfpj: PfPj;
+  pfpj_score: number;
+  attachments: string[]; // PocketBase file field names
+  created: string;
+}
+
+// ─── Heuristic PF/PJ Classifier ───────────────────────────────────────────────
+
+const PF_KEYWORDS = [
+  "salário", "salario", "pix", "retirada", "pro-labore", "prolabore",
+  "pessoal", "alimentação", "alimentacao", "lazer", "saúde", "saude",
+  "farmácia", "farmacia", "mercado", "supermercado", "academia",
 ];
 
+const PJ_KEYWORDS = [
+  "fornecedor", "nota fiscal", "nota_fiscal", "nf", "cliente", "serviço",
+  "servico", "contrato", "aluguel", "energia", "água", "agua", "internet",
+  "telefone", "software", "licença", "licenca", "material", "escritório",
+  "escritorio", "marketing", "publicidade", "equipamento", "manutenção",
+  "manutencao", "frete", "logística", "logistica",
+];
+
+function classifyPfPj(
+  descricao: string,
+  valor: number,
+  tipo: TipoTransacao,
+): { pfpj: PfPj; score: number } {
+  const lower = descricao.toLowerCase();
+
+  for (const kw of PF_KEYWORDS) {
+    if (lower.includes(kw)) return { pfpj: "PF", score: 90 };
+  }
+  for (const kw of PJ_KEYWORDS) {
+    if (lower.includes(kw)) return { pfpj: "PJ", score: 90 };
+  }
+
+  // Amount-based heuristics
+  if (tipo === "saida") {
+    if (valor > 2000) return { pfpj: "PJ", score: 75 };
+    if (valor < 100) return { pfpj: "PF", score: 65 };
+  }
+  if (tipo === "entrada" && valor > 2000) {
+    return { pfpj: "PJ", score: 75 };
+  }
+
+  // Default to PJ for business context
+  return { pfpj: "PJ", score: 55 };
+}
+
+// ─── Categories ──────────────────────────────────────────────────────────────
+
+const CATEGORIES_INCOME = [
+  "Serviços", "Produto", "Freelance", "Consultoria", "Salário",
+  "Aluguel Recebido", "Reembolso", "Outros",
+];
+
+const CATEGORIES_EXPENSE = [
+  "Despesas Operacionais", "Infraestrutura", "Tecnologia", "Marketing",
+  "Material de Escritório", "Transporte", "Alimentação", "Saúde",
+  "Pessoal / Retirada", "Impostos", "Outros",
+];
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const fmtBRL = (v: number) =>
+  v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const fmtDate = (iso: string) => {
+  const [y, m, d] = iso.split("T")[0].split("-");
+  return `${d}/${m}/${y}`;
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export function FluxoCaixa() {
-  const [filter, setFilter] = useState("all");
+  const { user, incrementTransactionUsage } = useAuth();
+
+  // Data state
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // UI state
+  const [activeTab, setActiveTab] = useState<ActiveTab>("all");
+  const [typeFilter, setTypeFilter] = useState<"all" | TipoTransacao>("all");
   const [search, setSearch] = useState("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
 
-  const filteredTransactions = transactions.filter((t) => {
-    const matchesFilter =
-      filter === "all" ||
-      (filter === "income" && t.type === "income") ||
-      (filter === "expense" && t.type === "expense") ||
-      (filter === "PF" && t.pfpj === "PF") ||
-      (filter === "PJ" && t.pfpj === "PJ");
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-    const matchesSearch =
-      search === "" ||
-      t.description.toLowerCase().includes(search.toLowerCase()) ||
-      t.category.toLowerCase().includes(search.toLowerCase());
+  // Form fields
+  const [formData, setFormData] = useState({
+    descricao: "",
+    valor: "",
+    tipo: "entrada" as TipoTransacao,
+    categoria: "",
+    data: new Date().toISOString().split("T")[0],
+    pfpj: "PJ" as PfPj,
+    pfpj_score: 100,
+  });
+  const [suggestion, setSuggestion] = useState<{ pfpj: PfPj; score: number } | null>(null);
+  const [showReviewAlert, setShowReviewAlert] = useState(false);
 
-    return matchesFilter && matchesSearch;
+  // ─── Load transactions ────────────────────────────────────────────────────
+
+  const loadTransactions = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const records = await pb.collection("transactions").getFullList({
+        filter: `user_id = "${user.id}"`,
+        sort: "-data,-created",
+        requestKey: null,
+      });
+      setTransactions(
+        records.map((r) => ({
+          id: r.id,
+          user_id: r.user_id,
+          valor: r.valor,
+          tipo: r.tipo as TipoTransacao,
+          categoria: r.categoria,
+          data: r.data,
+          descricao: r.descricao ?? "",
+          pfpj: (r.pfpj as PfPj) ?? "PJ",
+          pfpj_score: r.pfpj_score ?? 100,
+          attachments: Array.isArray(r.attachments) ? r.attachments : [],
+          created: r.created,
+        })),
+      );
+    } catch (err) {
+      console.error("Erro ao carregar transações:", err);
+      toast.error("Erro ao carregar transações");
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
+
+  // ─── Auto-suggest when description or valor changes ───────────────────────
+
+  useEffect(() => {
+    const trimmed = formData.descricao.trim();
+    const val = parseFloat(formData.valor) || 0;
+    if (trimmed.length < 3) {
+      setSuggestion(null);
+      setShowReviewAlert(false);
+      return;
+    }
+    const s = classifyPfPj(trimmed, val, formData.tipo);
+    setSuggestion(s);
+    setShowReviewAlert(s.score < 70);
+    // Only auto-apply if user hasn't manually changed it yet
+    setFormData((f) => ({ ...f, pfpj: s.pfpj, pfpj_score: s.score }));
+  }, [formData.descricao, formData.valor, formData.tipo]);
+
+  // ─── Create transaction ───────────────────────────────────────────────────
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    const valor = parseFloat(formData.valor);
+    if (!valor || valor <= 0) {
+      toast.error("Informe um valor válido.");
+      return;
+    }
+    if (!formData.categoria) {
+      toast.error("Selecione uma categoria.");
+      return;
+    }
+
+    // Free plan limit check
+    if (user.plan === "free" && user.transactionsUsageToday >= 100) {
+      toast.error("Limite mensal atingido. Faça upgrade para PRO.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const record = await pb.collection("transactions").create({
+        user_id: user.id,
+        descricao: formData.descricao,
+        valor,
+        tipo: formData.tipo,
+        categoria: formData.categoria,
+        data: formData.data,
+        pfpj: formData.pfpj,
+        pfpj_score: formData.pfpj_score,
+      });
+
+      setTransactions((prev) => [
+        {
+          id: record.id,
+          user_id: record.user_id,
+          valor: record.valor,
+          tipo: record.tipo,
+          categoria: record.categoria,
+          data: record.data,
+          descricao: record.descricao ?? "",
+          pfpj: record.pfpj ?? "PJ",
+          pfpj_score: record.pfpj_score ?? 100,
+          attachments: [],
+          created: record.created,
+        },
+        ...prev,
+      ]);
+
+      await incrementTransactionUsage();
+      toast.success("Transação registrada!");
+      resetForm();
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao salvar transação.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Excluir esta transação?")) return;
+    try {
+      await pb.collection("transactions").delete(id);
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
+      toast.success("Transação excluída.");
+    } catch {
+      toast.error("Erro ao excluir transação.");
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      descricao: "",
+      valor: "",
+      tipo: "entrada",
+      categoria: "",
+      data: new Date().toISOString().split("T")[0],
+      pfpj: "PJ",
+      pfpj_score: 100,
+    });
+    setSuggestion(null);
+    setShowReviewAlert(false);
+  };
+
+  // ─── Derived values ───────────────────────────────────────────────────────
+
+  const filtered = transactions.filter((t) => {
+    if (activeTab !== "all" && t.pfpj !== activeTab) return false;
+    if (typeFilter !== "all" && t.tipo !== typeFilter) return false;
+    if (
+      search &&
+      !t.descricao.toLowerCase().includes(search.toLowerCase()) &&
+      !t.categoria.toLowerCase().includes(search.toLowerCase())
+    )
+      return false;
+    return true;
   });
 
-  const totalIncome = filteredTransactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const calcKpis = (list: Transaction[]) => {
+    const income = list.filter((t) => t.tipo === "entrada").reduce((s, t) => s + t.valor, 0);
+    const expense = list.filter((t) => t.tipo === "saida").reduce((s, t) => s + t.valor, 0);
+    return { income, expense, balance: income - expense };
+  };
 
-  const totalExpense = filteredTransactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const kpiAll = calcKpis(transactions);
+  const kpiPJ = calcKpis(transactions.filter((t) => t.pfpj === "PJ"));
+  const kpiPF = calcKpis(transactions.filter((t) => t.pfpj === "PF"));
 
-  const balance = totalIncome - totalExpense;
+  const activeKpi =
+    activeTab === "PJ" ? kpiPJ : activeTab === "PF" ? kpiPF : kpiAll;
 
-  const transactionLimit = 50;
-  const currentTransactionCount = 42;
-  const limitPercentage = (currentTransactionCount / transactionLimit) * 100;
+  // Usage limit
+  const limit = 100;
+  const used = user?.transactionsUsageToday ?? 0;
+  const limitPct = (used / limit) * 100;
+
+  const categories =
+    formData.tipo === "entrada" ? CATEGORIES_INCOME : CATEGORIES_EXPENSE;
+
+  // ─── Upload attachment ────────────────────────────────────────────────────
+
+  const handleUploadAttachment = async (id: string, file: File) => {
+    setUploadingId(id);
+    try {
+      const formData = new FormData();
+      formData.append("attachments", file);
+      const updated = await pb.collection("transactions").update(id, formData);
+      setTransactions((prev) =>
+        prev.map((t) =>
+          t.id === id
+            ? { ...t, attachments: Array.isArray(updated.attachments) ? updated.attachments : [] }
+            : t,
+        ),
+      );
+      toast.success("Anexo enviado!");
+    } catch {
+      toast.error("Erro ao enviar anexo");
+    }
+    setUploadingId(null);
+  };
+
+  // ─── Export ───────────────────────────────────────────────────────────────
+
+  const handleExport = () => {
+    const rows = filtered.map((t) => ({
+      Data: fmtDate(t.data),
+      Descrição: t.descricao || "—",
+      Categoria: t.categoria,
+      Tipo: t.tipo === "entrada" ? "Receita" : "Despesa",
+      "PF/PJ": t.pfpj,
+      "Valor (R$)": t.tipo === "entrada" ? t.valor : -t.valor,
+    }));
+    exportToXlsx(rows, "fluxo-de-caixa");
+    toast.success("Exportado com sucesso!");
+  };
+
+  // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-6">
-      {/* Header with PageHeader component */}
       <PageHeader
         title="Fluxo de Caixa"
-        subtitle="Gerencie todas as entradas e saídas do seu negócio"
-        action={{
-          label: "Nova Transação",
-          icon: Plus,
-        }}
+        description="Gerencie entradas e saídas separando finanças pessoais (PF) e empresariais (PJ)"
+        actions={
+          <button
+            onClick={() => { resetForm(); setShowModal(true); }}
+            className="flex items-center gap-2 bg-[#28A263] hover:bg-[#20915a] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Transação
+          </button>
+        }
       />
 
-      {/* Transaction Limit Warning */}
-      {limitPercentage > 70 && (
-        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <Crown className="w-5 h-5 text-amber-500" />
-                <h3 className="font-semibold text-foreground">
-                  {limitPercentage >= 100 ? "Limite Atingido" : "Atenção: Limite Próximo"}
-                </h3>
+      {/* Free plan limit warning */}
+      {limitPct > 70 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <Crown className="w-4 h-4 text-amber-600" />
+              <span className="font-semibold text-amber-800 text-sm">
+                {limitPct >= 100 ? "Limite atingido" : "Limite próximo"}
+              </span>
+            </div>
+            <p className="text-xs text-amber-700 mb-2">
+              {used} de {limit} transações mensais do plano gratuito
+            </p>
+            <div className="h-1.5 bg-amber-200 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${limitPct >= 100 ? "bg-red-500" : "bg-amber-500"}`}
+                style={{ width: `${Math.min(limitPct, 100)}%` }}
+              />
+            </div>
+          </div>
+          <button className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors">
+            Upgrade PRO
+          </button>
+        </div>
+      )}
+
+      {/* PF/PJ TABs */}
+      <div className="flex gap-1 bg-[#F5F7FA] rounded-xl p-1 w-fit">
+        {(
+          [
+            { key: "all", label: "Todos", icon: null },
+            { key: "PJ", label: "🏢 Empresa (PJ)", icon: null },
+            { key: "PF", label: "👤 Pessoal (PF)", icon: null },
+          ] as const
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setActiveTab(key)}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+              activeTab === key
+                ? "bg-white text-[#001529] shadow-sm"
+                : "text-[rgba(0,21,41,0.55)] hover:text-[#001529]"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <KPICard
+          icon={TrendingUp}
+          label={
+            activeTab === "PJ"
+              ? "Receitas Empresa"
+              : activeTab === "PF"
+              ? "Receitas Pessoais"
+              : "Total Receitas"
+          }
+          value={`+R$ ${fmtBRL(activeKpi.income)}`}
+          color="green"
+        />
+        <KPICard
+          icon={TrendingDown}
+          label={
+            activeTab === "PJ"
+              ? "Despesas Empresa"
+              : activeTab === "PF"
+              ? "Despesas Pessoais"
+              : "Total Despesas"
+          }
+          value={`-R$ ${fmtBRL(activeKpi.expense)}`}
+          color="red"
+        />
+        <KPICard
+          icon={DollarSign}
+          label={
+            activeTab === "PJ"
+              ? "Caixa Real da Empresa"
+              : activeTab === "PF"
+              ? "Saldo Pessoal"
+              : "Saldo do Período"
+          }
+          value={`${activeKpi.balance >= 0 ? "+" : "-"}R$ ${fmtBRL(Math.abs(activeKpi.balance))}`}
+          color={activeKpi.balance >= 0 ? "green" : "red"}
+        />
+      </div>
+
+      {/* PF/PJ split summary (only in "all" tab) */}
+      {activeTab === "all" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                <Building2 className="w-4 h-4 text-blue-600" />
               </div>
-              <p className="text-sm text-muted-foreground mb-3">
-                Você usou {currentTransactionCount} de {transactionLimit} transações mensais do plano gratuito.
-                {limitPercentage >= 100 && " Upgrade para PRO e tenha transações ilimitadas!"}
-              </p>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${
-                      limitPercentage >= 100 ? "bg-destructive" :
-                      limitPercentage > 90 ? "bg-warning" : "bg-amber-500"
-                    }`}
-                    style={{ width: `${Math.min(limitPercentage, 100)}%` }}
-                  />
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {Math.round(limitPercentage)}%
-                </span>
+              <span className="font-semibold text-[#001529] text-sm">Empresa (PJ)</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <div>
+                <p className="text-[rgba(0,21,41,0.5)] text-xs mb-0.5">Receitas</p>
+                <p className="font-bold text-green-600">+R$ {fmtBRL(kpiPJ.income)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[rgba(0,21,41,0.5)] text-xs mb-0.5">Despesas</p>
+                <p className="font-bold text-red-500">-R$ {fmtBRL(kpiPJ.expense)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[rgba(0,21,41,0.5)] text-xs mb-0.5">Saldo</p>
+                <p className={`font-bold ${kpiPJ.balance >= 0 ? "text-green-600" : "text-red-500"}`}>
+                  {kpiPJ.balance >= 0 ? "+" : "-"}R$ {fmtBRL(Math.abs(kpiPJ.balance))}
+                </p>
               </div>
             </div>
-            <button className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-amber-600 hover:to-orange-700 transition-all font-semibold text-sm whitespace-nowrap">
-              Upgrade PRO
-            </button>
+          </div>
+
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
+                <User className="w-4 h-4 text-purple-600" />
+              </div>
+              <span className="font-semibold text-[#001529] text-sm">Pessoal (PF)</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <div>
+                <p className="text-[rgba(0,21,41,0.5)] text-xs mb-0.5">Receitas</p>
+                <p className="font-bold text-green-600">+R$ {fmtBRL(kpiPF.income)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[rgba(0,21,41,0.5)] text-xs mb-0.5">Despesas</p>
+                <p className="font-bold text-red-500">-R$ {fmtBRL(kpiPF.expense)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[rgba(0,21,41,0.5)] text-xs mb-0.5">Saldo</p>
+                <p className={`font-bold ${kpiPF.balance >= 0 ? "text-green-600" : "text-red-500"}`}>
+                  {kpiPF.balance >= 0 ? "+" : "-"}R$ {fmtBRL(Math.abs(kpiPF.balance))}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* KPI Cards - Premium Financial Display */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <KPICard
-          title="Total Receitas"
-          value={`+R$ ${totalIncome.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
-          icon={TrendingUp}
-          iconColor="green"
-          status={{
-            label: "Mês atual",
-            color: "green",
-          }}
-        />
-
-        <KPICard
-          title="Total Despesas"
-          value={`-R$ ${totalExpense.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
-          icon={TrendingDown}
-          iconColor="red"
-          status={{
-            label: "Mês atual",
-            color: "red",
-          }}
-        />
-
-        <KPICard
-          title="Saldo Período"
-          value={`${balance >= 0 ? "+" : ""}R$ ${Math.abs(balance).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
-          icon={DollarSign}
-          iconColor={balance >= 0 ? "green" : "red"}
-          status={{
-            label: balance >= 0 ? "Positivo" : "Negativo",
-            color: balance >= 0 ? "green" : "red",
-          }}
-        />
+      {/* Filters */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex flex-col sm:flex-row gap-3">
+        <div className="flex-1 flex items-center gap-2 bg-[#F5F7FA] px-3 py-2 rounded-lg">
+          <Search className="w-4 h-4 text-[rgba(0,21,41,0.4)]" />
+          <input
+            type="text"
+            placeholder="Buscar por descrição ou categoria..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-transparent outline-none text-sm flex-1 text-[#001529] placeholder:text-[rgba(0,21,41,0.4)]"
+          />
+        </div>
+        <div className="flex gap-2">
+          {(
+            [
+              { key: "all", label: "Todos" },
+              { key: "entrada", label: "Receitas" },
+              { key: "saida", label: "Despesas" },
+            ] as const
+          ).map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setTypeFilter(key)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                typeFilter === key
+                  ? key === "entrada"
+                    ? "bg-green-500 text-white"
+                    : key === "saida"
+                    ? "bg-red-500 text-white"
+                    : "bg-[#001529] text-white"
+                  : "bg-[#F5F7FA] text-[rgba(0,21,41,0.6)] hover:bg-[#E5E7EB]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-2 px-3 py-1.5 border border-[#E5E7EB] rounded-lg text-xs font-semibold text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] transition-colors"
+        >
+          <Download className="w-3.5 h-3.5" />
+          Exportar XLSX
+        </button>
       </div>
 
-      {/* Filters and Search */}
-      <div className="bg-card border border-border rounded-xl p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
-            <Search className="w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Buscar por descrição ou categoria..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm flex-1 text-foreground placeholder:text-muted-foreground"
-            />
+      {/* Transactions table */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-6 h-6 animate-spin text-[#28A263]" />
           </div>
-
-          {/* Filters */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <div className="flex gap-2">
-              <button
-                onClick={() => setFilter("all")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                Todos
-              </button>
-              <button
-                onClick={() => setFilter("income")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "income"
-                    ? "bg-success text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                Receitas
-              </button>
-              <button
-                onClick={() => setFilter("expense")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "expense"
-                    ? "bg-expense text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                Despesas
-              </button>
-              <button
-                onClick={() => setFilter("PF")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "PF"
-                    ? "bg-pf text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                PF
-              </button>
-              <button
-                onClick={() => setFilter("PJ")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                  filter === "PJ"
-                    ? "bg-pj text-white"
-                    : "bg-secondary text-foreground hover:bg-secondary/80"
-                }`}
-              >
-                PJ
-              </button>
-            </div>
-          </div>
-
-          {/* Export */}
-          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors text-sm font-medium text-foreground">
-            <Download className="w-4 h-4" />
-            Exportar
-          </button>
-        </div>
-      </div>
-
-      {/* Transactions List */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-secondary border-b border-border">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Data
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Descrição
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Categoria
-                </th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Tipo
-                </th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Valor
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredTransactions.map((transaction) => (
-                <tr
-                  key={transaction.id}
-                  className="hover:bg-secondary/50 transition-colors cursor-pointer"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-foreground">
-                      {new Date(transaction.date).toLocaleDateString("pt-BR")}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium text-foreground">
-                        {transaction.description}
-                      </p>
-                      <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
-                          transaction.pfpj === "PF"
-                            ? "bg-pf/10 text-pf"
-                            : "bg-pj/10 text-pj"
-                        }`}
-                      >
-                        {transaction.pfpj === "PF" ? (
-                          <User className="w-3 h-3" />
-                        ) : (
-                          <Building2 className="w-3 h-3" />
-                        )}
-                        {transaction.pfpj}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-muted-foreground">
-                      {transaction.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
-                        transaction.type === "income"
-                          ? "bg-success/10 text-success"
-                          : "bg-expense/10 text-expense"
-                      }`}
-                    >
-                      {transaction.type === "income" ? (
-                        <ArrowUpRight className="w-3 h-3" />
-                      ) : (
-                        <ArrowDownRight className="w-3 h-3" />
-                      )}
-                      {transaction.type === "income" ? "Receita" : "Despesa"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <span
-                      className={`font-semibold ${
-                        transaction.type === "income"
-                          ? "text-success"
-                          : "text-expense"
-                      }`}
-                    >
-                      {transaction.type === "income" ? "+" : "-"}R${" "}
-                      {transaction.amount.toLocaleString("pt-BR", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {filteredTransactions.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              Nenhuma transação encontrada
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-[rgba(0,21,41,0.5)] text-sm">
+              {transactions.length === 0
+                ? "Nenhuma transação registrada. Clique em "Nova Transação" para começar."
+                : "Nenhuma transação encontrada com os filtros selecionados."}
             </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-[#F5F7FA] border-b border-[#E5E7EB]">
+                <tr>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Data</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Descrição</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Categoria</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Tipo</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Valor</th>
+                  <th className="px-5 py-3" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F5F7FA]">
+                {filtered.map((t) => {
+                  const isExpanded = expandedId === t.id;
+                  return (
+                    <Fragment key={t.id}>
+                      <tr
+                        className="hover:bg-[#F9FAFB] transition-colors group cursor-pointer"
+                        onClick={() => setExpandedId(isExpanded ? null : t.id)}
+                      >
+                        <td className="px-5 py-3.5 whitespace-nowrap text-sm text-[rgba(0,21,41,0.7)]">
+                          {fmtDate(t.data)}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-[#001529]">{t.descricao || "—"}</span>
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${
+                                t.pfpj === "PF"
+                                  ? "bg-purple-50 text-purple-700"
+                                  : "bg-blue-50 text-blue-700"
+                              }`}
+                            >
+                              {t.pfpj === "PF" ? <User className="w-3 h-3" /> : <Building2 className="w-3 h-3" />}
+                              {t.pfpj}
+                            </span>
+                            {t.pfpj_score < 70 && (
+                              <span className="text-amber-500" title={`Confiança: ${t.pfpj_score}%`}>
+                                <AlertTriangle className="w-3 h-3" />
+                              </span>
+                            )}
+                            {t.attachments.length > 0 && (
+                              <span className="text-[rgba(0,21,41,0.4)]" title={`${t.attachments.length} anexo(s)`}>
+                                <Paperclip className="w-3 h-3" />
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-5 py-3.5 whitespace-nowrap text-sm text-[rgba(0,21,41,0.55)]">{t.categoria}</td>
+                        <td className="px-5 py-3.5 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${
+                              t.tipo === "entrada"
+                                ? "bg-green-50 text-green-700"
+                                : "bg-red-50 text-red-600"
+                            }`}
+                          >
+                            {t.tipo === "entrada" ? (
+                              <ArrowUpRight className="w-3 h-3" />
+                            ) : (
+                              <ArrowDownRight className="w-3 h-3" />
+                            )}
+                            {t.tipo === "entrada" ? "Receita" : "Despesa"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 whitespace-nowrap text-right">
+                          <span
+                            className={`font-bold text-sm ${
+                              t.tipo === "entrada" ? "text-green-600" : "text-red-500"
+                            }`}
+                          >
+                            {t.tipo === "entrada" ? "+" : "-"}R$ {fmtBRL(t.valor)}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDelete(t.id); }}
+                              className="opacity-0 group-hover:opacity-100 p-1 text-[rgba(0,21,41,0.3)] hover:text-red-500 transition-all"
+                              title="Excluir"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <span className="p-1 text-[rgba(0,21,41,0.3)]">
+                              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      {isExpanded && (
+                        <tr className="bg-[#F9FAFB]">
+                          <td colSpan={6} className="px-5 py-4 border-t border-[#E5E7EB]">
+                            <div className="flex flex-wrap gap-6 text-sm">
+                              {/* Meta */}
+                              <div className="space-y-1 min-w-[140px]">
+                                <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Classificação</p>
+                                <p className="text-[#001529] font-medium">
+                                  {t.pfpj === "PF" ? "👤 Pessoa Física" : "🏢 Pessoa Jurídica"}
+                                  {t.pfpj_score < 100 && (
+                                    <span className={`ml-2 text-xs ${t.pfpj_score < 70 ? "text-amber-500" : "text-green-600"}`}>
+                                      ({t.pfpj_score}% confiança)
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              <div className="space-y-1 min-w-[140px]">
+                                <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Criado em</p>
+                                <p className="text-[#001529] font-medium">{fmtDate(t.created)}</p>
+                              </div>
+                              {/* Attachments */}
+                              <div className="flex-1 space-y-2 min-w-[200px]">
+                                <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Anexos</p>
+                                {t.attachments.length === 0 ? (
+                                  <p className="text-xs text-[rgba(0,21,41,0.4)]">Nenhum anexo</p>
+                                ) : (
+                                  <div className="flex flex-wrap gap-2">
+                                    {t.attachments.map((filename) => (
+                                      <a
+                                        key={filename}
+                                        href={`${pb.baseUrl}/api/files/transactions/${t.id}/${filename}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#E5E7EB] text-xs text-[#0066FF] hover:bg-blue-50 transition-colors"
+                                      >
+                                        <FileText className="w-3 h-3" />
+                                        {filename.length > 20 ? filename.slice(0, 20) + "…" : filename}
+                                        <ExternalLink className="w-3 h-3" />
+                                      </a>
+                                    ))}
+                                  </div>
+                                )}
+                                <label
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-dashed border-[#E5E7EB] text-xs text-[rgba(0,21,41,0.5)] hover:border-[#0066FF] hover:text-[#0066FF] cursor-pointer transition-colors"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {uploadingId === t.id ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                  ) : (
+                                    <Paperclip className="w-3 h-3" />
+                                  )}
+                                  {uploadingId === t.id ? "Enviando..." : "Adicionar anexo"}
+                                  <input
+                                    type="file"
+                                    className="hidden"
+                                    disabled={uploadingId === t.id}
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) handleUploadAttachment(t.id, file);
+                                      e.target.value = "";
+                                    }}
+                                  />
+                                </label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
+
+      {/* ─── Nova Transação Modal ──────────────────────────────────────────── */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
+              <h2 className="text-lg font-bold text-[#001529]">Nova Transação</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1.5 text-[rgba(0,21,41,0.4)] hover:text-[#001529] rounded-lg hover:bg-[#F5F7FA] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreate} className="p-6 space-y-5">
+              {/* Tipo */}
+              <div>
+                <label className="block text-sm font-semibold text-[#001529] mb-2">Tipo</label>
+                <div className="flex gap-2">
+                  {(["entrada", "saida"] as const).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() =>
+                        setFormData((f) => ({
+                          ...f,
+                          tipo: t,
+                          categoria: "",
+                        }))
+                      }
+                      className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all ${
+                        formData.tipo === t
+                          ? t === "entrada"
+                            ? "bg-green-500 border-green-500 text-white"
+                            : "bg-red-500 border-red-500 text-white"
+                          : "bg-white border-[#E5E7EB] text-[rgba(0,21,41,0.6)] hover:border-[#001529]"
+                      }`}
+                    >
+                      {t === "entrada" ? "↑ Receita" : "↓ Despesa"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Descrição */}
+              <div>
+                <label className="block text-sm font-semibold text-[#001529] mb-2">Descrição</label>
+                <input
+                  type="text"
+                  value={formData.descricao}
+                  onChange={(e) => setFormData((f) => ({ ...f, descricao: e.target.value }))}
+                  placeholder="Ex: Pagamento Cliente X"
+                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                  required
+                />
+              </div>
+
+              {/* Valor + Data */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#001529] mb-2">Valor (R$)</label>
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value={formData.valor}
+                    onChange={(e) => setFormData((f) => ({ ...f, valor: e.target.value }))}
+                    placeholder="0,00"
+                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#001529] mb-2">Data</label>
+                  <input
+                    type="date"
+                    value={formData.data}
+                    onChange={(e) => setFormData((f) => ({ ...f, data: e.target.value }))}
+                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Categoria */}
+              <div>
+                <label className="block text-sm font-semibold text-[#001529] mb-2">Categoria</label>
+                <select
+                  value={formData.categoria}
+                  onChange={(e) => setFormData((f) => ({ ...f, categoria: e.target.value }))}
+                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all bg-white"
+                  required
+                >
+                  <option value="">Selecionar...</option>
+                  {categories.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* PF/PJ Selector */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-semibold text-[#001529]">Classificação</label>
+                  {suggestion && (
+                    <span
+                      className={`text-xs font-medium flex items-center gap-1 ${
+                        suggestion.score >= 70 ? "text-green-600" : "text-amber-600"
+                      }`}
+                    >
+                      {suggestion.score >= 70 ? (
+                        <CheckCircle2 className="w-3 h-3" />
+                      ) : (
+                        <AlertTriangle className="w-3 h-3" />
+                      )}
+                      Sugestão {suggestion.score}% confiança
+                    </span>
+                  )}
+                </div>
+
+                {/* Low confidence alert */}
+                {showReviewAlert && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-amber-700">
+                      Não temos certeza sobre a classificação desta transação. Por favor, confirme se é pessoal (PF) ou empresarial (PJ).
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData((f) => ({ ...f, pfpj: "PJ", pfpj_score: 100 }))}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
+                      formData.pfpj === "PJ"
+                        ? "bg-blue-50 border-blue-500 text-blue-700"
+                        : "bg-white border-[#E5E7EB] text-[rgba(0,21,41,0.55)] hover:border-blue-300"
+                    }`}
+                  >
+                    <Building2 className="w-4 h-4" />
+                    🏢 Empresa
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData((f) => ({ ...f, pfpj: "PF", pfpj_score: 100 }))}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
+                      formData.pfpj === "PF"
+                        ? "bg-purple-50 border-purple-500 text-purple-700"
+                        : "bg-white border-[#E5E7EB] text-[rgba(0,21,41,0.55)] hover:border-purple-300"
+                    }`}
+                  >
+                    <User className="w-4 h-4" />
+                    👤 Pessoal
+                  </button>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-2.5 border border-[#E5E7EB] rounded-xl text-sm font-semibold text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 py-2.5 bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl text-sm font-semibold transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {saving ? "Salvando..." : "Salvar Transação"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
