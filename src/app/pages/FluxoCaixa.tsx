@@ -565,7 +565,7 @@ export function FluxoCaixa() {
           <div className="text-center py-16">
             <p className="text-[rgba(0,21,41,0.5)] text-sm">
               {transactions.length === 0
-                ? "Nenhuma transação registrada. Clique em "Nova Transação" para começar."
+                ? 'Nenhuma transação registrada. Clique em "Nova Transação" para começar.'
                 : "Nenhuma transação encontrada com os filtros selecionados."}
             </p>
           </div>
