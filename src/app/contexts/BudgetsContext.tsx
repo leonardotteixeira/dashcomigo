@@ -71,7 +71,7 @@ export function BudgetsProvider({ children }: { children: ReactNode }) {
     }
 
     fetchBudgets();
-  }, [user]);
+  }, [user?.id]);
 
   async function addBudget(data: Omit<Budget, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");

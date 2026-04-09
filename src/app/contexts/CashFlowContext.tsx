@@ -85,6 +85,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         const records = await pb.collection("transactions").getList(1, 500, {
           filter: `user_id = "${user.id}"`,
           sort: "-data",
+          requestKey: null,
         });
 
         setTransactions(

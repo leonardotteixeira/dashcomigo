@@ -34,6 +34,7 @@ export function ObligationsProvider({ children }: { children: ReactNode }) {
       const records = await pb.collection("obligations").getList(1, 500, {
         filter: `user_id = "${user.id}"`,
         sort: "data",
+        requestKey: null,
       });
 
       setObligations(records.items.map(r => ({

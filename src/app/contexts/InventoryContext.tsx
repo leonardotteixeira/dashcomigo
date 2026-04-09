@@ -38,13 +38,13 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       const records = await pb.collection("inventory").getList(1, 500, {
         filter: `userid = "${user.id}"`,
         sort: "-updated",
+        requestKey: null,
       });
 
       setItems(records.items as InventoryItem[]);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erro ao carregar estoque";
-      setError(message);
-      console.error("Inventory fetch error:", err);
+      // Collection may not exist yet — fail silently
+      console.debug("Inventory fetch:", err);
     } finally {
       setLoading(false);
     }
@@ -60,11 +60,12 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       const records = await pb.collection("inventory_movements").getList(1, 500, {
         filter: `userid = "${user.id}"`,
         sort: "-data",
+        requestKey: null,
       });
 
       setMovements(records.items as InventoryMovement[]);
     } catch (err) {
-      console.error("Movements fetch error:", err);
+      console.debug("Movements fetch:", err);
     }
   };
 
@@ -77,20 +78,23 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     fetchItems();
     fetchMovements();
 
-    // Optional: Subscribe to real-time updates
-    const unsubscribeItems = pb.collection("inventory").subscribe("*", () => {
-      fetchItems();
-    });
+    // Optional: Subscribe to real-time updates (skip if collection doesn't exist)
+    let unsubItems: (() => void) | null = null;
+    let unsubMovements: (() => void) | null = null;
 
-    const unsubscribeMovements = pb.collection("inventory_movements").subscribe("*", () => {
-      fetchMovements();
-    });
+    pb.collection("inventory").subscribe("*", () => { fetchItems(); })
+      .then((unsub) => { unsubItems = unsub; })
+      .catch(() => {});
+
+    pb.collection("inventory_movements").subscribe("*", () => { fetchMovements(); })
+      .then((unsub) => { unsubMovements = unsub; })
+      .catch(() => {});
 
     return () => {
-      unsubscribeItems.then((unsub) => unsub());
-      unsubscribeMovements.then((unsub) => unsub());
+      unsubItems?.();
+      unsubMovements?.();
     };
-  }, [user]);
+  }, [user?.id]);
 
   /**
    * Add a new inventory item

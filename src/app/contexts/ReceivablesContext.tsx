@@ -90,7 +90,7 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
     }
 
     fetchReceivables();
-  }, [user]);
+  }, [user?.id]);
 
   async function addReceivable(data: Omit<Receivable, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
