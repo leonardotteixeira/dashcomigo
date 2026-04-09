@@ -1,730 +1,409 @@
-import { useState, useMemo } from "react";
 import {
-  TrendingUp,
-  DollarSign,
-  PlusCircle,
   Filter,
-  Trash2,
-  AlertCircle,
-  CheckCircle,
-  Crown,
+  Download,
+  Plus,
   ArrowUpRight,
   ArrowDownRight,
-  Zap,
-  FileSpreadsheet
+  Calendar,
+  Search,
+  User,
+  Building2,
+  Lock,
+  Crown,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { useCashFlow, TransactionType, CATEGORIAS_ENTRADA, CATEGORIAS_SAIDA } from "../contexts/CashFlowContext";
-import { useAuth } from "../contexts/AuthContext";
-import { usePFPJ } from "../contexts/PFPJContext";
-import { useNavigate } from "react-router";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../components/ui/dialog";
-import { Label } from "../components/ui/label";
-import { Input } from "../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  exportCashFlowToExcel,
-  exportCashFlowToCSV,
-  type CashFlowTransaction,
-} from "../utils/export";
-import { PFPJToggle } from "../components/FluxoCaixa/PFPJToggle";
-import { PFPJSummaryCards } from "../components/FluxoCaixa/PFPJSummaryCards";
-import { TransactionTypeIcon } from "../components/FluxoCaixa/TransactionTypeIcon";
-import type { PFPJType } from "../types/pfpj";
+import { useState } from "react";
+import { KPICard } from "../components/KPICard";
+import { PageHeader } from "../components/PageHeader";
 
-// Build last-6-months grouped data from all transactions
-function buildMonthlyData(transactions: { data: string; valor: number; tipo: string }[]) {
-  const months: { key: string; label: string; entradas: number; saidas: number }[] = [];
-  const now = new Date();
-
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const label = d.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "");
-    months.push({ key, label, entradas: 0, saidas: 0 });
-  }
-
-  transactions.forEach((t) => {
-    const monthKey = t.data.slice(0, 7);
-    const bucket = months.find((m) => m.key === monthKey);
-    if (!bucket) return;
-    if (t.tipo === "entrada") bucket.entradas += t.valor;
-    else bucket.saidas += t.valor;
-  });
-
-  return months;
-}
-
-// Find the category with the highest total expenses
-function getTopExpenseCategory(transactions: { tipo: string; categoria: string; valor: number }[]) {
-  const map: Record<string, number> = {};
-  transactions.forEach((t) => {
-    if (t.tipo === "saida") {
-      map[t.categoria] = (map[t.categoria] ?? 0) + t.valor;
-    }
-  });
-  const entries = Object.entries(map);
-  if (!entries.length) return null;
-  entries.sort((a, b) => b[1] - a[1]);
-  return { categoria: entries[0][0], valor: entries[0][1] };
-}
+const transactions = [
+  {
+    id: 1,
+    date: "2026-04-08",
+    description: "Pagamento Cliente A - Projeto Website",
+    category: "Serviços",
+    type: "income",
+    amount: 3500,
+    pfpj: "PJ",
+    status: "paid",
+  },
+  {
+    id: 2,
+    date: "2026-04-08",
+    description: "Fornecedor XYZ - Material de Escritório",
+    category: "Despesas Operacionais",
+    type: "expense",
+    amount: 1200,
+    pfpj: "PJ",
+    status: "paid",
+  },
+  {
+    id: 3,
+    date: "2026-04-07",
+    description: "Freelance - Design de Logo",
+    category: "Serviços",
+    type: "income",
+    amount: 850,
+    pfpj: "PF",
+    status: "paid",
+  },
+  {
+    id: 4,
+    date: "2026-04-07",
+    description: "Aluguel Escritório",
+    category: "Infraestrutura",
+    type: "expense",
+    amount: 2500,
+    pfpj: "PJ",
+    status: "paid",
+  },
+  {
+    id: 5,
+    date: "2026-04-06",
+    description: "Consultoria MEI - Cliente B",
+    category: "Serviços",
+    type: "income",
+    amount: 1200,
+    pfpj: "PF",
+    status: "paid",
+  },
+  {
+    id: 6,
+    date: "2026-04-06",
+    description: "Internet e Telefonia",
+    category: "Despesas Operacionais",
+    type: "expense",
+    amount: 180,
+    pfpj: "PJ",
+    status: "paid",
+  },
+  {
+    id: 7,
+    date: "2026-04-05",
+    description: "Desenvolvimento App Mobile",
+    category: "Serviços",
+    type: "income",
+    amount: 5000,
+    pfpj: "PJ",
+    status: "paid",
+  },
+  {
+    id: 8,
+    date: "2026-04-05",
+    description: "Software e Licenças",
+    category: "Tecnologia",
+    type: "expense",
+    amount: 450,
+    pfpj: "PJ",
+    status: "paid",
+  },
+];
 
 export function FluxoCaixa() {
-  const { user, incrementTransactionUsage } = useAuth();
-  const navigate = useNavigate();
-  const {
-    transactions,
-    summary,
-    insights,
-    addTransaction,
-    deleteTransaction,
-    getTransactionsByPeriod,
-    getLimitStatus,
-    canAddTransaction
-  } = useCashFlow();
-  const { calculateSummary } = usePFPJ();
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [limitDialogOpen, setLimitDialogOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'integrado' | 'separado'>('integrado');
-  const [periodo, setPeriodo] = useState<"dia" | "semana" | "mes" | "ano">("mes");
-  const [transactionType, setTransactionType] = useState<TransactionType>("entrada");
+  const filteredTransactions = transactions.filter((t) => {
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "income" && t.type === "income") ||
+      (filter === "expense" && t.type === "expense") ||
+      (filter === "PF" && t.pfpj === "PF") ||
+      (filter === "PJ" && t.pfpj === "PJ");
 
-  const [formValor, setFormValor] = useState("");
-  const [formCategoria, setFormCategoria] = useState("");
-  const [formData, setFormData] = useState(new Date().toISOString().split("T")[0]);
-  const [formDescricao, setFormDescricao] = useState("");
-  const [formPFPJType, setFormPFPJType] = useState<PFPJType>("pf");
+    const matchesSearch =
+      search === "" ||
+      t.description.toLowerCase().includes(search.toLowerCase()) ||
+      t.category.toLowerCase().includes(search.toLowerCase());
 
-  const limitStatus = getLimitStatus();
-  const filteredTransactions = getTransactionsByPeriod(periodo);
-  const isEmpty = transactions.length === 0;
+    return matchesFilter && matchesSearch;
+  });
 
-  const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
+  const totalIncome = filteredTransactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-  // Monthly chart data (last 6 months from all transactions)
-  const monthlyData = useMemo(() => buildMonthlyData(transactions), [transactions]);
-  const topExpense = useMemo(() => getTopExpenseCategory(transactions), [transactions]);
+  const totalExpense = filteredTransactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-  // Build export-compatible transaction list from filtered period
-  const exportableTransactions: CashFlowTransaction[] = filteredTransactions.map((t) => ({
-    date: new Date(t.data).toLocaleDateString("pt-BR"),
-    description: t.descricao ?? "",
-    category: t.categoria,
-    type: t.tipo as "entrada" | "saida",
-    amount: t.valor,
-  }));
+  const balance = totalIncome - totalExpense;
 
-  const periodoLabel = {
-    dia: "hoje",
-    semana: "7dias",
-    mes: "30dias",
-    ano: "1ano",
-  }[periodo];
-
-  // Get PF/PJ summary for separated view
-  const pfpjSummary = useMemo(() => calculateSummary(), [transactions, calculateSummary]);
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!canAddTransaction()) {
-      setDialogOpen(false);
-      setLimitDialogOpen(true);
-      return;
-    }
-
-    try {
-      await addTransaction({
-        valor: parseFloat(formValor),
-        tipo: transactionType,
-        categoria: formCategoria,
-        data: formData,
-        descricao: formDescricao,
-        pf_pj_type: formPFPJType
-      });
-
-      // Incrementar contador de lançamentos se estiver no plano FREE
-      if (user?.plan === "free") {
-        try { await incrementTransactionUsage(); } catch {}
-      }
-
-      setFormValor("");
-      setFormCategoria("");
-      setFormData(new Date().toISOString().split("T")[0]);
-      setFormDescricao("");
-      setFormPFPJType("pf");
-      setDialogOpen(false);
-    } catch {
-      setDialogOpen(false);
-      setLimitDialogOpen(true);
-    }
-  };
-
-  const openDialog = (tipo: TransactionType) => {
-    if (!canAddTransaction()) {
-      setLimitDialogOpen(true);
-      return;
-    }
-    setTransactionType(tipo);
-    setDialogOpen(true);
-  };
+  const transactionLimit = 50;
+  const currentTransactionCount = 42;
+  const limitPercentage = (currentTransactionCount / transactionLimit) * 100;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-1">Fluxo de Caixa</h1>
-          <p className="text-[rgba(0,21,41,0.6)]">Controle suas entradas e saídas de forma simples</p>
-        </div>
+    <div className="space-y-6">
+      {/* Header with PageHeader component */}
+      <PageHeader
+        title="Fluxo de Caixa"
+        subtitle="Gerencie todas as entradas e saídas do seu negócio"
+        action={{
+          label: "Nova Transação",
+          icon: Plus,
+        }}
+      />
 
-        <div className="flex items-center gap-4 flex-wrap">
-          <PFPJToggle view={viewMode} onChange={setViewMode} />
-
-          {user?.plan !== "pro" && (
-            <span className={`text-xs px-3 py-1.5 rounded-full border font-medium ${
-              limitStatus.percentage > 80
-                ? "bg-red-100 text-red-700 border-red-200"
-                : "bg-[#28A263]/10 text-[#28A263] border-[#28A263]/20"
-            }`}>
-              {limitStatus.used}/{limitStatus.limit} lançamentos este mês
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Insights */}
-      {insights.length > 0 && (
-        <div className="grid gap-3">
-          {insights.map(insight => (
-            <div
-              key={insight.id}
-              className={`flex items-start gap-3 p-4 rounded-2xl border ${
-                insight.tipo === "alerta"
-                  ? "bg-red-100 border-red-200"
-                  : insight.tipo === "sucesso"
-                  ? "bg-[#28A263]/10 border-[#28A263]/20"
-                  : "bg-blue-100 border-blue-200"
-              }`}
-            >
-              {insight.tipo === "sucesso" ? (
-                <CheckCircle className="h-5 w-5 text-[#28A263] flex-shrink-0 mt-0.5" />
-              ) : (
-                <AlertCircle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${
-                  insight.tipo === "alerta" ? "text-red-600" : "text-blue-600"
-                }`} />
-              )}
-              <p className={`text-sm ${
-                insight.tipo === "alerta" ? "text-red-700" :
-                insight.tipo === "sucesso" ? "text-[#28A263]" : "text-blue-700"
-              }`}>
-                <span className="mr-2">{insight.icone}</span>
-                {insight.mensagem}
+      {/* Transaction Limit Warning */}
+      {limitPercentage > 70 && (
+        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Crown className="w-5 h-5 text-amber-500" />
+                <h3 className="font-semibold text-foreground">
+                  {limitPercentage >= 100 ? "Limite Atingido" : "Atenção: Limite Próximo"}
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Você usou {currentTransactionCount} de {transactionLimit} transações mensais do plano gratuito.
+                {limitPercentage >= 100 && " Upgrade para PRO e tenha transações ilimitadas!"}
               </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* PF/PJ Summary Cards (when in separated view) */}
-      {viewMode === 'separado' && (
-        <PFPJSummaryCards summary={pfpjSummary} loading={false} />
-      )}
-
-      {/* Summary Cards (integrated view) */}
-      {viewMode === 'integrado' && (
-      <div className="grid md:grid-cols-4 gap-4">
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
-            <DollarSign className="w-5 h-5 text-[#28A263]" />
-          </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Saldo Atual</p>
-          <p className={`text-2xl font-bold ${summary.saldoAtual >= 0 ? "text-[#28A263]" : "text-[#FF4F3D]"}`}>
-            {fmt(summary.saldoAtual)}
-          </p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">Margem: {summary.margemLucro.toFixed(1)}%</p>
-        </div>
-
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
-            <ArrowUpRight className="w-5 h-5 text-[#28A263]" />
-          </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Entradas</p>
-          <p className="text-2xl font-bold text-[#28A263]">{fmt(summary.totalEntradas)}</p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
-            {filteredTransactions.filter(t => t.tipo === "entrada").length} lançamentos
-          </p>
-        </div>
-
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#FF4F3D]/20 rounded-xl flex items-center justify-center mb-4">
-            <ArrowDownRight className="w-5 h-5 text-[#FF4F3D]" />
-          </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Saídas</p>
-          <p className="text-2xl font-bold text-[#FF4F3D]">{fmt(summary.totalSaidas)}</p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
-            {filteredTransactions.filter(t => t.tipo === "saida").length} lançamentos
-          </p>
-        </div>
-
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
-            <TrendingUp className="w-5 h-5 text-[#0066FF]" />
-          </div>
-          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Lucro do Período</p>
-          <p className={`text-2xl font-bold ${summary.lucro >= 0 ? "text-[#28A263]" : "text-[#FF4F3D]"}`}>
-            {fmt(summary.lucro)}
-          </p>
-          <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">
-            {periodo === "mes" ? "Últimos 30 dias" : `Período: ${periodo}`}
-          </p>
-        </div>
-      </div>
-      )}
-
-      {/* Monthly Chart — entradas vs saídas */}
-      {!isEmpty && (
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
-            <div>
-              <h3 className="font-bold text-[#001529] text-lg">Entradas vs Saídas</h3>
-              <p className="text-sm text-[rgba(0,21,41,0.6)]">Últimos 6 meses</p>
-            </div>
-            {topExpense && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-[#FF4F3D]/10 border border-[#FF4F3D]/20 rounded-xl">
-                <FileSpreadsheet className="w-4 h-4 text-[#FF4F3D]" />
-                <span className="text-xs text-[#FF4F3D] font-medium">
-                  Maior gasto: {topExpense.categoria} — {fmt(topExpense.valor)}/histórico
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      limitPercentage >= 100 ? "bg-destructive" :
+                      limitPercentage > 90 ? "bg-warning" : "bg-amber-500"
+                    }`}
+                    style={{ width: `${Math.min(limitPercentage, 100)}%` }}
+                  />
+                </div>
+                <span className="text-sm font-semibold text-foreground">
+                  {Math.round(limitPercentage)}%
                 </span>
               </div>
-            )}
-          </div>
-
-          {/* Legend */}
-          <div className="flex items-center gap-6 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#28A263]" />
-              <span className="text-xs text-[rgba(0,21,41,0.6)]">Entradas</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#FF4F3D]" />
-              <span className="text-xs text-[rgba(0,21,41,0.6)]">Saídas</span>
-            </div>
+            <button className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-lg hover:from-amber-600 hover:to-orange-700 transition-all font-semibold text-sm whitespace-nowrap">
+              Upgrade PRO
+            </button>
           </div>
-
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={monthlyData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#28A263" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#28A263" stopOpacity={0.0} />
-                </linearGradient>
-                <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF4F3D" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#FF4F3D" stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.1)" vertical={false} />
-              <XAxis
-                dataKey="label"
-                tick={{ fill: "rgba(0,21,41,0.6)", fontSize: 12 }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tick={{ fill: "rgba(0,21,41,0.6)", fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(v) =>
-                  v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`
-                }
-                width={55}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(0,0,0,0.1)",
-                  borderRadius: "12px",
-                  color: "#001529",
-                  fontSize: "13px",
-                }}
-                formatter={(value: number, name: string) => [
-                  fmt(value),
-                  name === "entradas" ? "Entradas" : "Saídas",
-                ]}
-                labelStyle={{ color: "rgba(0,21,41,0.6)", marginBottom: 4 }}
-              />
-              <Area
-                type="monotone"
-                dataKey="entradas"
-                stroke="#28A263"
-                strokeWidth={2}
-                fill="url(#gradEntradas)"
-                dot={false}
-                activeDot={{ r: 4, fill: "#28A263" }}
-              />
-              <Area
-                type="monotone"
-                dataKey="saidas"
-                stroke="#FF4F3D"
-                strokeWidth={2}
-                fill="url(#gradSaidas)"
-                dot={false}
-                activeDot={{ r: 4, fill: "#FF4F3D" }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
         </div>
       )}
 
-      {/* Action Buttons + Filters + Export */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex gap-3 flex-wrap">
-          <Button
-            size="lg"
-            className="bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
-            onClick={() => openDialog("entrada")}
-            disabled={!canAddTransaction()}
-          >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            Nova Entrada
-          </Button>
+      {/* KPI Cards - Premium Financial Display */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <KPICard
+          title="Total Receitas"
+          value={`+R$ ${totalIncome.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+          icon={TrendingUp}
+          iconColor="green"
+          status={{
+            label: "Mês atual",
+            color: "green",
+          }}
+        />
 
-          <Button
-            size="lg"
-            className="bg-[#FF4F3D]/10 hover:bg-[#FF4F3D]/20 text-[#FF4F3D] border border-[#FF4F3D]/30 rounded-xl"
-            onClick={() => openDialog("saida")}
-            disabled={!canAddTransaction()}
-          >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            Nova Saída
-          </Button>
+        <KPICard
+          title="Total Despesas"
+          value={`-R$ ${totalExpense.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+          icon={TrendingDown}
+          iconColor="red"
+          status={{
+            label: "Mês atual",
+            color: "red",
+          }}
+        />
 
-          {!isEmpty && (
-            <Button
-              size="lg"
-              className="bg-[#F8F9FA] hover:bg-[#F5F7FA] text-[#001529] border border-[rgba(0,0,0,0.1)] rounded-xl"
-              onClick={() => exportCashFlowToExcel(exportableTransactions, periodoLabel)}
-            >
-              <FileSpreadsheet className="w-4 h-4 mr-2 text-[#28A263]" />
-              Exportar Excel
-            </Button>
-          )}
-        </div>
+        <KPICard
+          title="Saldo Período"
+          value={`${balance >= 0 ? "+" : ""}R$ ${Math.abs(balance).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
+          icon={DollarSign}
+          iconColor={balance >= 0 ? "green" : "red"}
+          status={{
+            label: balance >= 0 ? "Positivo" : "Negativo",
+            color: balance >= 0 ? "green" : "red",
+          }}
+        />
+      </div>
 
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-[rgba(0,21,41,0.6)]" />
-          <Select value={periodo} onValueChange={(v: any) => setPeriodo(v)}>
-            <SelectTrigger className="w-44 bg-white border-[rgba(0,0,0,0.1)] text-[#001529] rounded-xl">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-[rgba(0,0,0,0.1)] text-[#001529]">
-              <SelectItem value="dia">Hoje</SelectItem>
-              <SelectItem value="semana">Últimos 7 dias</SelectItem>
-              <SelectItem value="mes">Últimos 30 dias</SelectItem>
-              <SelectItem value="ano">Último ano</SelectItem>
-            </SelectContent>
-          </Select>
+      {/* Filters and Search */}
+      <div className="bg-card border border-border rounded-xl p-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Search */}
+          <div className="flex-1 flex items-center gap-2 bg-secondary px-3 py-2 rounded-lg">
+            <Search className="w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Buscar por descrição ou categoria..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-transparent border-none outline-none text-sm flex-1 text-foreground placeholder:text-muted-foreground"
+            />
+          </div>
+
+          {/* Filters */}
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <div className="flex gap-2">
+              <button
+                onClick={() => setFilter("all")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "all"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                Todos
+              </button>
+              <button
+                onClick={() => setFilter("income")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "income"
+                    ? "bg-success text-white"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                Receitas
+              </button>
+              <button
+                onClick={() => setFilter("expense")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "expense"
+                    ? "bg-expense text-white"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                Despesas
+              </button>
+              <button
+                onClick={() => setFilter("PF")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "PF"
+                    ? "bg-pf text-white"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                PF
+              </button>
+              <button
+                onClick={() => setFilter("PJ")}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  filter === "PJ"
+                    ? "bg-pj text-white"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                PJ
+              </button>
+            </div>
+          </div>
+
+          {/* Export */}
+          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors text-sm font-medium text-foreground">
+            <Download className="w-4 h-4" />
+            Exportar
+          </button>
         </div>
       </div>
 
-      {/* Dialog - Add transaction */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md bg-white border-[rgba(0,0,0,0.1)] text-[#001529]">
-          <DialogHeader>
-            <DialogTitle className="text-[#001529]">
-              {transactionType === "entrada" ? "Nova Entrada" : "Nova Saída"}
-            </DialogTitle>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="valor" className="text-[rgba(0,21,41,0.6)]">Valor (R$)</Label>
-              <Input
-                id="valor"
-                type="number"
-                step="0.01"
-                value={formValor}
-                onChange={(e) => setFormValor(e.target.value)}
-                placeholder="0,00"
-                required
-                className="mt-2 bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] h-12 text-lg rounded-xl"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="categoria" className="text-[rgba(0,21,41,0.6)]">Categoria</Label>
-              <Select value={formCategoria} onValueChange={setFormCategoria} required>
-                <SelectTrigger className="mt-2 h-12 bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[#001529] rounded-xl">
-                  <SelectValue placeholder="Selecione..." />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-[rgba(0,0,0,0.1)] text-[#001529]">
-                  {(transactionType === "entrada" ? CATEGORIAS_ENTRADA : CATEGORIAS_SAIDA).map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="data" className="text-[rgba(0,21,41,0.6)]">Data</Label>
-              <Input
-                id="data"
-                type="date"
-                value={formData}
-                onChange={(e) => setFormData(e.target.value)}
-                required
-                className="mt-2 h-12 bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[#001529] rounded-xl"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="descricao" className="text-[rgba(0,21,41,0.6)]">Descrição (opcional)</Label>
-              <Input
-                id="descricao"
-                type="text"
-                value={formDescricao}
-                onChange={(e) => setFormDescricao(e.target.value)}
-                placeholder="Ex: Venda para cliente X"
-                className="mt-2 h-12 bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-xl"
-              />
-            </div>
-
-            <div>
-              <Label className="text-[rgba(0,21,41,0.6)] mb-2 block">Tipo de Transação</Label>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFormPFPJType('pf')}
-                  className={`p-3 rounded-lg border transition-all ${
-                    formPFPJType === 'pf'
-                      ? 'bg-[#0066FF]/20 border-[#0066FF] text-[#0066FF]'
-                      : 'bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[rgba(0,21,41,0.6)] hover:border-[rgba(0,0,0,0.2)]'
-                  }`}
-                >
-                  <div className="text-xl mb-1">👤</div>
-                  <div className="text-xs font-medium">Pessoal</div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setFormPFPJType('pj')}
-                  className={`p-3 rounded-lg border transition-all ${
-                    formPFPJType === 'pj'
-                      ? 'bg-[#28A263]/20 border-[#28A263] text-[#28A263]'
-                      : 'bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[rgba(0,21,41,0.6)] hover:border-[rgba(0,0,0,0.2)]'
-                  }`}
-                >
-                  <div className="text-xl mb-1">🏢</div>
-                  <div className="text-xs font-medium">Empresa</div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setFormPFPJType('misto')}
-                  className={`p-3 rounded-lg border transition-all ${
-                    formPFPJType === 'misto'
-                      ? 'bg-[#F4B23C]/20 border-[#F4B23C] text-[#F4B23C]'
-                      : 'bg-[#F8F9FA] border-[rgba(0,0,0,0.1)] text-[rgba(0,21,41,0.6)] hover:border-[rgba(0,0,0,0.2)]'
-                  }`}
-                >
-                  <div className="text-xl mb-1">⚡</div>
-                  <div className="text-xs font-medium">Misto</div>
-                </button>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <Button
-                type="submit"
-                size="lg"
-                className="flex-1 bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
-              >
-                Adicionar
-              </Button>
-              <Button
-                type="button"
-                size="lg"
-                className="bg-[#F8F9FA] hover:bg-[#F5F7FA] text-[#001529] border border-[rgba(0,0,0,0.1)] rounded-xl"
-                onClick={() => setDialogOpen(false)}
-              >
-                Cancelar
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Empty State */}
-      {isEmpty && (
-        <div className="p-12 text-center bg-[#F8F9FA] rounded-2xl border border-dashed border-[rgba(0,0,0,0.1)]">
-          <div className="max-w-md mx-auto">
-            <div className="w-20 h-20 bg-[#28A263]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Zap className="w-10 h-10 text-[#28A263]" />
-            </div>
-            <h3 className="text-xl font-bold text-[#001529] mb-2">Comece seu controle financeiro!</h3>
-            <p className="text-[rgba(0,21,41,0.6)] mb-6">
-              Adicione sua primeira entrada ou saída para começar a ter insights sobre seu negócio.
-            </p>
-            <Button
-              size="lg"
-              className="bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
-              onClick={() => openDialog("entrada")}
-            >
-              <PlusCircle className="w-5 h-5 mr-2" />
-              Adicionar Entrada
-            </Button>
-          </div>
-        </div>
-      )}
-
       {/* Transactions List */}
-      {!isEmpty && (
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-[#001529]">Lançamentos Recentes</h3>
-            <span className="text-xs text-[rgba(0,21,41,0.5)]">
-              {filteredTransactions.length} lançamento{filteredTransactions.length !== 1 ? "s" : ""} no período
-            </span>
-          </div>
-
-          <div className="space-y-2">
-            {filteredTransactions.slice(0, 10).map(transaction => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-4 bg-[#F8F9FA] rounded-xl hover:bg-[#F5F7FA] transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    transaction.tipo === "entrada"
-                      ? "bg-[#28A263]/20 text-[#28A263]"
-                      : "bg-[#FF4F3D]/20 text-[#FF4F3D]"
-                  }`}>
-                    {transaction.tipo === "entrada" ? (
-                      <ArrowUpRight className="w-5 h-5" />
-                    ) : (
-                      <ArrowDownRight className="w-5 h-5" />
-                    )}
-                  </div>
-
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium text-[#001529]">{transaction.categoria}</p>
-                      {transaction.pf_pj_type && (
-                        <TransactionTypeIcon type={transaction.pf_pj_type} size="sm" />
-                      )}
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-secondary border-b border-border">
+              <tr>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Data
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Descrição
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Categoria
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Tipo
+                </th>
+                <th className="text-right px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Valor
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filteredTransactions.map((transaction) => (
+                <tr
+                  key={transaction.id}
+                  className="hover:bg-secondary/50 transition-colors cursor-pointer"
+                >
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm text-foreground">
+                      {new Date(transaction.date).toLocaleDateString("pt-BR")}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-foreground">
+                        {transaction.description}
+                      </p>
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
+                          transaction.pfpj === "PF"
+                            ? "bg-pf/10 text-pf"
+                            : "bg-pj/10 text-pj"
+                        }`}
+                      >
+                        {transaction.pfpj === "PF" ? (
+                          <User className="w-3 h-3" />
+                        ) : (
+                          <Building2 className="w-3 h-3" />
+                        )}
+                        {transaction.pfpj}
+                      </span>
                     </div>
-                    <p className="text-sm text-[rgba(0,21,41,0.5)]">
-                      {new Date(transaction.data).toLocaleDateString("pt-BR")}
-                      {transaction.descricao && ` • ${transaction.descricao}`}
-                    </p>
-                  </div>
-                </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm text-muted-foreground">
+                      {transaction.category}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
+                        transaction.type === "income"
+                          ? "bg-success/10 text-success"
+                          : "bg-expense/10 text-expense"
+                      }`}
+                    >
+                      {transaction.type === "income" ? (
+                        <ArrowUpRight className="w-3 h-3" />
+                      ) : (
+                        <ArrowDownRight className="w-3 h-3" />
+                      )}
+                      {transaction.type === "income" ? "Receita" : "Despesa"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <span
+                      className={`font-semibold ${
+                        transaction.type === "income"
+                          ? "text-success"
+                          : "text-expense"
+                      }`}
+                    >
+                      {transaction.type === "income" ? "+" : "-"}R${" "}
+                      {transaction.amount.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 2,
+                      })}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-                <div className="flex items-center gap-4">
-                  <p className={`font-bold text-lg ${
-                    transaction.tipo === "entrada" ? "text-[#28A263]" : "text-[#FF4F3D]"
-                  }`}>
-                    {transaction.tipo === "entrada" ? "+" : "-"}{fmt(transaction.valor)}
-                  </p>
-
-                  <button
-                    onClick={() => deleteTransaction(transaction.id)}
-                    className="text-[rgba(0,21,41,0.5)] hover:text-[#FF4F3D] transition-colors p-1"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {filteredTransactions.length > 10 && (
-            <p className="text-center text-sm text-[rgba(0,21,41,0.5)] mt-4">
-              Mostrando 10 de {filteredTransactions.length} lançamentos
+        {filteredTransactions.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              Nenhuma transação encontrada
             </p>
-          )}
-        </div>
-      )}
-
-      {/* Dialog - Limit reached */}
-      <Dialog open={limitDialogOpen} onOpenChange={setLimitDialogOpen}>
-        <DialogContent className="max-w-md text-center bg-white border-[rgba(0,0,0,0.1)]">
-          <div className="flex justify-center mb-4 mt-2">
-            <div className="w-16 h-16 bg-[#28A263]/20 rounded-2xl flex items-center justify-center">
-              <Crown className="w-8 h-8 text-[#28A263]" />
-            </div>
           </div>
-          <h2 className="text-2xl font-bold text-[#001529] mb-2">Limite atingido!</h2>
-          <p className="text-[rgba(0,21,41,0.6)] mb-6">
-            Você usou todos os {limitStatus.limit} lançamentos do plano gratuito este mês.
-            Faça upgrade para o PRO e tenha lançamentos ilimitados!
-          </p>
-          <div className="flex flex-col gap-3">
-            <Button
-              size="lg"
-              className="w-full bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
-              onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}
-            >
-              <Crown className="w-4 h-4 mr-2" />
-              Ver Planos PRO
-            </Button>
-            <Button
-              size="lg"
-              className="w-full bg-[#F8F9FA] hover:bg-[#F5F7FA] text-[#001529] border border-[rgba(0,0,0,0.1)] rounded-xl"
-              onClick={() => setLimitDialogOpen(false)}
-            >
-              Fechar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Upgrade CTA */}
-      {user?.plan !== "pro" && limitStatus.percentage > 70 && (
-        <div className="p-8 bg-[#28A263]/10 rounded-2xl border border-[#28A263]/20">
-          <div className="flex items-center justify-between flex-wrap gap-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Crown className="w-5 h-5 text-[#28A263]" />
-                <h3 className="text-xl font-bold text-[#001529]">Upgrade para PRO</h3>
-              </div>
-              <p className="text-[rgba(0,21,41,0.6)]">
-                Lançamentos ilimitados + relatórios completos. Primeiro mês R$ 9,90!
-              </p>
-            </div>
-            <Button
-              size="lg"
-              className="bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
-              onClick={() => navigate("/checkout")}
-            >
-              Ver Planos
-            </Button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
