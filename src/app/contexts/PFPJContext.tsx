@@ -31,7 +31,7 @@ export function PFPJProvider({ children }: { children: ReactNode }) {
       setError(null);
 
       const records = await pb.collection('transactions').getList(1, 500, {
-        filter: `userid = "${user.id}"`,
+        filter: `user_id = "${user.id}"`,
         sort: '-data',
       });
 
