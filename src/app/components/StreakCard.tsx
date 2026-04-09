@@ -1,10 +1,24 @@
-import { Flame, Trophy, Target } from "lucide-react";
+import { Flame, Trophy } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function StreakCard() {
-  const currentStreak = 7;
-  const bestStreak = 15;
+  const { user } = useAuth();
+
+  const currentStreak = user?.loginStreak ?? 0;
+  const bestStreak = user?.bestStreak ?? 0;
+  const rewardClaimed = user?.streakRewardClaimed ?? false;
+
+  // Build last-7-days grid based on current streak
   const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];
-  const completedDays = [true, true, true, true, true, true, true];
+  const today = new Date().getDay(); // 0=Sun … 6=Sat
+  const completedDays = weekDays.map((_, i) => {
+    // A day is "completed" if it falls within the current streak window
+    const daysAgo = (today - i + 7) % 7;
+    return daysAgo < currentStreak;
+  });
+
+  const GOAL = 7;
+  const goalReached = currentStreak >= GOAL;
 
   return (
     <div className="bg-card border border-border rounded-xl p-5">
@@ -19,7 +33,7 @@ export default function StreakCard() {
           </div>
         </div>
         <div className="text-right">
-          <p className="font-bold text-orange-500">{currentStreak} dias</p>
+          <p className="font-bold text-orange-500">{currentStreak} {currentStreak === 1 ? "dia" : "dias"}</p>
           <p className="text-xs text-muted-foreground">Recorde: {bestStreak}</p>
         </div>
       </div>
@@ -48,18 +62,28 @@ export default function StreakCard() {
           <Trophy className="w-4 h-4 text-orange-500" />
           <span className="text-sm font-semibold text-foreground">Meta da Semana</span>
         </div>
-        <p className="text-xs text-muted-foreground mb-2">
-          Acesse 7 dias seguidos e ganhe 1 mês grátis do PRO!
-        </p>
+        {rewardClaimed ? (
+          <p className="text-xs text-green-600 font-semibold mb-2">
+            🎉 Recompensa ativa! Você ganhou 1 mês grátis do PRO.
+          </p>
+        ) : goalReached ? (
+          <p className="text-xs text-muted-foreground mb-2">
+            ✅ Meta atingida! Desbloqueando recompensa...
+          </p>
+        ) : (
+          <p className="text-xs text-muted-foreground mb-2">
+            Acesse {GOAL} dias seguidos e ganhe 1 mês grátis do PRO!
+          </p>
+        )}
         <div className="flex items-center gap-2">
           <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-amber-500"
-              style={{ width: `${(currentStreak / 7) * 100}%` }}
+              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-500"
+              style={{ width: `${Math.min((currentStreak / GOAL) * 100, 100)}%` }}
             />
           </div>
           <span className="text-xs font-semibold text-orange-500">
-            {currentStreak}/7
+            {Math.min(currentStreak, GOAL)}/{GOAL}
           </span>
         </div>
       </div>

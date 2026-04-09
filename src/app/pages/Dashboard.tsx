@@ -39,6 +39,7 @@ import OnboardingChecklist from "../components/OnboardingChecklist";
 import WelcomeBackModal from "../components/WelcomeBackModal";
 import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
+import PfPjDistribution from "../components/PfPjDistribution";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -240,50 +241,8 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* PF vs PJ Distribution - Placeholder */}
-          <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
-            <h3 className="font-bold text-lg text-[#001529] mb-5">Distribuição PF vs PJ</h3>
-            <div className="space-y-5">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-purple-500" />
-                    <span className="text-sm text-[#001529] font-medium">Pessoa Física</span>
-                  </div>
-                  <span className="text-sm font-bold text-[#001529]">35%</span>
-                </div>
-                <div className="h-2.5 bg-[#F5F7FA] rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500 w-[35%] transition-all duration-500" />
-                </div>
-                <p className="text-xs text-[#001529]/60 mt-2 font-medium">
-                  R$ 4.356,00 este mês
-                </p>
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500" />
-                    <span className="text-sm text-[#001529] font-medium">Pessoa Jurídica</span>
-                  </div>
-                  <span className="text-sm font-bold text-[#001529]">65%</span>
-                </div>
-                <div className="h-2.5 bg-[#F5F7FA] rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 w-[65%] transition-all duration-500" />
-                </div>
-                <p className="text-xs text-[#001529]/60 mt-2 font-medium">
-                  R$ 8.094,00 este mês
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 pt-5 border-t border-[#E5E7EB]">
-              <p className="text-xs text-[#001529]/60 mb-2 font-medium">
-                Dica: Separar PF de PJ facilita declaração de impostos
-              </p>
-              <button className="text-sm text-[#003a6d] hover:underline font-medium">
-                Saiba mais sobre categorização
-              </button>
-            </div>
-          </div>
+          {/* PF vs PJ Distribution - Real data */}
+          <PfPjDistribution />
         </div>
 
         {/* Cash Flow Chart and Savings */}
@@ -365,12 +324,12 @@ export function Dashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <p className="text-sm font-semibold text-[#001529]">{t.descricao || t.categoria}</p>
-                      {t.pf_pj_type && (
+                      {t.pfpj && (
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${
-                          t.pf_pj_type === "pf" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
+                          t.pfpj === "PF" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                         }`}>
-                          {t.pf_pj_type === "pf" ? <User className="w-3 h-3" /> : <Building2 className="w-3 h-3" />}
-                          {t.pf_pj_type.toUpperCase()}
+                          {t.pfpj === "PF" ? <User className="w-3 h-3" /> : <Building2 className="w-3 h-3" />}
+                          {t.pfpj}
                         </span>
                       )}
                     </div>

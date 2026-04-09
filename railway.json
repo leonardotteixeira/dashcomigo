@@ -6,6 +6,8 @@
   },
   "deploy": {
     "startCommand": "cd api && node src/server.js",
-    "restartPolicyType": "ON_FAILURE"
+    "restartPolicyType": "ON_FAILURE",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 10
   }
 }

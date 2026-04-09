@@ -1,45 +1,73 @@
 import { CheckCircle, Circle, Trophy, X } from "lucide-react";
 import { useState } from "react";
-
-const checklistItems = [
-  {
-    id: 1,
-    title: "Complete seu perfil",
-    description: "Adicione suas informações básicas",
-    completed: true,
-  },
-  {
-    id: 2,
-    title: "Registre sua primeira receita",
-    description: "Adicione pelo menos uma entrada",
-    completed: true,
-  },
-  {
-    id: 3,
-    title: "Registre sua primeira despesa",
-    description: "Acompanhe seus gastos",
-    completed: true,
-  },
-  {
-    id: 4,
-    title: "Configure alertas de vencimento",
-    description: "Nunca perca um prazo importante",
-    completed: false,
-  },
-  {
-    id: 5,
-    title: "Explore os relatórios",
-    description: "Veja insights sobre seu negócio",
-    completed: false,
-  },
-];
+import { useNavigate } from "react-router";
+import { useAuth } from "../contexts/AuthContext";
+import { useCashFlow } from "../contexts/CashFlowContext";
 
 export default function OnboardingChecklist() {
   const [isVisible, setIsVisible] = useState(true);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { transactions } = useCashFlow();
+
+  // Real checks based on actual user data
+  const profileComplete = !!(user?.name && (user?.phone || user?.company));
+  const hasIncome = transactions.some((t) => t.tipo === "entrada");
+  const hasExpense = transactions.some((t) => t.tipo === "saida");
+  // "Configure alertas" → user has enabled payment reminders
+  const alertsConfigured = user?.receivePaymentReminders === true;
+  // "Explore relatórios" → tracked in localStorage after first visit
+  const reportsExplored = !!localStorage.getItem("visited_relatorios");
+
+  const checklistItems = [
+    {
+      id: 1,
+      title: "Complete seu perfil",
+      description: "Adicione seu telefone ou empresa",
+      completed: profileComplete,
+      action: () => navigate("/app/profile"),
+    },
+    {
+      id: 2,
+      title: "Registre sua primeira receita",
+      description: "Adicione pelo menos uma entrada",
+      completed: hasIncome,
+      action: () => navigate("/app"),
+    },
+    {
+      id: 3,
+      title: "Registre sua primeira despesa",
+      description: "Acompanhe seus gastos",
+      completed: hasExpense,
+      action: () => navigate("/app"),
+    },
+    {
+      id: 4,
+      title: "Configure alertas de vencimento",
+      description: "Nunca perca um prazo importante",
+      completed: alertsConfigured,
+      action: () => navigate("/app/profile"),
+    },
+    {
+      id: 5,
+      title: "Explore os relatórios",
+      description: "Veja insights sobre seu negócio",
+      completed: reportsExplored,
+      action: () => {
+        localStorage.setItem("visited_relatorios", "1");
+        navigate("/app/relatorios");
+      },
+    },
+  ];
+
   const completedCount = checklistItems.filter((item) => item.completed).length;
   const progress = (completedCount / checklistItems.length) * 100;
+  const allDone = progress === 100;
 
+  // Hide once fully completed and dismissed
   if (!isVisible) return null;
+  // Also hide if onboarding was already completed before and all are done
+  if (allDone && user?.onboardingCompleted) return null;
 
   return (
     <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-5">
@@ -49,12 +77,8 @@ export default function OnboardingChecklist() {
             <Trophy className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">
-              Primeiros Passos no FinMEI
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Complete para dominar o sistema
-            </p>
+            <h3 className="font-semibold text-foreground">Primeiros Passos no FinMEI</h3>
+            <p className="text-xs text-muted-foreground">Complete para dominar o sistema</p>
           </div>
         </div>
         <button
@@ -67,12 +91,13 @@ export default function OnboardingChecklist() {
 
       <div className="space-y-2 mb-4">
         {checklistItems.map((item) => (
-          <div
+          <button
             key={item.id}
-            className={`flex items-start gap-3 p-3 rounded-lg transition-all ${
+            onClick={item.completed ? undefined : item.action}
+            className={`w-full flex items-start gap-3 p-3 rounded-lg text-left transition-all ${
               item.completed
-                ? "bg-success/10 border border-success/20"
-                : "bg-card border border-border hover:border-primary/30"
+                ? "bg-success/10 border border-success/20 cursor-default"
+                : "bg-card border border-border hover:border-primary/30 cursor-pointer"
             }`}
           >
             <div className="pt-0.5">
@@ -85,18 +110,14 @@ export default function OnboardingChecklist() {
             <div className="flex-1 min-w-0">
               <p
                 className={`text-sm font-medium mb-0.5 ${
-                  item.completed
-                    ? "text-foreground line-through"
-                    : "text-foreground"
+                  item.completed ? "text-foreground line-through" : "text-foreground"
                 }`}
               >
                 {item.title}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {item.description}
-              </p>
+              <p className="text-xs text-muted-foreground">{item.description}</p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -112,9 +133,9 @@ export default function OnboardingChecklist() {
         </span>
       </div>
 
-      {progress === 100 && (
+      {allDone && (
         <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
-          <p className="text-sm text-foreground font-medium mb-2">
+          <p className="text-sm text-foreground font-medium mb-1">
             🎉 Parabéns! Você completou o onboarding!
           </p>
           <p className="text-xs text-muted-foreground">
