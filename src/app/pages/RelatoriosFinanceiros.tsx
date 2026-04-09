@@ -1,1229 +1,397 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
 import {
-  TrendingUp, DollarSign, AlertCircle, CheckCircle, Crown, Lock,
-  TrendingDown, Minus, Lightbulb, Target, ChevronRight, FileText,
-  Clock, BarChart2,
+  Download,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  FileText,
+  Lock,
+  BarChart3,
 } from "lucide-react";
-import { useReports } from "../contexts/ReportsContext";
-import { useCashFlow } from "../contexts/CashFlowContext";
-import { usePayables } from "../contexts/PayablesContext";
-import { useReceivables } from "../contexts/ReceivablesContext";
-import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router";
-import { PeriodFilter } from "../components/reports/PeriodFilter";
-import { ReportCard, CompactReportCard } from "../components/reports/ReportCard";
-import { ReportChart } from "../components/reports/ReportChart";
-import { ReportTable, Column } from "../components/reports/ReportTable";
-import { ExportButtons } from "../components/reports/ExportButtons";
-import { exportReportToExcel, exportReportToPDF } from "../utils/export";
-import type { ReportExportData } from "../utils/export";
-import { pb } from "../../lib/pocketbase";
+import { KPICard } from "../components/KPICard";
+import { PageHeader } from "../components/PageHeader";
 import {
-  formatCurrency,
-  formatPercentage,
-  calculateGrowth,
-  getMarginHealthStatus,
-  generateInsights,
-  generateRecommendations,
-  calcularLiquidez,
-  calcularPontoEquilibrio,
-  estimarValorNegocio,
-  projetarProximos30dias,
-  calcularDRE,
-  calcularCentrosCusto,
-} from "../utils/reportCalculations";
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { useState } from "react";
+import FeatureLock from "../components/FeatureLock";
+import UpgradeCard from "../components/UpgradeCard";
+import SocialProof from "../components/SocialProof";
+import PaywallModal from "../components/PaywallModal";
 
-type TabType = "resumo" | "receita-despesa" | "fluxo" | "dre" | "cenarios" | "propostas" | "contas-pagar";
+const monthlyData = [
+  { month: "Nov", receitas: 7800, despesas: 5900, lucro: 1900 },
+  { month: "Dez", receitas: 8200, despesas: 6400, lucro: 1800 },
+  { month: "Jan", receitas: 8500, despesas: 6200, lucro: 2300 },
+  { month: "Fev", receitas: 9200, despesas: 7100, lucro: 2100 },
+  { month: "Mar", receitas: 11000, despesas: 8320, lucro: 2680 },
+  { month: "Abr", receitas: 12450, despesas: 8320, lucro: 4130 },
+];
 
-interface Cenario {
-  nome: string;
-  cor: string;
-  emoji: string;
-  receita: number;
-  ajusteDespesas: number; // % change on expenses (-20 = -20%)
-}
+const categoryData = [
+  { name: "Serviços", value: 65, color: "#00A868" },
+  { name: "Produtos", value: 25, color: "#0066FF" },
+  { name: "Consultoria", value: 10, color: "#8B5CF6" },
+];
 
-type ProposalStatus = "aguardando" | "aprovada" | "recusada" | "paga" | "vencida";
-
-interface Proposal {
-  id: string;
-  tipo: "contrato" | "orcamento";
-  status: ProposalStatus;
-  nome_cliente: string;
-  nome_servico: string;
-  valor: number;
-  prazo: string;
-  created: string;
-}
-
-const STATUS_LABEL: Record<ProposalStatus, { label: string; color: string }> = {
-  aguardando: { label: "Aguardando", color: "bg-yellow-100 text-yellow-700" },
-  aprovada:   { label: "Aprovada",   color: "bg-blue-100 text-blue-700" },
-  paga:       { label: "Paga",       color: "bg-green-100 text-green-700" },
-  vencida:    { label: "Vencida",    color: "bg-red-100 text-red-700" },
-  recusada:   { label: "Recusada",   color: "bg-orange-100 text-orange-700" },
-};
+const expenseData = [
+  { name: "Infraestrutura", value: 40, color: "#EF4444" },
+  { name: "Operacional", value: 30, color: "#F59E0B" },
+  { name: "Tecnologia", value: 20, color: "#8B5CF6" },
+  { name: "Outros", value: 10, color: "#6B7280" },
+];
 
 export function RelatoriosFinanceiros() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabType>("resumo");
-  const [period, setPeriod] = useState<"mes" | "trimestre" | "ano" | "custom" | "30dias">("mes");
-  const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
-  const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [loadingProposals, setLoadingProposals] = useState(false);
-  const [cenarios, setCenarios] = useState<Cenario[]>([
-    { nome: "Pessimista", cor: "#F74C4C", emoji: "📉", receita: 0, ajusteDespesas: 10 },
-    { nome: "Realista",   cor: "#F4B23C", emoji: "📊", receita: 0, ajusteDespesas: 0 },
-    { nome: "Otimista",   cor: "#2DDB81", emoji: "📈", receita: 0, ajusteDespesas: -5 },
-  ]);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallTrigger, setPaywallTrigger] = useState<"export_blocked" | "feature_locked">("export_blocked");
 
-  const { getTransactionsByDateRange } = useReports();
-  const { transactions } = useCashFlow();
-  const { payables } = usePayables();
-  const { receivables } = useReceivables();
+  // Simula que exportações estão bloqueadas
+  const canExport = false;
+  const exportLimit = 5;
 
-  // Fetch proposals when propostas tab is activated
-  useEffect(() => {
-    if (activeTab !== "propostas" || !user || proposals.length > 0) return;
-    setLoadingProposals(true);
-    pb.collection("proposals")
-      .getList(1, 500, { filter: `user_id = "${user.id}"`, sort: "-created", requestKey: null })
-      .then((res) => setProposals(res.items as Proposal[]))
-      .catch(console.error)
-      .finally(() => setLoadingProposals(false));
-  }, [activeTab, user]);
-
-  if (user?.plan !== "pro") {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
-        <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-6">
-          <Lock className="w-8 h-8 text-primary" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground mb-3">Relatórios são exclusivos do PRO</h2>
-        <p className="text-muted-foreground mb-8 max-w-md">
-          Acesse relatórios completos, gráficos avançados, exportação em PDF e Excel com o plano PRO.
-        </p>
-        <button
-          onClick={() => navigate("/checkout")}
-          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 py-3 rounded-xl transition-colors"
-        >
-          <Crown className="w-5 h-5" />
-          Fazer Upgrade para PRO
-        </button>
-      </div>
-    );
-  }
-
-  // Transactions for selected period
-  const periodTransactions = useMemo(
-    () => getTransactionsByDateRange(dateRange[0], dateRange[1]),
-    [dateRange, getTransactionsByDateRange]
-  );
-
-  // Current period aggregations
-  const periodSummary = useMemo(() => {
-    const receitas = periodTransactions
-      .filter((t) => t.tipo === "entrada")
-      .reduce((sum, t) => sum + t.valor, 0);
-    const despesas = periodTransactions
-      .filter((t) => t.tipo === "saida")
-      .reduce((sum, t) => sum + t.valor, 0);
-    const fluxo = receitas - despesas;
-    const margem = receitas > 0 ? (fluxo / receitas) * 100 : 0;
-    return { receitas, despesas, fluxo, margem };
-  }, [periodTransactions]);
-
-  // Previous period comparison
-  const previousPeriodSummary = useMemo(() => {
-    const daysDiff = Math.ceil(
-      (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
-    );
-    const prevStart = new Date(dateRange[0]);
-    prevStart.setDate(prevStart.getDate() - daysDiff);
-    const prevEnd = new Date(dateRange[0]);
-    prevEnd.setDate(prevEnd.getDate() - 1);
-
-    const prevTx = getTransactionsByDateRange(prevStart, prevEnd);
-    const prevReceitas = prevTx.filter((t) => t.tipo === "entrada").reduce((sum, t) => sum + t.valor, 0);
-    const prevDespesas = prevTx.filter((t) => t.tipo === "saida").reduce((sum, t) => sum + t.valor, 0);
-    return { prevReceitas, prevDespesas };
-  }, [dateRange, getTransactionsByDateRange]);
-
-  // Last 6 months flow chart
-  const monthlyFlowData = useMemo(() => {
-    const months = [];
-    for (let i = 5; i >= 0; i--) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      const monthTx = getTransactionsByDateRange(startOfMonth, endOfMonth);
-      const receitas = monthTx.filter((t) => t.tipo === "entrada").reduce((sum, t) => sum + t.valor, 0);
-      const despesas = monthTx.filter((t) => t.tipo === "saida").reduce((sum, t) => sum + t.valor, 0);
-      months.push({
-        name: date.toLocaleString("pt-BR", { month: "short", year: "2-digit" }),
-        receitas,
-        despesas,
-        fluxo: receitas - despesas,
-      });
+  const handleExport = (type: string) => {
+    if (!canExport) {
+      setPaywallTrigger("export_blocked");
+      setShowPaywall(true);
+    } else {
+      // Lógica de exportação real
+      console.log(`Exportando ${type}...`);
     }
-    return months;
-  }, [getTransactionsByDateRange]);
-
-  // Expense by category (period)
-  const expenseByCategory = useMemo(() => {
-    const categoriesMap = periodTransactions
-      .filter((t) => t.tipo === "saida")
-      .reduce((acc, t) => {
-        acc[t.categoria] = (acc[t.categoria] || 0) + t.valor;
-        return acc;
-      }, {} as Record<string, number>);
-    return Object.entries(categoriesMap)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
-  }, [periodTransactions]);
-
-  // Payables helpers
-  const overduePayables = useMemo(
-    () => payables.filter((p) => new Date(p.data_vencimento) < new Date() && p.status === "pendente").length,
-    [payables]
-  );
-  const pendingPayablesTotal = useMemo(
-    () => payables.filter((p) => p.status === "pendente").reduce((sum, p) => sum + p.valor, 0),
-    [payables]
-  );
-
-  // Receivables helpers
-  const pendingReceivablesTotal = useMemo(
-    () => receivables.filter((r) => r.status === "pendente").reduce((sum, r) => sum + r.valor, 0),
-    [receivables]
-  );
-
-  // Smart insights
-  const insights = useMemo(
-    () =>
-      generateInsights({
-        receitas: periodSummary.receitas,
-        despesas: periodSummary.despesas,
-        fluxo: periodSummary.fluxo,
-        margem: periodSummary.margem,
-        prevReceitas: previousPeriodSummary.prevReceitas,
-        prevDespesas: previousPeriodSummary.prevDespesas,
-        monthlyFlowData,
-        overduePayables,
-      }),
-    [periodSummary, previousPeriodSummary, monthlyFlowData, overduePayables]
-  );
-
-  // Recommendations
-  const recommendations = useMemo(
-    () =>
-      generateRecommendations({
-        receitas: periodSummary.receitas,
-        despesas: periodSummary.despesas,
-        fluxo: periodSummary.fluxo,
-        margem: periodSummary.margem,
-        expenseByCategory,
-        overduePayables,
-        totalPayablesPending: pendingPayablesTotal,
-      }),
-    [periodSummary, expenseByCategory, overduePayables, pendingPayablesTotal]
-  );
-
-  // Advanced indicators
-  const liquidez = useMemo(
-    () => calcularLiquidez(pendingReceivablesTotal, pendingPayablesTotal),
-    [pendingReceivablesTotal, pendingPayablesTotal]
-  );
-  const pontoEquilibrio = useMemo(
-    () => calcularPontoEquilibrio(periodSummary.despesas, periodSummary.margem),
-    [periodSummary]
-  );
-  const valorNegocio = useMemo(() => estimarValorNegocio(monthlyFlowData), [monthlyFlowData]);
-  const projecao30 = useMemo(() => projetarProximos30dias(monthlyFlowData), [monthlyFlowData]);
-
-  // DRE e Centro de Custos
-  const dre = useMemo(() => calcularDRE(periodTransactions), [periodTransactions]);
-  const centrosCusto = useMemo(() => calcularCentrosCusto(periodTransactions), [periodTransactions]);
-
-  // Hero card config
-  const healthStatus = getMarginHealthStatus(periodSummary.margem);
-  const heroColor =
-    periodSummary.receitas === 0
-      ? "#A1A1A1"
-      : periodSummary.fluxo >= 0
-      ? "#2DDB81"
-      : "#F74C4C";
-  const heroLabel =
-    periodSummary.receitas === 0
-      ? "Sem dados no período"
-      : periodSummary.fluxo >= 0
-      ? "Resultado positivo"
-      : "Resultado negativo";
-  const HeroIcon =
-    periodSummary.receitas === 0
-      ? Minus
-      : periodSummary.fluxo >= 0
-      ? TrendingUp
-      : TrendingDown;
-
-  // Table columns
-  const transactionColumns: Column[] = [
-    { key: "data", label: "Data", format: (v) => new Date(v).toLocaleDateString("pt-BR"), sortable: true },
-    { key: "descricao", label: "Descrição", sortable: true },
-    { key: "categoria", label: "Categoria", sortable: true },
-    { key: "valor", label: "Valor", format: (v) => formatCurrency(v), sortable: true, align: "right" },
-    { key: "tipo", label: "Tipo", format: (v) => (v === "entrada" ? "Receita" : "Despesa"), sortable: true },
-  ];
-
-  const payablesColumns: Column[] = [
-    { key: "descricao", label: "Descrição", sortable: true },
-    { key: "data_vencimento", label: "Vencimento", format: (v) => new Date(v).toLocaleDateString("pt-BR"), sortable: true },
-    { key: "categoria", label: "Categoria", sortable: true },
-    { key: "valor", label: "Valor", format: (v) => formatCurrency(v), sortable: true, align: "right" },
-    { key: "status", label: "Status", format: (v) => (v === "pago" ? "✓ Pago" : "⏳ Pendente"), sortable: true },
-  ];
-
-  const handlePeriodChange = (newPeriod: any, dates: [Date, Date]) => {
-    setPeriod(newPeriod);
-    setDateRange(dates);
   };
 
-  const exportData: ReportExportData = useMemo(
-    () => ({
-      period,
-      dateRange,
-      totalReceitas: periodSummary.receitas,
-      totalDespesas: periodSummary.despesas,
-      fluxoCaixa: periodSummary.fluxo,
-      margemLiquida: periodSummary.margem,
-      transactions: periodTransactions.map((t) => ({
-        data: new Date(t.data).toLocaleDateString("pt-BR"),
-        descricao: t.descricao || "-",
-        categoria: t.categoria,
-        tipo: t.tipo === "entrada" ? "Receita" : "Despesa",
-        valor: t.valor,
-      })),
-      monthlyData: monthlyFlowData,
-      expensesByCategory: expenseByCategory.reduce((acc, item) => ({ ...acc, [item.name]: item.value }), {}),
-      payablesTotal: payables.reduce((sum, p) => sum + p.valor, 0),
-      payablesPending: pendingPayablesTotal,
-      payablesPaid: payables.filter((p) => p.status === "pago").reduce((sum, p) => sum + p.valor, 0),
-      // Smart analysis
-      insights,
-      recommendations,
-      liquidez,
-      pontoEquilibrio,
-      valorNegocio,
-      projecao30dias: projecao30,
-    }),
-    [period, dateRange, periodSummary, periodTransactions, monthlyFlowData, expenseByCategory, payables, pendingPayablesTotal, insights, recommendations, liquidez, pontoEquilibrio, valorNegocio, projecao30]
-  );
-
-  const handleExportExcel = () => {
-    try { exportReportToExcel(exportData); }
-    catch (error) { alert("Erro ao exportar Excel: " + (error instanceof Error ? error.message : "Desconhecido")); }
-  };
-
-  const handleExportPDF = () => {
-    try { exportReportToPDF(exportData); }
-    catch (error) { alert("Erro ao exportar PDF: " + (error instanceof Error ? error.message : "Desconhecido")); }
-  };
-
-  const tabs = [
-    { id: "resumo", label: "Resumo" },
-    { id: "receita-despesa", label: "Receita/Despesa" },
-    { id: "fluxo", label: "Fluxo de Caixa" },
-    { id: "dre", label: "DRE" },
-    { id: "cenarios", label: "Cenários" },
-    { id: "propostas", label: "Propostas" },
-    { id: "contas-pagar", label: "Contas a Pagar" },
-  ] as const;
-
-  // Initialize scenario revenues when period data is available
-  const initCenarios = useCallback(() => {
-    if (periodSummary.receitas === 0) return;
-    setCenarios([
-      { nome: "Pessimista", cor: "#F74C4C", emoji: "📉", receita: Math.round(periodSummary.receitas * 0.8),  ajusteDespesas: 10  },
-      { nome: "Realista",   cor: "#F4B23C", emoji: "📊", receita: Math.round(periodSummary.receitas),        ajusteDespesas: 0   },
-      { nome: "Otimista",   cor: "#2DDB81", emoji: "📈", receita: Math.round(periodSummary.receitas * 1.25), ajusteDespesas: -5  },
-    ]);
-  }, [periodSummary.receitas]);
-
-  // Proposals stats
-  const proposalStats = useMemo(() => ({
-    total: proposals.length,
-    aprovadas: proposals.filter((p) => p.status === "aprovada").length,
-    pagas: proposals.filter((p) => p.status === "paga").length,
-    aguardando: proposals.filter((p) => p.status === "aguardando").length,
-    vencidas: proposals.filter((p) => p.status === "vencida").length,
-    recusadas: proposals.filter((p) => p.status === "recusada").length,
-    valorTotal: proposals.reduce((s, p) => s + Number(p.valor), 0),
-    valorAprovado: proposals.filter((p) => ["aprovada", "paga"].includes(p.status)).reduce((s, p) => s + Number(p.valor), 0),
-    valorPago: proposals.filter((p) => p.status === "paga").reduce((s, p) => s + Number(p.valor), 0),
-    taxaConversao: proposals.length > 0
-      ? ((proposals.filter((p) => ["aprovada", "paga"].includes(p.status)).length / proposals.length) * 100)
-      : 0,
-  }), [proposals]);
+  const totalReceita = monthlyData.reduce((sum, m) => sum + m.receitas, 0);
+  const totalDespesa = monthlyData.reduce((sum, m) => sum + m.despesas, 0);
+  const totalLucro = monthlyData.reduce((sum, m) => sum + m.lucro, 0);
 
   return (
-    <div className="min-h-screen bg-background px-4 md:px-8 py-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Relatórios Financeiros</h1>
-          <p className="text-muted-foreground">Visualize e analise seus dados financeiros em um período específico</p>
-        </div>
+    <div className="space-y-6">
+      {/* Header with PageHeader component */}
+      <PageHeader
+        title="Relatórios Financeiros"
+        subtitle="Análise detalhada do desempenho do seu negócio"
+      />
 
-        {/* Period Filter */}
-        <div className="mb-8">
-          <PeriodFilter onPeriodChange={handlePeriodChange} defaultPeriod="mes" />
-        </div>
+      {/* KPI Cards - Premium Financial Display */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <KPICard
+          title="Total Receitas"
+          value={`R$ ${totalReceita.toLocaleString("pt-BR")}`}
+          icon={TrendingUp}
+          iconColor="green"
+          status={{
+            label: "Últimos 6 meses",
+            color: "green",
+          }}
+        />
 
-        {/* Tabs */}
-        <div className="mb-6">
-          <div className="flex gap-2 border-b border-border overflow-x-auto">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as TabType)}
-                className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+        <KPICard
+          title="Total Despesas"
+          value={`R$ ${totalDespesa.toLocaleString("pt-BR")}`}
+          icon={TrendingDown}
+          iconColor="red"
+          status={{
+            label: "Últimos 6 meses",
+            color: "red",
+          }}
+        />
+
+        <KPICard
+          title="Total Lucro"
+          value={`R$ ${totalLucro.toLocaleString("pt-BR")}`}
+          icon={DollarSign}
+          iconColor="blue"
+          status={{
+            label: "Últimos 6 meses",
+            color: "blue",
+          }}
+        />
+
+        <KPICard
+          title="Margem Média"
+          value={`${((totalLucro / totalReceita) * 100).toFixed(1)}%`}
+          icon={BarChart3}
+          iconColor="green"
+          status={{
+            label: "De lucratividade",
+            color: "green",
+          }}
+        />
+      </div>
+
+      {/* Filters - now just show the export buttons section */}
+      <div>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => handleExport("PDF")}
+            className={`flex items-center gap-2 px-4 py-2.5 border border-border rounded-lg transition-all font-medium ${
+              canExport 
+                ? "hover:bg-secondary text-foreground" 
+                : "bg-gray-100 text-gray-400 cursor-not-allowed relative"
+            }`}
+          >
+            {!canExport && <Lock className="w-4 h-4 absolute -top-1 -right-1 text-red-500" />}
+            <Download className="w-4 h-4" />
+            Exportar PDF
+          </button>
+          <button 
+            onClick={() => handleExport("Excel")}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all font-medium relative ${
+              canExport
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            {!canExport && <Lock className="w-4 h-4 absolute -top-1 -right-1 text-red-500" />}
+            <Download className="w-4 h-4" />
+            Exportar Excel
+          </button>
+        </div>
+      </div>
+
+      {/* Alerta de exportações esgotadas */}
+      {!canExport && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <Lock className="w-5 h-5 text-[#003a6d] flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h4 className="font-semibold text-[#001529] mb-1">
+                Exportações do plano gratuito
+              </h4>
+              <p className="text-sm text-[#001529]/70 mb-3">
+                Você atingiu o limite de {exportLimit} exportações mensais. Com o plano PRO, exporte sem limites.
+              </p>
+              <button 
+                onClick={() => {
+                  setPaywallTrigger("export_blocked");
+                  setShowPaywall(true);
+                }}
+                className="bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white px-4 py-2 rounded-lg hover:from-[#002a5d] hover:to-[#0056EF] transition-all font-semibold text-sm"
               >
-                {tab.label}
+                Ver Plano PRO
               </button>
-            ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted-foreground">Receita Total</span>
+            <TrendingUp className="w-4 h-4 text-success" />
+          </div>
+          <p className="font-bold text-foreground">R$ 57.150,00</p>
+          <p className="text-xs text-success mt-1">+18,5% vs período anterior</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted-foreground">Despesa Total</span>
+            <TrendingDown className="w-4 h-4 text-expense" />
+          </div>
+          <p className="font-bold text-foreground">R$ 42.240,00</p>
+          <p className="text-xs text-muted-foreground mt-1">+7,2% vs período anterior</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted-foreground">Lucro Líquido</span>
+            <DollarSign className="w-4 h-4 text-primary" />
+          </div>
+          <p className="font-bold text-foreground">R$ 14.910,00</p>
+          <p className="text-xs text-success mt-1">+35,2% vs período anterior</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted-foreground">Margem Lucro</span>
+            <FileText className="w-4 h-4 text-accent" />
+          </div>
+          <p className="font-bold text-foreground">26,1%</p>
+          <p className="text-xs text-success mt-1">+3,8 pontos percentuais</p>
+        </div>
+      </div>
+
+      {/* Profit Trend */}
+      <div className="bg-card border border-border rounded-xl p-6">
+        <h3 className="font-semibold text-foreground mb-4">
+          Evolução de Lucro (últimos 6 meses)
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={monthlyData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+            <XAxis dataKey="month" stroke="#6B7280" fontSize={12} />
+            <YAxis stroke="#6B7280" fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+                borderRadius: "8px",
+              }}
+            />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="lucro"
+              stroke="#00A868"
+              strokeWidth={3}
+              name="Lucro"
+              dot={{ fill: "#00A868", r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Income by Category */}
+        <div className="bg-card border border-border rounded-xl p-6">
+          <h3 className="font-semibold text-foreground mb-4">
+            Receitas por Categoria
+          </h3>
+          <div className="flex items-center justify-between">
+            <ResponsiveContainer width="50%" height={200}>
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label={(entry) => `${entry.value}%`}
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="space-y-2">
+              {categoryData.map((item) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-sm text-foreground">{item.name}</span>
+                  <span className="text-sm font-semibold text-foreground ml-auto">
+                    {item.value}%
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Tab Content */}
-        <div>
-
-          {/* ── RESUMO TAB ── */}
-          {activeTab === "resumo" && (
-            <div className="space-y-6">
-
-              {/* Hero card */}
-              <div
-                className="rounded-2xl p-6 md:p-8 border"
-                style={{ borderColor: heroColor + "33", background: heroColor + "11" }}
-              >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <HeroIcon className="w-5 h-5" style={{ color: heroColor }} />
-                      <span className="text-sm font-medium" style={{ color: heroColor }}>
-                        {heroLabel}
-                      </span>
-                    </div>
-                    <div className="text-4xl md:text-5xl font-bold mb-3" style={{ color: heroColor }}>
-                      {formatCurrency(Math.abs(periodSummary.fluxo))}
-                    </div>
-                    <p className="text-muted-foreground text-sm">
-                      {periodSummary.receitas > 0
-                        ? `${formatCurrency(periodSummary.receitas)} em receitas · ${formatCurrency(periodSummary.despesas)} em despesas · margem de ${formatPercentage(periodSummary.margem)}`
-                        : "Nenhuma transação registrada neste período."}
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0 text-right">
-                    {periodSummary.receitas > 0 && (
-                      <div
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-                        style={{ background: heroColor + "22", color: heroColor }}
-                      >
-                        {healthStatus === "saudavel" && "Saudável"}
-                        {healthStatus === "normal" && "Aceitável"}
-                        {healthStatus === "baixa" && "Atenção"}
-                        {healthStatus === "critica" && "Crítico"}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* KPI Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <ReportCard
-                  title="Receitas"
-                  value={periodSummary.receitas}
-                  type="receita"
-                  icon={<DollarSign className="w-6 h-6" />}
-                  comparison={calculateGrowth(periodSummary.receitas, previousPeriodSummary.prevReceitas)}
-                  subtitle={period === "mes" ? "Este mês" : "Neste período"}
-                />
-                <ReportCard
-                  title="Despesas"
-                  value={periodSummary.despesas}
-                  type="despesa"
-                  icon={<AlertCircle className="w-6 h-6" />}
-                  comparison={calculateGrowth(periodSummary.despesas, previousPeriodSummary.prevDespesas)}
-                  subtitle={period === "mes" ? "Este mês" : "Neste período"}
-                />
-                <ReportCard
-                  title="Fluxo de Caixa"
-                  value={periodSummary.fluxo}
-                  type="fluxo"
-                  icon={<TrendingUp className="w-6 h-6" />}
-                  subtitle={period === "mes" ? "Este mês" : "Neste período"}
-                />
-                <ReportCard
-                  title="Margem Líquida"
-                  value={periodSummary.margem}
-                  type="margem"
-                  icon={<BarChart2 className="w-6 h-6" />}
-                  subtitle={formatPercentage(periodSummary.margem)}
-                />
-              </div>
-
-              {/* Insights + Recommendations */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-                {/* Insights */}
-                <div className="bg-card border border-border rounded-xl p-5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Lightbulb className="w-5 h-5 text-yellow-600" />
-                    <h3 className="font-semibold text-foreground">Análise do Período</h3>
-                  </div>
-                  {insights.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">Sem dados suficientes para análise.</p>
-                  ) : (
-                    <ul className="space-y-3">
-                      {insights.map((insight, i) => (
-                        <li key={i} className="flex items-start gap-2.5 text-sm">
-                          <span className="mt-0.5 flex-shrink-0 text-base">
-                            {insight.type === "warning" ? "⚠️" : insight.type === "success" ? "✅" : "ℹ️"}
-                          </span>
-                          <span
-                            className={
-                              insight.type === "warning"
-                                ? "text-yellow-600"
-                                : insight.type === "success"
-                                ? "text-primary"
-                                : "text-muted-foreground"
-                            }
-                          >
-                            {insight.message}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                {/* Recommendations */}
-                <div className="bg-card border border-border rounded-xl p-5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Target className="w-5 h-5 text-primary" />
-                    <h3 className="font-semibold text-foreground">Recomendações</h3>
-                  </div>
-                  {recommendations.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">Nenhuma recomendação no momento.</p>
-                  ) : (
-                    <ul className="space-y-3">
-                      {recommendations.map((rec, i) => (
-                        <li key={i} className="flex items-start gap-2.5 text-sm">
-                          <ChevronRight
-                            className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                              rec.priority === "alta"
-                                ? "text-destructive"
-                                : rec.priority === "media"
-                                ? "text-yellow-600"
-                                : "text-primary"
-                            }`}
-                          />
-                          <span className="text-muted-foreground">{rec.action}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-
-              {/* Advanced Indicators */}
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3">
-                  Indicadores Avançados
-                </h3>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {/* Liquidez */}
-                  <div className="bg-card border border-border rounded-xl p-4">
-                    <p className="text-xs text-muted-foreground mb-1">Índice de Cobertura</p>
-                    <p
-                      className="text-2xl font-bold mb-1"
-                      style={{
-                        color:
-                          pendingPayablesTotal === 0 ? "#A1A1A1"
-                          : liquidez >= 1.5 ? "#2DDB81"
-                          : liquidez >= 1 ? "#F4B23C"
-                          : "#F74C4C",
-                      }}
-                    >
-                      {pendingPayablesTotal === 0 ? "—" : liquidez >= 99 ? "∞" : liquidez.toFixed(2) + "×"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {pendingPayablesTotal === 0
-                        ? "Sem contas a pagar"
-                        : liquidez >= 1
-                        ? "A receber cobre as dívidas"
-                        : "A receber não cobre as dívidas"}
-                    </p>
-                  </div>
-
-                  {/* Ponto de equilíbrio */}
-                  <div className="bg-card border border-border rounded-xl p-4">
-                    <p className="text-xs text-muted-foreground mb-1">Ponto de Equilíbrio</p>
-                    <p className="text-2xl font-bold text-foreground mb-1">
-                      {periodSummary.despesas > 0 ? formatCurrency(pontoEquilibrio) : "—"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {periodSummary.receitas >= pontoEquilibrio && periodSummary.despesas > 0
-                        ? "Receita cobre as despesas ✓"
-                        : periodSummary.despesas > 0
-                        ? `Faltam ${formatCurrency(pontoEquilibrio - periodSummary.receitas)}`
-                        : "Sem despesas no período"}
-                    </p>
-                  </div>
-
-                  {/* Valor estimado do negócio */}
-                  <div className="bg-card border border-border rounded-xl p-4">
-                    <p className="text-xs text-muted-foreground mb-1">Valor Estimado do Negócio</p>
-                    <p className="text-2xl font-bold text-foreground mb-1">
-                      {valorNegocio > 0 ? formatCurrency(valorNegocio) : "—"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {valorNegocio > 0 ? "Múltiplo de 12× lucro médio" : "Sem lucro nos últimos meses"}
-                    </p>
-                  </div>
-
-                  {/* Projeção 30 dias */}
-                  <div className="bg-card border border-border rounded-xl p-4">
-                    <p className="text-xs text-muted-foreground mb-1">Projeção 30 Dias</p>
-                    <p
-                      className="text-2xl font-bold mb-1"
-                      style={{ color: projecao30.fluxo >= 0 ? "#2DDB81" : "#F74C4C" }}
-                    >
-                      {projecao30.receitas > 0 ? formatCurrency(projecao30.fluxo) : "—"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {projecao30.receitas > 0
-                        ? `Média dos últimos 3 meses`
-                        : "Sem histórico suficiente"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contas a pagar summary */}
-              {payables.length > 0 && (
-                <div className="bg-card border border-border rounded-xl p-5">
-                  <h3 className="text-sm font-semibold text-foreground mb-4">Contas a Pagar</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <CompactReportCard label="Total" value={payables.reduce((sum, p) => sum + p.valor, 0)} color="#FF9500" />
-                    <CompactReportCard label="Pendentes" value={pendingPayablesTotal} color="#F74C4C" />
-                    <CompactReportCard label="Pagas" value={payables.filter((p) => p.status === "pago").reduce((sum, p) => sum + p.valor, 0)} color="#28A263" />
-                    <CompactReportCard
-                      label="Vencidas"
-                      value={overduePayables}
-                      format={(v) => `${v} itens`}
-                      color="#FF0000"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── RECEITA/DESPESA TAB ── */}
-          {activeTab === "receita-despesa" && (
-            <div className="space-y-8">
-              <ReportChart
-                title="Receitas vs Despesas (últimos 6 meses)"
-                data={monthlyFlowData}
-                dataKey="receitas"
-                dataKey2="despesas"
-                type="bar"
-                height={350}
-                xAxisKey="name"
-              />
-              {expenseByCategory.length > 0 && (
-                <ReportChart
-                  title="Despesas por Categoria"
-                  data={expenseByCategory}
+        {/* Expenses by Category */}
+        <div className="bg-card border border-border rounded-xl p-6">
+          <h3 className="font-semibold text-foreground mb-4">
+            Despesas por Categoria
+          </h3>
+          <div className="flex items-center justify-between">
+            <ResponsiveContainer width="50%" height={200}>
+              <PieChart>
+                <Pie
+                  data={expenseData}
                   dataKey="value"
-                  type="pie"
-                  height={350}
-                  xAxisKey="name"
-                />
-              )}
-              <ReportTable
-                title="Transações do Período"
-                data={periodTransactions}
-                columns={transactionColumns}
-                itemsPerPage={15}
-              />
-            </div>
-          )}
-
-          {/* ── FLUXO TAB ── */}
-          {activeTab === "fluxo" && (
-            <div className="space-y-8">
-              <ReportChart
-                title="Fluxo de Caixa (últimos 6 meses)"
-                data={monthlyFlowData}
-                dataKey="fluxo"
-                type="area"
-                height={350}
-                xAxisKey="name"
-                colors={{ primary: periodSummary.fluxo >= 0 ? "#28A263" : "#F74C4C" }}
-              />
-
-              <div className="bg-card border border-border rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Resumo Mensal</h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead className="border-b border-border">
-                      <tr>
-                        <th className="text-left py-3 text-muted-foreground">Mês</th>
-                        <th className="text-right py-3 text-muted-foreground">Receitas</th>
-                        <th className="text-right py-3 text-muted-foreground">Despesas</th>
-                        <th className="text-right py-3 text-muted-foreground">Fluxo</th>
-                        <th className="text-right py-3 text-muted-foreground">Margem</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {monthlyFlowData
-                        .filter((row) => row.receitas > 0 || row.despesas > 0)
-                        .map((row, idx) => (
-                          <tr key={idx} className="border-b border-white/5 hover:bg-accent">
-                            <td className="py-3 text-foreground">{row.name}</td>
-                            <td className="text-right py-3 text-primary">{formatCurrency(row.receitas)}</td>
-                            <td className="text-right py-3 text-destructive">{formatCurrency(row.despesas)}</td>
-                            <td
-                              className="text-right py-3 font-medium"
-                              style={{ color: row.fluxo >= 0 ? "#2DDB81" : "#F74C4C" }}
-                            >
-                              {formatCurrency(row.fluxo)}
-                            </td>
-                            <td className="text-right py-3 text-yellow-600">
-                              {row.receitas > 0 ? formatPercentage((row.fluxo / row.receitas) * 100) : "—"}
-                            </td>
-                          </tr>
-                        ))}
-                      {monthlyFlowData.every((r) => r.receitas === 0 && r.despesas === 0) && (
-                        <tr>
-                          <td colSpan={5} className="py-6 text-center text-muted-foreground">
-                            Nenhuma transação nos últimos 6 meses
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── DRE TAB ── */}
-          {activeTab === "dre" && (
-            <div className="space-y-6">
-              {periodTransactions.length === 0 ? (
-                <div className="bg-card border border-border rounded-xl p-8 text-center">
-                  <BarChart2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg mb-2">Sem transações no período</p>
-                  <p className="text-muted-foreground text-sm">Selecione um período com lançamentos no Fluxo de Caixa.</p>
-                </div>
-              ) : (
-                <>
-                  {/* DRE summary cards */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Receita Bruta</p>
-                      <p className="text-xl font-bold text-primary">{formatCurrency(dre.receitaBruta)}</p>
-                    </div>
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Lucro Bruto</p>
-                      <p className="text-xl font-bold" style={{ color: dre.lucroBruto >= 0 ? "#2DDB81" : "#F74C4C" }}>
-                        {formatCurrency(dre.lucroBruto)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Margem {formatPercentage(dre.margemBruta)}</p>
-                    </div>
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Resultado Líquido</p>
-                      <p className="text-xl font-bold" style={{ color: dre.resultadoLiquido >= 0 ? "#2DDB81" : "#F74C4C" }}>
-                        {formatCurrency(dre.resultadoLiquido)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Margem {formatPercentage(dre.margemLiquida)}</p>
-                    </div>
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Total Despesas</p>
-                      <p className="text-xl font-bold text-destructive">
-                        {formatCurrency(dre.cpv + dre.despesasOperacionais + dre.despesasAdministrativas + dre.impostos + dre.retirada)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* DRE table */}
-                  <div className="bg-card border border-border rounded-xl overflow-hidden">
-                    <div className="p-5 border-b border-border flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-foreground">Demonstração do Resultado do Exercício</h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">Baseado nas categorias lançadas no Fluxo de Caixa</p>
-                      </div>
-                    </div>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <tbody>
-                          {dre.linhas.map((linha, idx) => {
-                            const isResultado = linha.operacao === "resultado";
-                            const isSubtracao = linha.operacao === "subtracao";
-                            const indent = linha.indent ?? 0;
-                            const isLucroPrejuizo = linha.label === "= RESULTADO LÍQUIDO";
-                            const valueColor = isLucroPrejuizo
-                              ? linha.valor >= 0 ? "#2DDB81" : "#F74C4C"
-                              : isResultado
-                              ? linha.valor >= 0 ? "#2DDB81" : "#F74C4C"
-                              : isSubtracao && linha.valor > 0
-                              ? "#F74C4C"
-                              : "#A1A1A1";
-
-                            return (
-                              <tr
-                                key={idx}
-                                className={`border-b border-white/5 ${isResultado ? "bg-accent" : "hover:bg-white/3"}`}
-                              >
-                                <td
-                                  className={`py-2.5 pr-4 ${isResultado ? "font-bold text-foreground" : indent === 2 ? "text-muted-foreground" : "text-muted-foreground"}`}
-                                  style={{ paddingLeft: `${(indent + 1) * 16}px` }}
-                                >
-                                  {linha.label}
-                                </td>
-                                <td
-                                  className={`py-2.5 px-5 text-right font-medium whitespace-nowrap ${isResultado ? "font-bold" : ""}`}
-                                  style={{ color: valueColor }}
-                                >
-                                  {linha.valor === 0 && !isResultado ? "—" : (
-                                    <>
-                                      {isSubtracao && linha.valor > 0 ? "- " : ""}
-                                      {formatCurrency(Math.abs(linha.valor))}
-                                    </>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {/* Centro de Custos */}
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3">Centro de Custos</h3>
-                    <p className="text-xs text-muted-foreground mb-4">Despesas classificadas automaticamente por área do negócio</p>
-
-                    {centrosCusto.length === 0 ? (
-                      <div className="bg-card border border-border rounded-xl p-6 text-center">
-                        <p className="text-muted-foreground text-sm">Nenhuma despesa no período para classificar.</p>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {centrosCusto.map((cc) => {
-                          const totalDespCC = centrosCusto.reduce((s, c) => s + c.despesas, 0);
-                          const pct = totalDespCC > 0 ? (cc.despesas / totalDespCC) * 100 : 0;
-                          const ccColors: Record<string, string> = {
-                            Operacional: "#2DDB81",
-                            Comercial: "#5B5FFF",
-                            Administrativo: "#F4B23C",
-                            Financeiro: "#F74C4C",
-                            Pessoal: "#A78BFA",
-                          };
-                          const color = ccColors[cc.nome] ?? "#A1A1A1";
-
-                          return (
-                            <div key={cc.nome} className="bg-card border border-border rounded-xl p-4">
-                              <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
-                                  <span className="font-medium text-foreground text-sm">{cc.nome}</span>
-                                </div>
-                                <span className="text-xs text-muted-foreground">{formatPercentage(pct)} das despesas</span>
-                              </div>
-
-                              {cc.despesas > 0 && (
-                                <div className="mb-3">
-                                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                    <div
-                                      className="h-full rounded-full transition-all"
-                                      style={{ width: `${Math.min(pct, 100)}%`, background: color }}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-
-                              <div className="space-y-1.5">
-                                {cc.despesas > 0 && (
-                                  <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Despesas</span>
-                                    <span className="text-destructive font-medium">{formatCurrency(cc.despesas)}</span>
-                                  </div>
-                                )}
-                                {cc.receitas > 0 && (
-                                  <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Receitas</span>
-                                    <span className="text-primary font-medium">{formatCurrency(cc.receitas)}</span>
-                                  </div>
-                                )}
-                                <div className="flex justify-between text-sm border-t border-white/5 pt-1.5">
-                                  <span className="text-muted-foreground">Resultado</span>
-                                  <span className="font-semibold" style={{ color: cc.resultado >= 0 ? "#2DDB81" : "#F74C4C" }}>
-                                    {formatCurrency(cc.resultado)}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {cc.categorias.length > 0 && (
-                                <div className="mt-3 pt-3 border-t border-white/5 space-y-1">
-                                  {cc.categorias
-                                    .filter((c) => c.tipo === "saida")
-                                    .sort((a, b) => b.valor - a.valor)
-                                    .slice(0, 3)
-                                    .map((cat) => (
-                                      <div key={cat.nome} className="flex justify-between text-xs">
-                                        <span className="text-muted-foreground truncate mr-2">{cat.nome}</span>
-                                        <span className="text-muted-foreground whitespace-nowrap">{formatCurrency(cat.valor)}</span>
-                                      </div>
-                                    ))}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* ── CENÁRIOS TAB ── */}
-          {activeTab === "cenarios" && (
-            <div className="space-y-6">
-              {/* Header + init button */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <h3 className="text-foreground font-semibold">Planejamento por Cenários</h3>
-                  <p className="text-muted-foreground text-sm mt-0.5">Simule receitas esperadas e veja o impacto no resultado</p>
-                </div>
-                <button
-                  onClick={initCenarios}
-                  disabled={periodSummary.receitas === 0}
-                  className="text-sm px-4 py-2 rounded-lg bg-accent hover:bg-muted text-muted-foreground hover:text-foreground border border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label={(entry) => `${entry.value}%`}
                 >
-                  Usar dados do período atual
-                </button>
-              </div>
-
-              {/* Scenario input cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {cenarios.map((cenario, idx) => {
-                  const despesasBase = periodSummary.despesas;
-                  const despesasAjustadas = despesasBase * (1 + cenario.ajusteDespesas / 100);
-                  const resultado = cenario.receita - despesasAjustadas;
-                  const margem = cenario.receita > 0 ? (resultado / cenario.receita) * 100 : 0;
-
-                  return (
-                    <div
-                      key={cenario.nome}
-                      className="bg-card border rounded-xl overflow-hidden"
-                      style={{ borderColor: cenario.cor + "44" }}
-                    >
-                      {/* Card header */}
-                      <div className="px-5 py-3 flex items-center gap-2" style={{ background: cenario.cor + "18" }}>
-                        <span className="text-lg">{cenario.emoji}</span>
-                        <span className="font-bold text-foreground">{cenario.nome}</span>
-                      </div>
-
-                      <div className="p-5 space-y-4">
-                        {/* Receita esperada */}
-                        <div>
-                          <label className="text-xs text-muted-foreground mb-1.5 block">Receita esperada (R$)</label>
-                          <input
-                            type="number"
-                            min={0}
-                            value={cenario.receita || ""}
-                            onChange={(e) => {
-                              const val = parseFloat(e.target.value) || 0;
-                              setCenarios((prev) => prev.map((c, i) => i === idx ? { ...c, receita: val } : c));
-                            }}
-                            placeholder="0,00"
-                            className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-foreground text-sm focus:outline-none focus:border-white/30"
-                          />
-                        </div>
-
-                        {/* Ajuste de despesas */}
-                        <div>
-                          <label className="text-xs text-muted-foreground mb-1.5 block">
-                            Ajuste nas despesas: <span style={{ color: cenario.cor }} className="font-medium">
-                              {cenario.ajusteDespesas > 0 ? "+" : ""}{cenario.ajusteDespesas}%
-                            </span>
-                          </label>
-                          <input
-                            type="range"
-                            min={-50}
-                            max={50}
-                            step={5}
-                            value={cenario.ajusteDespesas}
-                            onChange={(e) => {
-                              const val = parseInt(e.target.value);
-                              setCenarios((prev) => prev.map((c, i) => i === idx ? { ...c, ajusteDespesas: val } : c));
-                            }}
-                            className="w-full accent-current"
-                            style={{ accentColor: cenario.cor }}
-                          />
-                          <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
-                            <span>-50%</span><span>0%</span><span>+50%</span>
-                          </div>
-                        </div>
-
-                        {/* Projected results */}
-                        <div className="pt-3 border-t border-border space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Despesas proj.</span>
-                            <span className="text-destructive">{formatCurrency(despesasAjustadas)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Margem</span>
-                            <span style={{ color: margem >= 0 ? cenario.cor : "#F74C4C" }}>{formatPercentage(margem)}</span>
-                          </div>
-                          <div className="flex justify-between font-bold">
-                            <span className="text-foreground text-sm">Resultado</span>
-                            <span style={{ color: resultado >= 0 ? cenario.cor : "#F74C4C" }}>
-                              {formatCurrency(resultado)}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Comparison table */}
-              {cenarios.some((c) => c.receita > 0) && (
-                <div className="bg-card border border-border rounded-xl overflow-hidden">
-                  <div className="p-5 border-b border-border">
-                    <h3 className="font-semibold text-foreground">Comparação entre Cenários</h3>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="border-b border-border">
-                        <tr>
-                          <th className="text-left px-5 py-3 text-muted-foreground">Indicador</th>
-                          {cenarios.map((c) => (
-                            <th key={c.nome} className="text-right px-5 py-3 font-semibold" style={{ color: c.cor }}>
-                              {c.emoji} {c.nome}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[
-                          {
-                            label: "Receita Esperada",
-                            values: cenarios.map((c) => ({ v: c.receita, color: "#2DDB81" })),
-                          },
-                          {
-                            label: "Despesas Projetadas",
-                            values: cenarios.map((c) => ({ v: periodSummary.despesas * (1 + c.ajusteDespesas / 100), color: "#F74C4C" })),
-                          },
-                          {
-                            label: "Resultado",
-                            values: cenarios.map((c) => {
-                              const r = c.receita - periodSummary.despesas * (1 + c.ajusteDespesas / 100);
-                              return { v: r, color: r >= 0 ? c.cor : "#F74C4C" };
-                            }),
-                          },
-                          {
-                            label: "Margem",
-                            values: cenarios.map((c) => {
-                              const r = c.receita - periodSummary.despesas * (1 + c.ajusteDespesas / 100);
-                              const m = c.receita > 0 ? (r / c.receita) * 100 : 0;
-                              return { v: m, color: m >= 0 ? c.cor : "#F74C4C", isPct: true };
-                            }),
-                          },
-                        ].map((row) => (
-                          <tr key={row.label} className="border-b border-white/5 hover:bg-white/3">
-                            <td className="px-5 py-3 text-muted-foreground">{row.label}</td>
-                            {row.values.map((val, i) => (
-                              <td key={i} className="px-5 py-3 text-right font-medium" style={{ color: val.color }}>
-                                {"isPct" in val && val.isPct ? formatPercentage(val.v) : formatCurrency(val.v)}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  {expenseData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="space-y-2">
+              {expenseData.map((item) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-sm text-foreground">{item.name}</span>
+                  <span className="text-sm font-semibold text-foreground ml-auto">
+                    {item.value}%
+                  </span>
                 </div>
-              )}
-
-              {/* Tip */}
-              <div className="bg-card border border-border rounded-xl p-4 flex gap-3">
-                <span className="text-xl flex-shrink-0">💡</span>
-                <p className="text-muted-foreground text-sm">
-                  Clique em <strong className="text-muted-foreground">"Usar dados do período atual"</strong> para preencher automaticamente com os valores reais como ponto de partida. Depois ajuste as receitas esperadas e o slider de despesas para simular cada cenário.
-                </p>
-              </div>
+              ))}
             </div>
-          )}
-
-          {/* ── PROPOSTAS TAB ── */}
-          {activeTab === "propostas" && (
-            <div className="space-y-6">
-              {loadingProposals ? (
-                <div className="bg-card border border-border rounded-xl p-8 text-center">
-                  <p className="text-muted-foreground">Carregando propostas…</p>
-                </div>
-              ) : proposals.length === 0 ? (
-                <div className="bg-card border border-border rounded-xl p-8 text-center">
-                  <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg mb-2">Nenhuma proposta criada ainda</p>
-                  <p className="text-muted-foreground text-sm">
-                    Crie propostas no Gerador de Propostas e acompanhe o desempenho aqui.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {/* Stats cards */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Total de Propostas</p>
-                      <p className="text-2xl font-bold text-foreground">{proposalStats.total}</p>
-                    </div>
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Taxa de Conversão</p>
-                      <p className="text-2xl font-bold text-primary">
-                        {formatPercentage(proposalStats.taxaConversao)}
-                      </p>
-                    </div>
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Valor Aprovado</p>
-                      <p className="text-2xl font-bold text-primary">
-                        {formatCurrency(proposalStats.valorAprovado)}
-                      </p>
-                    </div>
-                    <div className="bg-card border border-border rounded-xl p-4">
-                      <p className="text-xs text-muted-foreground mb-1">Valor Recebido</p>
-                      <p className="text-2xl font-bold text-foreground">
-                        {formatCurrency(proposalStats.valorPago)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Status breakdown */}
-                  <div className="bg-card border border-border rounded-xl p-5">
-                    <h3 className="text-sm font-semibold text-foreground mb-4">Por Status</h3>
-                    <div className="flex flex-wrap gap-3">
-                      {(["aguardando", "aprovada", "paga", "recusada", "vencida"] as ProposalStatus[]).map((status) => {
-                        const count = proposals.filter((p) => p.status === status).length;
-                        if (count === 0) return null;
-                        const cfg = STATUS_LABEL[status];
-                        return (
-                          <div key={status} className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${cfg.color}`}>
-                            <span>{cfg.label}</span>
-                            <span className="font-bold">{count}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Proposals table */}
-                  <div className="bg-card border border-border rounded-xl overflow-hidden">
-                    <div className="p-5 border-b border-border">
-                      <h3 className="font-semibold text-foreground">Todas as Propostas</h3>
-                    </div>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead className="border-b border-border">
-                          <tr>
-                            <th className="text-left px-5 py-3 text-muted-foreground">Cliente</th>
-                            <th className="text-left px-5 py-3 text-muted-foreground">Serviço</th>
-                            <th className="text-right px-5 py-3 text-muted-foreground">Valor</th>
-                            <th className="text-left px-5 py-3 text-muted-foreground">Data</th>
-                            <th className="text-left px-5 py-3 text-muted-foreground">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {proposals.map((p) => {
-                            const cfg = STATUS_LABEL[p.status] ?? { label: p.status, color: "text-muted-foreground" };
-                            return (
-                              <tr key={p.id} className="border-b border-white/5 hover:bg-accent">
-                                <td className="px-5 py-3 text-foreground">{p.nome_cliente}</td>
-                                <td className="px-5 py-3 text-muted-foreground">{p.nome_servico}</td>
-                                <td className="px-5 py-3 text-right text-primary font-medium">
-                                  {formatCurrency(Number(p.valor))}
-                                </td>
-                                <td className="px-5 py-3 text-muted-foreground">
-                                  {new Date(p.created).toLocaleDateString("pt-BR")}
-                                </td>
-                                <td className="px-5 py-3">
-                                  <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${cfg.color}`}>
-                                    {cfg.label}
-                                  </span>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* ── CONTAS A PAGAR TAB ── */}
-          {activeTab === "contas-pagar" && (
-            <div className="space-y-8">
-              {payables.length > 0 ? (
-                <ReportTable
-                  title="Contas a Pagar"
-                  data={payables}
-                  columns={payablesColumns}
-                  itemsPerPage={15}
-                  rowColor={(row) => {
-                    if (row.status === "pago") return "rgba(40, 162, 99, 0.1)";
-                    if (new Date(row.data_vencimento) < new Date()) return "rgba(247, 76, 76, 0.1)";
-                    return undefined;
-                  }}
-                />
-              ) : (
-                <div className="bg-card border border-border rounded-xl p-8 text-center">
-                  <CheckCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg">Nenhuma conta a pagar registrada</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Export Buttons */}
-        <div className="mt-8 flex justify-between items-center border-t border-border pt-8">
-          <p className="text-muted-foreground text-sm">Exportar relatório para análise externa</p>
-          <ExportButtons
-            filename={`relatorio_financeiro_${period}`}
-            onExportExcel={handleExportExcel}
-            onExportPDF={handleExportPDF}
-          />
+          </div>
         </div>
       </div>
+
+      {/* Monthly Comparison */}
+      <div className="bg-card border border-border rounded-xl p-6">
+        <h3 className="font-semibold text-foreground mb-4">
+          Comparativo Mensal (Receitas vs Despesas)
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={monthlyData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+            <XAxis dataKey="month" stroke="#6B7280" fontSize={12} />
+            <YAxis stroke="#6B7280" fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+                borderRadius: "8px",
+              }}
+            />
+            <Legend />
+            <Bar dataKey="receitas" fill="#00A868" radius={[8, 8, 0, 0]} name="Receitas" />
+            <Bar dataKey="despesas" fill="#EF4444" radius={[8, 8, 0, 0]} name="Despesas" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Locked Features - PRO Upsell */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <FeatureLock
+          feature="Análise Preditiva"
+          description="Previsão de receitas e despesas para os próximos 3 meses com IA"
+          size="md"
+        />
+        <FeatureLock
+          feature="Comparativo de Períodos"
+          description="Compare qualquer período personalizado e identifique tendências"
+          size="md"
+        />
+      </div>
+
+      {/* Social Proof */}
+      <SocialProof />
+
+      {/* Upgrade CTA */}
+      <UpgradeCard
+        variant="full"
+        context="Desbloqueie relatórios avançados, exportação automática e insights preditivos para tomar melhores decisões financeiras"
+      />
+
+      {/* Paywall Modal */}
+      <PaywallModal
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        trigger={paywallTrigger}
+      />
     </div>
   );
 }
