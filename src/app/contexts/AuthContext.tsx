@@ -46,17 +46,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function mapProfile(pbRecord: RecordModel): User {
+// profileRecord guardado fora do estado para evitar re-renders desnecessários
+let currentProfileId: string | null = null;
+
+function mapProfile(pbRecord: RecordModel, authUserId: string): User {
   return {
-    id: pbRecord.id,
+    id: authUserId,
     name: pbRecord.name ?? pbRecord.email?.split("@")[0] ?? "Usuário",
     email: pbRecord.email ?? "",
     plan: pbRecord.plan ?? "free",
     proposalUsageToday: pbRecord.proposal_usage_today ?? 0,
     transactionsUsageToday: pbRecord.transactions_usage_today ?? 0,
-    onboardingCompleted: pbRecord.onboarding_completed ?? false,
+    onboardingCompleted: pbRecord.onboardingCompleted ?? pbRecord.onboarding_completed ?? false,
     receivePaymentReminders: pbRecord.receive_payment_reminders ?? true,
-    avatarUrl: pbRecord.avatar_url ? pb.files.getUrl(pbRecord, pbRecord.avatar_url) : undefined,
+    avatarUrl: pbRecord.avatarUrl ?? undefined,
     phone: pbRecord.phone,
     company: pbRecord.company,
     bio: pbRecord.bio,
@@ -67,16 +70,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function fetchProfile(userId: string) {
+  // Busca o profile na coleção "profiles" pelo userId do auth
+  async function fetchProfile(authUserId: string) {
     try {
-      // requestKey: null desabilita auto-cancel para evitar conflito de requisições simultâneas
-      const record = await pb.collection("profiles").getOne(userId, { requestKey: null });
-      setUser(mapProfile(record));
+      let record: RecordModel;
+      try {
+        record = await pb.collection("profiles").getFirstListItem(
+          `userId = "${authUserId}"`,
+          { requestKey: null }
+        );
+      } catch {
+        // Profile ainda não existe, cria um
+        record = await pb.collection("profiles").create({
+          userId: authUserId,
+          name: pb.authStore.record?.name ?? "",
+          email: pb.authStore.record?.email ?? "",
+          plan: "free",
+          onboardingCompleted: false,
+        });
+      }
+      currentProfileId = record.id;
+      setUser(mapProfile(record, authUserId));
     } catch (error: unknown) {
-      // Ignora erros de auto-cancel (código 0)
       if (error instanceof Error && error.message.includes("autocancelled")) return;
       console.error("Error fetching profile:", error);
-      // Se o token expirou ou é inválido, limpa a sessão
       if (error instanceof Error && (error.message.includes("404") || error.message.includes("401"))) {
         pb.authStore.clear();
         setUser(null);
@@ -85,20 +102,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    // Check if already authenticated
-    if (pb.authStore.isValid) {
-      const user = pb.authStore.model;
-      if (user) {
-        fetchProfile(user.id).finally(() => setLoading(false));
-      }
+    if (pb.authStore.isValid && pb.authStore.record) {
+      fetchProfile(pb.authStore.record.id).finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
 
-    // Listen to auth state changes
     const unsubscribe = pb.authStore.onChange(() => {
-      if (pb.authStore.isValid && pb.authStore.model) {
-        fetchProfile(pb.authStore.model.id);
+      if (pb.authStore.isValid && pb.authStore.record) {
+        fetchProfile(pb.authStore.record.id);
       } else {
         setUser(null);
       }
@@ -109,12 +121,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const authData = await pb
-        .collection("profiles")
-        .authWithPassword(email, password);
-
+      const authData = await pb.collection("users").authWithPassword(email, password);
       if (authData.record) {
-        setUser(mapProfile(authData.record));
+        await fetchProfile(authData.record.id);
       }
     } catch (error) {
       throw new Error(error instanceof Error ? error.message : "Login failed");
@@ -123,12 +132,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = async () => {
     try {
-      const authData = await pb
-        .collection("profiles")
-        .authWithOAuth2({ provider: "google" });
-
+      const authData = await pb.collection("users").authWithOAuth2({ provider: "google" });
       if (authData.record) {
-        setUser(mapProfile(authData.record));
+        await fetchProfile(authData.record.id);
       }
     } catch (error) {
       throw new Error(error instanceof Error ? error.message : "Google login failed");
@@ -137,34 +143,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
-      // Create user record with auth
-      await pb.collection("profiles").create({
+      // Cria usuário na coleção "users" (Auth)
+      await pb.collection("users").create({
         email,
         password,
         passwordConfirm: password,
         name,
-        plan: "free",
-        proposal_usage_today: 0,
-        proposal_reset_date: new Date().toISOString().split("T")[0],
-        transactions_usage_today: 0,
-        transactions_reset_date: new Date().toISOString().split("T")[0],
-        onboarding_completed: false,
-        receive_payment_reminders: true,
+        emailVisibility: true,
       });
 
-      // Auto-login after signup
-      const authData = await pb
-        .collection("profiles")
-        .authWithPassword(email, password);
+      // Faz login automaticamente
+      const authData = await pb.collection("users").authWithPassword(email, password);
 
       if (authData.record) {
-        setUser(mapProfile(authData.record));
-        // Send verification email
+        // Cria o perfil na coleção "profiles" (Base)
+        const profileRecord = await pb.collection("profiles").create({
+          userId: authData.record.id,
+          name,
+          email,
+          plan: "free",
+          onboardingCompleted: false,
+        });
+        currentProfileId = profileRecord.id;
+        setUser(mapProfile(profileRecord, authData.record.id));
+
+        // Envia email de verificação (não crítico)
         try {
-          await pb.collection("profiles").requestVerification(email);
-        } catch (_) {
-          // Non-critical: ignore if verification email fails
-        }
+          await pb.collection("users").requestVerification(email);
+        } catch (_) {}
+
         return true;
       }
       return false;
@@ -174,96 +181,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    try {
-      pb.authStore.clear();
-      setUser(null);
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Logout failed");
-    }
+    pb.authStore.clear();
+    currentProfileId = null;
+    setUser(null);
   };
 
   const upgradeToPro = async () => {
-    if (!user) return;
-    try {
-      const record = await pb.collection("profiles").update(user.id, {
-        plan: "pro",
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Upgrade failed");
-    }
+    if (!user || !currentProfileId) return;
+    const record = await pb.collection("profiles").update(currentProfileId, { plan: "pro" });
+    setUser(mapProfile(record, user.id));
   };
 
   const incrementProposalUsage = async () => {
-    if (!user) return;
-    try {
-      const currentRecord = await pb.collection("profiles").getOne(user.id, { requestKey: null });
-      const today = new Date().toISOString().split("T")[0];
-      const lastResetDate = (currentRecord.proposal_reset_date ?? "").slice(0, 10);
-
-      // Se o último reset foi ontem ou mais cedo, reseta para 1
-      let newUsage = 1;
-      if (lastResetDate === today) {
-        newUsage = (currentRecord.proposal_usage_today ?? 0) + 1;
-      }
-
-      const record = await pb.collection("profiles").update(user.id, {
-        proposal_usage_today: newUsage,
-        proposal_reset_date: today,
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Update failed");
-    }
+    if (!user || !currentProfileId) return;
+    const currentRecord = await pb.collection("profiles").getOne(currentProfileId, { requestKey: null });
+    const today = new Date().toISOString().split("T")[0];
+    const lastResetDate = (currentRecord.proposal_reset_date ?? "").slice(0, 10);
+    const newUsage = lastResetDate === today ? (currentRecord.proposal_usage_today ?? 0) + 1 : 1;
+    const record = await pb.collection("profiles").update(currentProfileId, {
+      proposal_usage_today: newUsage,
+      proposal_reset_date: today,
+    });
+    setUser(mapProfile(record, user.id));
   };
 
   const incrementTransactionUsage = async () => {
-    if (!user) return;
-    try {
-      const currentRecord = await pb.collection("profiles").getOne(user.id, { requestKey: null });
-      const today = new Date();
-      const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
-      const lastResetDate = currentRecord.transactions_reset_date || "";
-      const lastResetMonth = lastResetDate.slice(0, 7);
-
-      // Se o mês mudou, reseta para 1
-      let newUsage = 1;
-      if (lastResetMonth === currentMonth) {
-        newUsage = (currentRecord.transactions_usage_today ?? 0) + 1;
-      }
-
-      const resetDate = `${currentMonth}-01`;
-      const record = await pb.collection("profiles").update(user.id, {
-        transactions_usage_today: newUsage,
-        transactions_reset_date: resetDate,
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Update failed");
-    }
+    if (!user || !currentProfileId) return;
+    const currentRecord = await pb.collection("profiles").getOne(currentProfileId, { requestKey: null });
+    const today = new Date();
+    const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+    const lastResetMonth = (currentRecord.transactions_reset_date || "").slice(0, 7);
+    const newUsage = lastResetMonth === currentMonth ? (currentRecord.transactions_usage_today ?? 0) + 1 : 1;
+    const record = await pb.collection("profiles").update(currentProfileId, {
+      transactions_usage_today: newUsage,
+      transactions_reset_date: `${currentMonth}-01`,
+    });
+    setUser(mapProfile(record, user.id));
   };
 
   const resetProposalUsage = async () => {
-    if (!user) return;
-    try {
-      const record = await pb.collection("profiles").update(user.id, {
-        proposal_usage_today: 0,
-        proposal_reset_date: new Date().toISOString().split("T")[0],
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Reset failed");
-    }
+    if (!user || !currentProfileId) return;
+    const record = await pb.collection("profiles").update(currentProfileId, {
+      proposal_usage_today: 0,
+      proposal_reset_date: new Date().toISOString().split("T")[0],
+    });
+    setUser(mapProfile(record, user.id));
   };
 
   const refreshUser = async () => {
-    if (!user) return;
-    try {
-      const record = await pb.collection("profiles").getOne(user.id, { requestKey: null });
-      setUser(mapProfile(record));
-    } catch (error) {
-      console.error("Error refreshing user:", error);
-    }
+    if (!user || !currentProfileId) return;
+    const record = await pb.collection("profiles").getOne(currentProfileId, { requestKey: null });
+    setUser(mapProfile(record, user.id));
   };
 
   const completeOnboarding = async (data: {
@@ -272,99 +240,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     faturamentoMensal?: number;
     objetivo?: string;
   }) => {
-    if (!user) return;
-    try {
-      const record = await pb.collection("profiles").update(user.id, {
-        cpf_cnpj: data.cpfCnpj ?? null,
-        tipo_negocio: data.tipoNegocio ?? null,
-        faturamento_mensal: data.faturamentoMensal ?? null,
-        objetivo: data.objetivo ?? null,
-        onboarding_completed: true,
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Onboarding failed");
-    }
+    if (!user || !currentProfileId) return;
+    const record = await pb.collection("profiles").update(currentProfileId, {
+      cpf_cnpj: data.cpfCnpj ?? null,
+      tipo_negocio: data.tipoNegocio ?? null,
+      faturamento_mensal: data.faturamentoMensal ?? null,
+      objetivo: data.objetivo ?? null,
+      onboardingCompleted: true,
+    });
+    setUser(mapProfile(record, user.id));
   };
 
   const updateProfile = async (updates: { name?: string; phone?: string; company?: string; bio?: string }) => {
-    if (!user) return;
-    try {
-      const record = await pb.collection("profiles").update(user.id, {
-        name: updates.name ?? undefined,
-        phone: updates.phone ?? undefined,
-        company: updates.company ?? undefined,
-        bio: updates.bio ?? undefined,
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Profile update failed");
-    }
+    if (!user || !currentProfileId) return;
+    const record = await pb.collection("profiles").update(currentProfileId, {
+      name: updates.name ?? undefined,
+      phone: updates.phone ?? undefined,
+      company: updates.company ?? undefined,
+      bio: updates.bio ?? undefined,
+    });
+    setUser(mapProfile(record, user.id));
   };
 
   const uploadAvatar = async (file: File): Promise<string> => {
-    if (!user) throw new Error("User not authenticated");
-
-    // Validate file
+    if (!user || !currentProfileId) throw new Error("User not authenticated");
     const validTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!validTypes.includes(file.type)) {
-      throw new Error("Apenas imagens JPG, PNG ou WebP são permitidas");
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error("Arquivo não pode ser maior que 5MB");
-    }
+    if (!validTypes.includes(file.type)) throw new Error("Apenas imagens JPG, PNG ou WebP são permitidas");
+    if (file.size > 5 * 1024 * 1024) throw new Error("Arquivo não pode ser maior que 5MB");
 
-    try {
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append("avatar_url", file);
-
-      // Update profile with avatar
-      const record = await pb.collection("profiles").update(user.id, formData);
-
-      // Get avatar URL
-      const avatarUrl = pb.files.getUrl(record, record.avatar_url);
-
-      setUser(mapProfile(record));
-      return avatarUrl;
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Avatar upload failed");
-    }
+    const formData = new FormData();
+    formData.append("avatarUrl", file);
+    const record = await pb.collection("profiles").update(currentProfileId, formData);
+    const avatarUrl = record.avatarUrl ? pb.files.getUrl(record, record.avatarUrl) : "";
+    setUser(mapProfile(record, user.id));
+    return avatarUrl;
   };
 
   const changePassword = async (currentPassword: string, newPassword: string) => {
     if (!user) throw new Error("User not authenticated");
-
-    try {
-      // Re-authenticate to verify current password
-      await pb.collection("profiles").authWithPassword(user.email, currentPassword);
-
-      // Update password
-      await pb.collection("profiles").update(user.id, {
-        password: newPassword,
-        passwordConfirm: newPassword,
-      });
-
-      // Auto-logout after password change
-      await logout();
-    } catch (error) {
-      if (error instanceof Error && error.message.includes("401")) {
-        throw new Error("Senha atual está incorreta");
-      }
-      throw new Error(error instanceof Error ? error.message : "Password change failed");
-    }
+    await pb.collection("users").authWithPassword(user.email, currentPassword);
+    await pb.collection("users").update(pb.authStore.record!.id, {
+      password: newPassword,
+      passwordConfirm: newPassword,
+      oldPassword: currentPassword,
+    });
+    await logout();
   };
 
   const updatePaymentReminders = async (enabled: boolean) => {
-    if (!user) return;
-    try {
-      const record = await pb.collection("profiles").update(user.id, {
-        receive_payment_reminders: enabled,
-      });
-      setUser(mapProfile(record));
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Update payment reminders failed");
-    }
+    if (!user || !currentProfileId) return;
+    const record = await pb.collection("profiles").update(currentProfileId, {
+      receive_payment_reminders: enabled,
+    });
+    setUser(mapProfile(record, user.id));
   };
 
   return (
