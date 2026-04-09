@@ -72,7 +72,7 @@ export function GoalsProvider({ children }: { children: ReactNode }) {
     }
 
     fetchGoals();
-  }, [user]);
+  }, [user?.id]);
 
   async function addGoal(data: Omit<Goal, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");

@@ -76,7 +76,7 @@ export function ContactsProvider({ children }: { children: ReactNode }) {
     }
 
     fetchContacts();
-  }, [user]);
+  }, [user?.id]);
 
   async function addContact(data: Omit<Contact, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");

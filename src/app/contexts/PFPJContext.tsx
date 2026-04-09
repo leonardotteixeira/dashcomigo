@@ -33,6 +33,7 @@ export function PFPJProvider({ children }: { children: ReactNode }) {
       const records = await pb.collection('transactions').getList(1, 500, {
         filter: `user_id = "${user.id}"`,
         sort: '-data',
+        requestKey: null,
       });
 
       // Mapear para adicionar campo pf_pj_type se não existir
@@ -61,6 +62,7 @@ export function PFPJProvider({ children }: { children: ReactNode }) {
       const records = await pb.collection('pfpj_rules').getList(1, 100, {
         filter: `userid = "${user.id}"`,
         sort: '-created',
+        requestKey: null,
       });
 
       setRules(records.items as PFPJRule[]);
@@ -78,7 +80,7 @@ export function PFPJProvider({ children }: { children: ReactNode }) {
 
     fetchTransactions();
     fetchRules();
-  }, [user]);
+  }, [user?.id]);
 
   /**
    * Sugerir tipo de transação usando heurísticas

@@ -163,7 +163,7 @@ export function FluxoCaixa() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     loadTransactions();

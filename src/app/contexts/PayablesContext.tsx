@@ -92,7 +92,7 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
     }
 
     fetchPayables();
-  }, [user]);
+  }, [user?.id]);
 
   async function addPayable(payableData: Omit<Payable, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
