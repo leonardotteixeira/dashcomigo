@@ -15,9 +15,9 @@ import {
   Users,
   Calculator,
   Landmark,
-  FileSpreadsheet,
   Handshake,
   Truck,
+  FileText,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -62,10 +62,10 @@ export function DashboardLayout() {
     { name: "Relatórios", href: "/app/relatorios", icon: BarChart3 },
     { name: "Clientes", href: "/app/clientes", icon: Users },
     { name: "Fornecedores", href: "/app/fornecedores", icon: Truck },
-    { name: "Propostas", href: "/app/propostas", icon: Handshake, badge: "novo", badgeColor: "green" as const },
-    { name: "Orçamentos", href: "/app/orcamentos", icon: FileSpreadsheet },
+    { name: "Propostas", href: "/app/propostas", icon: Handshake },
     { name: "Simuladores", href: "/app/simuladores", icon: Calculator },
     { name: "Investimentos", href: "/app/investimentos", icon: Landmark },
+    { name: "DAS MEI", href: "/app/das-mei", icon: FileText },
   ];
 
   const handleLogout = () => {
