@@ -62,7 +62,7 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
     <div className="space-y-6">
       {step < 2 && (
         <div>
-          <h3 className="text-lg font-bold text-white mb-4">{questions[step].title}</h3>
+          <h3 className="text-lg font-bold text-[#001529] mb-4">{questions[step].title}</h3>
           <div className="space-y-3">
             {questions[step].options.map((option) => (
               <button
@@ -70,11 +70,11 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
                 onClick={() => questions[step].setCurrent(option.value as any)}
                 className={`w-full p-4 rounded-lg border transition-all text-left ${
                   questions[step].current === option.value
-                    ? 'bg-[#28A263]/20 border-[#28A263]'
-                    : 'bg-[#0F0F0F] border-white/10 hover:border-white/20'
+                    ? 'bg-[#28A263]/10 border-[#28A263] bg-white'
+                    : 'bg-[#F9FAFB] border-[#E5E7EB] hover:border-[#28A263]/30'
                 }`}
               >
-                <p className="font-medium text-white">{option.label}</p>
+                <p className="font-medium text-[#001529]">{option.label}</p>
               </button>
             ))}
           </div>
@@ -83,9 +83,9 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
 
       {step === 2 && (
         <div>
-          <h3 className="text-lg font-bold text-white mb-4">Qual seu horizonte de investimento?</h3>
+          <h3 className="text-lg font-bold text-[#001529] mb-4">Qual seu horizonte de investimento?</h3>
           <div className="space-y-3">
-            <Label className="text-white">Anos até precisar do dinheiro</Label>
+            <Label className="text-[#001529] font-medium">Anos até precisar do dinheiro</Label>
             <input
               type="number"
               min="1"
@@ -93,9 +93,9 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
               value={timeHorizon}
               onChange={(e) => setTimeHorizon(e.target.value)}
               placeholder="Ex: 10"
-              className="w-full p-3 rounded-lg bg-[#0F0F0F] border border-white/10 text-white text-lg"
+              className="w-full p-3 rounded-lg bg-white border border-[#E5E7EB] text-[#001529] text-lg focus:outline-none focus:ring-2 focus:ring-[#28A263]/20"
             />
-            <p className="text-xs text-[#A1A1A1]">
+            <p className="text-xs text-[rgba(0,21,41,0.55)]">
               {timeHorizon && (
                 <>
                   {parseInt(timeHorizon) < 2 && 'Muito curto - Conservador recomendado'}
@@ -113,7 +113,7 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
         {step > 0 && (
           <Button
             type="button"
-            className="flex-1 bg-white/10 hover:bg-white/20"
+            className="flex-1 bg-white text-[#001529] border border-[#E5E7EB] hover:bg-[#F9FAFB]"
             onClick={() => setStep(step - 1)}
           >
             Voltar
@@ -122,7 +122,7 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
         <Button
           type="button"
           disabled={!isStepValid()}
-          className="flex-1 bg-[#28A263] hover:bg-[#2DDB81] disabled:opacity-50"
+          className="flex-1 bg-[#28A263] text-white hover:bg-[#20915a] disabled:opacity-50"
           onClick={handleNext}
         >
           {step < 2 ? 'Próximo' : 'Concluir'}

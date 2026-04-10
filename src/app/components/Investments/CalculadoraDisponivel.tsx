@@ -13,15 +13,15 @@ export function CalculadoraDisponivel({ available }: CalculadoraDisponivelProps)
 
   return (
     <div className="space-y-6">
-      <div className="p-6 bg-[#1B1B1B] rounded-xl border border-white/5">
-        <h3 className="text-lg font-bold text-white mb-4">Cálculo do Disponível</h3>
+      <div className="p-6 bg-white rounded-xl border border-[#E8EBF1] shadow-sm">
+        <h3 className="text-lg font-bold text-[#001529] mb-4">Cálculo do Disponível</h3>
 
         {/* Breakdown table */}
         <div className="space-y-3 mb-6">
           {available.details.map((detail, idx) => (
-            <div key={idx} className="flex items-center justify-between p-3 bg-[#0F0F0F] rounded-lg">
-              <span className="text-[#A1A1A1]">{detail.label}</span>
-              <span className={`font-bold text-lg ${detail.amount > 0 ? 'text-[#2DDB81]' : 'text-[#FF4F3D]'}`}>
+            <div key={idx} className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded-lg border border-[#E5E7EB]">
+              <span className="text-[rgba(0,21,41,0.6)]">{detail.label}</span>
+              <span className={`font-bold text-lg ${detail.amount > 0 ? 'text-[#28A263]' : 'text-[#EF4444]'}`}>
                 {detail.amount > 0 ? '+' : '-'}{fmt(Math.abs(detail.amount))}
               </span>
             </div>
@@ -30,16 +30,16 @@ export function CalculadoraDisponivel({ available }: CalculadoraDisponivelProps)
 
         {/* Summary */}
         <div className="p-4 bg-[#28A263]/10 rounded-lg border border-[#28A263]/20">
-          <p className="text-sm text-[#A1A1A1] mb-1">Total Disponível para Investir</p>
-          <p className="text-3xl font-bold text-[#2DDB81]">{fmt(available.availableForInvestment)}</p>
-          <p className="text-xs text-[#A1A1A1] mt-2">
+          <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total Disponível para Investir</p>
+          <p className="text-3xl font-bold text-[#28A263]">{fmt(available.availableForInvestment)}</p>
+          <p className="text-xs text-[rgba(0,21,41,0.55)] mt-2">
             {percentage.toFixed(0)}% do seu saldo atual
           </p>
         </div>
 
         {/* Explanation */}
-        <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-          <p className="text-xs text-blue-300">
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-xs text-blue-700">
             <strong>Como calculamos:</strong> Pegamos seu saldo atual e descontamos:
             <br />• Fundo de emergência (3 meses de despesas)
             <br />• Capital de giro mínimo (30 dias de despesa)
@@ -51,8 +51,8 @@ export function CalculadoraDisponivel({ available }: CalculadoraDisponivelProps)
       </div>
 
       {available.availableForInvestment < 100 && (
-        <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-          <p className="text-sm text-orange-300">
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm text-amber-700">
             ⚠️ Seu saldo disponível é baixo. Recomendamos focar em aumentar seu fundo de emergência antes de investir.
           </p>
         </div>
