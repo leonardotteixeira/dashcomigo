@@ -13,15 +13,15 @@ export function LandingNav() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <a href="/#ferramentas" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
+          <Link to="/ferramentas" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
             Ferramentas
-          </a>
-          <a href="/#beneficios" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
+          </Link>
+          <Link to="/beneficios" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
             Benefícios
-          </a>
-          <a href="/#planos" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
+          </Link>
+          <Link to="/planos" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
             Planos
-          </a>
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">

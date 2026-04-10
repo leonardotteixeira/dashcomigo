@@ -42,6 +42,9 @@ import { Simulators } from "./pages/Simulators";
 import { Sobre } from "./pages/Sobre";
 import { Blog } from "./pages/Blog";
 import { Contato } from "./pages/Contato";
+import { Ferramentas } from "./pages/Ferramentas";
+import { Beneficios } from "./pages/Beneficios";
+import { Planos } from "./pages/Planos";
 import { NotFound } from "./pages/NotFound";
 
 export const router = createHashRouter([
@@ -195,6 +198,18 @@ export const router = createHashRouter([
         Component: Simulators,
       },
     ],
+  },
+  {
+    path: "/ferramentas",
+    Component: Ferramentas,
+  },
+  {
+    path: "/beneficios",
+    Component: Beneficios,
+  },
+  {
+    path: "/planos",
+    Component: Planos,
   },
   {
     path: "/sobre",
