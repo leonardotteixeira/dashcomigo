@@ -160,7 +160,9 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
       if (payableData.dataPagamento) updateData.data_pagamento = payableData.dataPagamento;
       if (payableData.anotacoes !== undefined) updateData.anotacoes = payableData.anotacoes;
 
-      await pb.collection("payables").update(id, updateData);
+      await pb.collection("payables").update(id, updateData, {
+        requestKey: null, // Disable auto-cancellation
+      });
 
       // Cross-post to transactions when marking as paid
       if (payableData.status === "pago") {
