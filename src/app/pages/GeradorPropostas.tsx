@@ -99,14 +99,33 @@ export function GeradorPropostas() {
   const usageCount = user?.proposalUsageToday ?? 0;
   const limitReached = usageCount >= limite;
 
-  // Fetch proposals
+  // Fetch proposals — depend only on user.id to avoid re-triggering on every auth state update
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
+    let cancelled = false;
+
+    const fetchProposals = async () => {
+      setLoadingList(true);
+      try {
+        const records = await pb.collection("proposals").getList(1, 500, {
+          filter: `user_id = "${user.id}"`,
+          sort: "-created",
+          requestKey: null,
+        });
+        if (!cancelled) setProposals(records.items as Proposal[]);
+      } catch (error) {
+        console.error("Error fetching proposals:", error);
+      } finally {
+        if (!cancelled) setLoadingList(false);
+      }
+    };
+
     fetchProposals();
-  }, [user]);
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
   const fetchProposals = async () => {
-    if (!user) return;
+    if (!user?.id) return;
     setLoadingList(true);
     try {
       const records = await pb.collection("proposals").getList(1, 500, {
@@ -117,8 +136,10 @@ export function GeradorPropostas() {
       setProposals(records.items as Proposal[]);
     } catch (error) {
       console.error("Error fetching proposals:", error);
+      toast.error("Erro ao carregar propostas. Verifique sua conexão.");
+    } finally {
+      setLoadingList(false);
     }
-    setLoadingList(false);
   };
 
   // Stats

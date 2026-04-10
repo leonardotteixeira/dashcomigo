@@ -4,8 +4,11 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
 
+const DISMISSED_KEY = "onboarding_checklist_dismissed";
+
 export default function OnboardingChecklist() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => !localStorage.getItem(DISMISSED_KEY));
+  const [reportsExplored, setReportsExplored] = useState(() => !!localStorage.getItem("visited_relatorios"));
   const navigate = useNavigate();
   const { user } = useAuth();
   const { transactions } = useCashFlow();
@@ -16,8 +19,6 @@ export default function OnboardingChecklist() {
   const hasExpense = transactions.some((t) => t.tipo === "saida");
   // "Configure alertas" → user has enabled payment reminders
   const alertsConfigured = user?.receivePaymentReminders === true;
-  // "Explore relatórios" → tracked in localStorage after first visit
-  const reportsExplored = !!localStorage.getItem("visited_relatorios");
 
   const checklistItems = [
     {
@@ -55,6 +56,7 @@ export default function OnboardingChecklist() {
       completed: reportsExplored,
       action: () => {
         localStorage.setItem("visited_relatorios", "1");
+        setReportsExplored(true);
         navigate("/app/relatorios");
       },
     },
@@ -64,10 +66,8 @@ export default function OnboardingChecklist() {
   const progress = (completedCount / checklistItems.length) * 100;
   const allDone = progress === 100;
 
-  // Hide once fully completed and dismissed
+  // Hide once dismissed (persisted in localStorage)
   if (!isVisible) return null;
-  // Also hide if onboarding was already completed before and all are done
-  if (allDone && user?.onboardingCompleted) return null;
 
   return (
     <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-5">
@@ -82,7 +82,10 @@ export default function OnboardingChecklist() {
           </div>
         </div>
         <button
-          onClick={() => setIsVisible(false)}
+          onClick={() => {
+            localStorage.setItem(DISMISSED_KEY, "1");
+            setIsVisible(false);
+          }}
           className="p-1 hover:bg-secondary rounded"
         >
           <X className="w-4 h-4 text-muted-foreground" />
