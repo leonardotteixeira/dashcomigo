@@ -204,9 +204,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = async (): Promise<{ onboardingCompleted: boolean }> => {
     try {
+      // Detect misconfiguration: PocketBase defaulted to localhost in production
+      const isProduction = !["localhost", "127.0.0.1"].includes(window.location.hostname);
+      if (isProduction && pb.baseUrl.includes("localhost")) {
+        throw new Error(
+          "Configuração incompleta: defina VITE_POCKETBASE_URL no servidor."
+        );
+      }
+
       const authData = await pb
         .collection("profiles")
-        .authWithOAuth2({ provider: "google" });
+        .authWithOAuth2({
+          provider: "google",
+          // Use explicit window.open so the popup has the right dimensions and
+          // isn't blocked by browsers that treat implicit popups as blocked.
+          urlCallback: (url) => {
+            const w = 520, h = 620;
+            const left = Math.max(0, (window.screen.width - w) / 2);
+            const top  = Math.max(0, (window.screen.height - h) / 2);
+            const popup = window.open(
+              url,
+              "google_oauth",
+              `width=${w},height=${h},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`
+            );
+            if (!popup) {
+              throw new Error(
+                "Popup bloqueado pelo navegador. Permita popups para este site e tente novamente."
+              );
+            }
+          },
+        });
 
       if (!authData.record) {
         throw new Error("Autenticação com Google falhou. Tente novamente.");

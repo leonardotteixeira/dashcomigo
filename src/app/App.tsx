@@ -12,6 +12,7 @@ import { BudgetsProvider } from "./contexts/BudgetsContext";
 import { GoalsProvider } from "./contexts/GoalsContext";
 import { PFPJProvider } from "./contexts/PFPJContext";
 import { InvestmentsProvider } from "./contexts/InvestmentsContext";
+import { NotificationsProvider } from "./contexts/NotificationsContext";
 
 export default function App() {
   return (
@@ -27,7 +28,9 @@ export default function App() {
                     <BudgetsProvider>
                       <GoalsProvider>
                         <ReportsProvider>
-                          <RouterProvider router={router} />
+                          <NotificationsProvider>
+                            <RouterProvider router={router} />
+                          </NotificationsProvider>
                         </ReportsProvider>
                       </GoalsProvider>
                     </BudgetsProvider>

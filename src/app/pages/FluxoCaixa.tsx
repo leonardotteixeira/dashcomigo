@@ -607,7 +607,7 @@ export function FluxoCaixa() {
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Criado em</p>
                                 <p className="text-[#001529] font-medium">
                                   {fmtDate(
-                                    t.createdAt instanceof Date
+                                    t.createdAt instanceof Date && !isNaN(t.createdAt.getTime())
                                       ? t.createdAt.toISOString()
                                       : typeof t.createdAt === "string"
                                       ? t.createdAt
