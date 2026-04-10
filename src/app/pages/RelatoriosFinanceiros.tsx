@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   Crown,
@@ -131,6 +131,11 @@ export function RelatoriosFinanceiros() {
   const { user } = useAuth();
   const { transactions } = useCashFlow();
   const { payables } = usePayables();
+
+  // Mark "Explore relatórios" onboarding step as done whenever this page is visited
+  useEffect(() => {
+    localStorage.setItem("visited_relatorios", "1");
+  }, []);
   const { receivables } = useReceivables();
 
   const [period, setPeriod] = useState<"3" | "6" | "12">("6");

@@ -30,7 +30,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => Promise<{ onboardingCompleted: boolean }>;
   signup: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   upgradeToPro: () => Promise<void>;
@@ -75,45 +75,43 @@ function mapProfile(pbRecord: RecordModel): User {
   };
 }
 
-async function updateLoginStreak(userId: string, currentUser: User): Promise<void> {
+async function updateLoginStreak(userId: string, currentUser: User): Promise<Partial<User> | null> {
   const today = new Date().toISOString().split("T")[0];
   const lastLogin = currentUser.lastLoginDate;
 
-  let newStreak = currentUser.loginStreak;
-  let newBest = currentUser.bestStreak;
-  let rewardClaimed = currentUser.streakRewardClaimed;
-
-  if (lastLogin === today) return; // Already logged in today
+  if (lastLogin === today) return null; // Already logged in today — nothing to update
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-  if (lastLogin === yesterdayStr) {
-    newStreak = currentUser.loginStreak + 1;
-  } else {
-    newStreak = 1; // Reset streak — broke the chain
-  }
+  const newStreak = lastLogin === yesterdayStr ? currentUser.loginStreak + 1 : 1;
+  const newBest = Math.max(newStreak, currentUser.bestStreak);
 
-  if (newStreak > newBest) newBest = newStreak;
-
-  // Grant 1 free month PRO to NEW users who reach 7-day streak (only once)
   const updates: Record<string, unknown> = {
     login_streak: newStreak,
     best_streak: newBest,
     last_login_date: today,
   };
 
-  if (newStreak >= 7 && !rewardClaimed && currentUser.plan === "free") {
+  // Grant 1 free month PRO to users who reach 7-day streak (only once)
+  const earnedReward = newStreak >= 7 && !currentUser.streakRewardClaimed && currentUser.plan === "free";
+  if (earnedReward) {
     updates.plan = "pro";
     updates.streak_reward_claimed = true;
-    // Note: in production, set a pro_expires_at date 30 days from now
   }
 
   try {
-    await pb.collection("profiles").update(userId, updates);
+    await pb.collection("profiles").update(userId, updates, { requestKey: null });
+    return {
+      loginStreak: newStreak,
+      bestStreak: newBest,
+      lastLoginDate: today,
+      ...(earnedReward ? { plan: "pro" as UserPlan, streakRewardClaimed: true } : {}),
+    };
   } catch (err) {
     console.error("Failed to update streak:", err);
+    return null;
   }
 }
 
@@ -126,8 +124,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const record = await pb.collection("profiles").getOne(userId, { requestKey: null });
       const mapped = mapProfile(record);
       setUser(mapped);
-      // Fire-and-forget streak update on each auth load (deduplicated by "today" check inside)
-      updateLoginStreak(userId, mapped);
+      // Update streak and apply the returned values to local state so UI reflects immediately
+      updateLoginStreak(userId, mapped).then((streakUpdates) => {
+        if (streakUpdates) {
+          setUser((prev) => (prev ? { ...prev, ...streakUpdates } : null));
+        }
+      });
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("autocancelled")) return;
       console.error("Error fetching profile:", error);
@@ -175,17 +177,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (): Promise<{ onboardingCompleted: boolean }> => {
     try {
       const authData = await pb
         .collection("profiles")
         .authWithOAuth2({ provider: "google" });
 
-      if (authData.record) {
-        setUser(mapProfile(authData.record));
+      if (!authData.record) {
+        throw new Error("Autenticação com Google falhou. Tente novamente.");
       }
+
+      // Ensure profile has required fields (first-time Google users)
+      const record = authData.record;
+      if (!record.name && authData.meta?.name) {
+        await pb.collection("profiles").update(record.id, {
+          name: authData.meta.name,
+          plan: record.plan ?? "free",
+          onboarding_completed: record.onboarding_completed ?? false,
+          receive_payment_reminders: true,
+        }, { requestKey: null });
+      }
+
+      const mapped = mapProfile(record);
+      setUser(mapped);
+      return { onboardingCompleted: mapped.onboardingCompleted };
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Google login failed");
+      const msg = error instanceof Error ? error.message : "Google login failed";
+      // Translate common PocketBase errors
+      if (msg.includes("popup") || msg.includes("closed")) {
+        throw new Error("A janela do Google foi fechada. Tente novamente.");
+      }
+      if (msg.includes("not allowed") || msg.includes("provider")) {
+        throw new Error("Login com Google não está habilitado. Use email e senha.");
+      }
+      throw new Error(msg);
     }
   };
 

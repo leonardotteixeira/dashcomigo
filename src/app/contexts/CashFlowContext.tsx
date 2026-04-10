@@ -108,7 +108,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
             pfpj: ((t.pfpj ?? "PJ") as "PF" | "PJ"),
             pfpjScore: t.pfpj_score ?? 100,
             attachments: Array.isArray(t.attachments) ? t.attachments : [],
-            createdAt: new Date(t.created),
+            createdAt: (() => { const d = new Date(t.created); return isNaN(d.getTime()) ? new Date() : d; })(),
           }))
         );
       } catch (error) {

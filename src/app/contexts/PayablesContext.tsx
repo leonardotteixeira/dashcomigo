@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
+import { useCashFlow } from "./CashFlowContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 import { getLimit } from "../../utils/featureAccessService";
 
@@ -49,6 +50,7 @@ function getMesAtual() {
 
 export function PayablesProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { addTransaction } = useCashFlow();
   const [payables, setPayables] = useState<Payable[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -168,17 +170,17 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
       if (payableData.status === "pago") {
         const payable = payables.find((p) => p.id === id);
         if (payable) {
+          const paymentDate = payableData.dataPagamento ?? new Date().toISOString().split("T")[0];
+          const paymentValue = payableData.valor ?? payable.valor;
           try {
-            await pb.collection("transactions").create({
-              user_id: user.id,
-              valor: payableData.valor ?? payable.valor,
+            await addTransaction({
+              valor: paymentValue,
               tipo: "saida",
               categoria: payable.categoria,
-              data: new Date().toISOString().split("T")[0],
+              data: paymentDate,
               descricao: `[Pago] ${payable.descricao}`,
               pfpj: "PJ",
-              pfpj_score: 100,
-              origin: "payable",
+              pfpjScore: 100,
             });
             console.log("[PayablesContext] Cross-posted payment to transactions");
           } catch (err) {

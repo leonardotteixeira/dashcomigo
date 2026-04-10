@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
+import { useCashFlow } from "./CashFlowContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 import { getLimit } from "../../utils/featureAccessService";
 
@@ -48,6 +49,7 @@ function getMesAtual() {
 
 export function ReceivablesProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { addTransaction } = useCashFlow();
   const [receivables, setReceivables] = useState<Receivable[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -78,7 +80,7 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
             frequenciaRecorrencia: r.frequencia_recorrencia ?? undefined,
             dataRecebimento: r.data_recebimento ? r.data_recebimento.split(" ")[0] : undefined,
             anotacoes: r.anotacoes ?? undefined,
-            createdAt: new Date(r.created),
+            createdAt: (() => { const d = new Date(r.created); return isNaN(d.getTime()) ? new Date() : d; })(),
           }))
         );
       } catch (error) {
@@ -151,17 +153,17 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
     if (data.status === "recebido") {
       const receivable = receivables.find((r) => r.id === id);
       if (receivable) {
+        const receiptDate = data.dataRecebimento ?? new Date().toISOString().split("T")[0];
+        const receiptValue = data.valor ?? receivable.valor;
         try {
-          await pb.collection("transactions").create({
-            user_id: user.id,
-            valor: data.valor ?? receivable.valor,
+          await addTransaction({
+            valor: receiptValue,
             tipo: "entrada",
             categoria: receivable.categoria,
-            data: new Date().toISOString().split("T")[0],
+            data: receiptDate,
             descricao: `[Recebido] ${receivable.descricao}`,
             pfpj: "PJ",
-            pfpj_score: 100,
-            origin: "receivable",
+            pfpjScore: 100,
           });
           console.log("[ReceivablesContext] Cross-posted receipt to transactions");
         } catch (err) {
