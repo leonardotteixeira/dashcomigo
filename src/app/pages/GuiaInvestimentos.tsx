@@ -338,33 +338,47 @@ export function GuiaInvestimentos() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8">
+      <div className="bg-gradient-to-r from-[#003a6d] to-[#002a50] rounded-2xl p-8">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="font-bold text-2xl text-[#001529] mb-3">
-            Pronto para começar a investir?
+          <h2 className="font-bold text-2xl text-white mb-3">
+            Receba Recomendações Personalizadas
           </h2>
-          <p className="text-[#001529]/70 mb-6">
-            Escolha a opção que mais se adequa ao seu perfil e objetivos
-            financeiros. Comece com valores pequenos e aumente gradualmente.
+          <p className="text-white/80 mb-6">
+            Responda um breve questionário e descubra a melhor estratégia de
+            investimento para seu perfil. Levamos em conta seu risco, experiência
+            e objetivos financeiros.
           </p>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <button
+              onClick={() => navigate("/app/recomendacoes-investimento")}
+              className="flex items-center gap-2 bg-white text-[#003a6d] px-6 py-3 rounded-lg hover:bg-white/95 transition-colors font-semibold"
+            >
+              Obter Recomendações
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <div className="border-l border-white/30 h-6 hidden sm:block" />
+            <div className="text-white/80 text-sm">
+              ou escolha diretamente uma opção abaixo
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-4 mt-6">
             <a
               href="https://www.tesourodireto.com.br"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-[#003a6d] text-white px-6 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold"
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-6 py-3 rounded-lg transition-colors font-semibold border border-white/20"
             >
               Tesouro Direto
-              <ArrowRight className="w-4 h-4" />
+              <ExternalLink className="w-4 h-4" />
             </a>
             <a
               href="https://www.xpi.com.br"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white text-[#003a6d] border-2 border-[#003a6d] px-6 py-3 rounded-lg hover:bg-[#F5F7FA] transition-colors font-semibold"
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-6 py-3 rounded-lg transition-colors font-semibold border border-white/20"
             >
-              Outras Opções
-              <ArrowRight className="w-4 h-4" />
+              XP / Brokers
+              <ExternalLink className="w-4 h-4" />
             </a>
           </div>
         </div>
