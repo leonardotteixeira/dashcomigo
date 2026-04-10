@@ -34,6 +34,7 @@ import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { PasswordResetConfirm } from "./pages/PasswordResetConfirm";
 import { PasswordResetRedirect } from "./pages/PasswordResetRedirect";
 import { GuiaInvestimentos } from "./pages/GuiaInvestimentos";
+import { RecomendacoesInvestimento } from "./pages/RecomendacoesInvestimento";
 import { Suppliers } from "./pages/Suppliers";
 import { Reports } from "./pages/Reports";
 import { Budgets } from "./pages/Budgets";
@@ -188,6 +189,10 @@ export const router = createHashRouter([
       {
         path: "investimentos",
         Component: GuiaInvestimentos,
+      },
+      {
+        path: "recomendacoes-investimento",
+        Component: RecomendacoesInvestimento,
       },
       {
         path: "fornecedores",
