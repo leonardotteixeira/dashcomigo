@@ -21,9 +21,9 @@ export function LandingFooter() {
           <div>
             <h4 className="font-bold text-white mb-4">Produto</h4>
             <ul className="space-y-2 text-sm text-white/60">
-              <li><a href="/#ferramentas" className="hover:text-white transition-colors">Ferramentas</a></li>
-              <li><a href="/#beneficios" className="hover:text-white transition-colors">Benefícios</a></li>
-              <li><a href="/#planos" className="hover:text-white transition-colors">Planos</a></li>
+              <li><Link to="/ferramentas" className="hover:text-white transition-colors">Ferramentas</Link></li>
+              <li><Link to="/beneficios" className="hover:text-white transition-colors">Benefícios</Link></li>
+              <li><Link to="/planos" className="hover:text-white transition-colors">Planos</Link></li>
             </ul>
           </div>
 
