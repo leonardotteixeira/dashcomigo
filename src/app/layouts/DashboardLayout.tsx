@@ -1,4 +1,5 @@
 import { Outlet, useNavigate, Navigate, useLocation, Link } from "react-router";
+import { HeaderKPIStrip } from "../components/HeaderKPIStrip";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -205,13 +206,15 @@ export function DashboardLayout() {
               </div>
             </div>
 
-            {/* Welcome + Notifications */}
+            {/* Financial KPI Strip + Welcome + Notifications */}
             <div className="flex items-center gap-4">
+              <HeaderKPIStrip />
+              <div className="hidden xl:block h-6 w-px bg-[#E5E7EB]" />
               <div className="hidden lg:block text-right">
                 <p className="text-sm font-semibold text-[#001529]">
-                  Bem-vindo, <span className="capitalize">{user.name.split(" ")[0]}</span>
+                  <span className="capitalize">{user.name.split(" ")[0]}</span>
                 </p>
-                <p className="text-xs text-[#001529]/60">{user.plan === "pro" ? "Plano PRO ✨" : "Plano Gratuito"}</p>
+                <p className="text-xs text-[#001529]/60">{user.plan === "pro" ? "✨ Plano PRO" : "Plano Gratuito"}</p>
               </div>
               <NotificationCenter />
             </div>
