@@ -57,95 +57,78 @@ export function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen bg-white py-32 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-white py-16 px-4 sm:px-6 lg:py-24">
+      <div className="max-w-6xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-20">
-          <div className="inline-flex px-4 py-2 bg-[#28A263]/10 border border-[#28A263]/15 rounded-full mb-8 backdrop-blur-sm">
-            <span className="text-xs text-[#28A263] font-bold uppercase tracking-wider">
-              Planos e Preços
-            </span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-6 leading-tight">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#0F172A] mb-4">
             Escolha o plano ideal para você
           </h1>
-          <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg text-[#64748B] max-w-2xl mx-auto">
             Comece grátis, faça upgrade quando precisar. Sem compromisso a longo prazo.
           </p>
         </div>
 
         {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-20">
+        <div className="flex items-center justify-center gap-3 mb-16">
           <button
             onClick={() => setBillingCycle("monthly")}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+            className={`px-6 py-2 rounded-full font-semibold transition-all ${
               billingCycle === "monthly"
-                ? "bg-[#28A263] text-white shadow-lg"
-                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[#E5E7EB]"
+                ? "bg-[#1D4ED8] text-white"
+                : "bg-[#F1F5F9] text-[#0F172A] hover:bg-[#E2E8F0]"
             }`}
           >
             Mensal
           </button>
           <button
             onClick={() => setBillingCycle("annual")}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all relative ${
+            className={`px-6 py-2 rounded-full font-semibold transition-all ${
               billingCycle === "annual"
-                ? "bg-[#28A263] text-white shadow-lg"
-                : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[#E5E7EB]"
+                ? "bg-[#1D4ED8] text-white"
+                : "bg-[#F1F5F9] text-[#0F172A] hover:bg-[#E2E8F0]"
             }`}
           >
             Anual
-            {billingCycle === "annual" && savings > 0 && (
-              <span className="absolute -top-3 -right-3 bg-[#ef4444] text-white text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap shadow-lg">
-                Economize R$ {savings}
-              </span>
-            )}
           </button>
         </div>
 
         {/* Plans Grid */}
-        <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto mb-24">
+        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-20">
           {/* Free Plan */}
-          <div className="group relative p-10 bg-white border border-[#E5E7EB] rounded-3xl hover:border-[#E5E7EB] hover:shadow-lg transition-all duration-300">
-            <div className="mb-10">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-[#28A263]/12 rounded-2xl flex items-center justify-center">
-                  <Zap className="w-7 h-7 text-[#28A263]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-[#001529]">Gratuito</h3>
-                  <p className="text-sm text-[rgba(0,21,41,0.6)]">Começar sem limite</p>
-                </div>
-              </div>
-
-              <div className="mb-10">
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-6xl font-bold text-[#001529]">R$ 0</span>
-                  <span className="text-[rgba(0,21,41,0.65)]">/mês</span>
-                </div>
-                <p className="text-sm text-[rgba(0,21,41,0.6)]">Para sempre grátis</p>
-              </div>
-
-              <Button
-                onClick={() => handleSelectPlan("free")}
-                disabled={user?.plan === "free"}
-                className={`w-full h-12 rounded-xl font-semibold transition-all ${
-                  user?.plan === "free"
-                    ? "bg-[#F8F9FA] text-[rgba(0,21,41,0.5)] cursor-default"
-                    : "bg-white text-[#28A263] hover:bg-[#F8F9FA] border border-[#28A263]/20 shadow-sm"
-                }`}
-              >
-                {user?.plan === "free" ? "Seu plano atual" : "Começar grátis"}
-              </Button>
+          <div className="relative p-8 bg-white border border-[#E2E8F0] rounded-2xl">
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold text-[#0F172A] mb-1">Gratuito</h3>
+              <p className="text-sm text-[#64748B]">Começar sem limite</p>
             </div>
 
-            <div className="space-y-4 border-t border-[#E5E7EB] pt-10">
-              <p className="font-bold text-[#001529]">O que está incluso:</p>
-              <ul className="space-y-3">
+            <div className="mb-8">
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-5xl font-bold text-[#0F172A]">R$ 0</span>
+                <span className="text-[#64748B]">/mês</span>
+              </div>
+              <p className="text-sm text-[#64748B]">Para sempre grátis</p>
+            </div>
+
+            <Button
+              onClick={() => handleSelectPlan("free")}
+              disabled={user?.plan === "free"}
+              className={`w-full py-3 rounded-lg font-semibold transition-all mb-8 ${
+                user?.plan === "free"
+                  ? "bg-[#F1F5F9] text-[#94A3B8] cursor-default"
+                  : "bg-white text-[#1D4ED8] hover:bg-[#F1F5F9] border-2 border-[#1D4ED8]"
+              }`}
+            >
+              {user?.plan === "free" ? "Seu plano atual" : "Começar grátis"}
+            </Button>
+
+            <div className="space-y-3 border-t border-[#E2E8F0] pt-8">
+              <p className="font-semibold text-[#0F172A] text-sm">O que está incluso:</p>
+              <ul className="space-y-2">
                 {FREE_FEATURES.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
-                    <span className="text-base text-[rgba(0,21,41,0.65)]">{feature}</span>
+                    <Check className="w-4 h-4 text-[#1D4ED8] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#475569]">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -153,99 +136,67 @@ export function Pricing() {
           </div>
 
           {/* PRO Plan - Featured */}
-          <div className="group relative p-10 bg-gradient-to-br from-[#28A263]/8 to-white border-2 border-[#28A263]/30 rounded-3xl hover:border-[#28A263]/50 hover:shadow-xl transition-all duration-300 shadow-xl md:ring-2 md:ring-[#28A263]/20">
+          <div className="relative p-8 bg-[#EFF6FF] border-2 border-[#1D4ED8] rounded-2xl">
             {/* Badge */}
-            <div className="absolute -top-4 right-8 bg-[#28A263] text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
-              Mais Popular
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1D4ED8] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+              MAIS POPULAR
             </div>
 
-            <div className="mb-10">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-[#28A263]/15 rounded-2xl flex items-center justify-center">
-                  <Crown className="w-7 h-7 text-[#28A263]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-[#001529]">PRO</h3>
-                  <p className="text-sm text-[#28A263] font-semibold">Acesso completo</p>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <div className="flex items-baseline gap-2 mb-3">
-                  <span className="text-6xl font-bold text-[#28A263]">
-                    R$ {displayPrice.toFixed(2)}
-                  </span>
-                  <span className="text-[rgba(0,21,41,0.65)]">/mês</span>
-                </div>
-
-                {billingCycle === "monthly" ? (
-                  <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mb-4">
-                    <span className="text-sm font-bold text-amber-800">
-                      🔥 1º mês: R$ {priceFirstMonth.toFixed(2)}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="inline-flex items-center gap-2 bg-[#28A263]/10 border border-[#28A263]/20 rounded-lg px-4 py-2 mb-4">
-                    <span className="text-sm font-bold text-[#28A263]">
-                      Economize R$ {savings}/ano
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 text-sm font-semibold text-[#28A263]">
-                  <Check className="w-4 h-4" />
-                  Cancele quando quiser
-                </div>
-              </div>
-
-              <Button
-                onClick={() => handleSelectPlan("pro")}
-                disabled={user?.plan === "pro"}
-                className={`w-full h-12 rounded-xl font-semibold transition-all shadow-lg ${
-                  user?.plan === "pro"
-                    ? "bg-[#F8F9FA] text-[rgba(0,21,41,0.5)] cursor-default"
-                    : "bg-[#28A263] hover:bg-[#20915a] text-white hover:shadow-xl"
-                }`}
-              >
-                {user?.plan === "pro" ? (
-                  <>
-                    <Crown className="w-4 h-4 mr-2 inline" />
-                    Seu plano atual
-                  </>
-                ) : (
-                  <>
-                    Assinar Plano PRO
-                    <ArrowRight className="ml-2 w-4 h-4 inline" />
-                  </>
-                )}
-              </Button>
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold text-[#0F172A] mb-1">PRO</h3>
+              <p className="text-sm text-[#1D4ED8] font-semibold">Acesso completo</p>
             </div>
 
-            <div className="space-y-4 border-t border-[#28A263]/15 pt-10">
-              <p className="font-bold text-[#001529]">Tudo do plano Gratuito, mais:</p>
-              <ul className="space-y-3">
+            <div className="mb-8">
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-5xl font-bold text-[#1D4ED8]">
+                  R$ {displayPrice.toFixed(2)}
+                </span>
+                <span className="text-[#64748B]">/mês</span>
+              </div>
+              {billingCycle === "monthly" && (
+                <p className="text-sm text-[#F59E0B] font-semibold">
+                  🔥 1º mês: R$ {priceFirstMonth.toFixed(2)}
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 text-sm font-semibold text-[#1D4ED8] mb-8">
+              <Check className="w-4 h-4" />
+              Cancele quando quiser
+            </div>
+
+            <Button
+              onClick={() => handleSelectPlan("pro")}
+              disabled={user?.plan === "pro"}
+              className={`w-full py-3 rounded-lg font-semibold transition-all mb-8 ${
+                user?.plan === "pro"
+                  ? "bg-[#E5E7EB] text-[#6B7280] cursor-default"
+                  : "bg-[#1D4ED8] hover:bg-[#1E40AF] text-white"
+              }`}
+            >
+              {user?.plan === "pro" ? "Seu plano atual" : "Assinar PRO"}
+            </Button>
+
+            <div className="space-y-3 border-t border-[#BFDBFE] pt-8">
+              <p className="font-semibold text-[#0F172A] text-sm">Tudo do plano Gratuito, mais:</p>
+              <ul className="space-y-2">
                 {PRO_FEATURES.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-[#28A263] flex-shrink-0 mt-0.5" />
-                    <span className="text-base text-[rgba(0,21,41,0.65)]">{feature}</span>
+                    <Check className="w-4 h-4 text-[#1D4ED8] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#475569]">{feature}</span>
                   </li>
                 ))}
               </ul>
-            </div>
-
-            {/* Security Badge */}
-            <div className="mt-10 pt-8 border-t border-[#28A263]/15 flex items-center justify-center gap-2 text-sm text-[rgba(0,21,41,0.6)]">
-              <Shield className="w-4 h-4 text-[#28A263]" />
-              Pagamento 100% seguro via <strong>Asaas</strong>
             </div>
           </div>
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-[#001529] mb-3">Perguntas frequentes</h2>
-            <p className="text-lg text-[rgba(0,21,41,0.65)]">Encontre respostas para as dúvidas mais comuns</p>
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#0F172A] mb-2">Perguntas frequentes</h2>
+            <p className="text-[#64748B]">Encontre respostas para as dúvidas mais comuns</p>
           </div>
 
           <div className="grid gap-4 mb-20">
@@ -260,51 +211,43 @@ export function Pricing() {
               },
               {
                 q: "Como faço para fazer upgrade?",
-                a: "Clique em 'Assinar Plano PRO', preencha seus dados pessoais e escolha o método de pagamento (PIX, boleto ou cartão de crédito). O acesso é imediato.",
+                a: "Clique em 'Assinar PRO', preencha seus dados pessoais e escolha o método de pagamento (PIX, boleto ou cartão de crédito). O acesso é imediato.",
               },
             ].map((item, idx) => (
-              <div key={idx} className="p-8 bg-[#F8F9FA] border border-[#E5E7EB] rounded-xl hover:border-[#E5E7EB] hover:shadow-sm transition-all">
-                <p className="font-semibold text-lg text-[#001529] mb-4">{item.q}</p>
-                <p className="text-base text-[rgba(0,21,41,0.65)] leading-relaxed">{item.a}</p>
+              <div key={idx} className="p-6 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
+                <p className="font-semibold text-[#0F172A] mb-3 text-sm">{item.q}</p>
+                <p className="text-sm text-[#64748B] leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>
 
           {/* CTA Section */}
-          <div className="p-12 bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-3xl text-center">
-            <h3 className="text-3xl font-bold text-[#001529] mb-4">Pronto para começar?</h3>
-            <p className="text-lg text-[rgba(0,21,41,0.65)] mb-10 max-w-2xl mx-auto leading-relaxed">
-              Crie sua conta gratuitamente e acesse todas as ferramentas. Faça upgrade para PRO quando estiver pronto para usar recursos avançados.
+          <div className="p-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl text-center">
+            <h3 className="text-2xl font-bold text-[#0F172A] mb-3">Pronto para começar?</h3>
+            <p className="text-[#64748B] mb-8">
+              Crie sua conta gratuitamente. Faça upgrade para PRO quando precisar de recursos avançados.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               {isAuthenticated ? (
                 <>
                   <Button
                     onClick={() => navigate("/app")}
-                    className="bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl font-semibold h-12 transition-all shadow-lg hover:shadow-xl"
+                    className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white rounded-lg font-semibold py-2 transition-all"
                   >
                     Ir para o Dashboard
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
-                  <Button
-                    onClick={() => navigate("/pricing")}
-                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-xl font-semibold h-12 transition-all"
-                  >
-                    Comparar Planos
                   </Button>
                 </>
               ) : (
                 <>
                   <Button
                     onClick={() => navigate("/signup")}
-                    className="bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl font-semibold h-12 transition-all shadow-lg hover:shadow-xl"
+                    className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white rounded-lg font-semibold py-2 transition-all"
                   >
                     Começar Grátis
-                    <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => navigate("/login")}
-                    className="bg-white hover:bg-[#F8F9FA] text-[#28A263] border border-[#28A263]/20 rounded-xl font-semibold h-12 transition-all"
+                    className="bg-white hover:bg-[#F1F5F9] text-[#1D4ED8] border-2 border-[#1D4ED8] rounded-lg font-semibold py-2 transition-all"
                   >
                     Fazer Login
                   </Button>
