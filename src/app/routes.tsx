@@ -39,6 +39,10 @@ import { Reports } from "./pages/Reports";
 import { Budgets } from "./pages/Budgets";
 import { Customers } from "./pages/Customers";
 import { Simulators } from "./pages/Simulators";
+import { Sobre } from "./pages/Sobre";
+import { Blog } from "./pages/Blog";
+import { Contato } from "./pages/Contato";
+import { NotFound } from "./pages/NotFound";
 
 export const router = createHashRouter([
   {
@@ -191,5 +195,25 @@ export const router = createHashRouter([
         Component: Simulators,
       },
     ],
+  },
+  {
+    path: "/sobre",
+    Component: Sobre,
+  },
+  {
+    path: "/blog",
+    Component: Blog,
+  },
+  {
+    path: "/contato",
+    Component: Contato,
+  },
+  {
+    path: "/termos",
+    element: <Navigate to="/termos-de-uso" replace />,
+  },
+  {
+    path: "*",
+    Component: NotFound,
   },
 ]);

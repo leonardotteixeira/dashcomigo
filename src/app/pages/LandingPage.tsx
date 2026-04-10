@@ -17,9 +17,9 @@ export function LandingPage() {
           </div>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link to="#ferramentas" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
+            <a href="#ferramentas" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
               Ferramentas
-            </Link>
+            </a>
             <a href="#beneficios" className="text-[#001529]/70 hover:text-[#001529] transition-colors font-semibold">
               Benefícios
             </a>
@@ -444,17 +444,17 @@ export function LandingPage() {
             <div>
               <h4 className="font-bold text-white mb-4">Empresa</h4>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><a href="#" className="hover:text-white transition-colors">Sobre</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contato</a></li>
+                <li><Link to="/sobre" className="hover:text-white transition-colors">Sobre</Link></li>
+                <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link to="/contato" className="hover:text-white transition-colors">Contato</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-bold text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><a href="#" className="hover:text-white transition-colors">Privacidade</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Termos</a></li>
+                <li><Link to="/privacidade" className="hover:text-white transition-colors">Privacidade</Link></li>
+                <li><Link to="/termos-de-uso" className="hover:text-white transition-colors">Termos</Link></li>
               </ul>
             </div>
           </div>
