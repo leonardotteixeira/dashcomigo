@@ -125,7 +125,7 @@ export function QuestionarioRisco({ onComplete }: QuestionarioRiscoProps) {
           className="flex-1 bg-[#28A263] hover:bg-[#2DDB81] disabled:opacity-50"
           onClick={handleNext}
         >
-          {step < 1 ? 'Próximo' : 'Próximo'}
+          {step < 2 ? 'Próximo' : 'Concluir'}
         </Button>
       </div>
     </div>
