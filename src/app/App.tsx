@@ -1,5 +1,6 @@
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CashFlowProvider } from "./contexts/CashFlowContext";
 import { PayablesProvider } from "./contexts/PayablesContext";
@@ -14,6 +15,7 @@ import { InvestmentsProvider } from "./contexts/InvestmentsContext";
 
 export default function App() {
   return (
+    <ErrorBoundary>
     <AuthProvider>
       <CashFlowProvider>
         <PFPJProvider>
@@ -37,5 +39,6 @@ export default function App() {
         </PFPJProvider>
       </CashFlowProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }

@@ -1,4 +1,5 @@
 import { createHashRouter, Navigate } from "react-router";
+import { RouteError } from "./components/ErrorBoundary";
 import { DashboardLayout } from "./layouts/DashboardLayout";
 import { LandingPage } from "./pages/LandingPage";
 import { Login } from "./pages/Login";
@@ -111,6 +112,7 @@ export const router = createHashRouter([
   {
     path: "/app",
     Component: DashboardLayout,
+    ErrorBoundary: RouteError,
     children: [
       {
         index: true,
