@@ -35,6 +35,8 @@ import UpgradeCard from "../components/UpgradeCard";
 import StreakCard from "../components/StreakCard";
 import DailyInsights from "../components/DailyInsights";
 import QuickActions from "../components/QuickActions";
+import PrioridadesDoDia from "../components/PrioridadesDoDia";
+import FinancialInsights from "../components/FinancialInsights";
 import AchievementCard from "../components/AchievementCard";
 import OnboardingChecklist from "../components/OnboardingChecklist";
 import WelcomeBackModal from "../components/WelcomeBackModal";
@@ -217,8 +219,15 @@ export function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <StreakCard />
           <QuickActions />
-          {user?.plan === "free" && <UpgradeCard variant="compact" />}
+          <PrioridadesDoDia />
         </div>
+
+        {/* Value Display Row - Upsell for FREE users, Insights for PRO */}
+        {user?.plan === "free" ? (
+          <UpgradeCard variant="compact" />
+        ) : (
+          <FinancialInsights />
+        )}
 
         {/* Daily Insights */}
         <DailyInsights />
