@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useInvestments } from '../contexts/InvestmentsContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router';
 import { QuestionarioRisco } from '../components/Investments/QuestionarioRisco';
 import { CalculadoraDisponivel } from '../components/Investments/CalculadoraDisponivel';
@@ -11,6 +12,7 @@ import { DisclaimerAviso } from '../components/Investments/DisclaimerAviso';
 
 export function RecomendacoesInvestimento() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { available, calculateAvailable, getRecommendations, detectRiskProfile } = useInvestments();
   const [step, setStep] = useState<'questionnaire' | 'recommendations'>('questionnaire');
   const [allocation, setAllocation] = useState(null as any);
@@ -23,7 +25,7 @@ export function RecomendacoesInvestimento() {
     const riskProfile = detectRiskProfile(answers.experience, answers.tolerance, answers.timeHorizon);
 
     const profile = {
-      userid: 'temp', // Will be set properly with auth
+      userid: user?.id || 'temp',
       riskTolerance: answers.tolerance,
       investmentExperience: answers.experience,
       timeHorizonYears: answers.timeHorizon,
