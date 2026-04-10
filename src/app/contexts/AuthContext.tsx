@@ -123,13 +123,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const record = await pb.collection("profiles").getOne(userId, { requestKey: null });
       const mapped = mapProfile(record);
-      setUser(mapped);
-      // Update streak and apply the returned values to local state so UI reflects immediately
+
+      // ── Optimistic streak calculation (synchronous) ─────────────────────────
+      // Calculate the correct streak value BEFORE the first setUser so the
+      // component renders with the right number immediately, avoiding the
+      // 0 → 1 flicker caused by two sequential setUser calls.
+      const today = new Date().toISOString().split("T")[0];
+      const lastLogin = mapped.lastLoginDate;
+
+      if (lastLogin !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+        const newStreak = lastLogin === yesterdayStr ? mapped.loginStreak + 1 : 1;
+        const newBest = Math.max(newStreak, mapped.bestStreak);
+
+        setUser({ ...mapped, loginStreak: newStreak, bestStreak: newBest, lastLoginDate: today });
+      } else {
+        // Already logged in today — streak unchanged
+        setUser(mapped);
+      }
+
+      // Write to PocketBase in background; only update state again if the
+      // streak reward (plan upgrade) was earned — that's a one-time event.
       updateLoginStreak(userId, mapped).then((streakUpdates) => {
-        if (streakUpdates) {
-          setUser((prev) => (prev ? { ...prev, ...streakUpdates } : null));
+        if (streakUpdates?.plan === "pro") {
+          setUser((prev) =>
+            prev ? { ...prev, plan: "pro" as UserPlan, streakRewardClaimed: true } : null
+          );
         }
-      });
+      }).catch((err) => console.error("Streak update failed:", err));
+
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("autocancelled")) return;
       console.error("Error fetching profile:", error);
