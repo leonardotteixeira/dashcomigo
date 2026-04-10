@@ -143,7 +143,9 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
     if (data.dataRecebimento !== undefined) updateData.data_recebimento = data.dataRecebimento;
     if (data.anotacoes !== undefined) updateData.anotacoes = data.anotacoes;
 
-    await pb.collection("receivables").update(id, updateData);
+    await pb.collection("receivables").update(id, updateData, {
+      requestKey: null, // Disable auto-cancellation
+    });
 
     // Cross-post to transactions when marking as received
     if (data.status === "recebido") {

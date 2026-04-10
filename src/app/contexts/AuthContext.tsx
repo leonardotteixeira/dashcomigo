@@ -62,7 +62,7 @@ function mapProfile(pbRecord: RecordModel): User {
     transactionsUsageToday: pbRecord.transactions_usage_today ?? 0,
     onboardingCompleted: pbRecord.onboarding_completed ?? false,
     receivePaymentReminders: pbRecord.receive_payment_reminders ?? true,
-    avatarUrl: pbRecord.avatar_url ? pb.files.getUrl(pbRecord, pbRecord.avatar_url) : undefined,
+    avatarUrl: pbRecord.avatar_url ? pb.files.getURL(pbRecord, pbRecord.avatar_url) : undefined,
     phone: pbRecord.phone,
     company: pbRecord.company,
     bio: pbRecord.bio,
@@ -337,13 +337,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateProfile = async (updates: { name?: string; phone?: string; company?: string; bio?: string; cnpj?: string; address?: string }) => {
     if (!user) return;
     try {
-      const record = await pb.collection("profiles").update(user.id, {
-        name: updates.name ?? undefined,
-        phone: updates.phone ?? undefined,
-        company: updates.company ?? undefined,
-        bio: updates.bio ?? undefined,
-        cpf_cnpj: updates.cnpj ?? undefined,
-        address: updates.address ?? undefined,
+      // Only include fields that have actual values to prevent auto-cancellation
+      const updateData: Record<string, string | undefined> = {};
+      if (updates.name !== undefined) updateData.name = updates.name;
+      if (updates.phone !== undefined) updateData.phone = updates.phone;
+      if (updates.company !== undefined) updateData.company = updates.company;
+      if (updates.bio !== undefined) updateData.bio = updates.bio;
+      if (updates.cnpj !== undefined) updateData.cpf_cnpj = updates.cnpj;
+      if (updates.address !== undefined) updateData.address = updates.address;
+
+      const record = await pb.collection("profiles").update(user.id, updateData, {
+        requestKey: null, // Disable auto-cancellation
       });
       setUser(mapProfile(record));
     } catch (error) {
@@ -366,9 +370,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const formData = new FormData();
       formData.append("avatar_url", file);
 
-      const record = await pb.collection("profiles").update(user.id, formData);
+      const record = await pb.collection("profiles").update(user.id, formData, {
+        requestKey: null, // Disable auto-cancellation
+      });
 
-      const avatarUrl = pb.files.getUrl(record, record.avatar_url);
+      const avatarUrl = pb.files.getURL(record, record.avatar_url);
 
       setUser(mapProfile(record));
       return avatarUrl;
@@ -387,6 +393,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password: newPassword,
         passwordConfirm: newPassword,
         oldPassword: currentPassword,
+      }, {
+        requestKey: null, // Disable auto-cancellation
       });
 
       await logout();
@@ -403,6 +411,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const record = await pb.collection("profiles").update(user.id, {
         receive_payment_reminders: enabled,
+      }, {
+        requestKey: null, // Disable auto-cancellation
       });
       setUser(mapProfile(record));
     } catch (error) {
