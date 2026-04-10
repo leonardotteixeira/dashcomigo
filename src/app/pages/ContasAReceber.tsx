@@ -122,11 +122,16 @@ export function ContasAReceber() {
   // ─── Feature gating ─────────────────────────────────────────────────────────
   const thisMonthCount = (() => {
     const currentMonth = new Date().toISOString().substring(0, 7);
-    const filtered = receivables.filter((r) =>
-      (r as any).createdAt
-        ? new Date((r as any).createdAt).toISOString().substring(0, 7) === currentMonth
-        : false
-    );
+    const filtered = receivables.filter((r) => {
+      if (!(r as any).createdAt) return false;
+      try {
+        const d = new Date((r as any).createdAt);
+        if (isNaN(d.getTime())) return false;
+        return d.toISOString().substring(0, 7) === currentMonth;
+      } catch {
+        return false;
+      }
+    });
     return filtered.length > 0 ? filtered.length : receivables.length;
   })();
 
