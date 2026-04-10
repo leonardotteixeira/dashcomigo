@@ -29,6 +29,7 @@ import {
 } from "recharts";
 import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
+import { useFinancialMetrics } from "../../utils/useFinancialMetrics";
 import { ObligationsProvider } from "../contexts/ObligationsContext";
 import UpgradeCard from "../components/UpgradeCard";
 import StreakCard from "../components/StreakCard";
@@ -62,13 +63,21 @@ export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { summary, insights, transactions } = useCashFlow();
+  const {
+    saldoAtual,
+    monthReceitas,
+    monthDespesas,
+    monthLucro,
+    receitasGrowthPct,
+    despesasGrowthPct,
+    lucroGrowthPct,
+    loading: metricsLoading,
+    fmt,
+  } = useFinancialMetrics();
 
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Bom dia" : currentHour < 18 ? "Boa tarde" : "Boa noite";
   const firstName = user?.name?.split(" ")[0] ?? "usuário";
-
-  const fmt = (v: number) =>
-    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 });
 
   const cashFlowData = useMemo(() => buildCashFlowChart(transactions), [transactions]);
 
@@ -108,6 +117,7 @@ export function Dashboard() {
 
         {/* KPI Cards - Premium Financial Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Saldo Atual */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Saldo Atual</p>
@@ -115,13 +125,18 @@ export function Dashboard() {
                 <DollarSign className="w-5 h-5 text-[#003a6d]" />
               </div>
             </div>
-            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.saldoAtual)}</p>
-            <div className={`flex items-center gap-1.5 text-sm font-medium ${summary.saldoAtual >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
-              {summary.saldoAtual >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-              <span>{summary.saldoAtual >= 0 ? "Saldo positivo" : "Saldo negativo"}</span>
+            {metricsLoading ? (
+              <div className="h-7 w-32 bg-[#E5E7EB] rounded-lg animate-pulse mb-2" />
+            ) : (
+              <p className="financial-medium text-[#001529] mb-2">{fmt(saldoAtual)}</p>
+            )}
+            <div className={`flex items-center gap-1.5 text-sm font-medium ${saldoAtual >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
+              {saldoAtual >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+              <span>{saldoAtual >= 0 ? "Saldo positivo" : "Saldo negativo"}</span>
             </div>
           </div>
 
+          {/* Receitas (mês) */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Receitas (mês)</p>
@@ -129,13 +144,22 @@ export function Dashboard() {
                 <TrendingUp className="w-5 h-5 text-[#10b981]" />
               </div>
             </div>
-            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.totalEntradas)}</p>
-            <div className="flex items-center gap-1.5 text-sm text-[#10b981] font-medium">
-              <ArrowUpRight className="w-4 h-4" />
-              <span>Total do mês</span>
-            </div>
+            {metricsLoading ? (
+              <div className="h-7 w-32 bg-[#E5E7EB] rounded-lg animate-pulse mb-2" />
+            ) : (
+              <p className="financial-medium text-[#001529] mb-2">{fmt(monthReceitas)}</p>
+            )}
+            {metricsLoading ? (
+              <div className="h-4 w-24 bg-[#E5E7EB] rounded animate-pulse" />
+            ) : (
+              <div className={`flex items-center gap-1 text-xs font-medium ${receitasGrowthPct >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
+                {receitasGrowthPct >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                <span>{receitasGrowthPct >= 0 ? "+" : ""}{receitasGrowthPct.toFixed(1)}% vs mês anterior</span>
+              </div>
+            )}
           </div>
 
+          {/* Despesas (mês) */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Despesas (mês)</p>
@@ -143,12 +167,22 @@ export function Dashboard() {
                 <TrendingDown className="w-5 h-5 text-[#ef4444]" />
               </div>
             </div>
-            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.totalSaidas)}</p>
-            <div className="flex items-center gap-1.5 text-sm text-[#001529]/60 font-medium">
-              <span>Total do mês</span>
-            </div>
+            {metricsLoading ? (
+              <div className="h-7 w-32 bg-[#E5E7EB] rounded-lg animate-pulse mb-2" />
+            ) : (
+              <p className="financial-medium text-[#001529] mb-2">{fmt(monthDespesas)}</p>
+            )}
+            {metricsLoading ? (
+              <div className="h-4 w-24 bg-[#E5E7EB] rounded animate-pulse" />
+            ) : (
+              <div className={`flex items-center gap-1 text-xs font-medium ${despesasGrowthPct >= 0 ? "text-[#ef4444]" : "text-[#10b981]"}`}>
+                {despesasGrowthPct >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                <span>{despesasGrowthPct >= 0 ? "+" : ""}{despesasGrowthPct.toFixed(1)}% vs mês anterior</span>
+              </div>
+            )}
           </div>
 
+          {/* Lucro Líquido */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB]">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-wider text-[#001529]/60 font-medium">Lucro Líquido</p>
@@ -156,11 +190,19 @@ export function Dashboard() {
                 <Target className="w-5 h-5 text-[#003a6d]" />
               </div>
             </div>
-            <p className="financial-medium text-[#001529] mb-2">{fmt(summary.lucro)}</p>
-            <div className={`flex items-center gap-1.5 text-sm font-medium ${summary.lucro >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
-              {summary.lucro >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-              <span>{summary.lucro >= 0 ? "Resultado positivo" : "Resultado negativo"}</span>
-            </div>
+            {metricsLoading ? (
+              <div className="h-7 w-32 bg-[#E5E7EB] rounded-lg animate-pulse mb-2" />
+            ) : (
+              <p className="financial-medium text-[#001529] mb-2">{fmt(monthLucro)}</p>
+            )}
+            {metricsLoading ? (
+              <div className="h-4 w-24 bg-[#E5E7EB] rounded animate-pulse" />
+            ) : (
+              <div className={`flex items-center gap-1 text-xs font-medium ${lucroGrowthPct >= 0 ? "text-[#10b981]" : "text-[#ef4444]"}`}>
+                {lucroGrowthPct >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                <span>{lucroGrowthPct >= 0 ? "+" : ""}{lucroGrowthPct.toFixed(1)}% vs mês anterior</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -171,7 +213,7 @@ export function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <StreakCard />
           <QuickActions />
-          <UpgradeCard variant="compact" />
+          {user?.plan === "free" && <UpgradeCard variant="compact" />}
         </div>
 
         {/* Daily Insights */}

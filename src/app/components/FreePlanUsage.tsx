@@ -1,10 +1,14 @@
 import { Zap, Crown, AlertTriangle, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import PaywallModal from "./PaywallModal";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function FreePlanUsage() {
+  const { user } = useAuth();
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallTrigger, setPaywallTrigger] = useState<"limit_reached" | "export_blocked">("limit_reached");
+
+  if (user?.plan === "pro") return null;
 
   const transactionLimit = 50;
   const transactionUsed = 42;

@@ -2,12 +2,16 @@ import { Crown } from "lucide-react";
 import { useState } from "react";
 import { useCashFlow } from "../contexts/CashFlowContext";
 import PaywallModal from "./PaywallModal";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function UsageLimitCard() {
+  const { user } = useAuth();
   const [showPaywall, setShowPaywall] = useState(false);
   const { getLimitStatus } = useCashFlow();
 
   const { used, limit, percentage } = getLimitStatus();
+
+  if (user?.plan === "pro") return null;
 
   // Don't render card unless usage is above 70%
   if (percentage < 70) return null;

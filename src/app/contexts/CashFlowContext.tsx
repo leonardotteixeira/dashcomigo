@@ -15,11 +15,16 @@ export interface Transaction {
 }
 
 export interface CashFlowSummary {
+  /** All-time totals (used for saldo cumulativo) */
   saldoAtual: number;
   totalEntradas: number;
   totalSaidas: number;
   lucro: number;
   margemLucro: number;
+  /** Current-month-only totals */
+  monthlyEntradas: number;
+  monthlyDespesas: number;
+  monthlyLucro: number;
 }
 
 export interface Insight {
@@ -112,24 +117,36 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
   // =============================================
   // Resumo calculado
   // =============================================
-  const summary: CashFlowSummary = {
-    totalEntradas: transactions
-      .filter((t) => t.tipo === "entrada")
-      .reduce((sum, t) => sum + t.valor, 0),
-    totalSaidas: transactions
-      .filter((t) => t.tipo === "saida")
-      .reduce((sum, t) => sum + t.valor, 0),
-    saldoAtual: 0,
-    lucro: 0,
-    margemLucro: 0,
-  };
+  const currentMonth = (() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  })();
 
-  summary.lucro = summary.totalEntradas - summary.totalSaidas;
-  summary.saldoAtual = summary.lucro;
-  summary.margemLucro =
-    summary.totalEntradas > 0
-      ? (summary.lucro / summary.totalEntradas) * 100
-      : 0;
+  const totalEntradas = transactions
+    .filter((t) => t.tipo === "entrada")
+    .reduce((sum, t) => sum + t.valor, 0);
+  const totalSaidas = transactions
+    .filter((t) => t.tipo === "saida")
+    .reduce((sum, t) => sum + t.valor, 0);
+
+  const monthlyEntradas = transactions
+    .filter((t) => t.tipo === "entrada" && t.data.startsWith(currentMonth))
+    .reduce((sum, t) => sum + t.valor, 0);
+  const monthlyDespesas = transactions
+    .filter((t) => t.tipo === "saida" && t.data.startsWith(currentMonth))
+    .reduce((sum, t) => sum + t.valor, 0);
+
+  const lucro = totalEntradas - totalSaidas;
+  const summary: CashFlowSummary = {
+    totalEntradas,
+    totalSaidas,
+    saldoAtual: lucro,
+    lucro,
+    margemLucro: totalEntradas > 0 ? (lucro / totalEntradas) * 100 : 0,
+    monthlyEntradas,
+    monthlyDespesas,
+    monthlyLucro: monthlyEntradas - monthlyDespesas,
+  };
 
   // =============================================
   // Insights automáticos

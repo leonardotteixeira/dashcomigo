@@ -1,6 +1,7 @@
 import { Crown, Check, ArrowRight, Zap, Shield, Clock } from "lucide-react";
 import { useState } from "react";
 import PaywallModal from "./PaywallModal";
+import { useAuth } from "../contexts/AuthContext";
 
 interface UpgradeCardProps {
   variant?: "compact" | "full";
@@ -9,7 +10,10 @@ interface UpgradeCardProps {
 }
 
 export default function UpgradeCard({ variant = "compact", feature, context }: UpgradeCardProps) {
+  const { user } = useAuth();
   const [showPaywall, setShowPaywall] = useState(false);
+
+  if (user?.plan === "pro") return null;
 
   if (variant === "compact") {
     return (

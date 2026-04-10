@@ -1,7 +1,11 @@
 import { Crown, X, Sparkles, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LimitedOfferBanner() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
   const [timeLeft, setTimeLeft] = useState({
     hours: 23,
@@ -26,7 +30,8 @@ export default function LimitedOfferBanner() {
     return () => clearInterval(timer);
   }, []);
 
-  if (!isVisible) return null;
+  // Only show for free users — PRO users never see upgrade banners
+  if (!isVisible || user?.plan === "pro") return null;
 
   return (
     <div className="bg-gradient-to-r from-[#001529] via-[#003a6d] to-[#0066FF] text-white border-b border-white/10 relative z-[60]">
@@ -68,7 +73,10 @@ export default function LimitedOfferBanner() {
             </div>
 
             {/* CTA Button */}
-            <button className="bg-white text-[#003a6d] font-semibold px-4 py-1.5 rounded-lg hover:bg-white/95 transition-all text-sm whitespace-nowrap flex items-center gap-1.5 shadow-lg">
+            <button
+              onClick={() => navigate("/checkout")}
+              className="bg-white text-[#003a6d] font-semibold px-4 py-1.5 rounded-lg hover:bg-white/95 transition-all text-sm whitespace-nowrap flex items-center gap-1.5 shadow-lg"
+            >
               <span>Assinar PRO</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
