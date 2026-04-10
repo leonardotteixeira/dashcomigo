@@ -17,6 +17,8 @@ export interface User {
   phone?: string;
   company?: string;
   bio?: string;
+  cnpj?: string;
+  address?: string;
   loginStreak: number;
   bestStreak: number;
   lastLoginDate?: string;
@@ -42,7 +44,7 @@ interface AuthContextType {
     faturamentoMensal?: number;
     objetivo?: string;
   }) => Promise<void>;
-  updateProfile: (updates: { name?: string; phone?: string; company?: string; bio?: string }) => Promise<void>;
+  updateProfile: (updates: { name?: string; phone?: string; company?: string; bio?: string; cnpj?: string; address?: string }) => Promise<void>;
   uploadAvatar: (file: File) => Promise<string>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   updatePaymentReminders: (enabled: boolean) => Promise<void>;
@@ -64,6 +66,8 @@ function mapProfile(pbRecord: RecordModel): User {
     phone: pbRecord.phone,
     company: pbRecord.company,
     bio: pbRecord.bio,
+    cnpj: pbRecord.cpf_cnpj,
+    address: pbRecord.address,
     loginStreak: pbRecord.login_streak ?? 0,
     bestStreak: pbRecord.best_streak ?? 0,
     lastLoginDate: pbRecord.last_login_date ?? undefined,
@@ -330,7 +334,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateProfile = async (updates: { name?: string; phone?: string; company?: string; bio?: string }) => {
+  const updateProfile = async (updates: { name?: string; phone?: string; company?: string; bio?: string; cnpj?: string; address?: string }) => {
     if (!user) return;
     try {
       const record = await pb.collection("profiles").update(user.id, {
@@ -338,6 +342,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         phone: updates.phone ?? undefined,
         company: updates.company ?? undefined,
         bio: updates.bio ?? undefined,
+        cpf_cnpj: updates.cnpj ?? undefined,
+        address: updates.address ?? undefined,
       });
       setUser(mapProfile(record));
     } catch (error) {

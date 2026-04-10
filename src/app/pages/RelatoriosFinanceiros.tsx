@@ -37,6 +37,7 @@ import { usePayables } from "../contexts/PayablesContext";
 import { useReceivables } from "../contexts/ReceivablesContext";
 import { useAuth } from "../contexts/AuthContext";
 import { exportToXlsx } from "../../utils/exportXlsx";
+import { canAccess } from "../../utils/featureAccessService";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -136,7 +137,7 @@ export function RelatoriosFinanceiros() {
   const [periodOpen, setPeriodOpen] = useState(false);
 
   // ── plan gate ──────────────────────────────────────────────────────────────
-  if (user?.plan !== "pro") {
+  if (!canAccess("reports_advanced", user?.plan ?? "free")) {
     return <Paywall />;
   }
 

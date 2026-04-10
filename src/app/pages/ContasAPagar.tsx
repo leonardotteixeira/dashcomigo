@@ -7,6 +7,10 @@ import { toast } from "sonner";
 import { PageHeader } from "../components/PageHeader";
 import { usePayables, CATEGORIAS_PAYABLES, type Payable } from "../contexts/PayablesContext";
 import { exportToXlsx } from "../../utils/exportXlsx";
+import { useAuth } from "../contexts/AuthContext";
+import { LimitBanner } from "../components/LimitBanner";
+import { LimitReachedModal } from "../components/LimitReachedModal";
+import { isLimitReached } from "../../utils/featureAccessService";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -64,9 +68,11 @@ const STATUS_CFG = {
 
 export function ContasAPagar() {
   const { payables, loading, addPayable, updatePayable, deletePayable } = usePayables();
+  const { user } = useAuth();
 
   const [filter, setFilter] = useState<"all" | "pendente" | "vencido" | "pago">("all");
   const [showModal, setShowModal] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [payingId, setPayingId] = useState<string | null>(null);
 
@@ -82,6 +88,11 @@ export function ContasAPagar() {
   });
 
   // ─── Derived data ───────────────────────────────────────────────────────────
+
+  const currentMonth = new Date().toISOString().substring(0, 7);
+  const thisMonthCount = payables.filter((p) =>
+    p.createdAt ? new Date(p.createdAt).toISOString().substring(0, 7) === currentMonth : false
+  ).length || payables.length;
 
   const withStatus = payables.map((p) => ({ ...p, computedStatus: computeStatus(p) }));
 
@@ -183,7 +194,13 @@ export function ContasAPagar() {
         description="Gerencie e acompanhe suas obrigações financeiras"
         actions={
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              if (isLimitReached("accounts_payable", thisMonthCount, user?.plan ?? "free")) {
+                setShowLimitModal(true);
+              } else {
+                setShowModal(true);
+              }
+            }}
             className="flex items-center gap-2 bg-[#28A263] hover:bg-[#20915a] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
@@ -245,6 +262,8 @@ export function ContasAPagar() {
           Exportar
         </button>
       </div>
+
+      <LimitBanner feature="accounts_payable" usage={thisMonthCount} plan={user?.plan ?? "free"} className="mb-4" />
 
       {/* Bills List */}
       {loading ? (
@@ -341,6 +360,14 @@ export function ContasAPagar() {
           })}
         </div>
       )}
+
+      <LimitReachedModal
+        open={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        feature="accounts_payable"
+        plan={user?.plan ?? "free"}
+        usage={thisMonthCount}
+      />
 
       {/* ─── Nova Conta Modal ─────────────────────────────────────────────── */}
       {showModal && (

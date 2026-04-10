@@ -41,6 +41,7 @@ import WelcomeBackModal from "../components/WelcomeBackModal";
 import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
 import PfPjDistribution from "../components/PfPjDistribution";
+import { ProInsightsBar } from "../components/ProInsightsBar";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -94,6 +95,9 @@ export function Dashboard() {
     <ObligationsProvider>
       <div className="space-y-6">
         <WelcomeBackModal />
+
+        {/* Smart Insights Bar — PRO only; replaces empty space left by hidden upgrade banner */}
+        {user?.plan === "pro" && <ProInsightsBar />}
 
         {/* Header with personalized greeting */}
         <div className="flex items-start justify-between">

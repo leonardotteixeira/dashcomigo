@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
+import { getLimit } from "../../utils/featureAccessService";
 
 export interface Payable {
   id: string;
@@ -40,8 +41,6 @@ export const CATEGORIAS_PAYABLES = [
   "Seguros",
   "Outros"
 ];
-
-const FREE_LIMIT = 10;
 
 function getMesAtual() {
   const now = new Date();
@@ -97,7 +96,7 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
   async function addPayable(payableData: Omit<Payable, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
     const plan = await getVerifiedPlan(user.id);
-    if (plan !== "pro" && payables.length >= FREE_LIMIT) throw new Error("Limite de contas a pagar atingido");
+    if (plan !== "pro" && payables.length >= getLimit("accounts_payable", plan)) throw new Error("Limite de contas a pagar atingido");
 
     try {
       const createData: Record<string, unknown> = {
@@ -163,6 +162,29 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
 
       await pb.collection("payables").update(id, updateData);
 
+      // Cross-post to transactions when marking as paid
+      if (payableData.status === "pago") {
+        const payable = payables.find((p) => p.id === id);
+        if (payable) {
+          try {
+            await pb.collection("transactions").create({
+              user_id: user.id,
+              valor: payableData.valor ?? payable.valor,
+              tipo: "saida",
+              categoria: payable.categoria,
+              data: new Date().toISOString().split("T")[0],
+              descricao: `[Pago] ${payable.descricao}`,
+              pfpj: "PJ",
+              pfpj_score: 100,
+              origin: "payable",
+            });
+            console.log("[PayablesContext] Cross-posted payment to transactions");
+          } catch (err) {
+            console.warn("[PayablesContext] Could not cross-post to transactions:", err);
+          }
+        }
+      }
+
       setPayables(
         payables.map((p) =>
           p.id === id
@@ -209,13 +231,12 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
   function getLimitStatus() {
     const mesAtual = getMesAtual();
     const used = payables.filter((p) => p.createdAt.toISOString().startsWith(mesAtual)).length;
-    const limit = user?.plan === "pro" ? Infinity : FREE_LIMIT;
+    const limit = getLimit("accounts_payable", user?.plan ?? "free");
     const percentage = limit === Infinity ? 0 : (used / limit) * 100;
     return { used, limit, percentage };
   }
 
   function canAddPayable(): boolean {
-    if (user?.plan === "pro") return true;
     const { used, limit } = getLimitStatus();
     return used < limit;
   }
