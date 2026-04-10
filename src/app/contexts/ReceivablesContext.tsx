@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
+import { getLimit } from "../../utils/featureAccessService";
 
 export interface Receivable {
   id: string;
@@ -39,8 +40,6 @@ export const CATEGORIAS_RECEIVABLES = [
   "Freelance",
   "Outros",
 ];
-
-const FREE_LIMIT = 10;
 
 function getMesAtual() {
   const now = new Date();
@@ -95,7 +94,7 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
   async function addReceivable(data: Omit<Receivable, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
     const plan = await getVerifiedPlan(user.id);
-    if (plan !== "pro" && receivables.length >= FREE_LIMIT) throw new Error("Limite de contas a receber atingido");
+    if (plan !== "pro" && receivables.length >= getLimit("accounts_receivable", plan)) throw new Error("Limite de contas a receber atingido");
 
     const createData: Record<string, unknown> = {
       userid: user.id,
@@ -145,6 +144,30 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
     if (data.anotacoes !== undefined) updateData.anotacoes = data.anotacoes;
 
     await pb.collection("receivables").update(id, updateData);
+
+    // Cross-post to transactions when marking as received
+    if (data.status === "recebido") {
+      const receivable = receivables.find((r) => r.id === id);
+      if (receivable) {
+        try {
+          await pb.collection("transactions").create({
+            user_id: user.id,
+            valor: data.valor ?? receivable.valor,
+            tipo: "entrada",
+            categoria: receivable.categoria,
+            data: new Date().toISOString().split("T")[0],
+            descricao: `[Recebido] ${receivable.descricao}`,
+            pfpj: "PJ",
+            pfpj_score: 100,
+            origin: "receivable",
+          });
+          console.log("[ReceivablesContext] Cross-posted receipt to transactions");
+        } catch (err) {
+          console.warn("[ReceivablesContext] Could not cross-post to transactions:", err);
+        }
+      }
+    }
+
     setReceivables(receivables.map((r) => (r.id === id ? { ...r, ...data } : r)));
   }
 
@@ -171,13 +194,12 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
   function getLimitStatus() {
     const mesAtual = getMesAtual();
     const used = receivables.filter((r) => r.createdAt.toISOString().startsWith(mesAtual)).length;
-    const limit = user?.plan === "pro" ? Infinity : FREE_LIMIT;
+    const limit = getLimit("accounts_receivable", user?.plan ?? "free");
     const percentage = limit === Infinity ? 0 : (used / limit) * 100;
     return { used, limit, percentage };
   }
 
   function canAddReceivable(): boolean {
-    if (user?.plan === "pro") return true;
     const { used, limit } = getLimitStatus();
     return used < limit;
   }

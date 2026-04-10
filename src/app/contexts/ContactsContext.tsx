@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
+import { getLimit } from "../../utils/featureAccessService";
 
 export interface Contact {
   id: string;
@@ -30,8 +31,6 @@ interface ContactsContextType {
 }
 
 const ContactsContext = createContext<ContactsContextType | undefined>(undefined);
-
-const FREE_LIMIT = 30;
 
 export function ContactsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -81,7 +80,16 @@ export function ContactsProvider({ children }: { children: ReactNode }) {
   async function addContact(data: Omit<Contact, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
     const plan = await getVerifiedPlan(user.id);
-    if (plan !== "pro" && contacts.length >= FREE_LIMIT) throw new Error("Limite de contatos atingido");
+    const isClient = data.tipo === "cliente" || data.tipo === "ambos";
+    const isSupplier = data.tipo === "fornecedor" || data.tipo === "ambos";
+    if (isClient) {
+      const clientCount = contacts.filter((c) => c.tipo === "cliente" || c.tipo === "ambos").length;
+      if (clientCount >= getLimit("clients", plan)) throw new Error("Limite de clientes atingido");
+    }
+    if (isSupplier) {
+      const supplierCount = contacts.filter((c) => c.tipo === "fornecedor" || c.tipo === "ambos").length;
+      if (supplierCount >= getLimit("suppliers", plan)) throw new Error("Limite de fornecedores atingido");
+    }
 
     const createData: Record<string, unknown> = {
       userid: user.id,
@@ -161,13 +169,12 @@ export function ContactsProvider({ children }: { children: ReactNode }) {
 
   function getLimitStatus() {
     const used = contacts.length;
-    const limit = user?.plan === "pro" ? Infinity : FREE_LIMIT;
+    const limit = getLimit("clients", user?.plan ?? "free");
     const percentage = limit === Infinity ? 0 : (used / limit) * 100;
     return { used, limit, percentage };
   }
 
   function canAddContact(): boolean {
-    if (user?.plan === "pro") return true;
     const { used, limit } = getLimitStatus();
     return used < limit;
   }

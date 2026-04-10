@@ -2,6 +2,8 @@ import { useState } from "react";
 import { KPICard } from "../components/KPICard";
 import { PageHeader } from "../components/PageHeader";
 import { toast } from "sonner";
+import { useAuth } from "../contexts/AuthContext";
+import { FeatureGate } from "../components/FeatureGate";
 import {
   Calculator,
   DollarSign,
@@ -180,6 +182,7 @@ function AdvancedToggle({
 // ─── MEI Simulator ──────────────────────────────────────────────────────────
 
 function MeiSimulator() {
+  const { user } = useAuth();
   const [advanced, setAdvanced] = useState(false);
   const [revenue, setRevenue] = useState("");
   const [growthRate, setGrowthRate] = useState("");
@@ -307,21 +310,23 @@ function MeiSimulator() {
           suffix="R$"
         />
         {advanced && (
-          <>
-            <InputField
-              label="Taxa de Crescimento Mensal (%)"
-              value={growthRate}
-              onChange={setGrowthRate}
-              placeholder="0"
-              suffix="%"
-            />
-            <SelectField
-              label="Mês Atual"
-              value={currentMonth}
-              onChange={setCurrentMonth}
-              options={monthOptions}
-            />
-          </>
+          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no PRO" lockedLabel="Funcionalidade PRO">
+            <>
+              <InputField
+                label="Taxa de Crescimento Mensal (%)"
+                value={growthRate}
+                onChange={setGrowthRate}
+                placeholder="0"
+                suffix="%"
+              />
+              <SelectField
+                label="Mês Atual"
+                value={currentMonth}
+                onChange={setCurrentMonth}
+                options={monthOptions}
+              />
+            </>
+          </FeatureGate>
         )}
       </div>
 
@@ -391,6 +396,7 @@ function MeiSimulator() {
 // ─── Price Simulator ─────────────────────────────────────────────────────────
 
 function PriceSimulator() {
+  const { user } = useAuth();
   const [advanced, setAdvanced] = useState(false);
   const [cost, setCost] = useState("");
   const [margin, setMargin] = useState("");
@@ -511,35 +517,37 @@ function PriceSimulator() {
           suffix="%"
         />
         {advanced && (
-          <>
-            <InputField
-              label="Custos Fixos Mensais (R$)"
-              value={fixedCosts}
-              onChange={setFixedCosts}
-              suffix="R$"
-            />
-            <InputField
-              label="Volume de Vendas Mensal (unid.)"
-              value={volume}
-              onChange={setVolume}
-              placeholder="1"
-              suffix="un"
-            />
-            <InputField
-              label="Impostos (%)"
-              value={tax}
-              onChange={setTax}
-              placeholder="6"
-              suffix="%"
-            />
-            <InputField
-              label="Comissão (%)"
-              value={commission}
-              onChange={setCommission}
-              placeholder="0"
-              suffix="%"
-            />
-          </>
+          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no PRO" lockedLabel="Funcionalidade PRO">
+            <>
+              <InputField
+                label="Custos Fixos Mensais (R$)"
+                value={fixedCosts}
+                onChange={setFixedCosts}
+                suffix="R$"
+              />
+              <InputField
+                label="Volume de Vendas Mensal (unid.)"
+                value={volume}
+                onChange={setVolume}
+                placeholder="1"
+                suffix="un"
+              />
+              <InputField
+                label="Impostos (%)"
+                value={tax}
+                onChange={setTax}
+                placeholder="6"
+                suffix="%"
+              />
+              <InputField
+                label="Comissão (%)"
+                value={commission}
+                onChange={setCommission}
+                placeholder="0"
+                suffix="%"
+              />
+            </>
+          </FeatureGate>
         )}
       </div>
 
@@ -606,6 +614,7 @@ function PriceSimulator() {
 // ─── Profit Simulator ────────────────────────────────────────────────────────
 
 function ProfitSimulator() {
+  const { user } = useAuth();
   const [advanced, setAdvanced] = useState(false);
   const [revenue, setRevenue] = useState("");
   const [costs, setCosts] = useState("");
@@ -727,27 +736,29 @@ function ProfitSimulator() {
           suffix="R$"
         />
         {advanced && (
-          <>
-            <InputField
-              label="Ticket Médio (R$)"
-              value={ticketMedio}
-              onChange={setTicketMedio}
-              suffix="R$"
-            />
-            <InputField
-              label="Número de Clientes"
-              value={numClients}
-              onChange={setNumClients}
-              placeholder="0"
-              suffix="cli"
-            />
-            <InputField
-              label="Meta de Lucro Mensal (R$)"
-              value={targetProfit}
-              onChange={setTargetProfit}
-              suffix="R$"
-            />
-          </>
+          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no PRO" lockedLabel="Funcionalidade PRO">
+            <>
+              <InputField
+                label="Ticket Médio (R$)"
+                value={ticketMedio}
+                onChange={setTicketMedio}
+                suffix="R$"
+              />
+              <InputField
+                label="Número de Clientes"
+                value={numClients}
+                onChange={setNumClients}
+                placeholder="0"
+                suffix="cli"
+              />
+              <InputField
+                label="Meta de Lucro Mensal (R$)"
+                value={targetProfit}
+                onChange={setTargetProfit}
+                suffix="R$"
+              />
+            </>
+          </FeatureGate>
         )}
       </div>
 

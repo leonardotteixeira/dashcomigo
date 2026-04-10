@@ -11,6 +11,8 @@ export interface Transaction {
   data: string;
   descricao?: string;
   pfpj?: "PF" | "PJ";
+  pfpjScore?: number;
+  attachments?: string[];
   createdAt: Date;
 }
 
@@ -44,6 +46,8 @@ interface CashFlowContextType {
   getTransactionsByPeriod: (period: "dia" | "semana" | "mes" | "ano") => Transaction[];
   getLimitStatus: () => { used: number; limit: number; percentage: number };
   canAddTransaction: () => boolean;
+  updateTransactionAttachments: (id: string, attachments: string[]) => void;
+  updateTransaction: (id: string, updates: Partial<Transaction>) => void;
 }
 
 const CashFlowContext = createContext<CashFlowContextType | undefined>(undefined);
@@ -102,6 +106,8 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
             data: t.data?.split(" ")[0] ?? t.data,
             descricao: t.descricao ?? undefined,
             pfpj: ((t.pfpj ?? "PJ") as "PF" | "PJ"),
+            pfpjScore: t.pfpj_score ?? 100,
+            attachments: Array.isArray(t.attachments) ? t.attachments : [],
             createdAt: new Date(t.created),
           }))
         );
@@ -280,6 +286,7 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         data: transaction.data,
         descricao: transaction.descricao ?? null,
         pfpj: transaction.pfpj ?? "PJ",
+        pfpj_score: transaction.pfpjScore ?? 100,
       });
 
       const newTransaction: Transaction = {
@@ -290,6 +297,8 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         data: record.data?.split(" ")[0] ?? record.data,
         descricao: record.descricao ?? undefined,
         pfpj: ((record.pfpj ?? "PJ") as "PF" | "PJ"),
+        pfpjScore: Number(record.pfpj_score ?? 100),
+        attachments: Array.isArray(record.attachments) ? record.attachments : [],
         createdAt: new Date(record.created),
       };
 
@@ -308,6 +317,18 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function updateTransactionAttachments(id: string, attachments: string[]) {
+    setTransactions((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, attachments } : t))
+    );
+  }
+
+  function updateTransaction(id: string, updates: Partial<Transaction>) {
+    setTransactions((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
+    );
+  }
+
   return (
     <CashFlowContext.Provider
       value={{
@@ -320,6 +341,8 @@ export function CashFlowProvider({ children }: { children: ReactNode }) {
         getTransactionsByPeriod,
         getLimitStatus,
         canAddTransaction,
+        updateTransactionAttachments,
+        updateTransaction,
       }}
     >
       {children}

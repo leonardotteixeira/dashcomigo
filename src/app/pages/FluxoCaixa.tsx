@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import {
   Plus, ArrowUpRight, ArrowDownRight, Search, User, Building2,
   Crown, TrendingUp, TrendingDown, DollarSign, Trash2, X, Loader2,
@@ -8,6 +8,7 @@ import {
 import { KPICard } from "../components/KPICard";
 import { PageHeader } from "../components/PageHeader";
 import { useAuth } from "../contexts/AuthContext";
+import { useCashFlow, Transaction } from "../contexts/CashFlowContext";
 import { pb } from "../../lib/pocketbase";
 import { toast } from "sonner";
 import { exportToXlsx } from "../../utils/exportXlsx";
@@ -17,20 +18,6 @@ import { exportToXlsx } from "../../utils/exportXlsx";
 type PfPj = "PF" | "PJ";
 type TipoTransacao = "entrada" | "saida";
 type ActiveTab = "all" | "PJ" | "PF";
-
-interface Transaction {
-  id: string;
-  user_id: string;
-  valor: number;
-  tipo: TipoTransacao;
-  categoria: string;
-  data: string;
-  descricao: string;
-  pfpj: PfPj;
-  pfpj_score: number;
-  attachments: string[]; // PocketBase file field names
-  created: string;
-}
 
 // ─── Heuristic PF/PJ Classifier ───────────────────────────────────────────────
 
@@ -106,10 +93,7 @@ const fmtDate = (iso?: string) => {
 
 export function FluxoCaixa() {
   const { user, incrementTransactionUsage } = useAuth();
-
-  // Data state
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { transactions, addTransaction: ctxAddTransaction, deleteTransaction: ctxDeleteTransaction, loading, updateTransactionAttachments } = useCashFlow();
 
   // UI state
   const [activeTab, setActiveTab] = useState<ActiveTab>("all");
@@ -135,44 +119,6 @@ export function FluxoCaixa() {
   const [suggestion, setSuggestion] = useState<{ pfpj: PfPj; score: number } | null>(null);
   const [showReviewAlert, setShowReviewAlert] = useState(false);
 
-  // ─── Load transactions ────────────────────────────────────────────────────
-
-  const loadTransactions = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const records = await pb.collection("transactions").getFullList({
-        filter: `user_id = "${user.id}"`,
-        sort: "-data,-created",
-        requestKey: null,
-      });
-      setTransactions(
-        records.map((r) => ({
-          id: r.id,
-          user_id: r.user_id,
-          valor: r.valor,
-          tipo: r.tipo as TipoTransacao,
-          categoria: r.categoria,
-          data: r.data?.split("T")[0]?.split(" ")[0] ?? "",
-          descricao: r.descricao ?? "",
-          pfpj: (r.pfpj as PfPj) ?? "PJ",
-          pfpj_score: r.pfpj_score ?? 100,
-          attachments: Array.isArray(r.attachments) ? r.attachments : [],
-          created: r.created,
-        })),
-      );
-    } catch (err) {
-      console.error("Erro ao carregar transações:", err);
-      toast.error("Erro ao carregar transações");
-    } finally {
-      setLoading(false);
-    }
-  }, [user?.id]);
-
-  useEffect(() => {
-    loadTransactions();
-  }, [loadTransactions]);
-
   // ─── Auto-suggest when description or valor changes ───────────────────────
 
   useEffect(() => {
@@ -197,16 +143,8 @@ export function FluxoCaixa() {
     if (!user) return;
 
     const valor = parseFloat(formData.valor);
-    if (!valor || valor <= 0) {
-      toast.error("Informe um valor válido.");
-      return;
-    }
-    if (!formData.categoria) {
-      toast.error("Selecione uma categoria.");
-      return;
-    }
-
-    // Free plan limit check
+    if (!valor || valor <= 0) { toast.error("Informe um valor válido."); return; }
+    if (!formData.categoria) { toast.error("Selecione uma categoria."); return; }
     if (user.plan === "free" && user.transactionsUsageToday >= 100) {
       toast.error("Limite mensal atingido. Faça upgrade para PRO.");
       return;
@@ -214,40 +152,21 @@ export function FluxoCaixa() {
 
     setSaving(true);
     try {
-      const record = await pb.collection("transactions").create({
-        user_id: user.id,
-        descricao: formData.descricao,
+      await ctxAddTransaction({
         valor,
         tipo: formData.tipo,
         categoria: formData.categoria,
         data: formData.data,
+        descricao: formData.descricao,
         pfpj: formData.pfpj,
-        pfpj_score: formData.pfpj_score,
+        pfpjScore: formData.pfpj_score,
       });
-
-      setTransactions((prev) => [
-        {
-          id: record.id,
-          user_id: record.user_id,
-          valor: record.valor,
-          tipo: record.tipo,
-          categoria: record.categoria,
-          data: record.data?.split("T")[0]?.split(" ")[0] ?? "",
-          descricao: record.descricao ?? "",
-          pfpj: record.pfpj ?? "PJ",
-          pfpj_score: record.pfpj_score ?? 100,
-          attachments: [],
-          created: record.created,
-        },
-        ...prev,
-      ]);
-
       await incrementTransactionUsage();
       toast.success("Transação registrada!");
       resetForm();
       setShowModal(false);
     } catch (err) {
-      console.error(err);
+      console.error("[FluxoCaixa] handleCreate error:", err);
       toast.error("Erro ao salvar transação.");
     } finally {
       setSaving(false);
@@ -257,8 +176,7 @@ export function FluxoCaixa() {
   const handleDelete = async (id: string) => {
     if (!confirm("Excluir esta transação?")) return;
     try {
-      await pb.collection("transactions").delete(id);
-      setTransactions((prev) => prev.filter((t) => t.id !== id));
+      await ctxDeleteTransaction(id);
       toast.success("Transação excluída.");
     } catch {
       toast.error("Erro ao excluir transação.");
@@ -286,7 +204,7 @@ export function FluxoCaixa() {
     if (typeFilter !== "all" && t.tipo !== typeFilter) return false;
     if (
       search &&
-      !t.descricao.toLowerCase().includes(search.toLowerCase()) &&
+      !(t.descricao ?? "").toLowerCase().includes(search.toLowerCase()) &&
       !t.categoria.toLowerCase().includes(search.toLowerCase())
     )
       return false;
@@ -322,13 +240,8 @@ export function FluxoCaixa() {
       const formData = new FormData();
       formData.append("attachments", file);
       const updated = await pb.collection("transactions").update(id, formData);
-      setTransactions((prev) =>
-        prev.map((t) =>
-          t.id === id
-            ? { ...t, attachments: Array.isArray(updated.attachments) ? updated.attachments : [] }
-            : t,
-        ),
-      );
+      const newAttachments = Array.isArray(updated.attachments) ? updated.attachments : [];
+      updateTransactionAttachments(id, newAttachments);
       toast.success("Anexo enviado!");
     } catch {
       toast.error("Erro ao enviar anexo");
@@ -611,13 +524,13 @@ export function FluxoCaixa() {
                               {t.pfpj === "PF" ? <User className="w-3 h-3" /> : <Building2 className="w-3 h-3" />}
                               {t.pfpj}
                             </span>
-                            {t.pfpj_score < 70 && (
-                              <span className="text-amber-500" title={`Confiança: ${t.pfpj_score}%`}>
+                            {(t.pfpjScore ?? 100) < 70 && (
+                              <span className="text-amber-500" title={`Confiança: ${(t.pfpjScore ?? 100)}%`}>
                                 <AlertTriangle className="w-3 h-3" />
                               </span>
                             )}
-                            {t.attachments.length > 0 && (
-                              <span className="text-[rgba(0,21,41,0.4)]" title={`${t.attachments.length} anexo(s)`}>
+                            {(t.attachments ?? []).length > 0 && (
+                              <span className="text-[rgba(0,21,41,0.4)]" title={`${(t.attachments ?? []).length} anexo(s)`}>
                                 <Paperclip className="w-3 h-3" />
                               </span>
                             )}
@@ -673,25 +586,25 @@ export function FluxoCaixa() {
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Classificação</p>
                                 <p className="text-[#001529] font-medium">
                                   {t.pfpj === "PF" ? "👤 Pessoa Física" : "🏢 Pessoa Jurídica"}
-                                  {t.pfpj_score < 100 && (
-                                    <span className={`ml-2 text-xs ${t.pfpj_score < 70 ? "text-amber-500" : "text-green-600"}`}>
-                                      ({t.pfpj_score}% confiança)
+                                  {(t.pfpjScore ?? 100) < 100 && (
+                                    <span className={`ml-2 text-xs ${(t.pfpjScore ?? 100) < 70 ? "text-amber-500" : "text-green-600"}`}>
+                                      ({(t.pfpjScore ?? 100)}% confiança)
                                     </span>
                                   )}
                                 </p>
                               </div>
                               <div className="space-y-1 min-w-[140px]">
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Criado em</p>
-                                <p className="text-[#001529] font-medium">{fmtDate(t.created)}</p>
+                                <p className="text-[#001529] font-medium">{fmtDate(t.createdAt?.toISOString())}</p>
                               </div>
                               {/* Attachments */}
                               <div className="flex-1 space-y-2 min-w-[200px]">
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Anexos</p>
-                                {t.attachments.length === 0 ? (
+                                {(t.attachments ?? []).length === 0 ? (
                                   <p className="text-xs text-[rgba(0,21,41,0.4)]">Nenhum anexo</p>
                                 ) : (
                                   <div className="flex flex-wrap gap-2">
-                                    {t.attachments.map((filename) => (
+                                    {(t.attachments ?? []).map((filename) => (
                                       <a
                                         key={filename}
                                         href={`${pb.baseUrl}/api/files/transactions/${t.id}/${filename}`}

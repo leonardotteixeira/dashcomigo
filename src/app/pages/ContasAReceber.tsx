@@ -16,6 +16,10 @@ import { PageHeader } from "../components/PageHeader";
 import { useReceivables, CATEGORIAS_RECEIVABLES } from "../contexts/ReceivablesContext";
 import { exportToXlsx } from "../../utils/exportXlsx";
 import { toast } from "sonner";
+import { useAuth } from "../contexts/AuthContext";
+import { LimitBanner } from "../components/LimitBanner";
+import { LimitReachedModal } from "../components/LimitReachedModal";
+import { isLimitReached } from "../../utils/featureAccessService";
 
 type FilterType = "all" | "pendente" | "recebido" | "vencido";
 
@@ -67,11 +71,13 @@ export function ContasAReceber() {
     deleteReceivable,
     canAddReceivable,
   } = useReceivables();
+  const { user } = useAuth();
 
   const [filter, setFilter] = useState<FilterType>("all");
   const [receiving, setReceiving] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
@@ -83,6 +89,17 @@ export function ContasAReceber() {
     frequenciaRecorrencia: "mensal" as "mensal" | "anual",
     anotacoes: "",
   });
+
+  // ─── Feature gating ─────────────────────────────────────────────────────────
+  const thisMonthCount = (() => {
+    const currentMonth = new Date().toISOString().substring(0, 7);
+    const filtered = receivables.filter((r) =>
+      (r as any).createdAt
+        ? new Date((r as any).createdAt).toISOString().substring(0, 7) === currentMonth
+        : false
+    );
+    return filtered.length > 0 ? filtered.length : receivables.length;
+  })();
 
   // Computed status for every item
   const enriched = receivables.map((r) => ({
@@ -200,7 +217,13 @@ export function ContasAReceber() {
         description="Acompanhe seus recebíveis e pagamentos de clientes"
         actions={
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              if (isLimitReached("accounts_receivable", thisMonthCount, user?.plan ?? "free")) {
+                setShowLimitModal(true);
+              } else {
+                setShowModal(true);
+              }
+            }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
             style={{ backgroundColor: "#0066FF" }}
           >
@@ -267,6 +290,8 @@ export function ContasAReceber() {
           </button>
         </div>
       </div>
+
+      <LimitBanner feature="accounts_receivable" usage={thisMonthCount} plan={user?.plan ?? "free"} className="mb-4" />
 
       {/* List */}
       {loading ? (
@@ -358,6 +383,14 @@ export function ContasAReceber() {
           })}
         </div>
       )}
+
+      <LimitReachedModal
+        open={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        feature="accounts_receivable"
+        plan={user?.plan ?? "free"}
+        usage={thisMonthCount}
+      />
 
       {/* Nova Conta Modal */}
       {showModal && (

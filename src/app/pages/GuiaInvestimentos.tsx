@@ -9,9 +9,14 @@ import {
   Info,
   CheckCircle,
   Sparkles,
+  Lock,
+  Crown,
 } from "lucide-react";
+import { useNavigate } from "react-router";
 import { KPICard } from "../components/KPICard";
 import { PageHeader } from "../components/PageHeader";
+import { useAuth } from "../contexts/AuthContext";
+import { canAccess } from "../../utils/featureAccessService";
 
 const investmentOptions = [
   {
@@ -119,8 +124,34 @@ const investmentOptions = [
 ];
 
 export function GuiaInvestimentos() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const lowRiskInvestments = investmentOptions.filter(i => i.risk === "Muito Baixo" || i.risk === "Baixo").length;
   const mediumRiskInvestments = investmentOptions.filter(i => i.risk.includes("Médio")).length;
+
+  if (!canAccess("investments", user?.plan ?? "free")) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#001529] to-[#003a6d] flex items-center justify-center mb-6 shadow-xl">
+          <Lock className="w-10 h-10 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[#001529] mb-3">
+          Guia de Investimentos — Exclusivo PRO
+        </h2>
+        <p className="text-[#001529]/60 mb-8 max-w-md">
+          Aprenda a investir de forma inteligente com estratégias personalizadas para MEIs. Disponível apenas no Plano PRO.
+        </p>
+        <button
+          onClick={() => navigate("/checkout")}
+          className="flex items-center gap-2 bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity shadow-md"
+        >
+          <Crown className="w-5 h-5" />
+          Fazer Upgrade para PRO
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
