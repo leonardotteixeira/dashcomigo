@@ -9,8 +9,9 @@ export function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user, login, loginWithGoogle } = useAuth();
 
   useEffect(() => {
     if (user) {

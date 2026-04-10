@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import {
   TrendingUp, Mail, Lock, User, Eye, EyeOff,
-  MailCheck, Zap, Shield, Github,
+  MailCheck, Zap, Shield,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
@@ -224,6 +224,7 @@ export function Signup() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
   const { signup, loginWithGoogle } = useAuth();
@@ -285,10 +286,15 @@ export function Signup() {
   };
 
   const handleGoogleSignup = async () => {
+    setGoogleLoading(true);
     try {
-      await loginWithGoogle();
-    } catch {
-      toast.error("Erro ao continuar com Google.");
+      const { onboardingCompleted } = await loginWithGoogle();
+      navigate(onboardingCompleted ? "/app/dashboard" : "/app/onboarding");
+    } catch (error: any) {
+      const msg = error?.message ?? "";
+      toast.error(msg || "Erro ao continuar com Google. Tente novamente.");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -450,13 +456,13 @@ export function Signup() {
               </div>
               <span className="text-sm text-[#1a1a2e]/60 leading-relaxed">
                 Aceito os{" "}
-                <a href="#" className="text-[#0B2A4A] font-medium hover:underline" onClick={(e) => e.stopPropagation()}>
+                <Link to="/termos-de-uso" className="text-[#0B2A4A] font-medium hover:underline" onClick={(e) => e.stopPropagation()}>
                   Termos de Uso
-                </a>
+                </Link>
                 {" "}e a{" "}
-                <a href="#" className="text-[#0B2A4A] font-medium hover:underline" onClick={(e) => e.stopPropagation()}>
+                <Link to="/privacidade" className="text-[#0B2A4A] font-medium hover:underline" onClick={(e) => e.stopPropagation()}>
                   Política de Privacidade
-                </a>
+                </Link>
               </span>
             </label>
 
@@ -480,29 +486,24 @@ export function Signup() {
           {/* Divider */}
           <div className="flex items-center gap-4 my-5">
             <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-xs text-[#1a1a2e]/40 whitespace-nowrap">ou cadastre-se com</span>
+            <span className="text-xs text-[#1a1a2e]/40 whitespace-nowrap">ou continue com</span>
             <div className="flex-1 h-px bg-[#E5E7EB]" />
           </div>
 
-          {/* Social buttons */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={handleGoogleSignup}
-              className="h-11 flex items-center justify-center gap-2 border border-[#E5E7EB] rounded-lg text-sm font-medium text-[#1a1a2e] hover:bg-gray-50 transition-colors"
-            >
+          {/* Google button — full width, only relevant social option for MEIs */}
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            disabled={googleLoading || loading}
+            className="w-full h-12 flex items-center justify-center gap-3 border border-[#E5E7EB] rounded-lg text-sm font-medium text-[#1a1a2e] hover:bg-gray-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {googleLoading ? (
+              <span className="w-4 h-4 border-2 border-[#1a1a2e]/30 border-t-[#1a1a2e] rounded-full animate-spin" />
+            ) : (
               <GoogleIcon />
-              Google
-            </button>
-            <button
-              type="button"
-              className="h-11 flex items-center justify-center gap-2 border border-[#E5E7EB] rounded-lg text-sm font-medium text-[#1a1a2e] hover:bg-gray-50 transition-colors"
-              onClick={() => toast.info("Login com GitHub em breve")}
-            >
-              <Github className="w-5 h-5" />
-              GitHub
-            </button>
-          </div>
+            )}
+            {googleLoading ? "Conectando com Google..." : "Continuar com Google"}
+          </button>
 
           {/* Login link */}
           <p className="text-center text-sm text-[#1a1a2e]/55 mt-6">
