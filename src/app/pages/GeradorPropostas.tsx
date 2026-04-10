@@ -107,14 +107,23 @@ export function GeradorPropostas() {
     const fetchProposals = async () => {
       setLoadingList(true);
       try {
-        const records = await pb.collection("proposals").getList(1, 500, {
+        let records = await pb.collection("proposals").getList(1, 500, {
           filter: `user_id = "${user.id}"`,
           sort: "-created",
           requestKey: null,
-        });
-        if (!cancelled) setProposals(records.items as Proposal[]);
+        }).catch(() => null);
+
+        if (!records || records.items.length === 0) {
+          records = await pb.collection("proposals").getList(1, 500, {
+            filter: `userid = "${user.id}"`,
+            sort: "-created",
+            requestKey: null,
+          }).catch(() => null);
+        }
+
+        if (!cancelled && records) setProposals(records.items as Proposal[]);
       } catch (error) {
-        console.error("Error fetching proposals:", error);
+        console.error("[Propostas] Erro ao buscar:", error);
       } finally {
         if (!cancelled) setLoadingList(false);
       }
@@ -128,15 +137,24 @@ export function GeradorPropostas() {
     if (!user?.id) return;
     setLoadingList(true);
     try {
-      const records = await pb.collection("proposals").getList(1, 500, {
+      // Try user_id first; some PocketBase setups use userid — handle both
+      let records = await pb.collection("proposals").getList(1, 500, {
         filter: `user_id = "${user.id}"`,
         sort: "-created",
         requestKey: null,
-      });
-      setProposals(records.items as Proposal[]);
+      }).catch(() => null);
+
+      if (!records || records.items.length === 0) {
+        records = await pb.collection("proposals").getList(1, 500, {
+          filter: `userid = "${user.id}"`,
+          sort: "-created",
+          requestKey: null,
+        }).catch(() => null);
+      }
+
+      if (records) setProposals(records.items as Proposal[]);
     } catch (error) {
-      console.error("Error fetching proposals:", error);
-      toast.error("Erro ao carregar propostas. Verifique sua conexão.");
+      console.error("[Propostas] Erro ao buscar:", error);
     } finally {
       setLoadingList(false);
     }
@@ -304,8 +322,9 @@ export function GeradorPropostas() {
         }
       }
 
-      await pb.collection("proposals").create({
+      const record = await pb.collection("proposals").create({
         user_id: user!.id,
+        userid: user!.id, // send both field name variants — PocketBase ignores unknown fields
         tipo: tipo || "orcamento",
         status: "aguardando",
         nome_cliente: nomeCliente,
@@ -319,13 +338,35 @@ export function GeradorPropostas() {
         template: template || "basico",
       });
 
+      // Optimistic update: add the new proposal to local state immediately from the
+      // returned record, without waiting for (or relying on) a re-fetch.
+      const newProposal: Proposal = {
+        id: record.id,
+        tipo: (record.tipo || tipo) as ProposalTipo,
+        status: "aguardando",
+        nome_cliente: record.nome_cliente || nomeCliente,
+        email_cliente: record.email_cliente || emailCliente,
+        nome_servico: record.nome_servico || nomeServico,
+        descricao: record.descricao || descricao,
+        valor: Number(record.valor) || parseFloat(String(valor)) || 0,
+        prazo: record.prazo || prazo,
+        condicoes_pagamento: record.condicoes_pagamento || condicoesPagamento,
+        validade: record.validade ?? Number(validade),
+        template: (record.template || template) as Template,
+        created: record.created || new Date().toISOString(),
+      };
+      setProposals((prev) => [newProposal, ...prev]);
+
       toast.success("Proposta criada com sucesso!");
       try { await incrementProposalUsage(); } catch {}
       resetForm();
-      await fetchProposals();
       setViewMode("list");
+      // Background re-fetch to sync any server-side changes (don't await — not critical)
+      fetchProposals().catch(() => null);
     } catch (error: any) {
-      toast.error("Erro ao salvar proposta: " + error.message);
+      const msg = error?.message || error?.data?.message || "Erro desconhecido";
+      console.error("[Propostas] Erro ao criar:", error);
+      toast.error("Erro ao salvar proposta: " + msg);
     }
     setSaving(false);
   };
