@@ -17,24 +17,45 @@ import { isLimitReached } from "../../utils/featureAccessService";
 const fmtBRL = (v: number) =>
   `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
 
-const fmtDate = (iso?: string) => {
+const fmtDate = (iso?: string | null): string => {
   if (!iso) return "—";
-  const datePart = iso.split("T")[0].split(" ")[0];
-  const parts = datePart.split("-");
-  if (parts.length < 3) return iso;
-  const [y, m, d] = parts;
-  return `${d}/${m}/${y}`;
+  try {
+    const datePart = iso.split("T")[0].split(" ")[0];
+    const parts = datePart.split("-");
+    if (parts.length < 3) return iso;
+    const [y, m, d] = parts;
+    // Validate the parsed date
+    const d_num = parseInt(d, 10);
+    const m_num = parseInt(m, 10);
+    const y_num = parseInt(y, 10);
+    if (d_num < 1 || d_num > 31 || m_num < 1 || m_num > 12 || y_num < 1900) return "—";
+    return `${d}/${m}/${y}`;
+  } catch {
+    console.warn("Invalid date format:", iso);
+    return "—";
+  }
 };
 
-function getDaysUntilDue(dueDate: string): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate + "T00:00:00");
-  return Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+function getDaysUntilDue(dueDate: string | undefined | null): number {
+  if (!dueDate) return 999; // Very large number = not overdue
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate + "T00:00:00");
+    if (isNaN(due.getTime())) {
+      console.warn("Invalid dueDate:", dueDate);
+      return 999;
+    }
+    return Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  } catch (err) {
+    console.warn("Error computing days until due:", dueDate, err);
+    return 999;
+  }
 }
 
 function computeStatus(payable: Payable): "pendente" | "pago" | "vencido" {
   if (payable.status === "pago") return "pago";
+  if (!payable.dataVencimento) return "pendente";
   const days = getDaysUntilDue(payable.dataVencimento);
   if (days < 0) return "vencido";
   return "pendente";
@@ -90,11 +111,31 @@ export function ContasAPagar() {
   // ─── Derived data ───────────────────────────────────────────────────────────
 
   const currentMonth = new Date().toISOString().substring(0, 7);
-  const thisMonthCount = payables.filter((p) =>
-    p.createdAt ? new Date(p.createdAt).toISOString().substring(0, 7) === currentMonth : false
-  ).length || payables.length;
+  const thisMonthCount = payables.filter((p) => {
+    try {
+      return p.createdAt ? new Date(p.createdAt).toISOString().substring(0, 7) === currentMonth : false;
+    } catch {
+      return false;
+    }
+  }).length || payables.length;
 
-  const withStatus = payables.map((p) => ({ ...p, computedStatus: computeStatus(p) }));
+  // Filter invalid records + compute status
+  const withStatus = payables
+    .filter((p) => {
+      // Skip records with invalid dates
+      if (!p.dataVencimento) {
+        console.warn("Skipping payable with missing dataVencimento:", p);
+        return false;
+      }
+      try {
+        const d = new Date(p.dataVencimento + "T00:00:00");
+        return !isNaN(d.getTime());
+      } catch {
+        console.warn("Skipping payable with invalid dataVencimento:", p);
+        return false;
+      }
+    })
+    .map((p) => ({ ...p, computedStatus: computeStatus(p) }));
 
   const filtered = withStatus.filter((p) => {
     if (filter === "all") return true;

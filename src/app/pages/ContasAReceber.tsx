@@ -23,13 +23,32 @@ import { isLimitReached } from "../../utils/featureAccessService";
 
 type FilterType = "all" | "pendente" | "recebido" | "vencido";
 
-function computeStatus(item: { status: "pendente" | "recebido"; dataVencimento: string }): "pendente" | "recebido" | "vencido" {
+function computeStatus(item: { status: "pendente" | "recebido"; dataVencimento: string | undefined | null }): "pendente" | "recebido" | "vencido" {
   if (item.status === "recebido") return "recebido";
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const venc = new Date(item.dataVencimento + "T00:00:00");
-  if (venc < today) return "vencido";
-  return "pendente";
+
+  // Validate date
+  if (!item.dataVencimento) {
+    console.warn("Missing dataVencimento for item:", item);
+    return "pendente";
+  }
+
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const venc = new Date(item.dataVencimento + "T00:00:00");
+
+    // Check if date is valid
+    if (isNaN(venc.getTime())) {
+      console.warn("Invalid dataVencimento:", item.dataVencimento);
+      return "pendente";
+    }
+
+    if (venc < today) return "vencido";
+    return "pendente";
+  } catch (err) {
+    console.warn("Error computing status for:", item, err);
+    return "pendente";
+  }
 }
 
 const STATUS_INFO = {
@@ -59,8 +78,18 @@ const STATUS_INFO = {
 const fmtBRL = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const fmtDate = (s: string) =>
-  new Date(s + "T00:00:00").toLocaleDateString("pt-BR");
+/** Safely format a date string, return "Sem data" if invalid */
+const fmtDate = (s: string | undefined | null): string => {
+  if (!s) return "Sem data";
+  try {
+    const d = new Date(s + "T00:00:00");
+    if (isNaN(d.getTime())) return "Sem data";
+    return d.toLocaleDateString("pt-BR");
+  } catch {
+    console.warn("Invalid date:", s);
+    return "Sem data";
+  }
+};
 
 export function ContasAReceber() {
   const {
@@ -101,11 +130,26 @@ export function ContasAReceber() {
     return filtered.length > 0 ? filtered.length : receivables.length;
   })();
 
-  // Computed status for every item
-  const enriched = receivables.map((r) => ({
-    ...r,
-    computedStatus: computeStatus(r),
-  }));
+  // Computed status for every item + filter invalid dates
+  const enriched = receivables
+    .filter((r) => {
+      // Skip records with invalid dates
+      if (!r.dataVencimento) {
+        console.warn("Skipping record with missing dataVencimento:", r);
+        return false;
+      }
+      try {
+        const d = new Date(r.dataVencimento + "T00:00:00");
+        return !isNaN(d.getTime());
+      } catch {
+        console.warn("Skipping record with invalid dataVencimento:", r);
+        return false;
+      }
+    })
+    .map((r) => ({
+      ...r,
+      computedStatus: computeStatus(r),
+    }));
 
   const filtered = enriched.filter((r) => {
     if (filter === "all") return true;

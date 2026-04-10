@@ -80,13 +80,23 @@ const CATEGORIES_EXPENSE = [
 const fmtBRL = (v: number) =>
   v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const fmtDate = (iso?: string) => {
+const fmtDate = (iso?: string | null): string => {
   if (!iso) return "—";
-  const datePart = iso.split("T")[0].split(" ")[0];
-  const parts = datePart.split("-");
-  if (parts.length < 3) return iso;
-  const [y, m, d] = parts;
-  return `${d}/${m}/${y}`;
+  try {
+    const datePart = iso.split("T")[0].split(" ")[0];
+    const parts = datePart.split("-");
+    if (parts.length < 3) return "—";
+    const [y, m, d] = parts;
+    // Validate parsed values
+    const d_num = parseInt(d, 10);
+    const m_num = parseInt(m, 10);
+    const y_num = parseInt(y, 10);
+    if (d_num < 1 || d_num > 31 || m_num < 1 || m_num > 12 || y_num < 1900) return "—";
+    return `${d}/${m}/${y}`;
+  } catch {
+    console.warn("Invalid date:", iso);
+    return "—";
+  }
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -595,7 +605,15 @@ export function FluxoCaixa() {
                               </div>
                               <div className="space-y-1 min-w-[140px]">
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Criado em</p>
-                                <p className="text-[#001529] font-medium">{fmtDate(t.createdAt?.toISOString())}</p>
+                                <p className="text-[#001529] font-medium">
+                                  {fmtDate(
+                                    t.createdAt instanceof Date
+                                      ? t.createdAt.toISOString()
+                                      : typeof t.createdAt === "string"
+                                      ? t.createdAt
+                                      : undefined
+                                  )}
+                                </p>
                               </div>
                               {/* Attachments */}
                               <div className="flex-1 space-y-2 min-w-[200px]">
