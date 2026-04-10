@@ -36,7 +36,7 @@ import StreakCard from "../components/StreakCard";
 import DailyInsights from "../components/DailyInsights";
 import QuickActions from "../components/QuickActions";
 import PrioridadesDoDia from "../components/PrioridadesDoDia";
-import FinancialInsights from "../components/FinancialInsights";
+import InsightsInteligentes from "../components/InsightsInteligentes";
 import AchievementCard from "../components/AchievementCard";
 import OnboardingChecklist from "../components/OnboardingChecklist";
 import WelcomeBackModal from "../components/WelcomeBackModal";
@@ -222,19 +222,12 @@ export function Dashboard() {
           <PrioridadesDoDia />
         </div>
 
-        {/* Value Display Row - Upsell for FREE users, Insights for PRO */}
-        {user?.plan === "free" ? (
-          <UpgradeCard variant="compact" />
-        ) : (
-          <FinancialInsights />
-        )}
-
         {/* Daily Insights */}
         <DailyInsights />
 
-        {/* Insights and Achievements */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Investment suggestion */}
+        {/* Row: Investment Guide + Achievements */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Investment guide */}
           <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] text-white rounded-2xl p-7 shadow-md">
             <div className="flex items-start gap-3 mb-5">
               <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
@@ -275,16 +268,30 @@ export function Dashboard() {
           <AchievementCard />
         </div>
 
-        {/* PF vs PJ and Alerts */}
+        {/* Row: Insights/Upsell + PF vs PJ — no empty gaps */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Alerts */}
-          <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
-            <div className="flex items-center gap-2 mb-5">
-              <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
-              <h3 className="font-bold text-lg text-[#001529]">Alertas Importantes</h3>
-            </div>
-            <div className="space-y-3">
-              {alerts.map((alert) => (
+          {/* PRO → Insights Inteligentes | FREE → Upgrade card */}
+          {user?.plan === "pro" ? (
+            <InsightsInteligentes />
+          ) : (
+            <UpgradeCard variant="compact" />
+          )}
+
+          {/* PF vs PJ Distribution */}
+          <PfPjDistribution />
+        </div>
+
+        {/* Alerts */}
+        <div className="bg-white rounded-2xl p-7 shadow-sm border border-[#E5E7EB]">
+          <div className="flex items-center gap-2 mb-5">
+            <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
+            <h3 className="font-bold text-lg text-[#001529]">Alertas Importantes</h3>
+          </div>
+          <div className="space-y-3">
+            {alerts.length === 0 ? (
+              <p className="text-sm text-[#001529]/50 py-4 text-center">Nenhum alerta no momento</p>
+            ) : (
+              alerts.map((alert) => (
                 <div key={alert.id} className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F7FA]">
                   <div className={`w-2 h-2 rounded-full mt-2 ${alert.type === "warning" ? "bg-[#f59e0b]" : "bg-[#10b981]"}`} />
                   <div className="flex-1 min-w-0">
@@ -292,12 +299,9 @@ export function Dashboard() {
                     <button className="text-sm text-[#003a6d] hover:underline font-medium">{alert.action}</button>
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
+            )}
           </div>
-
-          {/* PF vs PJ Distribution - Real data */}
-          <PfPjDistribution />
         </div>
 
         {/* Cash Flow Chart and Savings */}
