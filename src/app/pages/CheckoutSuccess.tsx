@@ -6,7 +6,8 @@ import { Button } from "../components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
 import { pb } from "../../lib/pocketbase";
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Usa URL relativa — frontend e API no mesmo servidor Railway
+const API_URL = import.meta.env.VITE_API_URL || "";
 const MAX_ATTEMPTS = 12;   // 12 × 3s = 36s
 const POLL_INTERVAL = 3000;
 
@@ -22,16 +23,34 @@ export function CheckoutSuccess() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activatedRef = useRef(false);
 
-  // Tenta verificar e ativar PRO via API (para casos em que webhook não chegou)
+  // Tenta verificar e ativar PRO via API direta na Asaas (bypass webhook)
   const verifyAndActivate = useCallback(async () => {
     if (activatedRef.current) return;
+
     const paymentId = sessionStorage.getItem("asaas_payment_id");
     const savedUserId = sessionStorage.getItem("asaas_user_id");
 
-    if (!paymentId || !savedUserId || !user || savedUserId !== user.id) return;
-    if (!API_URL || !pb.authStore.token) return;
+    console.log("[CheckoutSuccess] verifyAndActivate:", {
+      paymentId,
+      savedUserId,
+      userId: user?.id,
+      token: pb.authStore.token ? "present" : "missing",
+      API_URL: API_URL || "(relativo)",
+    });
+
+    if (!paymentId || !savedUserId) {
+      console.warn("[CheckoutSuccess] sessionStorage vazio — paymentId ou userId não encontrado");
+      return;
+    }
+    if (!user) { console.warn("[CheckoutSuccess] user não carregado"); return; }
+    if (savedUserId !== user.id) {
+      console.warn("[CheckoutSuccess] userId não bate:", savedUserId, "≠", user.id);
+      return;
+    }
+    if (!pb.authStore.token) { console.warn("[CheckoutSuccess] sem token de auth"); return; }
 
     try {
+      console.log("[CheckoutSuccess] chamando /verify-payment...");
       const res = await fetch(`${API_URL}/verify-payment`, {
         method: "POST",
         headers: {
@@ -41,14 +60,17 @@ export function CheckoutSuccess() {
         body: JSON.stringify({ paymentId, userId: user.id }),
       });
       const data = await res.json();
+      console.log("[CheckoutSuccess] resposta /verify-payment:", data);
+
       if (data.paid) {
         activatedRef.current = true;
         sessionStorage.removeItem("asaas_payment_id");
         sessionStorage.removeItem("asaas_user_id");
-        await refreshUser(); // atualiza o contexto com plan: "pro"
+        await refreshUser();
+        console.log("[CheckoutSuccess] ✅ PRO ativado via verify-payment");
       }
-    } catch {
-      // silencioso — o polling continua
+    } catch (err) {
+      console.error("[CheckoutSuccess] erro no verify-payment:", err);
     }
   }, [user, refreshUser]);
 

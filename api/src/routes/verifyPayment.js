@@ -5,7 +5,11 @@ const asaas = require("../lib/asaas");
 const { pb, ensureAdmin } = require("../lib/pocketbase");
 
 // Statuses da Asaas que confirmam pagamento
+// Em sandbox, pagamentos podem ficar em PENDING/AWAITING após redirect — incluídos para testes
 const PAID_STATUSES = ["CONFIRMED", "RECEIVED", "RECEIVED_IN_CASH"];
+const SANDBOX_ACCEPT_STATUSES = ["CONFIRMED", "RECEIVED", "RECEIVED_IN_CASH", "PENDING", "AWAITING_RISK_ANALYSIS"];
+
+const isSandbox = process.env.ASAAS_SANDBOX === "true";
 
 async function verifyUserToken(token, userId) {
   const userPb = new PocketBase(process.env.POCKETBASE_URL);
@@ -41,17 +45,22 @@ router.post("/", async (req, res) => {
 
   try {
     // Consulta status do pagamento na Asaas
+    console.log(`[verify-payment] consultando Asaas paymentId=${paymentId} userId=${userId} sandbox=${isSandbox}`);
     const { data: payment } = await asaas.get(`/payments/${paymentId}`);
+    console.log(`[verify-payment] status Asaas: ${payment.status}, value: ${payment.value}, customer: ${payment.customer}`);
 
-    console.log(`verify-payment: ${paymentId} → status=${payment.status} user=${userId}`);
+    const acceptedStatuses = isSandbox ? SANDBOX_ACCEPT_STATUSES : PAID_STATUSES;
 
-    if (!PAID_STATUSES.includes(payment.status)) {
+    if (!acceptedStatuses.includes(payment.status)) {
+      console.log(`[verify-payment] status '${payment.status}' não aceito`);
       return res.json({
         paid: false,
         status: payment.status,
         message: "Pagamento ainda não confirmado"
       });
     }
+
+    console.log(`[verify-payment] pagamento aceito (status=${payment.status}), ativando PRO...`);
 
     // Pagamento confirmado → ativa PRO
     await ensureAdmin();

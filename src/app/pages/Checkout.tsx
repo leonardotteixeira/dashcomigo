@@ -6,7 +6,8 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { useAuth } from "../contexts/AuthContext";
 import { pb } from "../../lib/pocketbase";
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Usa URL relativa como fallback — frontend e API rodam no mesmo servidor (Railway)
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 function formatCpfCnpj(value: string) {
   const digits = value.replace(/\D/g, "");
@@ -43,11 +44,6 @@ export function Checkout() {
     }
     if (!name.trim() || name.trim().length < 2) {
       setError("Informe seu nome completo.");
-      return;
-    }
-
-    if (!API_URL) {
-      setError("URL da API de pagamentos não configurada.");
       return;
     }
 
