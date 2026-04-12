@@ -55,7 +55,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 function mapProfile(pbRecord: RecordModel): User {
   return {
     id: pbRecord.id,
-    name: pbRecord.name ?? pbRecord.email?.split("@")[0] ?? "Usuário",
+    name: pbRecord.name || pbRecord.email?.split("@")[0] || "Usuário",
     email: pbRecord.email ?? "",
     plan: pbRecord.plan ?? "free",
     proposalUsageToday: pbRecord.proposal_usage_today ?? 0,

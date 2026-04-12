@@ -35,7 +35,7 @@ async function verifyUserToken(token, userId) {
   const userPb = new PocketBase(process.env.POCKETBASE_URL);
   userPb.authStore.save(token, null);
   try {
-    const { record } = await userPb.collection("users").authRefresh();
+    const { record } = await userPb.collection("profiles").authRefresh();
     return record.id === userId;
   } catch {
     return false;
