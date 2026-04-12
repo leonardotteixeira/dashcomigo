@@ -1,5 +1,4 @@
 import { RouterProvider } from "react-router";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { router } from "./routes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -16,12 +15,9 @@ import { InvestmentsProvider } from "./contexts/InvestmentsContext";
 import { NotificationsProvider } from "./contexts/NotificationsContext";
 
 export default function App() {
-  const googleClientId = "567720000578-bmu0tusp9vdd2opqvev7m5l388oit3lh.apps.googleusercontent.com";
-
   return (
     <ErrorBoundary>
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <AuthProvider>
+      <AuthProvider>
           <CashFlowProvider>
             <PFPJProvider>
               <InvestmentsProvider>
@@ -45,8 +41,7 @@ export default function App() {
               </InvestmentsProvider>
             </PFPJProvider>
           </CashFlowProvider>
-        </AuthProvider>
-      </GoogleOAuthProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
