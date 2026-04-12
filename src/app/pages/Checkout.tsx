@@ -26,6 +26,7 @@ function formatCpfCnpj(value: string) {
 export function Checkout() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [name, setName] = useState(user?.name || "");
   const [cpfCnpj, setCpfCnpj] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,12 +38,16 @@ export function Checkout() {
     e.preventDefault();
     const digits = cpfCnpj.replace(/\D/g, "");
     if (digits.length !== 11 && digits.length !== 14) {
-      setError("CPF deve ter 11 digitos ou CNPJ 14 digitos.");
+      setError("CPF deve ter 11 dígitos ou CNPJ 14 dígitos.");
+      return;
+    }
+    if (!name.trim() || name.trim().length < 2) {
+      setError("Informe seu nome completo.");
       return;
     }
 
     if (!API_URL) {
-      setError("URL da API de pagamentos nao configurada.");
+      setError("URL da API de pagamentos não configurada.");
       return;
     }
 
@@ -58,7 +63,7 @@ export function Checkout() {
         },
         body: JSON.stringify({
           userId: user!.id,
-          name: user!.name,
+          name: name.trim(),
           email: user!.email,
           cpfCnpj: digits,
         }),
@@ -67,7 +72,7 @@ export function Checkout() {
       const text = await res.text();
       if (!text) throw new Error("Servidor retornou resposta vazia.");
       const data = JSON.parse(text);
-      if (!res.ok) throw new Error(data.error || "Erro ao criar cobranca");
+      if (!res.ok) throw new Error(data.error || "Erro ao criar cobrança");
 
       window.location.href = data.paymentUrl;
     } catch (err: any) {
@@ -94,25 +99,51 @@ export function Checkout() {
           </div>
 
           <h1 className="text-3xl font-bold text-[#001529] mb-2">Upgrade para PRO</h1>
-          <p className="text-[rgba(0,21,41,0.6)] mb-6">Desbloqueie todas as funcionalidades</p>
+          <p className="text-[rgba(0,21,41,0.6)] mb-4">Desbloqueie todas as funcionalidades</p>
 
-          <form onSubmit={handleSubmit} className="mt-6">
-            <label className="block text-sm font-medium text-[#001529] text-left mb-2">
-              CPF ou CNPJ
-            </label>
-            <input
-              type="text"
-              value={cpfCnpj}
-              onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
-              placeholder="000.000.000-00"
-              maxLength={18}
-              className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors mb-4"
-              disabled={loading}
-              required
-            />
+          {/* Price highlight */}
+          <div className="mb-6 p-4 bg-[#F0F8F5] border border-[#28A263]/20 rounded-2xl">
+            <div className="flex items-baseline justify-center gap-2 mb-1">
+              <span className="text-4xl font-bold text-[#28A263]">R$ 9,90</span>
+              <span className="text-[rgba(0,21,41,0.6)]">/mês</span>
+            </div>
+            <p className="text-xs text-[rgba(0,21,41,0.6)]">Apenas no 1º mês • Depois R$ 29,90/mês</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-[#001529] text-left mb-2">
+                Nome completo
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Seu nome completo"
+                className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors"
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#001529] text-left mb-2">
+                CPF ou CNPJ
+              </label>
+              <input
+                type="text"
+                value={cpfCnpj}
+                onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
+                placeholder="000.000.000-00"
+                maxLength={18}
+                className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors"
+                disabled={loading}
+                required
+              />
+            </div>
 
             {error && (
-              <Alert className="bg-red-50 border border-red-200 text-left mb-4">
+              <Alert className="bg-red-50 border border-red-200 text-left">
                 <AlertDescription className="text-red-700">
                   {error}
                 </AlertDescription>
@@ -122,7 +153,7 @@ export function Checkout() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+              className="w-full py-3 bg-[#28A263] hover:bg-[#1f7a4a] text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -134,15 +165,6 @@ export function Checkout() {
               )}
             </button>
           </form>
-
-          {/* Price highlight */}
-          <div className="mb-6 p-4 bg-[#F0F8F5] border border-[#28A263]/20 rounded-2xl">
-            <div className="flex items-baseline justify-center gap-2 mb-2">
-              <span className="text-4xl font-bold text-[#28A263]">R$ 9,90</span>
-              <span className="text-[rgba(0,21,41,0.6)]">/mês</span>
-            </div>
-            <p className="text-xs text-[rgba(0,21,41,0.6)]">Apenas no 1º mês • Depois R$ 29,90/mês</p>
-          </div>
 
           {/* Benefits list */}
           <div className="space-y-3 text-left">
