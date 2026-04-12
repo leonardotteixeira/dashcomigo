@@ -9,6 +9,9 @@ const webhookRouter = require("./routes/webhook");
 
 const app = express();
 
+// Railway usa proxy reverso — necessário para rate-limit e X-Forwarded-For funcionarem corretamente
+app.set("trust proxy", 1);
+
 // Força HTTPS em produção (Railway/Vercel encaminham X-Forwarded-Proto)
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
