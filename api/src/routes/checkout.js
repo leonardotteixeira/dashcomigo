@@ -129,7 +129,7 @@ router.post("/", async (req, res) => {
       description: "Meu Fluxo PRO - 1º mês",
       externalReference: `first_month_${userId}`,
       callback: {
-        successUrl: `${process.env.APP_URL}/checkout/success`,
+        successUrl: `${process.env.APP_URL}/#/checkout/success`,
         autoRedirect: true
       }
     });
