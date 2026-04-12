@@ -12,6 +12,9 @@ const app = express();
 // Railway usa proxy reverso — necessário para rate-limit e X-Forwarded-For funcionarem corretamente
 app.set("trust proxy", 1);
 
+// Healthcheck ANTES de qualquer middleware — Railway usa HTTP interno e não segue redirects
+app.get("/health", (req, res) => res.json({ status: "ok" }));
+
 // Força HTTPS em produção (Railway/Vercel encaminham X-Forwarded-Proto)
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
@@ -85,7 +88,6 @@ const path = require("path");
 const frontendPath = path.join(__dirname, "../../dist");
 app.use(express.static(frontendPath));
 
-app.get("/health", (req, res) => res.json({ status: "ok" }));
 app.use("/checkout", checkoutLimiter, checkoutRouter);
 app.use("/webhook", webhookRouter);
 
