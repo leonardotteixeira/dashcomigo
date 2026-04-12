@@ -37,7 +37,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
 
       const records = await pb.collection("inventory").getList(1, 500, {
         filter: `userid = "${user.id}"`,
-        sort: "-updated",
+        sort: "-created",
         requestKey: null,
       });
 
