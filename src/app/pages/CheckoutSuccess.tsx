@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { Crown, Check, ArrowRight, Sparkles, Zap, Gift, Loader2, AlertCircle } from "lucide-react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
+import { pb } from "../../lib/pocketbase";
+
+const API_URL = import.meta.env.VITE_API_URL;
+const MAX_ATTEMPTS = 12;   // 12 × 3s = 36s
+const POLL_INTERVAL = 3000;
 
 type Status = "polling" | "success" | "timeout";
-
-const MAX_ATTEMPTS = 12;   // 12 × 3s = 36 segundos máximo
-const POLL_INTERVAL = 3000; // 3 segundos
 
 export function CheckoutSuccess() {
   const navigate = useNavigate();
@@ -18,26 +20,59 @@ export function CheckoutSuccess() {
   );
   const attemptRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activatedRef = useRef(false);
+
+  // Tenta verificar e ativar PRO via API (para casos em que webhook não chegou)
+  const verifyAndActivate = useCallback(async () => {
+    if (activatedRef.current) return;
+    const paymentId = sessionStorage.getItem("asaas_payment_id");
+    const savedUserId = sessionStorage.getItem("asaas_user_id");
+
+    if (!paymentId || !savedUserId || !user || savedUserId !== user.id) return;
+    if (!API_URL || !pb.authStore.token) return;
+
+    try {
+      const res = await fetch(`${API_URL}/verify-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${pb.authStore.token}`,
+        },
+        body: JSON.stringify({ paymentId, userId: user.id }),
+      });
+      const data = await res.json();
+      if (data.paid) {
+        activatedRef.current = true;
+        sessionStorage.removeItem("asaas_payment_id");
+        sessionStorage.removeItem("asaas_user_id");
+        await refreshUser(); // atualiza o contexto com plan: "pro"
+      }
+    } catch {
+      // silencioso — o polling continua
+    }
+  }, [user, refreshUser]);
 
   useEffect(() => {
-    // Já é PRO — mostra sucesso imediatamente
     if (user?.plan === "pro") {
       setStatus("success");
+      if (timerRef.current) clearTimeout(timerRef.current);
+      sessionStorage.removeItem("asaas_payment_id");
+      sessionStorage.removeItem("asaas_user_id");
       return;
     }
 
-    // Não está logado — manda pro login
     if (!user) {
       navigate("/login");
       return;
     }
 
-    // Polling: aguarda webhook da Asaas atualizar o plano
     const poll = async () => {
       attemptRef.current += 1;
+
+      // A cada tentativa: tenta verificar via API + refresh do contexto
+      await verifyAndActivate();
       await refreshUser();
 
-      // refreshUser atualiza o contexto; o useEffect re-executa quando user muda
       if (attemptRef.current >= MAX_ATTEMPTS) {
         setStatus("timeout");
       } else {
@@ -46,13 +81,16 @@ export function CheckoutSuccess() {
     };
 
     timerRef.current = setTimeout(poll, POLL_INTERVAL);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [user?.plan]);
 
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [user?.plan]); // re-executa quando o plano mudar
+  const retryPolling = useCallback(() => {
+    attemptRef.current = 0;
+    activatedRef.current = false;
+    setStatus("polling");
+  }, []);
 
-  // ── Loading (aguardando webhook) ──────────────────────────────────────────
+  // ── Loading ──────────────────────────────────────────────────────────────
   if (status === "polling") {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6">
@@ -64,17 +102,14 @@ export function CheckoutSuccess() {
             Confirmando seu pagamento...
           </h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-6">
-            Aguarde enquanto processamos seu upgrade para PRO.
-            <br />Isso leva apenas alguns segundos.
+            Aguarde enquanto ativamos seu plano PRO.
           </p>
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-center gap-1.5 flex-wrap max-w-xs mx-auto">
             {Array.from({ length: MAX_ATTEMPTS }).map((_, i) => (
               <div
                 key={i}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i < attemptRef.current
-                    ? "w-4 bg-[#28A263]"
-                    : "w-2 bg-[#E8EBF1]"
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  i < attemptRef.current ? "w-5 bg-[#28A263]" : "w-2 bg-[#E8EBF1]"
                 }`}
               />
             ))}
@@ -84,7 +119,7 @@ export function CheckoutSuccess() {
     );
   }
 
-  // ── Timeout (webhook demorou demais) ─────────────────────────────────────
+  // ── Timeout ──────────────────────────────────────────────────────────────
   if (status === "timeout") {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6">
@@ -96,35 +131,24 @@ export function CheckoutSuccess() {
             Pagamento em processamento
           </h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-2">
-            Seu pagamento foi recebido, mas a confirmação está demorando mais que o esperado.
+            Seu pagamento foi recebido, mas a ativação está demorando mais que o esperado.
           </p>
           <p className="text-[rgba(0,21,41,0.6)] mb-8">
-            Seu plano será atualizado automaticamente em minutos.
-            Se não receber a confirmação em 10 minutos, entre em contato.
+            Seu plano será atualizado em breve. Se não receber confirmação em 10 minutos, entre em contato.
           </p>
           <div className="space-y-3">
             <Button
               className="w-full bg-[#28A263] hover:bg-[#1f7a4a] text-white"
-              onClick={async () => {
-                setStatus("polling");
-                attemptRef.current = 0;
-              }}
+              onClick={retryPolling}
             >
               Verificar novamente
             </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => navigate("/app")}
-            >
+            <Button variant="outline" className="w-full" onClick={() => navigate("/app")}>
               Ir para o Dashboard
             </Button>
             <p className="text-sm text-[rgba(0,21,41,0.6)]">
               Suporte:{" "}
-              <a
-                href="mailto:contato@bubuya.com.br"
-                className="text-[#28A263] font-semibold hover:underline"
-              >
+              <a href="mailto:contato@bubuya.com.br" className="text-[#28A263] font-semibold hover:underline">
                 contato@bubuya.com.br
               </a>
             </p>
@@ -139,7 +163,6 @@ export function CheckoutSuccess() {
     <div className="min-h-screen bg-white flex items-center justify-center p-6">
       <div className="max-w-2xl w-full">
         <Card className="p-12 border border-[#E8EBF1] bg-white text-center relative overflow-hidden shadow-sm">
-          {/* Decoração de fundo */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <Zap className="absolute top-8 left-8 w-10 h-10 text-[#28A263] opacity-5 animate-bounce" />
             <Sparkles className="absolute top-16 right-8 w-8 h-8 text-[#28A263] opacity-5 animate-pulse" />
@@ -148,12 +171,10 @@ export function CheckoutSuccess() {
           </div>
 
           <div className="relative z-10">
-            {/* Ícone animado */}
             <div className="inline-flex items-center justify-center w-24 h-24 bg-[#28A263]/10 rounded-3xl shadow-md mb-6 animate-bounce">
               <Crown className="w-12 h-12 text-[#28A263]" />
             </div>
 
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#28A263]/10 text-[#28A263] rounded-full text-sm font-bold mb-4">
               <Check className="w-4 h-4" />
               Pagamento Confirmado
@@ -173,7 +194,6 @@ export function CheckoutSuccess() {
               </span>
             </div>
 
-            {/* Recursos desbloqueados */}
             <Card className="p-6 bg-[#F9FAFB] border border-[#E8EBF1] mb-8 text-left">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-[#28A263]" />
@@ -189,16 +209,15 @@ export function CheckoutSuccess() {
                   "Exportação em PDF",
                   "Histórico completo",
                   "Suporte prioritário",
-                ].map((feature) => (
-                  <div key={feature} className="flex items-center gap-2 text-sm">
+                ].map((f) => (
+                  <div key={f} className="flex items-center gap-2 text-sm">
                     <Check className="w-4 h-4 text-[#28A263] flex-shrink-0" />
-                    <span className="text-[rgba(0,21,41,0.6)]">{feature}</span>
+                    <span className="text-[rgba(0,21,41,0.6)]">{f}</span>
                   </div>
                 ))}
               </div>
             </Card>
 
-            {/* CTAs */}
             <div className="space-y-3">
               <Button
                 size="lg"
@@ -230,10 +249,7 @@ export function CheckoutSuccess() {
         <div className="mt-6 text-center">
           <p className="text-sm text-[rgba(0,21,41,0.6)]">
             Precisa de ajuda?{" "}
-            <a
-              href="mailto:contato@bubuya.com.br"
-              className="text-[#28A263] hover:text-[#1f7a4a] font-semibold transition-colors"
-            >
+            <a href="mailto:contato@bubuya.com.br" className="text-[#28A263] hover:text-[#1f7a4a] font-semibold">
               contato@bubuya.com.br
             </a>
           </p>

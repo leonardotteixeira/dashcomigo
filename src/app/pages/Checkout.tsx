@@ -74,6 +74,9 @@ export function Checkout() {
       const data = JSON.parse(text);
       if (!res.ok) throw new Error(data.error || "Erro ao criar cobrança");
 
+      // Salva paymentId para verificação na página de sucesso
+      sessionStorage.setItem("asaas_payment_id", data.paymentId);
+      sessionStorage.setItem("asaas_user_id", user!.id);
       window.location.href = data.paymentUrl;
     } catch (err: any) {
       setError(err.message || "Erro ao conectar com o servidor de pagamentos.");
