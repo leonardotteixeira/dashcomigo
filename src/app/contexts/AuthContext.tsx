@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { pb } from "../../lib/pocketbase";
+import { jwtDecode } from "jwt-decode";
 import type { RecordModel } from "pocketbase";
 
 export type UserPlan = "free" | "pro";
@@ -202,67 +203,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async (): Promise<{ onboardingCompleted: boolean }> => {
+  const loginWithGoogle = async (googleToken: string): Promise<{ onboardingCompleted: boolean }> => {
     try {
-      // Detect misconfiguration: PocketBase defaulted to localhost in production
-      const isProduction = !["localhost", "127.0.0.1"].includes(window.location.hostname);
-      if (isProduction && pb.baseUrl.includes("localhost")) {
-        throw new Error(
-          "Configuração incompleta: defina VITE_POCKETBASE_URL no servidor."
-        );
+      console.log("[OAuth] Starting Google login with token");
+
+      // Decodificar token do Google para obter informações do usuário
+      const decoded: any = jwtDecode(googleToken);
+      const { email, name, picture } = decoded;
+
+      console.log("[OAuth] Google user info - Email:", email, "Name:", name);
+
+      if (!email) {
+        throw new Error("Email não encontrado no token Google.");
       }
 
-      const authData = await pb
-        .collection("profiles")
-        .authWithOAuth2({
-          provider: "google",
-          // Use explicit window.open so the popup has the right dimensions and
-          // isn't blocked by browsers that treat implicit popups as blocked.
-          urlCallback: (url) => {
-            const w = 520, h = 620;
-            const left = Math.max(0, (window.screen.width - w) / 2);
-            const top  = Math.max(0, (window.screen.height - h) / 2);
-            const popup = window.open(
-              url,
-              "google_oauth",
-              `width=${w},height=${h},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`
-            );
-            if (!popup) {
-              throw new Error(
-                "Popup bloqueado pelo navegador. Permita popups para este site e tente novamente."
-              );
-            }
-          },
-        });
+      // Tentar fazer login com o email
+      let authData: any;
+      let isNewUser = false;
+
+      try {
+        // Tentar fazer login com email (usando email como password inicialmente)
+        authData = await pb
+          .collection("profiles")
+          .authWithPassword(email, email);
+        console.log("[OAuth] User already exists, logged in");
+      } catch (loginError) {
+        // Usuário não existe, criar novo
+        console.log("[OAuth] User doesn't exist, creating new user");
+        isNewUser = true;
+
+        try {
+          await pb.collection("profiles").create({
+            email,
+            password: email, // Usar email como senha inicial
+            passwordConfirm: email,
+            name: name || email.split("@")[0],
+            plan: "free",
+            proposal_usage_today: 0,
+            proposal_reset_date: new Date().toISOString().split("T")[0],
+            transactions_usage_today: 0,
+            transactions_reset_date: new Date().toISOString().split("T")[0],
+            onboarding_completed: false,
+            receive_payment_reminders: true,
+            avatar_url: "", // Will be populated if needed
+          });
+
+          // Agora fazer login
+          authData = await pb
+            .collection("profiles")
+            .authWithPassword(email, email);
+          console.log("[OAuth] New user created and logged in");
+        } catch (createError) {
+          throw new Error(`Erro ao criar usuário Google: ${createError instanceof Error ? createError.message : String(createError)}`);
+        }
+      }
 
       if (!authData.record) {
-        throw new Error("Autenticação com Google falhou. Tente novamente.");
+        throw new Error("Falha ao autenticar com Google. Tente novamente.");
       }
 
-      // Ensure profile has required fields (first-time Google users)
-      const record = authData.record;
-      if (!record.name && authData.meta?.name) {
-        await pb.collection("profiles").update(record.id, {
-          name: authData.meta.name,
-          plan: record.plan ?? "free",
-          onboarding_completed: record.onboarding_completed ?? false,
-          receive_payment_reminders: true,
-        }, { requestKey: null });
+      // Atualizar profile com informações do Google se for novo usuário
+      if (isNewUser && picture) {
+        try {
+          await pb.collection("profiles").update(authData.record.id, {
+            name: name || authData.record.name,
+          }, { requestKey: null });
+        } catch (updateError) {
+          console.warn("[OAuth] Could not update profile with Google info:", updateError);
+        }
       }
 
-      const mapped = mapProfile(record);
+      const mapped = mapProfile(authData.record);
       setUser(mapped);
+      console.log("[OAuth] User authenticated, onboarding:", mapped.onboardingCompleted);
       return { onboardingCompleted: mapped.onboardingCompleted };
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Google login failed";
-      // Translate common PocketBase errors
-      if (msg.includes("popup") || msg.includes("closed")) {
-        throw new Error("A janela do Google foi fechada. Tente novamente.");
-      }
-      if (msg.includes("not allowed") || msg.includes("provider")) {
-        throw new Error("Login com Google não está habilitado. Use email e senha.");
-      }
-      throw new Error(msg);
+      console.error("[OAuth] Full error object:", error);
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error("[OAuth] Error message:", msg);
+      throw new Error(msg || "Google login failed");
     }
   };
 
