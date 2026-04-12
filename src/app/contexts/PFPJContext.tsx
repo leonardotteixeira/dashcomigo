@@ -61,7 +61,7 @@ export function PFPJProvider({ children }: { children: ReactNode }) {
     try {
       const records = await pb.collection('pfpj_rules').getList(1, 100, {
         filter: `userid = "${user.id}"`,
-        sort: '-created',
+        sort: '-name',
         requestKey: null,
       });
 
