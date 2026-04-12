@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { pb } from "../../lib/pocketbase";
-import { jwtDecode } from "jwt-decode";
 import type { RecordModel } from "pocketbase";
 
 export type UserPlan = "free" | "pro";
@@ -203,84 +202,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async (googleToken: string): Promise<{ onboardingCompleted: boolean }> => {
+  const loginWithGoogle = async (): Promise<{ onboardingCompleted: boolean }> => {
     try {
-      console.log("[OAuth] Starting Google login with token");
-
-      // Decodificar token do Google para obter informações do usuário
-      const decoded: any = jwtDecode(googleToken);
-      const { email, name, picture } = decoded;
-
-      console.log("[OAuth] Google user info - Email:", email, "Name:", name);
-
-      if (!email) {
-        throw new Error("Email não encontrado no token Google.");
-      }
-
-      // Tentar fazer login com o email
-      let authData: any;
-      let isNewUser = false;
-
-      try {
-        // Tentar fazer login com email (usando email como password inicialmente)
-        authData = await pb
-          .collection("profiles")
-          .authWithPassword(email, email);
-        console.log("[OAuth] User already exists, logged in");
-      } catch (loginError) {
-        // Usuário não existe, criar novo
-        console.log("[OAuth] User doesn't exist, creating new user");
-        isNewUser = true;
-
-        try {
-          await pb.collection("profiles").create({
-            email,
-            password: email, // Usar email como senha inicial
-            passwordConfirm: email,
-            name: name || email.split("@")[0],
-            plan: "free",
-            proposal_usage_today: 0,
-            proposal_reset_date: new Date().toISOString().split("T")[0],
-            transactions_usage_today: 0,
-            transactions_reset_date: new Date().toISOString().split("T")[0],
-            onboarding_completed: false,
-            receive_payment_reminders: true,
-            avatar_url: "", // Will be populated if needed
-          });
-
-          // Agora fazer login
-          authData = await pb
-            .collection("profiles")
-            .authWithPassword(email, email);
-          console.log("[OAuth] New user created and logged in");
-        } catch (createError) {
-          throw new Error(`Erro ao criar usuário Google: ${createError instanceof Error ? createError.message : String(createError)}`);
-        }
-      }
+      // PocketBase authWithOAuth2 opens a popup, handles the full OAuth dance,
+      // creates/updates the user record, and returns the authenticated data.
+      // No manual token handling, no jwt-decode, no password tricks needed.
+      const authData = await pb.collection("profiles").authWithOAuth2({
+        provider: "google",
+      });
 
       if (!authData.record) {
         throw new Error("Falha ao autenticar com Google. Tente novamente.");
       }
 
-      // Atualizar profile com informações do Google se for novo usuário
-      if (isNewUser && picture) {
+      // For new OAuth users, PocketBase creates the record but our custom fields
+      // (plan, onboarding_completed, etc.) won't be set yet — initialize them.
+      const isNew = authData.meta?.isNew ?? false;
+      if (isNew) {
         try {
           await pb.collection("profiles").update(authData.record.id, {
-            name: name || authData.record.name,
+            plan: "free",
+            onboarding_completed: false,
+            receive_payment_reminders: true,
+            proposal_usage_today: 0,
+            proposal_reset_date: new Date().toISOString().split("T")[0],
+            transactions_usage_today: 0,
+            transactions_reset_date: new Date().toISOString().split("T")[0],
           }, { requestKey: null });
-        } catch (updateError) {
-          console.warn("[OAuth] Could not update profile with Google info:", updateError);
+          // Re-fetch to get the updated record
+          const updated = await pb.collection("profiles").getOne(
+            authData.record.id,
+            { requestKey: null }
+          );
+          setUser(mapProfile(updated));
+          return { onboardingCompleted: false };
+        } catch (initErr) {
+          console.warn("[OAuth] Could not initialize new user fields:", initErr);
+          setUser(mapProfile(authData.record));
+          return { onboardingCompleted: false };
         }
       }
 
       const mapped = mapProfile(authData.record);
       setUser(mapped);
-      console.log("[OAuth] User authenticated, onboarding:", mapped.onboardingCompleted);
       return { onboardingCompleted: mapped.onboardingCompleted };
     } catch (error) {
-      console.error("[OAuth] Full error object:", error);
       const msg = error instanceof Error ? error.message : String(error);
-      console.error("[OAuth] Error message:", msg);
       throw new Error(msg || "Google login failed");
     }
   };
