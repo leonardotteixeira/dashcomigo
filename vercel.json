@@ -44,6 +44,22 @@
       "destination": "/workbox-$1"
     },
     {
+      "source": "/checkout",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/checkout"
+    },
+    {
+      "source": "/verify-payment",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/verify-payment"
+    },
+    {
+      "source": "/webhook/(.*)",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/webhook/$1"
+    },
+    {
+      "source": "/health",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/health"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
