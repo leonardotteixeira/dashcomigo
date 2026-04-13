@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 const checkoutRouter = require("./routes/checkout");
 const webhookRouter = require("./routes/webhook");
 const verifyPaymentRouter = require("./routes/verifyPayment");
+const checkPaymentByUserRouter = require("./routes/checkPaymentByUser");
 
 const app = express();
 
@@ -92,6 +93,7 @@ app.use(express.static(frontendPath));
 app.use("/checkout", checkoutLimiter, checkoutRouter);
 app.use("/webhook", webhookRouter);
 app.use("/verify-payment", verifyPaymentRouter);
+app.use("/check-payment-by-user", checkPaymentByUserRouter);
 
 // SPA fallback - serve index.html for all non-API routes
 app.get("*", (req, res) => {
