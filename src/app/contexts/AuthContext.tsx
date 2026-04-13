@@ -155,6 +155,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }).catch((err) => console.error("Streak update failed:", err));
 
+      // Fallback: se user estiver free, verifica se existe pagamento CONFIRMED
+      // no Asaas que nunca foi aplicado (caso o webhook nao disparou e o user
+      // nao passou pela tela CheckoutSuccess). Ativa PRO automaticamente.
+      if (mapped.plan === "free") {
+        (async () => {
+          try {
+            const API_URL = import.meta.env.VITE_API_URL || "";
+            const res = await fetch(`${API_URL}/check-payment-by-user`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId }),
+            });
+            const data = await res.json();
+            if (data.paid && data.plan === "pro") {
+              console.log("[AuthContext] PRO ativado via fallback check-payment-by-user");
+              const fresh = await pb.collection("profiles").getOne(userId, { requestKey: null });
+              setUser(mapProfile(fresh));
+            }
+          } catch (err) {
+            console.warn("[AuthContext] check-payment-by-user falhou:", err);
+          }
+        })();
+      }
+
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("autocancelled")) return;
       console.error("Error fetching profile:", error);
