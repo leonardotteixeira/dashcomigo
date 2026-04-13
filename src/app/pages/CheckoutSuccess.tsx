@@ -47,7 +47,6 @@ export function CheckoutSuccess() {
       console.warn("[CheckoutSuccess] userId não bate:", savedUserId, "≠", user.id);
       return;
     }
-    if (!pb.authStore.token) { console.warn("[CheckoutSuccess] sem token de auth"); return; }
 
     try {
       console.log("[CheckoutSuccess] chamando /verify-payment...");
@@ -55,7 +54,6 @@ export function CheckoutSuccess() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${pb.authStore.token}`,
         },
         body: JSON.stringify({ paymentId, userId: user.id }),
       });
