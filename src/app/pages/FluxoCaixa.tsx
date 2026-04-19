@@ -128,6 +128,7 @@ export function FluxoCaixa() {
   });
   const [suggestion, setSuggestion] = useState<{ pfpj: PfPj; score: number } | null>(null);
   const [showReviewAlert, setShowReviewAlert] = useState(false);
+  const [manualPfPj, setManualPfPj] = useState(false);
 
   // ─── Auto-suggest when description or valor changes ───────────────────────
 
@@ -142,9 +143,11 @@ export function FluxoCaixa() {
     const s = classifyPfPj(trimmed, val, formData.tipo);
     setSuggestion(s);
     setShowReviewAlert(s.score < 70);
-    // Only auto-apply if user hasn't manually changed it yet
-    setFormData((f) => ({ ...f, pfpj: s.pfpj, pfpj_score: s.score }));
-  }, [formData.descricao, formData.valor, formData.tipo]);
+    // Only auto-apply if user hasn't manually selected PF/PJ
+    if (!manualPfPj) {
+      setFormData((f) => ({ ...f, pfpj: s.pfpj, pfpj_score: s.score }));
+    }
+  }, [formData.descricao, formData.valor, formData.tipo, manualPfPj]);
 
   // ─── Create transaction ───────────────────────────────────────────────────
 
@@ -205,6 +208,7 @@ export function FluxoCaixa() {
     });
     setSuggestion(null);
     setShowReviewAlert(false);
+    setManualPfPj(false);
   };
 
   // ─── Derived values ───────────────────────────────────────────────────────
@@ -679,7 +683,7 @@ export function FluxoCaixa() {
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
         >
-          <div className="rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ background: "#F4EFE6" }}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(20,18,15,0.13)]">
               <h2 className="text-lg font-bold text-[#0E3B2E]">Nova Transação</h2>
               <button
@@ -809,24 +813,22 @@ export function FluxoCaixa() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormData((f) => ({ ...f, pfpj: "PJ", pfpj_score: 100 }))}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
-                      formData.pfpj === "PJ"
-                        ? "bg-blue-50 border-blue-500 text-blue-700"
-                        : "bg-[#EBE4D6] border-[rgba(20,18,15,0.13)] text-[rgba(0,21,41,0.55)] hover:border-[#7FD19F]"
-                    }`}
+                    onClick={() => { setManualPfPj(true); setFormData((f) => ({ ...f, pfpj: "PJ", pfpj_score: 100 })); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all"
+                    style={formData.pfpj === "PJ"
+                      ? { background: "#0E3B2E", borderColor: "#0E3B2E", color: "#F4EFE6" }
+                      : { background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)", color: "rgba(0,21,41,0.55)" }}
                   >
                     <Building2 className="w-4 h-4" />
                     🏢 Empresa
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData((f) => ({ ...f, pfpj: "PF", pfpj_score: 100 }))}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
-                      formData.pfpj === "PF"
-                        ? "bg-purple-50 border-purple-500 text-purple-700"
-                        : "bg-[#EBE4D6] border-[rgba(20,18,15,0.13)] text-[rgba(0,21,41,0.55)] hover:border-[#7FD19F]"
-                    }`}
+                    onClick={() => { setManualPfPj(true); setFormData((f) => ({ ...f, pfpj: "PF", pfpj_score: 100 })); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all"
+                    style={formData.pfpj === "PF"
+                      ? { background: "#7FD19F", borderColor: "#1F5A3A", color: "#0E3B2E" }
+                      : { background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)", color: "rgba(0,21,41,0.55)" }}
                   >
                     <User className="w-4 h-4" />
                     👤 Pessoal
