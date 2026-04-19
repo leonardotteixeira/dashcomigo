@@ -50,11 +50,11 @@ export function FeatureGate({
         </div>
         <button
           onClick={() => navigate("/checkout")}
-          className="absolute inset-0 flex items-center justify-center gap-1.5 bg-[#001529]/10 rounded-lg"
+          className="absolute inset-0 flex items-center justify-center gap-1.5 bg-[#0E3B2E]/10 rounded-lg"
           title="Disponível no PRO"
         >
-          <Lock className="w-3.5 h-3.5 text-[#001529]" />
-          <span className="text-xs font-semibold text-[#001529]">PRO</span>
+          <Lock className="w-3.5 h-3.5 text-[#0E3B2E]" />
+          <span className="text-xs font-semibold text-[#0E3B2E]">PRO</span>
         </button>
       </div>
     );
@@ -69,25 +69,25 @@ export function FeatureGate({
 
       {/* Lock overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#001529] to-[#003a6d] flex items-center justify-center mb-4 shadow-lg">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0E3B2E] to-[#0E3B2E] flex items-center justify-center mb-4 shadow-lg">
           <Lock className="w-6 h-6 text-white" />
         </div>
 
         {lockedLabel && (
-          <p className="text-xs font-bold text-[#001529]/50 uppercase tracking-widest mb-2">
+          <p className="text-xs font-bold text-[#0E3B2E]/50 uppercase tracking-widest mb-2">
             {lockedLabel}
           </p>
         )}
 
-        <h3 className="font-bold text-lg text-[#001529] mb-2">{ctaText}</h3>
+        <h3 className="font-bold text-lg text-[#0E3B2E] mb-2">{ctaText}</h3>
 
-        <p className="text-sm text-[#001529]/60 mb-5 max-w-xs">
+        <p className="text-sm text-[#0E3B2E]/60 mb-5 max-w-xs">
           Faça upgrade para o Plano PRO e desbloqueie esta funcionalidade e muito mais.
         </p>
 
         <button
           onClick={() => navigate("/checkout")}
-          className="flex items-center gap-2 bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity shadow-md"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity shadow-md"
         >
           <Crown className="w-4 h-4" />
           Fazer Upgrade para PRO

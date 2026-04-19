@@ -42,11 +42,11 @@ const posts = [
 
 export function Blog() {
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen bg-[#F4EFE6]">
       <LandingNav />
 
       {/* Header */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
+      <section className="pt-32 pb-16 bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h1 className="font-extrabold text-white text-5xl mb-4">Blog DashComigo</h1>
           <p className="text-xl text-white/80 font-light">
@@ -62,26 +62,26 @@ export function Blog() {
             {posts.map((post) => (
               <article
                 key={post.title}
-                className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
               >
                 <span
                   className={`inline-block self-start text-xs font-semibold px-3 py-1 rounded-full mb-4 ${post.categoryColor}`}
                 >
                   {post.category}
                 </span>
-                <h2 className="font-bold text-[#001529] text-xl mb-3 leading-snug">{post.title}</h2>
-                <p className="text-[#001529]/60 text-sm leading-relaxed mb-6 flex-1">{post.excerpt}</p>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#E5E7EB]">
+                <h2 className="font-bold text-[#0E3B2E] text-xl mb-3 leading-snug">{post.title}</h2>
+                <p className="text-[#0E3B2E]/60 text-sm leading-relaxed mb-6 flex-1">{post.excerpt}</p>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[rgba(20,18,15,0.13)]">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-[#003a6d]/10" />
+                    <div className="w-7 h-7 rounded-full bg-[#0E3B2E]/10" />
                     <div>
-                      <p className="text-xs font-semibold text-[#001529]">{post.author}</p>
-                      <p className="text-xs text-[#001529]/50">{post.date}</p>
+                      <p className="text-xs font-semibold text-[#0E3B2E]">{post.author}</p>
+                      <p className="text-xs text-[#0E3B2E]/50">{post.date}</p>
                     </div>
                   </div>
                   <a
                     href="#"
-                    className="text-sm font-semibold text-[#003a6d] hover:text-[#002a50] transition-colors"
+                    className="text-sm font-semibold text-[#0E3B2E] hover:text-[#002a50] transition-colors"
                   >
                     Ler mais &rarr;
                   </a>

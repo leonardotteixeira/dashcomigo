@@ -74,7 +74,7 @@ export function SmartAlert({ result }: SmartAlertProps) {
 
         {/* Barra de progresso do limite MEI */}
         {result.faturamento <= limiteMEI && (
-          <div className="mt-6 bg-white rounded-xl p-6 border-2 border-slate-200 shadow-sm">
+          <div className="mt-6 rounded-xl p-6 border-2 border-slate-200 shadow-sm">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-semibold text-slate-700">
                 Limite do MEI

@@ -13,13 +13,13 @@ export function CalculadoraDisponivel({ available }: CalculadoraDisponivelProps)
 
   return (
     <div className="space-y-6">
-      <div className="p-6 bg-white rounded-xl border border-[#E8EBF1] shadow-sm">
-        <h3 className="text-lg font-bold text-[#001529] mb-4">Cálculo do Disponível</h3>
+      <div className="p-6 rounded-xl border border-[#E8EBF1] shadow-sm">
+        <h3 className="text-lg font-bold text-[#0E3B2E] mb-4">Cálculo do Disponível</h3>
 
         {/* Breakdown table */}
         <div className="space-y-3 mb-6">
           {available.details.map((detail, idx) => (
-            <div key={idx} className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded-lg border border-[#E5E7EB]">
+            <div key={idx} className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded-lg border border-[rgba(20,18,15,0.13)]">
               <span className="text-[rgba(0,21,41,0.6)]">{detail.label}</span>
               <span className={`font-bold text-lg ${detail.amount > 0 ? 'text-[#28A263]' : 'text-[#EF4444]'}`}>
                 {detail.amount > 0 ? '+' : '-'}{fmt(Math.abs(detail.amount))}

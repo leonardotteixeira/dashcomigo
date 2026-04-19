@@ -121,17 +121,17 @@ export default function Investments() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-bold text-[#001529] mb-1">
+          <h1 className="font-bold text-[#0E3B2E] mb-1">
             Sugestões de Investimentos
           </h1>
-          <p className="text-[#001529]/60">
+          <p className="text-[#0E3B2E]/60">
             Faça seu dinheiro trabalhar para você com investimentos inteligentes
           </p>
         </div>
       </div>
 
       {/* Info Banner */}
-      <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E] rounded-2xl p-8 text-white">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
             <Info className="w-6 h-6" />
@@ -171,7 +171,7 @@ export default function Investments() {
 
       {/* Investment Options */}
       <div className="space-y-4">
-        <h2 className="font-bold text-xl text-[#001529]">
+        <h2 className="font-bold text-xl text-[#0E3B2E]">
           Opções de Investimento
         </h2>
 
@@ -181,7 +181,7 @@ export default function Investments() {
             return (
               <div
                 key={investment.id}
-                className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:shadow-lg transition-all cursor-pointer group"
+                className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 hover:shadow-lg transition-all cursor-pointer group"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start gap-4">
@@ -195,40 +195,40 @@ export default function Investments() {
                       />
                     </div>
                     <div>
-                      <span className="text-xs font-semibold text-[#001529]/60 uppercase tracking-wider">
+                      <span className="text-xs font-semibold text-[#0E3B2E]/60 uppercase tracking-wider">
                         {investment.category}
                       </span>
-                      <h3 className="font-bold text-lg text-[#001529] mt-1">
+                      <h3 className="font-bold text-lg text-[#0E3B2E] mt-1">
                         {investment.title}
                       </h3>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-sm text-[#001529]/70 mb-4">
+                <p className="text-sm text-[#0E3B2E]/70 mb-4">
                   {investment.description}
                 </p>
 
                 <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="bg-[#F5F7FA] rounded-lg p-3">
-                    <p className="text-xs text-[#001529]/60 mb-1">
+                  <div className="bg-[#F4EFE6] rounded-lg p-3">
+                    <p className="text-xs text-[#0E3B2E]/60 mb-1">
                       Rentabilidade
                     </p>
-                    <p className="font-bold text-sm text-[#001529]">
+                    <p className="font-bold text-sm text-[#0E3B2E]">
                       {investment.rentability}
                     </p>
                   </div>
-                  <div className="bg-[#F5F7FA] rounded-lg p-3">
-                    <p className="text-xs text-[#001529]/60 mb-1">
+                  <div className="bg-[#F4EFE6] rounded-lg p-3">
+                    <p className="text-xs text-[#0E3B2E]/60 mb-1">
                       Valor Mínimo
                     </p>
-                    <p className="font-bold text-sm text-[#001529]">
+                    <p className="font-bold text-sm text-[#0E3B2E]">
                       {investment.minValue}
                     </p>
                   </div>
-                  <div className="bg-[#F5F7FA] rounded-lg p-3">
-                    <p className="text-xs text-[#001529]/60 mb-1">Risco</p>
-                    <p className="font-bold text-sm text-[#001529]">
+                  <div className="bg-[#F4EFE6] rounded-lg p-3">
+                    <p className="text-xs text-[#0E3B2E]/60 mb-1">Risco</p>
+                    <p className="font-bold text-sm text-[#0E3B2E]">
                       {investment.risk}
                     </p>
                   </div>
@@ -238,7 +238,7 @@ export default function Investments() {
                   {investment.benefits.map((benefit, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-[#10b981]" />
-                      <span className="text-sm text-[#001529]/70">
+                      <span className="text-sm text-[#0E3B2E]/70">
                         {benefit}
                       </span>
                     </div>
@@ -249,7 +249,7 @@ export default function Investments() {
                   href={investment.externalLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-[#003a6d] text-white px-4 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold group-hover:gap-3"
+                  className="flex items-center justify-center gap-2 w-full bg-[#0E3B2E] text-white px-4 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold group-hover:gap-3"
                 >
                   Investir Agora
                   <ExternalLink className="w-4 h-4" />
@@ -261,14 +261,14 @@ export default function Investments() {
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-6">
+      <div className="bg-[#F4EFE6] border border-[rgba(20,18,15,0.13)] rounded-xl p-6">
         <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-[#001529]/60 flex-shrink-0 mt-0.5" />
+          <Info className="w-5 h-5 text-[#0E3B2E]/60 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-sm text-[#001529] mb-2">
+            <p className="font-semibold text-sm text-[#0E3B2E] mb-2">
               Aviso Importante
             </p>
-            <p className="text-sm text-[#001529]/70">
+            <p className="text-sm text-[#0E3B2E]/70">
               As informações apresentadas são apenas para fins educacionais e não
               constituem recomendação de investimento. Rentabilidades passadas
               não garantem resultados futuros. Consulte um assessor de
@@ -280,12 +280,12 @@ export default function Investments() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-8">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="font-bold text-2xl text-[#001529] mb-3">
+          <h2 className="font-bold text-2xl text-[#0E3B2E] mb-3">
             Pronto para começar a investir?
           </h2>
-          <p className="text-[#001529]/70 mb-6">
+          <p className="text-[#0E3B2E]/70 mb-6">
             Escolha a opção que mais se adequa ao seu perfil e objetivos
             financeiros. Comece com valores pequenos e aumente gradualmente.
           </p>
@@ -294,7 +294,7 @@ export default function Investments() {
               href="https://www.tesourodireto.com.br"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-[#003a6d] text-white px-6 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold"
+              className="flex items-center gap-2 bg-[#0E3B2E] text-white px-6 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold"
             >
               Tesouro Direto
               <ArrowRight className="w-4 h-4" />
@@ -303,7 +303,7 @@ export default function Investments() {
               href="https://www.xpi.com.br"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white text-[#003a6d] border-2 border-[#003a6d] px-6 py-3 rounded-lg hover:bg-[#F5F7FA] transition-colors font-semibold"
+              className="flex items-center gap-2 bg-white text-[#0E3B2E] border-2 border-[#0E3B2E] px-6 py-3 rounded-lg hover:bg-[#F4EFE6] transition-colors font-semibold"
             >
               Outras Opções
               <ArrowRight className="w-4 h-4" />

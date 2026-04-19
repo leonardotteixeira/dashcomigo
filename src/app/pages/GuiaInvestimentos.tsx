@@ -132,18 +132,18 @@ export function GuiaInvestimentos() {
   if (!canAccess("investments", user?.plan ?? "free")) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#001529] to-[#003a6d] flex items-center justify-center mb-6 shadow-xl">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#0E3B2E] to-[#0E3B2E] flex items-center justify-center mb-6 shadow-xl">
           <Lock className="w-10 h-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-[#001529] mb-3">
+        <h2 className="text-2xl font-bold text-[#0E3B2E] mb-3">
           Guia de Investimentos — Exclusivo PRO
         </h2>
-        <p className="text-[#001529]/60 mb-8 max-w-md">
+        <p className="text-[#0E3B2E]/60 mb-8 max-w-md">
           Aprenda a investir de forma inteligente com estratégias personalizadas para MEIs. Disponível apenas no Plano PRO.
         </p>
         <button
           onClick={() => navigate("/checkout")}
-          className="flex items-center gap-2 bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity shadow-md"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity shadow-md"
         >
           <Crown className="w-5 h-5" />
           Fazer Upgrade para PRO
@@ -189,7 +189,7 @@ export function GuiaInvestimentos() {
       </div>
 
       {/* Info Banner */}
-      <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E] rounded-2xl p-8 text-white">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
             <Info className="w-6 h-6" />
@@ -229,7 +229,7 @@ export function GuiaInvestimentos() {
 
       {/* Investment Options */}
       <div className="space-y-4">
-        <h2 className="font-bold text-xl text-[#001529]">
+        <h2 className="font-bold text-xl text-[#0E3B2E]">
           Opções de Investimento
         </h2>
 
@@ -239,7 +239,7 @@ export function GuiaInvestimentos() {
             return (
               <div
                 key={investment.id}
-                className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:shadow-lg transition-all cursor-pointer group"
+                className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 hover:shadow-lg transition-all cursor-pointer group"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start gap-4">
@@ -253,40 +253,40 @@ export function GuiaInvestimentos() {
                       />
                     </div>
                     <div>
-                      <span className="text-xs font-semibold text-[#001529]/60 uppercase tracking-wider">
+                      <span className="text-xs font-semibold text-[#0E3B2E]/60 uppercase tracking-wider">
                         {investment.category}
                       </span>
-                      <h3 className="font-bold text-lg text-[#001529] mt-1">
+                      <h3 className="font-bold text-lg text-[#0E3B2E] mt-1">
                         {investment.title}
                       </h3>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-sm text-[#001529]/70 mb-4">
+                <p className="text-sm text-[#0E3B2E]/70 mb-4">
                   {investment.description}
                 </p>
 
                 <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="bg-[#F5F7FA] rounded-lg p-3">
-                    <p className="text-xs text-[#001529]/60 mb-1">
+                  <div className="bg-[#F4EFE6] rounded-lg p-3">
+                    <p className="text-xs text-[#0E3B2E]/60 mb-1">
                       Rentabilidade
                     </p>
-                    <p className="font-bold text-sm text-[#001529]">
+                    <p className="font-bold text-sm text-[#0E3B2E]">
                       {investment.rentability}
                     </p>
                   </div>
-                  <div className="bg-[#F5F7FA] rounded-lg p-3">
-                    <p className="text-xs text-[#001529]/60 mb-1">
+                  <div className="bg-[#F4EFE6] rounded-lg p-3">
+                    <p className="text-xs text-[#0E3B2E]/60 mb-1">
                       Valor Mínimo
                     </p>
-                    <p className="font-bold text-sm text-[#001529]">
+                    <p className="font-bold text-sm text-[#0E3B2E]">
                       {investment.minValue}
                     </p>
                   </div>
-                  <div className="bg-[#F5F7FA] rounded-lg p-3">
-                    <p className="text-xs text-[#001529]/60 mb-1">Risco</p>
-                    <p className="font-bold text-sm text-[#001529]">
+                  <div className="bg-[#F4EFE6] rounded-lg p-3">
+                    <p className="text-xs text-[#0E3B2E]/60 mb-1">Risco</p>
+                    <p className="font-bold text-sm text-[#0E3B2E]">
                       {investment.risk}
                     </p>
                   </div>
@@ -296,7 +296,7 @@ export function GuiaInvestimentos() {
                   {investment.benefits.map((benefit, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-[#10b981]" />
-                      <span className="text-sm text-[#001529]/70">
+                      <span className="text-sm text-[#0E3B2E]/70">
                         {benefit}
                       </span>
                     </div>
@@ -307,7 +307,7 @@ export function GuiaInvestimentos() {
                   href={investment.externalLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-[#003a6d] text-white px-4 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold group-hover:gap-3"
+                  className="flex items-center justify-center gap-2 w-full bg-[#0E3B2E] text-white px-4 py-3 rounded-lg hover:bg-[#002a50] transition-colors font-semibold group-hover:gap-3"
                 >
                   Investir Agora
                   <ExternalLink className="w-4 h-4" />
@@ -319,14 +319,14 @@ export function GuiaInvestimentos() {
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-6">
+      <div className="bg-[#F4EFE6] border border-[rgba(20,18,15,0.13)] rounded-xl p-6">
         <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-[#001529]/60 flex-shrink-0 mt-0.5" />
+          <Info className="w-5 h-5 text-[#0E3B2E]/60 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-sm text-[#001529] mb-2">
+            <p className="font-semibold text-sm text-[#0E3B2E] mb-2">
               Aviso Importante
             </p>
-            <p className="text-sm text-[#001529]/70">
+            <p className="text-sm text-[#0E3B2E]/70">
               As informações apresentadas são apenas para fins educacionais e não
               constituem recomendação de investimento. Rentabilidades passadas
               não garantem resultados futuros. Consulte um assessor de
@@ -338,7 +338,7 @@ export function GuiaInvestimentos() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-[#003a6d] to-[#002a50] rounded-2xl p-8">
+      <div className="bg-gradient-to-r from-[#0E3B2E] to-[#002a50] rounded-2xl p-8">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="font-bold text-2xl text-white mb-3">
             Receba Recomendações Personalizadas
@@ -351,7 +351,7 @@ export function GuiaInvestimentos() {
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <button
               onClick={() => navigate("/app/recomendacoes-investimento")}
-              className="flex items-center gap-2 bg-white text-[#003a6d] px-6 py-3 rounded-lg hover:bg-white/95 transition-colors font-semibold"
+              className="flex items-center gap-2 bg-white text-[#0E3B2E] px-6 py-3 rounded-lg hover:bg-white/95 transition-colors font-semibold"
             >
               Obter Recomendações
               <ArrowRight className="w-4 h-4" />

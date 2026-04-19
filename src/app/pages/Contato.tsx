@@ -31,11 +31,11 @@ export function Contato() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen bg-[#F4EFE6]">
       <LandingNav />
 
       {/* Header */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
+      <section className="pt-32 pb-16 bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h1 className="font-extrabold text-white text-5xl mb-4">Entre em Contato</h1>
           <p className="text-xl text-white/80 font-light">Estamos aqui para ajudar você</p>
@@ -47,17 +47,17 @@ export function Contato() {
         <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
           {/* Contact info */}
           <div className="space-y-8">
-            <h2 className="font-bold text-[#001529] text-2xl">Fale conosco</h2>
+            <h2 className="font-bold text-[#0E3B2E] text-2xl">Fale conosco</h2>
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-[#003a6d]" />
+                <div className="w-12 h-12 rounded-xl bg-[#0E3B2E]/10 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-[#0E3B2E]" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#001529] mb-1">Email</p>
+                  <p className="font-semibold text-[#0E3B2E] mb-1">Email</p>
                   <a
                     href="mailto:contato@finmei.com.br"
-                    className="text-[#003a6d] hover:underline"
+                    className="text-[#0E3B2E] hover:underline"
                   >
                     contato@finmei.com.br
                   </a>
@@ -65,16 +65,16 @@ export function Contato() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="w-6 h-6 text-[#003a6d]" />
+                <div className="w-12 h-12 rounded-xl bg-[#0E3B2E]/10 flex items-center justify-center flex-shrink-0">
+                  <MessageCircle className="w-6 h-6 text-[#0E3B2E]" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#001529] mb-1">WhatsApp</p>
+                  <p className="font-semibold text-[#0E3B2E] mb-1">WhatsApp</p>
                   <a
                     href="https://wa.me/5511999999999"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#003a6d] hover:underline"
+                    className="text-[#0E3B2E] hover:underline"
                   >
                     (11) 99999-9999
                   </a>
@@ -82,19 +82,19 @@ export function Contato() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-[#003a6d]" />
+                <div className="w-12 h-12 rounded-xl bg-[#0E3B2E]/10 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-6 h-6 text-[#0E3B2E]" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#001529] mb-1">Horário de atendimento</p>
-                  <p className="text-[#001529]/60">Seg-Sex, 9h às 18h</p>
+                  <p className="font-semibold text-[#0E3B2E] mb-1">Horário de atendimento</p>
+                  <p className="text-[#0E3B2E]/60">Seg-Sex, 9h às 18h</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Form */}
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 shadow-sm">
+          <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-8 shadow-sm">
             {submitted ? (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
@@ -102,13 +102,13 @@ export function Contato() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="font-bold text-[#001529] text-xl mb-2">Mensagem enviada!</h3>
-                <p className="text-[#001529]/60">Entraremos em contato em breve.</p>
+                <h3 className="font-bold text-[#0E3B2E] text-xl mb-2">Mensagem enviada!</h3>
+                <p className="text-[#0E3B2E]/60">Entraremos em contato em breve.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="nome" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="nome" className="block text-sm font-semibold text-[#0E3B2E] mb-1">
                     Nome completo
                   </label>
                   <input
@@ -118,13 +118,13 @@ export function Contato() {
                     required
                     value={form.nome}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] placeholder-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d]"
+                    className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg px-4 py-3 text-[#0E3B2E] placeholder-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E]"
                     placeholder="Seu nome"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="email" className="block text-sm font-semibold text-[#0E3B2E] mb-1">
                     Email
                   </label>
                   <input
@@ -134,13 +134,13 @@ export function Contato() {
                     required
                     value={form.email}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] placeholder-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d]"
+                    className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg px-4 py-3 text-[#0E3B2E] placeholder-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E]"
                     placeholder="seu@email.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="assunto" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="assunto" className="block text-sm font-semibold text-[#0E3B2E] mb-1">
                     Assunto
                   </label>
                   <select
@@ -149,7 +149,7 @@ export function Contato() {
                     required
                     value={form.assunto}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d] bg-white"
+                    className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg px-4 py-3 text-[#0E3B2E] focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E] bg-white"
                   >
                     <option value="">Selecione um assunto</option>
                     <option value="duvidas">Dúvidas</option>
@@ -160,7 +160,7 @@ export function Contato() {
                 </div>
 
                 <div>
-                  <label htmlFor="mensagem" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="mensagem" className="block text-sm font-semibold text-[#0E3B2E] mb-1">
                     Mensagem
                   </label>
                   <textarea
@@ -170,14 +170,14 @@ export function Contato() {
                     rows={5}
                     value={form.mensagem}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] placeholder-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d] resize-none"
+                    className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg px-4 py-3 text-[#0E3B2E] placeholder-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E] resize-none"
                     placeholder="Escreva sua mensagem..."
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-[#003a6d] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#002a50] transition-all"
+                  className="w-full bg-[#0E3B2E] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#002a50] transition-all"
                 >
                   Enviar mensagem
                 </button>

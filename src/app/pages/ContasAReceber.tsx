@@ -274,7 +274,7 @@ export function ContasAReceber() {
               }
             }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ backgroundColor: "#0066FF" }}
+            style={{ backgroundColor: "#0E3B2E" }}
           >
             <Plus className="w-4 h-4" />
             Nova Conta
@@ -305,7 +305,7 @@ export function ContasAReceber() {
       </div>
 
       {/* Filters + Export */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             <Filter className="w-4 h-4 text-[rgba(0,21,41,0.4)]" />
@@ -315,14 +315,14 @@ export function ContasAReceber() {
                 onClick={() => setFilter(f)}
                 className={`px-3 py-1.5 text-sm font-semibold rounded-xl transition-all ${
                   filter === f
-                    ? "bg-[#0066FF] text-white shadow-sm"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                    ? "bg-[#0E3B2E] text-white shadow-sm"
+                    : "bg-[#F4EFE6] text-[#0E3B2E] hover:bg-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 {f === "all" ? "Todas" : STATUS_INFO[f].label}
                 {countByFilter(f) > 0 && (
                   <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                    filter === f ? "bg-white/20 text-white" : "bg-[#E5E7EB] text-[rgba(0,21,41,0.6)]"
+                    filter === f ? "bg-white/20 text-white" : "bg-[rgba(20,18,15,0.13)] text-[rgba(0,21,41,0.6)]"
                   }`}>
                     {countByFilter(f)}
                   </span>
@@ -332,7 +332,7 @@ export function ContasAReceber() {
           </div>
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-[#001529] hover:bg-[#F5F7FA] transition-all border border-[#E5E7EB]"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-[#0E3B2E] hover:bg-[#F4EFE6] transition-all border border-[rgba(20,18,15,0.13)]"
           >
             <Download className="w-4 h-4" />
             Exportar XLSX
@@ -344,11 +344,11 @@ export function ContasAReceber() {
 
       {/* List */}
       {loading ? (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-16 text-center shadow-sm">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-16 text-center shadow-sm">
           <p className="text-[rgba(0,21,41,0.5)] text-sm">Carregando...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-16 text-center shadow-sm">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-16 text-center shadow-sm">
           <p className="text-[rgba(0,21,41,0.5)] text-sm font-medium">
             {receivables.length === 0
               ? "Nenhuma conta a receber cadastrada. Clique em Nova Conta para começar."
@@ -375,7 +375,7 @@ export function ContasAReceber() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <h3 className="font-bold text-[#001529] truncate">{item.descricao}</h3>
+                        <h3 className="font-bold text-[#0E3B2E] truncate">{item.descricao}</h3>
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-lg ${info.bgClass} ${info.textClass}`}>
                           {info.label}
                         </span>
@@ -444,12 +444,12 @@ export function ContasAReceber() {
       {/* Nova Conta Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between p-6 border-b border-[#E5E7EB]">
-              <h2 className="text-lg font-bold text-[#001529]">Nova Conta a Receber</h2>
+          <div className="rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-[rgba(20,18,15,0.13)]">
+              <h2 className="text-lg font-bold text-[#0E3B2E]">Nova Conta a Receber</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 rounded-lg hover:bg-[#F5F7FA] transition-colors"
+                className="p-2 rounded-lg hover:bg-[#F4EFE6] transition-colors"
               >
                 <X className="w-4 h-4 text-[rgba(0,21,41,0.5)]" />
               </button>
@@ -457,19 +457,19 @@ export function ContasAReceber() {
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#001529] mb-1.5">Descrição *</label>
+                <label className="block text-sm font-medium text-[#0E3B2E] mb-1.5">Descrição *</label>
                 <input
                   type="text"
                   placeholder="Ex: Projeto Website — Cliente X"
                   value={form.descricao}
                   onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
-                  className="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5E7EB] focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/10"
+                  className="w-full px-3 py-2.5 text-sm rounded-xl border border-[rgba(20,18,15,0.13)] focus:border-[#0E3B2E] focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/10"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#001529] mb-1.5">Valor (R$) *</label>
+                  <label className="block text-sm font-medium text-[#0E3B2E] mb-1.5">Valor (R$) *</label>
                   <input
                     type="number"
                     min="0.01"
@@ -477,26 +477,26 @@ export function ContasAReceber() {
                     placeholder="0,00"
                     value={form.valor}
                     onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
-                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5E7EB] focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/10"
+                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-[rgba(20,18,15,0.13)] focus:border-[#0E3B2E] focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/10"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#001529] mb-1.5">Vencimento *</label>
+                  <label className="block text-sm font-medium text-[#0E3B2E] mb-1.5">Vencimento *</label>
                   <input
                     type="date"
                     value={form.dataVencimento}
                     onChange={(e) => setForm((f) => ({ ...f, dataVencimento: e.target.value }))}
-                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5E7EB] focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/10"
+                    className="w-full px-3 py-2.5 text-sm rounded-xl border border-[rgba(20,18,15,0.13)] focus:border-[#0E3B2E] focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#001529] mb-1.5">Categoria</label>
+                <label className="block text-sm font-medium text-[#0E3B2E] mb-1.5">Categoria</label>
                 <select
                   value={form.categoria}
                   onChange={(e) => setForm((f) => ({ ...f, categoria: e.target.value }))}
-                  className="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5E7EB] focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/10 bg-white"
+                  className="w-full px-3 py-2.5 text-sm rounded-xl border border-[rgba(20,18,15,0.13)] focus:border-[#0E3B2E] focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/10 bg-white"
                 >
                   {CATEGORIAS_RECEIVABLES.map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -510,16 +510,16 @@ export function ContasAReceber() {
                   type="checkbox"
                   checked={form.ehRecorrente}
                   onChange={(e) => setForm((f) => ({ ...f, ehRecorrente: e.target.checked }))}
-                  className="w-4 h-4 rounded border-[#E5E7EB] accent-[#0066FF]"
+                  className="w-4 h-4 rounded border-[rgba(20,18,15,0.13)] accent-[#0E3B2E]"
                 />
-                <label htmlFor="recorrente" className="text-sm text-[#001529] font-medium cursor-pointer">
+                <label htmlFor="recorrente" className="text-sm text-[#0E3B2E] font-medium cursor-pointer">
                   Recorrente
                 </label>
                 {form.ehRecorrente && (
                   <select
                     value={form.frequenciaRecorrencia}
                     onChange={(e) => setForm((f) => ({ ...f, frequenciaRecorrencia: e.target.value as "mensal" | "anual" }))}
-                    className="flex-1 px-3 py-2 text-sm rounded-xl border border-[#E5E7EB] focus:border-[#0066FF] focus:outline-none bg-white"
+                    className="flex-1 px-3 py-2 text-sm rounded-xl border border-[rgba(20,18,15,0.13)] focus:border-[#0E3B2E] focus:outline-none bg-white"
                   >
                     <option value="mensal">Mensal</option>
                     <option value="anual">Anual</option>
@@ -528,13 +528,13 @@ export function ContasAReceber() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#001529] mb-1.5">Anotações</label>
+                <label className="block text-sm font-medium text-[#0E3B2E] mb-1.5">Anotações</label>
                 <textarea
                   rows={2}
                   placeholder="Observações opcionais..."
                   value={form.anotacoes}
                   onChange={(e) => setForm((f) => ({ ...f, anotacoes: e.target.value }))}
-                  className="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E5E7EB] focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/10 resize-none"
+                  className="w-full px-3 py-2.5 text-sm rounded-xl border border-[rgba(20,18,15,0.13)] focus:border-[#0E3B2E] focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/10 resize-none"
                 />
               </div>
             </div>
@@ -542,14 +542,14 @@ export function ContasAReceber() {
             <div className="flex gap-3 p-6 pt-0">
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold rounded-xl border border-[#E5E7EB] text-[#001529] hover:bg-[#F5F7FA] transition-all"
+                className="flex-1 px-4 py-2.5 text-sm font-semibold rounded-xl border border-[rgba(20,18,15,0.13)] text-[#0E3B2E] hover:bg-[#F4EFE6] transition-all"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 px-4 py-2.5 text-sm font-semibold rounded-xl text-white bg-[#0066FF] hover:bg-[#0052CC] disabled:opacity-50 transition-all"
+                className="flex-1 px-4 py-2.5 text-sm font-semibold rounded-xl text-white bg-[#0E3B2E] hover:bg-[#0052CC] disabled:opacity-50 transition-all"
               >
                 {saving ? "Salvando..." : "Adicionar"}
               </button>

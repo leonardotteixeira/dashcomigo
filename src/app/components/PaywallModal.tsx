@@ -33,7 +33,7 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-lg p-0 gap-0 bg-white border-none overflow-hidden">
         {/* Header mais limpo */}
-        <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] text-white p-8 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E] text-white p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20" />
           
           <button
@@ -60,7 +60,7 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
 
         {/* Body com benefícios */}
         <div className="p-8">
-          <p className="text-sm text-[#001529]/70 mb-6">
+          <p className="text-sm text-[#0E3B2E]/70 mb-6">
             {current.description}
           </p>
 
@@ -71,10 +71,10 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
                 <Check className="w-3 h-3 text-green-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#001529]">
+                <p className="text-sm font-semibold text-[#0E3B2E]">
                   Transações e exportações ilimitadas
                 </p>
-                <p className="text-xs text-[#001529]/60">
+                <p className="text-xs text-[#0E3B2E]/60">
                   Sem se preocupar com limites mensais
                 </p>
               </div>
@@ -85,10 +85,10 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
                 <Check className="w-3 h-3 text-green-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#001529]">
+                <p className="text-sm font-semibold text-[#0E3B2E]">
                   Relatórios avançados e insights
                 </p>
-                <p className="text-xs text-[#001529]/60">
+                <p className="text-xs text-[#0E3B2E]/60">
                   Análises detalhadas para melhores decisões
                 </p>
               </div>
@@ -99,10 +99,10 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
                 <Check className="w-3 h-3 text-green-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#001529]">
+                <p className="text-sm font-semibold text-[#0E3B2E]">
                   Integrações e automações
                 </p>
-                <p className="text-xs text-[#001529]/60">
+                <p className="text-xs text-[#0E3B2E]/60">
                   Conecte com seu banco e economize tempo
                 </p>
               </div>
@@ -113,12 +113,12 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 mb-5 border border-green-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-[#001529]/60 mb-1">A partir de</p>
+                <p className="text-xs text-[#0E3B2E]/60 mb-1">A partir de</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-[#001529]">R$ 29,90</span>
-                  <span className="text-sm text-[#001529]/60">/mês</span>
+                  <span className="text-2xl font-bold text-[#0E3B2E]">R$ 29,90</span>
+                  <span className="text-sm text-[#0E3B2E]/60">/mês</span>
                 </div>
-                <p className="text-xs text-[#001529]/60 mt-1">
+                <p className="text-xs text-[#0E3B2E]/60 mt-1">
                   Menos de R$ 1,00 por dia
                 </p>
               </div>
@@ -126,18 +126,18 @@ export default function PaywallModal({ isOpen, onClose, trigger, featureName }: 
                 <div className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-1">
                   -40% OFF
                 </div>
-                <p className="text-xs text-[#001529]/60 line-through">R$ 49,90</p>
+                <p className="text-xs text-[#0E3B2E]/60 line-through">R$ 49,90</p>
               </div>
             </div>
           </div>
 
           {/* CTA Principal */}
-          <button className="w-full bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white font-bold py-4 rounded-xl hover:from-[#002a5d] hover:to-[#0056EF] transition-all shadow-lg mb-3">
+          <button className="w-full bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-bold py-4 rounded-xl hover:from-[#002a5d] hover:to-[#0056EF] transition-all shadow-lg mb-3">
             Fazer Upgrade para PRO
           </button>
 
           {/* Redutores de fricção */}
-          <div className="flex items-center justify-center gap-6 text-xs text-[#001529]/60">
+          <div className="flex items-center justify-center gap-6 text-xs text-[#0E3B2E]/60">
             <div className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
               <span>Cancele quando quiser</span>
