@@ -283,84 +283,118 @@ export function LandingPage() {
       <section id="planos" className="py-32" style={{ background: "#EBE4D6" }}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
+            <span className="inline-block text-xs font-bold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider"
+              style={{ background: "rgba(127,209,159,0.2)", color: "#1F5A3A" }}>
+              Planos e preços
+            </span>
             <h2 className="font-extrabold mb-4 text-5xl" style={{ color: "#0E3B2E" }}>
-              Planos para seu momento
+              Escolha como quer crescer
             </h2>
             <p className="text-xl max-w-2xl mx-auto" style={{ color: "rgba(14,59,46,0.6)" }}>
-              Comece grátis e evolua conforme seu negócio cresce
+              Comece grátis. Evolua quando fizer sentido. Sem compromisso.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                name: "Gratuito", price: "R$ 0", period: "/mês",
-                description: "Perfeito para começar",
-                features: ["Dashboard completo", "Até 50 lançamentos/mês", "Relatórios básicos", "Contas a pagar e receber", "Suporte por email"],
-                cta: "Começar grátis", highlighted: false
-              },
-              {
-                name: "Pro", price: "R$ 29", period: "/mês",
-                description: "Para MEIs em crescimento",
-                features: ["Tudo do Gratuito", "Lançamentos ilimitados", "Relatórios avançados", "Automações e recorrências", "Categorização inteligente", "Suporte prioritário"],
-                cta: "Começar teste grátis", highlighted: true
-              },
-              {
-                name: "Premium", price: "R$ 59", period: "/mês",
-                description: "Máximo controle e insights",
-                features: ["Tudo do Pro", "Multi-empresas (até 3)", "Integrações bancárias", "Análise preditiva", "API de acesso", "Gerente de conta dedicado"],
-                cta: "Falar com vendas", highlighted: false
-              }
-            ].map((plan) => (
-              <div key={plan.name}
-                className={`rounded-xl p-8 ${plan.highlighted ? "lg:scale-105" : ""}`}
-                style={plan.highlighted
-                  ? { background: "#0E3B2E", boxShadow: "0 20px 60px rgba(14,59,46,0.3)" }
-                  : { background: "#F4EFE6", border: "1px solid rgba(20,18,15,0.13)" }
-                }
-              >
-                <h3 className="font-bold text-xl mb-2" style={{ color: plan.highlighted ? "#F4EFE6" : "#0E3B2E" }}>
-                  {plan.name}
-                </h3>
-                <p className="text-sm mb-6" style={{ color: plan.highlighted ? "rgba(244,239,230,0.7)" : "rgba(14,59,46,0.6)" }}>
-                  {plan.description}
-                </p>
+          <div className="grid lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
 
-                <div className="mb-8">
-                  <span className="text-5xl font-extrabold" style={{ color: plan.highlighted ? "#7FD19F" : "#0E3B2E" }}>
-                    {plan.price}
-                  </span>
-                  <span className="text-lg" style={{ color: plan.highlighted ? "rgba(244,239,230,0.6)" : "rgba(14,59,46,0.5)" }}>
-                    {plan.period}
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => navigate("/login")}
-                  className="block w-full text-center px-6 py-4 rounded-lg font-bold transition-all mb-8"
-                  style={plan.highlighted
-                    ? { background: "#7FD19F", color: "#0E3B2E" }
-                    : { background: "#0E3B2E", color: "#F4EFE6" }
-                  }
-                  onMouseEnter={e => { e.currentTarget.style.opacity = "0.9"; }}
-                  onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
-                >
-                  {plan.cta}
-                </button>
-
-                <ul className="space-y-4">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0"
-                        style={{ color: plan.highlighted ? "#7FD19F" : "#1F5A3A" }} />
-                      <span className="text-sm" style={{ color: plan.highlighted ? "rgba(244,239,230,0.9)" : "#0E3B2E" }}>
-                        {feature}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+            {/* Gratuito */}
+            <div className="rounded-2xl p-8 flex flex-col"
+              style={{ background: "#F4EFE6", border: "1px solid rgba(20,18,15,0.13)" }}>
+              <div className="mb-6">
+                <h3 className="font-bold text-xl mb-1" style={{ color: "#0E3B2E" }}>Gratuito</h3>
+                <p className="text-sm" style={{ color: "rgba(14,59,46,0.6)" }}>Comece sem gastar nada</p>
               </div>
-            ))}
+              <div className="mb-8">
+                <span className="text-5xl font-extrabold" style={{ color: "#0E3B2E" }}>R$ 0</span>
+                <span className="text-base ml-1" style={{ color: "rgba(14,59,46,0.5)" }}>/mês</span>
+                <p className="text-xs mt-1" style={{ color: "rgba(14,59,46,0.45)" }}>Para sempre grátis</p>
+              </div>
+              <button onClick={() => navigate("/signup")}
+                className="w-full py-3.5 rounded-xl font-bold transition-all mb-8"
+                style={{ background: "transparent", color: "#0E3B2E", border: "2px solid #0E3B2E" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#0E3B2E"; e.currentTarget.style.color = "#F4EFE6"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0E3B2E"; }}>
+                Criar conta grátis
+              </button>
+              <ul className="space-y-3 flex-1">
+                {["Dashboard com relatórios básicos", "30 lançamentos/mês", "Contas a pagar e receber", "2 propostas por dia", "Simulador MEI"].map(f => (
+                  <li key={f} className="flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#1F5A3A" }} />
+                    <span className="text-sm" style={{ color: "rgba(14,59,46,0.75)" }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Essencial */}
+            <div className="rounded-2xl p-8 flex flex-col lg:scale-105"
+              style={{ background: "#0E3B2E", boxShadow: "0 20px 60px rgba(14,59,46,0.25)" }}>
+              <div className="mb-6">
+                <h3 className="font-bold text-xl mb-1" style={{ color: "#F4EFE6" }}>Essencial</h3>
+                <p className="text-sm" style={{ color: "rgba(244,239,230,0.65)" }}>Gestão completa. Você no controle.</p>
+              </div>
+              <div className="mb-8">
+                <span className="text-5xl font-extrabold" style={{ color: "#7FD19F" }}>R$ 29,90</span>
+                <span className="text-base ml-1" style={{ color: "rgba(244,239,230,0.5)" }}>/mês</span>
+                <p className="text-xs mt-1" style={{ color: "rgba(244,239,230,0.45)" }}>Menos de R$ 1,00 por dia</p>
+              </div>
+              <button onClick={() => navigate("/signup")}
+                className="w-full py-3.5 rounded-xl font-bold transition-all mb-8"
+                style={{ background: "#7FD19F", color: "#0E3B2E" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#F4EFE6"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "#7FD19F"; }}>
+                Assinar Essencial
+              </button>
+              <ul className="space-y-3 flex-1">
+                {["Tudo do Gratuito, sem limites", "Fluxo de caixa ilimitado", "Propostas ilimitadas", "Relatórios e exportações completas", "Simuladores avançados", "Suporte por chat"].map(f => (
+                  <li key={f} className="flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#7FD19F" }} />
+                    <span className="text-sm" style={{ color: "rgba(244,239,230,0.85)" }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 360 */}
+            <div className="rounded-2xl p-8 flex flex-col relative"
+              style={{ background: "#F4EFE6", border: "2px solid #0E3B2E" }}>
+              {/* Launch badge */}
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                style={{ background: "#0E3B2E", color: "#7FD19F" }}>
+                🚀 Preço de lançamento
+              </div>
+              <div className="mb-6">
+                <h3 className="font-bold text-xl mb-1" style={{ color: "#0E3B2E" }}>360</h3>
+                <p className="text-sm font-medium" style={{ color: "#1F5A3A" }}>A plataforma + um especialista do seu lado.</p>
+              </div>
+              <div className="mb-2">
+                <span className="text-5xl font-extrabold" style={{ color: "#0E3B2E" }}>R$ 59,90</span>
+                <span className="text-base ml-1" style={{ color: "rgba(14,59,46,0.5)" }}>/mês</span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm line-through" style={{ color: "rgba(14,59,46,0.35)" }}>R$ 99,90</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(127,209,159,0.25)", color: "#1F5A3A" }}>−40%</span>
+                </div>
+              </div>
+              <p className="text-xs mb-6 leading-relaxed" style={{ color: "rgba(14,59,46,0.55)" }}>
+                ✓ Quem entrar agora mantém R$ 59,90 enquanto estiver ativo.
+              </p>
+              <button onClick={() => navigate("/signup")}
+                className="w-full py-3.5 rounded-xl font-bold transition-all mb-6"
+                style={{ background: "#0E3B2E", color: "#F4EFE6" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#1F5A3A"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "#0E3B2E"; }}>
+                Quero meu especialista →
+              </button>
+              <ul className="space-y-3 flex-1">
+                {["Tudo do Essencial, sem exceção", "Especialista financeiro dedicado", "WhatsApp + chat (até 1 dia útil)", "Orientação prática no seu negócio", "Acesso prioritário a novos recursos"].map((f, i) => (
+                  <li key={f} className="flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: i === 1 ? "#0E3B2E" : "#1F5A3A" }} />
+                    <span className="text-sm" style={{ color: "rgba(14,59,46,0.8)", fontWeight: i === 1 ? "600" : "400" }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
           </div>
         </div>
       </section>
