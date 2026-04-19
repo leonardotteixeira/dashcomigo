@@ -1,17 +1,14 @@
-import { TrendingUp } from "lucide-react";
 import { Link } from "react-router";
+import { Logo } from "./ui/Logo";
 
 export function LandingFooter() {
   return (
-    <footer className="bg-[#001529] border-t border-white/10 py-12">
+    <footer className="bg-[#0E3B2E] border-t border-white/10 py-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl text-white">FinMEI</span>
+            <div className="mb-4">
+              <Logo variant="knockout" />
             </div>
             <p className="text-sm text-white/60">
               Gestão financeira inteligente para microempreendedores individuais.
@@ -46,7 +43,7 @@ export function LandingFooter() {
         </div>
 
         <div className="border-t border-white/10 pt-8 text-center text-sm text-white/60">
-          <p>&copy; 2026 FinMEI. Todos os direitos reservados.</p>
+          <p>&copy; 2026 DashComigo. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

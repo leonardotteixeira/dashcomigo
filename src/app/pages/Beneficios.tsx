@@ -11,7 +11,7 @@ const benefits = [
     icon: Clock,
     title: "Economize tempo",
     description:
-      "Chega de planilhas complicadas e anotações no caderno. Com o FinMEI você registra uma transação em menos de 30 segundos e tem tudo organizado automaticamente.",
+      "Chega de planilhas complicadas e anotações no caderno. Com o DashComigo você registra uma transação em menos de 30 segundos e tem tudo organizado automaticamente.",
     highlight: "−3h por semana em burocracia",
   },
   {
@@ -71,13 +71,13 @@ export function Beneficios() {
       <section className="pt-32 pb-20 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <span className="inline-block bg-white/10 text-white/80 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-            Por que escolher o FinMEI?
+            Por que escolher o DashComigo?
           </span>
           <h1 className="font-extrabold text-white text-5xl mb-6 leading-tight">
             Gestão financeira feita para o MEI brasileiro
           </h1>
           <p className="text-xl text-white/80 leading-relaxed font-light max-w-2xl mx-auto">
-            Não é mais um software genérico de contabilidade. O FinMEI resolve os problemas reais de quem empreende no Brasil como MEI.
+            Não é mais um software genérico de contabilidade. O DashComigo resolve os problemas reais de quem empreende no Brasil como MEI.
           </p>
         </div>
       </section>
@@ -116,8 +116,8 @@ export function Beneficios() {
       <section className="py-24 bg-[#F5F7FA]">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-bold text-[#001529] text-4xl mb-4">FinMEI vs alternativas</h2>
-            <p className="text-lg text-[#001529]/60">Veja por que o FinMEI é a melhor escolha para o MEI</p>
+            <h2 className="font-bold text-[#001529] text-4xl mb-4">DashComigo vs alternativas</h2>
+            <p className="text-lg text-[#001529]/60">Veja por que o DashComigo é a melhor escolha para o MEI</p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] overflow-hidden">
@@ -125,7 +125,7 @@ export function Beneficios() {
               <thead>
                 <tr className="bg-[#001529] text-white">
                   <th className="text-left p-5 font-semibold text-base">Funcionalidade</th>
-                  <th className="text-center p-5 font-bold text-base text-[#4ECDC4]">FinMEI</th>
+                  <th className="text-center p-5 font-bold text-base text-[#4ECDC4]">DashComigo</th>
                   <th className="text-center p-5 font-semibold text-base text-white/70">Planilha</th>
                   <th className="text-center p-5 font-semibold text-base text-white/70">Outros ERPs</th>
                 </tr>
@@ -167,7 +167,7 @@ export function Beneficios() {
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <p className="text-2xl text-[#001529] font-medium italic leading-relaxed mb-6">
-            "Antes eu gastava horas toda semana tentando organizar as finanças no Excel. Com o FinMEI, levo 10 minutos e tenho tudo que preciso para tomar decisões."
+            "Antes eu gastava horas toda semana tentando organizar as finanças no Excel. Com o DashComigo, levo 10 minutos e tenho tudo que preciso para tomar decisões."
           </p>
           <p className="text-[#001529]/60 font-semibold">— Ana Silva, MEI de Serviços Digitais, São Paulo</p>
         </div>

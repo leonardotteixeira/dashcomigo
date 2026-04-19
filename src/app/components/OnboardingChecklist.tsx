@@ -77,7 +77,7 @@ export default function OnboardingChecklist() {
             <Trophy className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">Primeiros Passos no FinMEI</h3>
+            <h3 className="font-semibold text-foreground">Primeiros Passos no DashComigo</h3>
             <p className="text-xs text-muted-foreground">Complete para dominar o sistema</p>
           </div>
         </div>

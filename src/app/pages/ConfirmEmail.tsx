@@ -41,7 +41,7 @@ export function ConfirmEmail() {
               <CheckCircle className="w-8 h-8 text-[#28A263]" />
             </div>
             <h1 className="text-2xl font-bold text-[#001529] mb-2">E-mail confirmado! 🎉</h1>
-            <p className="text-[rgba(0,21,41,0.6)] mb-8">Sua conta foi verificada com sucesso. Agora você pode usar o Meu Fluxo.</p>
+            <p className="text-[rgba(0,21,41,0.6)] mb-8">Sua conta foi verificada com sucesso. Agora você pode usar o DashComigo.</p>
             <button
               onClick={() => navigate("/app")}
               className="bg-[#28A263] hover:bg-[#1f7a4a] text-white font-semibold px-8 py-3 rounded-lg transition-colors"

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import {
-  TrendingUp, Mail, Lock, User, Eye, EyeOff,
+  Mail, Lock, User, Eye, EyeOff,
   MailCheck, Zap, Shield,
 } from "lucide-react";
+import { Logo } from "../components/ui/Logo";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -89,14 +90,11 @@ function LeftPanel() {
   return (
     <div
       className="hidden lg:flex flex-col justify-between p-12 text-white"
-      style={{ background: "linear-gradient(135deg, #0B2A4A 0%, #0A2540 100%)" }}
+      style={{ background: "#0E3B2E" }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center">
-          <TrendingUp className="w-5 h-5 text-white" />
-        </div>
-        <span className="text-xl font-bold tracking-tight">DashComigo</span>
+      <div className="flex items-center">
+        <Logo variant="knockout" />
       </div>
 
       {/* Center */}

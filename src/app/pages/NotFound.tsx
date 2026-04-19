@@ -8,7 +8,7 @@ export function NotFound() {
         <div className="w-10 h-10 rounded-xl bg-[#003a6d] flex items-center justify-center">
           <TrendingUp className="w-6 h-6 text-white" />
         </div>
-        <span className="font-extrabold text-2xl text-[#001529]">FinMEI</span>
+        <span className="font-extrabold text-2xl text-[#001529]">DashComigo</span>
       </div>
 
       <p className="font-extrabold text-[#003a6d] text-8xl mb-4 leading-none">404</p>

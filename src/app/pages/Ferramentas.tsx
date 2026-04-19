@@ -104,7 +104,7 @@ export function Ferramentas() {
             Tudo que o MEI precisa para crescer com controle
           </h1>
           <p className="text-xl text-white/80 leading-relaxed font-light max-w-2xl mx-auto">
-            Do fluxo de caixa às propostas comerciais — o FinMEI centraliza a gestão financeira do seu negócio em uma plataforma simples e intuitiva.
+            Do fluxo de caixa às propostas comerciais — o DashComigo centraliza a gestão financeira do seu negócio em uma plataforma simples e intuitiva.
           </p>
           <div className="flex justify-center gap-4 mt-10">
             <Link
