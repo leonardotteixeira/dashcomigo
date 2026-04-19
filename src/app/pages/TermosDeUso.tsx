@@ -1,33 +1,41 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export function TermosDeUso() {
   const navigate = useNavigate();
+  const [backHover, setBackHover] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: "#F4EFE6" }}>
       {/* Header */}
-      <header className="sticky top-0 bg-white border-b border-[rgba(0,0,0,0.1)] z-10">
+      <header
+        className="sticky top-0 border-b z-10"
+        style={{ background: "#F4EFE6", borderColor: "rgba(20,18,15,0.13)" }}
+      >
         <div className="max-w-4xl mx-auto px-6 py-4">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-[#28A263] hover:text-[#1f7a4a] transition-colors mb-4"
+            className="flex items-center transition-colors mb-4"
+            style={{ color: backHover ? "#1F5A3A" : "#0E3B2E" }}
+            onMouseEnter={() => setBackHover(true)}
+            onMouseLeave={() => setBackHover(false)}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar
           </button>
-          <h1 className="text-4xl font-bold text-[#0E3B2E]">Termos de Uso</h1>
-          <p className="text-[rgba(0,21,41,0.6)] mt-2">Última atualização: 26 de março de 2026</p>
+          <h1 className="text-4xl font-bold" style={{ color: "#0E3B2E" }}>Termos de Uso</h1>
+          <p className="mt-2" style={{ color: "rgba(14,59,46,0.6)" }}>Última atualização: 26 de março de 2026</p>
         </div>
       </header>
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-6 py-12">
-        <div className="space-y-12 text-[rgba(0,21,41,0.6)]">
+        <div className="space-y-12" style={{ color: "rgba(14,59,46,0.7)" }}>
           {/* 1. Aceitação dos Termos */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">1. Aceitação dos Termos</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>1. Aceitação dos Termos</h2>
             <p className="mb-4">
               Ao acessar e utilizar a plataforma DashComigo ("Plataforma"), você concorda em estar vinculado por estes Termos de Uso.
               Se você não concorda com qualquer parte destes termos, não deve utilizar a Plataforma.
@@ -40,7 +48,7 @@ export function TermosDeUso() {
 
           {/* 2. Descrição do Serviço */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">2. Descrição do Serviço</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>2. Descrição do Serviço</h2>
             <p className="mb-4">
               O DashComigo é uma plataforma digital que oferece ferramentas para gestão financeira e planejamento tributário, incluindo:
             </p>
@@ -56,7 +64,7 @@ export function TermosDeUso() {
 
           {/* 3. Uso Adequado da Plataforma */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">3. Uso Adequado da Plataforma</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>3. Uso Adequado da Plataforma</h2>
             <p className="mb-4">Você concorda em usar a Plataforma apenas para fins legítimos e não irá:</p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Violar qualquer lei ou regulação aplicável</li>
@@ -71,7 +79,7 @@ export function TermosDeUso() {
 
           {/* 4. Criação de Conta */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">4. Criação e Responsabilidade da Conta</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>4. Criação e Responsabilidade da Conta</h2>
             <p className="mb-4">
               Para acessar determinadas funcionalidades, você deve criar uma conta fornecendo informações precisas e atualizadas.
               Você é responsável por:
@@ -89,11 +97,11 @@ export function TermosDeUso() {
 
           {/* 5. Isenção de Responsabilidade */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">5. Isenção de Responsabilidade</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>5. Isenção de Responsabilidade</h2>
             <p className="mb-4">
-              <strong className="text-[#0E3B2E]">AVISO IMPORTANTE:</strong> A Plataforma fornece simulações aproximadas e educacionais com base
+              <strong style={{ color: "#0E3B2E" }}>AVISO IMPORTANTE:</strong> A Plataforma fornece simulações aproximadas e educacionais com base
               em dados gerais do Simples Nacional, MEI e legislação tributária atual. Os valores gerados são estimativas e
-              <strong className="text-[#0E3B2E]"> podem não refletir sua situação específica.</strong>
+              <strong style={{ color: "#0E3B2E" }}> podem não refletir sua situação específica.</strong>
             </p>
             <p className="mb-4">
               O DashComigo NÃO fornece consultoria contábil ou fiscal profissional. As informações não devem ser consideradas
@@ -113,7 +121,7 @@ export function TermosDeUso() {
 
           {/* 6. Propriedade Intelectual */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">6. Propriedade Intelectual</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>6. Propriedade Intelectual</h2>
             <p className="mb-4">
               Todo o conteúdo da Plataforma, incluindo textos, gráficos, logos, ícones, imagens e software, é propriedade do
               DashComigo ou de seus licenciadores e está protegido por leis de propriedade intelectual.
@@ -127,12 +135,12 @@ export function TermosDeUso() {
 
           {/* 7. Planos e Assinatura */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">7. Planos e Assinatura</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>7. Planos e Assinatura</h2>
             <p className="mb-4">
               A Plataforma oferece um plano gratuito com funcionalidades básicas e um plano PRO com recursos avançados:
             </p>
-            <div className="bg-[#F9FAFB] border border-[#E8EBF1] rounded-2xl p-6 mb-4">
-              <h3 className="font-bold text-[#0E3B2E] mb-2">Plano Gratuito:</h3>
+            <div className="border rounded-2xl p-6 mb-4" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
+              <h3 className="font-bold mb-2" style={{ color: "#0E3B2E" }}>Plano Gratuito:</h3>
               <ul className="list-disc list-inside space-y-1 text-sm">
                 <li>Simulador MEI → ME ilimitado</li>
                 <li>2 propostas comerciais por dia</li>
@@ -140,8 +148,8 @@ export function TermosDeUso() {
                 <li>30 lançamentos de fluxo de caixa por mês</li>
               </ul>
             </div>
-            <div className="bg-[#F9FAFB] border border-[#E8EBF1] rounded-2xl p-6">
-              <h3 className="font-bold text-[#0E3B2E] mb-2">Plano PRO:</h3>
+            <div className="border rounded-2xl p-6" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
+              <h3 className="font-bold mb-2" style={{ color: "#0E3B2E" }}>Plano PRO:</h3>
               <ul className="list-disc list-inside space-y-1 text-sm">
                 <li>Todas as ferramentas sem restrições</li>
                 <li>Propostas comerciais ilimitadas</li>
@@ -155,13 +163,13 @@ export function TermosDeUso() {
 
           {/* 8. Cancelamento e Reembolso */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">8. Cancelamento e Reembolso</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>8. Cancelamento e Reembolso</h2>
             <p className="mb-4">
               Você pode cancelar sua assinatura PRO a qualquer momento através de suas configurações de conta.
               O cancelamento entra em vigor no final do período de cobrança atual.
             </p>
             <p className="mb-4">
-              <strong className="text-[#0E3B2E]">Política de Reembolso:</strong> Não oferecemos reembolsos por pagamentos já processados.
+              <strong style={{ color: "#0E3B2E" }}>Política de Reembolso:</strong> Não oferecemos reembolsos por pagamentos já processados.
               No entanto, você pode cancelar antes do próximo ciclo de cobrança para evitar cobranças futuras.
             </p>
             <p>
@@ -171,7 +179,7 @@ export function TermosDeUso() {
 
           {/* 9. Limitação de Responsabilidade */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">9. Limitação de Responsabilidade</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>9. Limitação de Responsabilidade</h2>
             <p className="mb-4">
               EM NENHUMA CIRCUNSTÂNCIA O HUB DO EMPREENDEDOR SERÁ RESPONSÁVEL POR DANOS INDIRETOS, INCIDENTAIS, ESPECIAIS,
               CONSEQUENTES OU PUNITIVOS, INCLUINDO PERDA DE LUCROS, DADOS OU USO, MESMO QUE INFORMADO DA POSSIBILIDADE DE TAIS DANOS.
@@ -183,7 +191,7 @@ export function TermosDeUso() {
 
           {/* 10. Privacidade e Dados */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">10. Privacidade e Proteção de Dados</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>10. Privacidade e Proteção de Dados</h2>
             <p className="mb-4">
               Sua privacidade é importante para nós. Consulte nossa Política de Privacidade para entender como coletamos,
               usamos e protegemos seus dados pessoais.
@@ -196,7 +204,7 @@ export function TermosDeUso() {
 
           {/* 11. Links Externos */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">11. Links Externos</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>11. Links Externos</h2>
             <p>
               A Plataforma pode conter links para sites de terceiros. O DashComigo não é responsável pelo conteúdo,
               precisão ou práticas de privacidade desses sites. Sua utilização deles está sujeita aos respectivos termos de uso.
@@ -205,7 +213,7 @@ export function TermosDeUso() {
 
           {/* 12. Suspensão e Encerramento */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">12. Suspensão e Encerramento</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>12. Suspensão e Encerramento</h2>
             <p className="mb-4">
               O DashComigo reserva-se o direito de suspender ou encerrar sua conta se:
             </p>
@@ -222,7 +230,7 @@ export function TermosDeUso() {
 
           {/* 13. Conformidade Legal */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">13. Conformidade Legal</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>13. Conformidade Legal</h2>
             <p className="mb-4">
               A Plataforma é operada em conformidade com as leis brasileiras, incluindo:
             </p>
@@ -236,26 +244,26 @@ export function TermosDeUso() {
 
           {/* 14. Contato */}
           <section>
-            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">14. Contato</h2>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>14. Contato</h2>
             <p className="mb-4">
               Para dúvidas sobre estes Termos de Uso, entre em contato:
             </p>
-            <div className="bg-[#F9FAFB] border border-[#E8EBF1] rounded-2xl p-6">
+            <div className="border rounded-2xl p-6" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
               <p className="mb-2">
-                <strong className="text-[#0E3B2E]">Email:</strong>{" "}
-                <a href="mailto:contato@bubuya.com.br" className="text-[#28A263] hover:text-[#1f7a4a] transition-colors">
+                <strong style={{ color: "#0E3B2E" }}>Email:</strong>{" "}
+                <a href="mailto:contato@bubuya.com.br" className="hover:underline" style={{ color: "#1F5A3A" }}>
                   contato@bubuya.com.br
                 </a>
               </p>
               <p>
-                <strong className="text-[#0E3B2E]">Horário de atendimento:</strong> Segunda a sexta, 9h às 18h (horário de Brasília)
+                <strong style={{ color: "#0E3B2E" }}>Horário de atendimento:</strong> Segunda a sexta, 9h às 18h (horário de Brasília)
               </p>
             </div>
           </section>
 
           {/* Footer */}
-          <section className="border-t border-[#E8EBF1] pt-8">
-            <p className="text-sm text-[#686F6F]">
+          <section className="border-t pt-8" style={{ borderColor: "rgba(20,18,15,0.13)" }}>
+            <p className="text-sm" style={{ color: "rgba(14,59,46,0.6)" }}>
               © 2026 DashComigo. Todos os direitos reservados.
               Estes Termos de Uso foram atualizados pela última vez em 26 de março de 2026.
             </p>
@@ -266,7 +274,8 @@ export function TermosDeUso() {
         <div className="mt-12 flex justify-center">
           <Button
             onClick={() => navigate(-1)}
-            className="bg-[#28A263] hover:bg-[#2DDB81] text-[#0E3B2E] rounded-xl px-8"
+            style={{ background: "#0E3B2E", color: "#F4EFE6" }}
+            className="rounded-xl px-8"
           >
             Voltar à Página Anterior
           </Button>
