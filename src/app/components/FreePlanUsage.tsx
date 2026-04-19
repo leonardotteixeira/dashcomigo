@@ -126,16 +126,16 @@ export default function FreePlanUsage() {
               </div>
               <div className="flex-1">
                 <h4 className="text-sm font-bold mb-1" style={{ color: "#F4EFE6" }}>
-                  Pare de Ficar Travado
+                  Você está preso no limite
                 </h4>
                 <p className="text-xs leading-relaxed" style={{ color: "rgba(244,239,230,0.75)" }}>
-                  Você está perdendo dinheiro ao não registrar suas transações. Desbloqueie agora.
+                  O Essencial libera tudo. O 360 coloca um especialista do seu lado.
                 </p>
               </div>
             </div>
 
             <div className="space-y-2 mb-4">
-              {["Transações ilimitadas", "Exporte quantas vezes quiser", "Relatórios e insights avançados"].map(b => (
+              {["Lançamentos ilimitados", "Exportações ilimitadas", "Especialista humano no 360"].map(b => (
                 <div key={b} className="flex items-center gap-2 text-xs">
                   <Zap className="w-3.5 h-3.5" style={{ color: "#7FD19F" }} />
                   <span style={{ color: "rgba(244,239,230,0.9)" }}>{b}</span>
@@ -143,37 +143,30 @@ export default function FreePlanUsage() {
               ))}
             </div>
 
-            <div className="rounded-lg p-3 mb-4"
-              style={{ background: "rgba(244,239,230,0.08)", border: "1px solid rgba(244,239,230,0.15)" }}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs mb-0.5" style={{ color: "rgba(244,239,230,0.6)" }}>Por apenas</p>
-                  <p className="text-xl font-bold" style={{ color: "#F4EFE6" }}>
-                    R$ 29,90<span className="text-sm font-normal">/mês</span>
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-bold px-2 py-1 rounded-full mb-1"
-                    style={{ background: "#7FD19F", color: "#0E3B2E" }}>
-                    -40% OFF
-                  </div>
-                  <p className="text-xs line-through" style={{ color: "rgba(244,239,230,0.4)" }}>R$ 49,90</p>
-                </div>
-              </div>
-            </div>
-
+            {/* Essencial */}
             <button
               onClick={() => handleUpgrade("limit_reached")}
-              className="w-full text-sm font-bold py-3 rounded-xl transition-all shadow-lg mb-2"
+              className="w-full text-sm font-bold py-2.5 rounded-xl transition-all mb-2"
+              style={{ background: "rgba(244,239,230,0.12)", color: "#F4EFE6", border: "1px solid rgba(244,239,230,0.2)" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(244,239,230,0.2)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(244,239,230,0.12)"; }}
+            >
+              Assinar Essencial — R$ 29,90/mês
+            </button>
+
+            {/* 360 */}
+            <button
+              onClick={() => handleUpgrade("limit_reached")}
+              className="w-full text-sm font-bold py-2.5 rounded-xl transition-all shadow-lg mb-3"
               style={{ background: "#7FD19F", color: "#0E3B2E" }}
               onMouseEnter={e => { e.currentTarget.style.background = "#F4EFE6"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "#7FD19F"; }}
             >
-              Liberar Acesso Completo
+              Plano 360 com especialista → R$ 59,90
             </button>
 
-            <p className="text-xs text-center" style={{ color: "rgba(244,239,230,0.6)" }}>
-              Menos de R$ 1/dia • Cancele quando quiser
+            <p className="text-xs text-center" style={{ color: "rgba(244,239,230,0.5)" }}>
+              🚀 R$ 59,90 é preço de lançamento • Cancele quando quiser
             </p>
           </div>
         </div>

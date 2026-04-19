@@ -39,20 +39,24 @@ export default function LimitedOfferBanner({ onDismiss }: Props) {
         <div className="flex items-center justify-between py-2.5 gap-4">
           {/* Left */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center flex-shrink-0"
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full flex-shrink-0"
               style={{ background: "#7FD19F" }}>
-              <Crown className="w-4 h-4" style={{ color: "#0E3B2E" }} />
+              <Sparkles className="w-3 h-3" style={{ color: "#0E3B2E" }} />
+              <span className="text-xs font-bold" style={{ color: "#0E3B2E" }}>Lançamento</span>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-semibold text-sm" style={{ color: "#F4EFE6" }}>
-                  Plano PRO com 40% OFF
+                  Plano 360 — especialista humano do seu lado
                 </span>
-                <span className="hidden md:inline text-xs" style={{ color: "rgba(244,239,230,0.7)" }}>
-                  • De R$ 49,90 por apenas
+                <span className="hidden md:inline text-xs" style={{ color: "rgba(244,239,230,0.6)" }}>
+                  • De R$ 99,90 por apenas
                 </span>
                 <span className="text-sm font-bold" style={{ color: "#7FD19F" }}>
-                  R$ 29,90/mês
+                  R$ 59,90/mês
+                </span>
+                <span className="hidden lg:inline text-xs" style={{ color: "rgba(244,239,230,0.5)" }}>
+                  • Quem entrar agora mantém esse valor
                 </span>
               </div>
             </div>
@@ -62,9 +66,9 @@ export default function LimitedOfferBanner({ onDismiss }: Props) {
           <div className="flex items-center gap-3">
             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg border"
               style={{ background: "rgba(244,239,230,0.08)", borderColor: "rgba(244,239,230,0.2)" }}>
-              <Sparkles className="w-3.5 h-3.5" style={{ color: "#7FD19F" }} />
+              <Crown className="w-3.5 h-3.5" style={{ color: "#7FD19F" }} />
               <span className="text-xs font-medium" style={{ color: "rgba(244,239,230,0.8)" }}>
-                Termina em:
+                Oferta termina em:
               </span>
               <span className="text-sm font-mono font-bold" style={{ color: "#F4EFE6" }}>
                 {String(timeLeft.hours).padStart(2, "0")}:
@@ -74,13 +78,13 @@ export default function LimitedOfferBanner({ onDismiss }: Props) {
             </div>
 
             <button
-              onClick={() => navigate("/checkout")}
+              onClick={() => navigate("/planos")}
               className="font-semibold px-4 py-1.5 rounded-lg transition-all text-sm whitespace-nowrap flex items-center gap-1.5 shadow-lg"
               style={{ background: "#7FD19F", color: "#0E3B2E" }}
               onMouseEnter={e => { e.currentTarget.style.background = "#F4EFE6"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "#7FD19F"; }}
             >
-              <span>Assinar PRO</span>
+              <span>Ver plano 360</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
 

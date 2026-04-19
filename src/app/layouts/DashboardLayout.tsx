@@ -144,17 +144,18 @@ export function DashboardLayout() {
           <div className="p-4 border-t border-[rgba(20,18,15,0.13)]">
             {user.plan === "free" && (
               <div className="mb-3 p-4 bg-[#EBE4D6] border border-[rgba(20,18,15,0.13)] rounded-2xl">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-1">
                   <Crown className="w-4 h-4 text-[#1F5A3A]" />
-                  <span className="text-sm font-bold text-[#1F5A3A]">Upgrade para PRO</span>
+                  <span className="text-sm font-bold text-[#1F5A3A]">Evolua seu plano</span>
                 </div>
-                <p className="text-xs text-[rgba(20,18,15,0.6)] mb-3">Desbloqueie todos os recursos</p>
+                <p className="text-xs text-[rgba(14,59,46,0.6)] mb-1">Essencial a partir de R$ 29,90</p>
+                <p className="text-xs font-semibold text-[#1F5A3A] mb-3">🚀 360 com especialista: R$ 59,90</p>
                 <Button
                   size="sm"
                   className="w-full bg-[#0E3B2E] hover:bg-[#082219] text-white h-8 text-xs rounded-xl"
-                  onClick={() => navigate("/checkout")}
+                  onClick={() => navigate("/planos")}
                 >
-                  Ver Planos
+                  Ver planos
                 </Button>
               </div>
             )}
