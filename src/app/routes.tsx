@@ -42,6 +42,7 @@ import { Customers } from "./pages/Customers";
 import { Simulators } from "./pages/Simulators";
 import { Sobre } from "./pages/Sobre";
 import { Blog } from "./pages/Blog";
+import { BlogPost } from "./pages/BlogPost";
 import { Contato } from "./pages/Contato";
 import { Ferramentas } from "./pages/Ferramentas";
 import { Beneficios } from "./pages/Beneficios";
@@ -223,6 +224,10 @@ export const router = createHashRouter([
   {
     path: "/blog",
     Component: Blog,
+  },
+  {
+    path: "/blog/:slug",
+    Component: BlogPost,
   },
   {
     path: "/contato",
