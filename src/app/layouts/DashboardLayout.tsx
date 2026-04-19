@@ -30,6 +30,7 @@ import { MenuItem } from "../components/MenuItem";
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, loading, logout } = useAuth();
@@ -74,11 +75,14 @@ export function DashboardLayout() {
     navigate("/");
   };
 
+  const bannerVisible = !bannerDismissed && user.plan !== "pro";
+  const bannerOffset = bannerVisible ? 52 : 0;
+
   return (
     <div className="min-h-screen bg-[#F4EFE6]">
       {/* Limited Offer Banner - Fixed on top */}
       <div className="fixed top-0 left-0 right-0 z-[60]">
-        <LimitedOfferBanner />
+        <LimitedOfferBanner onDismiss={() => setBannerDismissed(true)} />
       </div>
 
       {/* Mobile sidebar backdrop */}
@@ -94,7 +98,7 @@ export function DashboardLayout() {
         className={`fixed left-0 z-50 w-[256px] bg-[#F4EFE6] border-r border-[rgba(20,18,15,0.13)] transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
-        style={{ top: "52px", bottom: 0 }}
+        style={{ top: `${bannerOffset}px`, bottom: 0 }}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
@@ -185,7 +189,7 @@ export function DashboardLayout() {
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-[256px]" style={{ marginTop: "52px" }}>
+      <div className="lg:pl-[256px]" style={{ marginTop: `${bannerOffset}px` }}>
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-[#F4EFE6] border-b border-[rgba(20,18,15,0.13)]">
           <div className="flex items-center justify-between px-4 lg:px-6 py-4">
