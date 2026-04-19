@@ -259,7 +259,7 @@ export function CheckoutSuccess() {
 
             <div className="mt-8 pt-8 border-t border-[#E8EBF1]">
               <p className="text-sm text-[rgba(0,21,41,0.6)]">
-                Obrigado por confiar no <strong>Meu Fluxo</strong>!<br />
+                Obrigado por confiar no <strong>DashComigo</strong>!<br />
                 Estamos aqui para ajudar seu negócio a crescer.
               </p>
             </div>

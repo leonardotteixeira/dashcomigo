@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none">
+  <title>DashComigo — Social avatar 1:1</title>
+  
+  <rect width="1024" height="1024" rx="225" ry="225" fill="#0E3B2E"></rect>
+  
+  <g transform="translate(512 512)">
+    <circle cx="-24" cy="0" r="220" stroke="#F4EFE6" stroke-width="88" fill="none"></circle>
+    <circle cx="220" cy="0" r="96" fill="#7FD19F"></circle>
+  </g>
+</svg>

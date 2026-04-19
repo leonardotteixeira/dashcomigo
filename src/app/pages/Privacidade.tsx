@@ -31,7 +31,7 @@ export function Privacidade() {
           <section>
             <h2 className="text-2xl font-bold mb-4" style={{ color: colors.textPrimary }}>Introdução</h2>
             <p className="mb-4">
-              A privacidade e segurança de seus dados são prioridades máximas para o Meu Fluxo ("nós", "nosso" ou "Plataforma").
+              A privacidade e segurança de seus dados são prioridades máximas para o DashComigo ("nós", "nosso" ou "Plataforma").
               Esta Política de Privacidade descreve como coletamos, usamos, protegemos e compartilhamos suas informações pessoais.
             </p>
             <p>
@@ -330,7 +330,7 @@ export function Privacidade() {
           {/* Footer */}
           <section className="border-t border-[#E8EBF1] pt-8">
             <p className="text-sm text-[#686F6F]">
-              © 2026 Meu Fluxo. Todos os direitos reservados.
+              © 2026 DashComigo. Todos os direitos reservados.
               Esta Política de Privacidade foi atualizada pela última vez em 26 de março de 2026.
             </p>
           </section>

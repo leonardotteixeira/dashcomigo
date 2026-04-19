@@ -1,51 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <linearGradient id="bodyBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1E5BA8"/>
-      <stop offset="100%" style="stop-color:#0F3A7D"/>
-    </linearGradient>
-    <linearGradient id="wingDark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0D2A5E"/>
-      <stop offset="100%" style="stop-color:#0A1E45"/>
-    </linearGradient>
-    <linearGradient id="tailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00BCD4"/>
-      <stop offset="50%" style="stop-color:#1E88E5"/>
-      <stop offset="100%" style="stop-color:#0D47A1"/>
-    </linearGradient>
-  </defs>
-
-  <!-- Tail (long turquoise/blue) -->
-  <path d="M 16 24 Q 15 28 14.5 32" stroke="url(#tailGrad)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <path d="M 16 24 Q 17 28 17.5 32" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round"/>
-
-  <!-- Body (blue) -->
-  <ellipse cx="15" cy="18" rx="6" ry="8" fill="url(#bodyBlue)"/>
-
-  <!-- Wing (darker blue) -->
-  <path d="M 11 16 Q 6 14 4 18 Q 5 22 11 20" fill="url(#wingDark)" opacity="0.95"/>
-
-  <!-- Chest (yellow) -->
-  <ellipse cx="15" cy="19" rx="4" ry="5.5" fill="#FFD700" opacity="0.9"/>
-
-  <!-- Head (darker blue/black) -->
-  <circle cx="16" cy="8" r="4.5" fill="#0A0E27"/>
-
-  <!-- White stripe on head -->
-  <ellipse cx="16.5" cy="7" rx="1.2" ry="2" fill="white" opacity="0.85"/>
-
-  <!-- Eye white -->
-  <circle cx="17.5" cy="7.5" r="1.2" fill="white"/>
-
-  <!-- Eye iris/pupil -->
-  <circle cx="17.5" cy="7.5" r="0.7" fill="#000"/>
-
-  <!-- Beak (black) -->
-  <path d="M 19.5 8 L 24 7.5 L 19.5 8.8 Z" fill="#1a1a1a"/>
-
-  <!-- Beak shine -->
-  <ellipse cx="22" cy="7.8" rx="1.5" ry="0.4" fill="white" opacity="0.3"/>
-
-  <!-- Upper wing detail (lighter blue) -->
-  <path d="M 12 14 Q 9 12 8 14" stroke="#3B82F6" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108" fill="none">
+  <title>DashComigo</title>
+  <circle cx="54" cy="54" r="34" stroke="#0E3B2E" stroke-width="10" fill="none"/>
+  <circle cx="90" cy="54" r="12" fill="#7FD19F"/>
 </svg>

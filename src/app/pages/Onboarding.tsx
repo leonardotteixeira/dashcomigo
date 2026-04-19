@@ -35,8 +35,7 @@ const FEATURES = [
     preview: (
       <div className="relative bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mx-auto max-w-sm">
         <div className="flex items-center gap-3 mb-5">
-          <img src="/logo.png" alt="" className="h-10 w-auto" />
-          <span className="text-[#001529] font-bold">Meu Fluxo</span>
+          <img src="/logo.svg" alt="DashComigo" className="h-8 w-auto" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[

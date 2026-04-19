@@ -10,7 +10,7 @@ export function Sobre() {
       {/* Hero */}
       <section className="pt-32 pb-20 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="font-extrabold text-white text-5xl mb-6">Sobre o FinMEI</h1>
+          <h1 className="font-extrabold text-white text-5xl mb-6">Sobre o DashComigo</h1>
           <p className="text-xl text-white/80 leading-relaxed font-light">
             Ajudamos MEIs a crescer com inteligência financeira e controle total
           </p>
@@ -25,7 +25,7 @@ export function Sobre() {
             Nascemos da necessidade real de empreendedores que lutavam para organizar suas finanças. Vimos de perto os desafios que os microempreendedores individuais enfrentam todos os dias — controle de caixa, prazos do DAS-MEI, fluxo de receitas e despesas — tudo gerenciado em planilhas complicadas ou cadernos.
           </p>
           <p className="text-lg text-[#001529]/70 leading-relaxed">
-            Decidimos criar uma solução simples, intuitiva e poderosa, pensada especialmente para quem empreende no Brasil. Hoje, o FinMEI ajuda milhares de MEIs a tomarem decisões financeiras mais inteligentes, com dados claros e ferramentas acessíveis.
+            Decidimos criar uma solução simples, intuitiva e poderosa, pensada especialmente para quem empreende no Brasil. Hoje, o DashComigo ajuda milhares de MEIs a tomarem decisões financeiras mais inteligentes, com dados claros e ferramentas acessíveis.
           </p>
         </div>
       </section>
@@ -48,7 +48,7 @@ export function Sobre() {
             {[
               {
                 title: "Simplicidade",
-                description: "Acreditamos que ferramentas poderosas não precisam ser complicadas. Cada funcionalidade do FinMEI foi desenhada para ser intuitiva e fácil de usar.",
+                description: "Acreditamos que ferramentas poderosas não precisam ser complicadas. Cada funcionalidade do DashComigo foi desenhada para ser intuitiva e fácil de usar.",
               },
               {
                 title: "Transparência",
@@ -95,7 +95,7 @@ export function Sobre() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-extrabold text-white text-4xl mb-6">Faça parte dessa história</h2>
           <p className="text-xl text-white/80 mb-10 font-light">
-            Junte-se a milhares de MEIs que já confiam no FinMEI para gerenciar suas finanças.
+            Junte-se a milhares de MEIs que já confiam no DashComigo para gerenciar suas finanças.
           </p>
           <Link
             to="/signup"

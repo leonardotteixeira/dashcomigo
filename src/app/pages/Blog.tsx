@@ -8,7 +8,7 @@ const posts = [
     title: "Como organizar as finanças do seu MEI em 5 passos",
     excerpt:
       "Organizar as finanças do seu MEI não precisa ser complicado. Neste guia prático, mostramos como separar contas, categorizar despesas e criar uma rotina financeira que funciona.",
-    author: "Equipe FinMEI",
+    author: "Equipe DashComigo",
     date: "15 Jan 2026",
   },
   {
@@ -17,7 +17,7 @@ const posts = [
     title: "DAS-MEI: Tudo que você precisa saber para não perder o prazo",
     excerpt:
       "O DAS-MEI é a guia mensal obrigatória de todo microempreendedor individual. Entenda como calcular, quando pagar e as consequências de atrasar o pagamento.",
-    author: "Equipe FinMEI",
+    author: "Equipe DashComigo",
     date: "22 Jan 2026",
   },
   {
@@ -26,7 +26,7 @@ const posts = [
     title: "MEI ou ME: Quando é a hora de migrar?",
     excerpt:
       "Chegou um momento em que seu faturamento está próximo do limite do MEI? Descubra os sinais de que é hora de migrar para Microempresa e como fazer essa transição.",
-    author: "Equipe FinMEI",
+    author: "Equipe DashComigo",
     date: "5 Fev 2026",
   },
   {
@@ -35,7 +35,7 @@ const posts = [
     title: "Fluxo de caixa: o segredo do MEI bem-sucedido",
     excerpt:
       "Controlar o fluxo de caixa é a diferença entre um MEI que cresce e um que fecha as portas. Aprenda como monitorar entradas e saídas de forma simples e eficiente.",
-    author: "Equipe FinMEI",
+    author: "Equipe DashComigo",
     date: "14 Fev 2026",
   },
 ];
@@ -48,7 +48,7 @@ export function Blog() {
       {/* Header */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="font-extrabold text-white text-5xl mb-4">Blog FinMEI</h1>
+          <h1 className="font-extrabold text-white text-5xl mb-4">Blog DashComigo</h1>
           <p className="text-xl text-white/80 font-light">
             Dicas, guias e novidades para MEIs prosperarem
           </p>

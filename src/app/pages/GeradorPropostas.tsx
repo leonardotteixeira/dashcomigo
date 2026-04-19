@@ -268,7 +268,7 @@ export function GeradorPropostas() {
       );
     }
 
-    lines.push(``, `Meu Fluxo`);
+    lines.push(``, `DashComigo`);
     return lines.join("\n");
   };
 
@@ -1040,7 +1040,7 @@ export function GeradorPropostas() {
 
                 <div className="text-center pt-4 border-t border-slate-200">
                   <p className="text-sm text-slate-600 mb-2">Estamos à disposição para esclarecer dúvidas.</p>
-                  <p className="text-xs text-slate-500 font-bold">Meu Fluxo</p>
+                  <p className="text-xs text-slate-500 font-bold">DashComigo</p>
                 </div>
               </div>
             </div>

@@ -13,7 +13,7 @@ export function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-[#003a6d] flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <span className="font-extrabold text-2xl text-[#001529]">FinMEI</span>
+            <span className="font-extrabold text-2xl text-[#001529]">DashComigo</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
@@ -404,7 +404,7 @@ export function LandingPage() {
             Pronto para dominar suas finanças?
           </h2>
           <p className="text-xl text-white/80 mb-10 leading-relaxed font-light">
-            Junte-se a milhares de MEIs que já organizaram suas finanças com o FinMEI
+            Junte-se a milhares de MEIs que já organizaram suas finanças com o DashComigo
           </p>
           <button
             onClick={() => navigate("/signup")}
@@ -425,7 +425,7 @@ export function LandingPage() {
                 <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold text-xl text-white">FinMEI</span>
+                <span className="font-bold text-xl text-white">DashComigo</span>
               </div>
               <p className="text-sm text-white/60">
                 Gestão financeira inteligente para microempreendedores individuais.
@@ -460,7 +460,7 @@ export function LandingPage() {
           </div>
 
           <div className="border-t border-white/10 pt-8 text-center text-sm text-white/60">
-            <p>&copy; 2026 FinMEI. Todos os direitos reservados.</p>
+            <p>&copy; 2026 DashComigo. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

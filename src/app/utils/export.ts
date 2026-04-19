@@ -110,7 +110,7 @@ export function exportDashboardToPDF(data: DashboardReportData) {
 
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(22);
-  doc.text("Meu Fluxo", 15, 20);
+  doc.text("DashComigo", 15, 20);
   doc.setFontSize(11);
   doc.text("Relatório Financeiro Completo", 15, 30);
 
@@ -177,7 +177,7 @@ export function exportDashboardToPDF(data: DashboardReportData) {
   doc.setFontSize(8);
   doc.setTextColor(128, 128, 128);
   doc.text(
-    "Relatório gerado pelo Meu Fluxo",
+    "Relatório gerado pelo DashComigo",
     pageWidth / 2,
     doc.internal.pageSize.height - 10,
     { align: "center" }
