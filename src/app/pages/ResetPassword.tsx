@@ -50,14 +50,14 @@ export function ResetPassword() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#28A263]/10 rounded-2xl shadow-sm mb-4">
             <KeyRound className="w-8 h-8 text-[#28A263]" />
           </div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-2">Nova senha</h1>
+          <h1 className="text-3xl font-bold text-[#0E3B2E] mb-2">Nova senha</h1>
           <p className="text-[rgba(0,21,41,0.6)]">Digite sua nova senha abaixo.</p>
         </div>
 
         <Card className="p-8 border border-[#E8EBF1] bg-white shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="password" className="flex items-center gap-2 mb-2 text-[#001529]">
+              <Label htmlFor="password" className="flex items-center gap-2 mb-2 text-[#0E3B2E]">
                 <Lock className="w-4 h-4" />
                 Nova senha
               </Label>
@@ -69,13 +69,13 @@ export function ResetPassword() {
                 placeholder="Mínimo 8 caracteres"
                 required
                 minLength={8}
-                className="h-12 bg-white border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
+                className="h-12 bg-white border-[#E8EBF1] text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
                 autoComplete="new-password"
               />
             </div>
 
             <div>
-              <Label htmlFor="confirm" className="flex items-center gap-2 mb-2 text-[#001529]">
+              <Label htmlFor="confirm" className="flex items-center gap-2 mb-2 text-[#0E3B2E]">
                 <Lock className="w-4 h-4" />
                 Confirmar senha
               </Label>
@@ -87,7 +87,7 @@ export function ResetPassword() {
                 placeholder="Repita a senha"
                 required
                 minLength={8}
-                className="h-12 bg-white border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
+                className="h-12 bg-white border-[#E8EBF1] text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] focus:ring-1 focus:ring-[#28A263]/20"
                 autoComplete="new-password"
               />
             </div>

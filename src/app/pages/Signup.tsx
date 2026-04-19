@@ -198,7 +198,7 @@ function InputField({
           required={required}
           autoComplete={autoComplete}
           disabled={disabled}
-          className="w-full h-12 pl-10 pr-4 rounded-lg border border-[#E5E7EB] bg-white text-sm text-[#1a1a2e] placeholder:text-[#1a1a2e]/35 outline-none focus:border-[#0B2A4A] focus:ring-2 focus:ring-[#0B2A4A]/10 transition-all disabled:opacity-50"
+          className="w-full h-12 pl-10 pr-4 rounded-lg border border-[rgba(20,18,15,0.13)] bg-white text-sm text-[#1a1a2e] placeholder:text-[#1a1a2e]/35 outline-none focus:border-[#0B2A4A] focus:ring-2 focus:ring-[#0B2A4A]/10 transition-all disabled:opacity-50"
         />
         {rightElement && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -352,7 +352,7 @@ export function Signup() {
                   className={`w-full h-12 pl-10 pr-4 rounded-lg border bg-white text-sm text-[#1a1a2e] placeholder:text-[#1a1a2e]/35 outline-none focus:ring-2 transition-all ${
                     cnpjDigits.length > 0 && !cnpjValid
                       ? "border-red-400 focus:ring-red-200"
-                      : "border-[#E5E7EB] focus:border-[#0B2A4A] focus:ring-[#0B2A4A]/10"
+                      : "border-[rgba(20,18,15,0.13)] focus:border-[#0B2A4A] focus:ring-[#0B2A4A]/10"
                   }`}
                 />
               </div>
@@ -483,9 +483,9 @@ export function Signup() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
+            <div className="flex-1 h-px bg-[rgba(20,18,15,0.13)]" />
             <span className="text-xs text-[#1a1a2e]/40 whitespace-nowrap">ou continue com</span>
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
+            <div className="flex-1 h-px bg-[rgba(20,18,15,0.13)]" />
           </div>
 
           {/* Google button — full width, only relevant social option for MEIs */}
@@ -493,7 +493,7 @@ export function Signup() {
             type="button"
             onClick={handleGoogleSignup}
             disabled={googleLoading || loading}
-            className="w-full h-12 flex items-center justify-center gap-3 border border-[#E5E7EB] rounded-lg text-sm font-medium text-[#1a1a2e] hover:bg-gray-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full h-12 flex items-center justify-center gap-3 border border-[rgba(20,18,15,0.13)] rounded-lg text-sm font-medium text-[#1a1a2e] hover:bg-gray-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {googleLoading ? (
               <span className="w-4 h-4 border-2 border-[#1a1a2e]/30 border-t-[#1a1a2e] rounded-full animate-spin" />

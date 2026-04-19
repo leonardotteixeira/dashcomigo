@@ -118,7 +118,7 @@ export function CheckoutSuccess() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-[#28A263]/10 rounded-3xl mb-6">
             <Loader2 className="w-10 h-10 text-[#28A263] animate-spin" />
           </div>
-          <h1 className="text-2xl font-bold text-[#001529] mb-3">
+          <h1 className="text-2xl font-bold text-[#0E3B2E] mb-3">
             Confirmando seu pagamento...
           </h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-6">
@@ -147,7 +147,7 @@ export function CheckoutSuccess() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-amber-50 rounded-3xl mb-6">
             <AlertCircle className="w-10 h-10 text-amber-500" />
           </div>
-          <h1 className="text-2xl font-bold text-[#001529] mb-3">
+          <h1 className="text-2xl font-bold text-[#0E3B2E] mb-3">
             Pagamento em processamento
           </h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-2">
@@ -200,7 +200,7 @@ export function CheckoutSuccess() {
               Pagamento Confirmado
             </div>
 
-            <h1 className="text-4xl font-bold text-[#001529] mb-3">
+            <h1 className="text-4xl font-bold text-[#0E3B2E] mb-3">
               Bem-vindo ao PRO! 🎉
             </h1>
             <p className="text-lg text-[rgba(0,21,41,0.6)] mb-4">
@@ -217,7 +217,7 @@ export function CheckoutSuccess() {
             <Card className="p-6 bg-[#F9FAFB] border border-[#E8EBF1] mb-8 text-left">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-[#28A263]" />
-                <h3 className="font-bold text-[#001529]">Recursos Desbloqueados:</h3>
+                <h3 className="font-bold text-[#0E3B2E]">Recursos Desbloqueados:</h3>
               </div>
               <div className="grid md:grid-cols-2 gap-3">
                 {[
@@ -250,7 +250,7 @@ export function CheckoutSuccess() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full border border-[#E8EBF1] text-[#001529] hover:bg-[#F9FAFB]"
+                className="w-full border border-[#E8EBF1] text-[#0E3B2E] hover:bg-[#F9FAFB]"
                 onClick={() => navigate("/app/preco")}
               >
                 Testar Simulador de Preço

@@ -18,14 +18,14 @@ export function SimuladorPreco() {
           <div className="w-20 h-20 bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-10 h-10 text-[rgba(0,21,41,0.6)]" />
           </div>
-          <h2 className="text-2xl font-bold text-[#001529] mb-3">Disponível no plano PRO</h2>
+          <h2 className="text-2xl font-bold text-[#0E3B2E] mb-3">Disponível no plano PRO</h2>
           <p className="text-[rgba(0,21,41,0.6)] mb-6">
             O Simulador de Preço Ideal está disponível apenas para assinantes PRO.
             Calcule o preço perfeito para seus produtos e serviços.
           </p>
           <Button
             size="lg"
-            className="bg-[#28A263] hover:bg-[#1F8C50] text-white rounded-xl"
+            className="bg-[#7FD19F] hover:bg-[#1F8C50] text-white rounded-xl"
             onClick={() => navigate("/checkout")}
           >
             <Crown className="w-4 h-4 mr-2" />
@@ -55,7 +55,7 @@ export function SimuladorPreco() {
   const getMargemStatus = () => {
     if (margemDesejada < 30) return { label: "Atenção", color: "text-[#FF4F3D]", bg: "bg-[#FF4F3D]/10 border-[#FF4F3D]/20" };
     if (margemDesejada < 40) return { label: "Razoável", color: "text-[#FF973E]", bg: "bg-[#FF973E]/10 border-[#FF973E]/20" };
-    if (margemDesejada <= 60) return { label: "Ideal", color: "text-[#2DDB81]", bg: "bg-[#28A263]/10 border-[#28A263]/20" };
+    if (margemDesejada <= 60) return { label: "Ideal", color: "text-[#2DDB81]", bg: "bg-[#7FD19F]/10 border-[#7FD19F]/20" };
     return { label: "Alta", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" };
   };
 
@@ -64,7 +64,7 @@ export function SimuladorPreco() {
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
-  const inputClass = "bg-white border-[rgba(0,0,0,0.1)] text-[#001529] placeholder:text-[rgba(0,21,41,0.5)] rounded-xl focus:border-[#28A263]";
+  const inputClass = "bg-white border-[rgba(0,0,0,0.1)] text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.5)] rounded-xl focus:border-[#7FD19F]";
 
   return (
     <div className="min-h-screen bg-white">
@@ -73,10 +73,10 @@ export function SimuladorPreco() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-[#C0F497]/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-              <Tag className="w-6 h-6 text-[#28A263]" />
+              <Tag className="w-6 h-6 text-[#7FD19F]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-[#001529]">Simulador de Preço Ideal</h1>
+              <h1 className="text-3xl font-bold text-[#0E3B2E]">Simulador de Preço Ideal</h1>
               <p className="text-[rgba(0,21,41,0.6)] mt-2">
                 Calcule o preço perfeito para seus produtos ou serviços considerando custos e margem desejada
               </p>
@@ -100,8 +100,8 @@ export function SimuladorPreco() {
         <div className="grid lg:grid-cols-2 gap-8">
         {/* Input Card */}
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-            <h3 className="text-lg font-bold text-[#001529] mb-6">Dados do Produto/Serviço</h3>
+          <div className="p-6 rounded-2xl border border-[rgba(0,0,0,0.1)]">
+            <h3 className="text-lg font-bold text-[#0E3B2E] mb-6">Dados do Produto/Serviço</h3>
 
             <div className="space-y-6">
               <div>
@@ -198,7 +198,7 @@ export function SimuladorPreco() {
 
                 <div className="flex justify-between text-xs text-[rgba(0,21,41,0.5)] mt-2">
                   <span>10%</span>
-                  <span className="text-[#28A263] font-medium">Ideal: 40-60%</span>
+                  <span className="text-[#7FD19F] font-medium">Ideal: 40-60%</span>
                   <span>80%</span>
                 </div>
               </div>
@@ -207,28 +207,28 @@ export function SimuladorPreco() {
 
           {/* Cost Breakdown */}
           <div className="p-6 bg-[#F8F9FA] rounded-2xl border border-[rgba(0,0,0,0.1)]">
-            <h4 className="font-bold text-[#001529] mb-4">Composição de Custos</h4>
+            <h4 className="font-bold text-[#0E3B2E] mb-4">Composição de Custos</h4>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-[rgba(0,21,41,0.6)]">Custo direto</span>
-                <span className="font-bold text-[#001529]">{formatCurrency(custo)}</span>
+                <span className="font-bold text-[#0E3B2E]">{formatCurrency(custo)}</span>
               </div>
               {tempoHoras > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-[rgba(0,21,41,0.6)]">Tempo ({tempoHoras}h × {formatCurrency(valorHora)})</span>
-                  <span className="font-bold text-[#001529]">{formatCurrency(tempoHoras * valorHora)}</span>
+                  <span className="font-bold text-[#0E3B2E]">{formatCurrency(tempoHoras * valorHora)}</span>
                 </div>
               )}
               {custoOperacional > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-[rgba(0,21,41,0.6)]">Custos operacionais</span>
-                  <span className="font-bold text-[#001529]">{formatCurrency(custoOperacional)}</span>
+                  <span className="font-bold text-[#0E3B2E]">{formatCurrency(custoOperacional)}</span>
                 </div>
               )}
               <div className="pt-3 border-t border-[rgba(0,0,0,0.1)]">
                 <div className="flex justify-between">
-                  <span className="font-bold text-[#001529]">Custo Total</span>
-                  <span className="font-bold text-[#001529] text-lg">{formatCurrency(resultado.custoTotal)}</span>
+                  <span className="font-bold text-[#0E3B2E]">Custo Total</span>
+                  <span className="font-bold text-[#0E3B2E] text-lg">{formatCurrency(resultado.custoTotal)}</span>
                 </div>
               </div>
             </div>
@@ -237,14 +237,14 @@ export function SimuladorPreco() {
 
         {/* Result Card */}
         <div className="space-y-6">
-          <div className="p-8 bg-[#28A263]/10 rounded-2xl border border-[#28A263]/20">
+          <div className="p-8 bg-[#7FD19F]/10 rounded-2xl border border-[#7FD19F]/20">
             <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#28A263]/20 text-[#28A263] rounded-full text-sm font-bold mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#7FD19F]/20 text-[#7FD19F] rounded-full text-sm font-bold mb-4">
                 <Calculator className="w-4 h-4" />
                 Preço Sugerido
               </div>
 
-              <div className="text-6xl font-bold text-[#28A263] mb-2">
+              <div className="text-6xl font-bold text-[#7FD19F] mb-2">
                 {formatCurrency(resultado.precoIdeal)}
               </div>
 
@@ -254,11 +254,11 @@ export function SimuladorPreco() {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-[#F8F9FA] rounded-xl p-4 border border-[rgba(0,0,0,0.1)] text-center">
                 <div className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Lucro por venda</div>
-                <div className="text-2xl font-bold text-[#28A263]">{formatCurrency(resultado.lucro)}</div>
+                <div className="text-2xl font-bold text-[#7FD19F]">{formatCurrency(resultado.lucro)}</div>
               </div>
               <div className="bg-[#F8F9FA] rounded-xl p-4 border border-[rgba(0,0,0,0.1)] text-center">
                 <div className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Margem real</div>
-                <div className="text-2xl font-bold text-[#28A263]">{resultado.margemReal.toFixed(1)}%</div>
+                <div className="text-2xl font-bold text-[#7FD19F]">{resultado.margemReal.toFixed(1)}%</div>
               </div>
             </div>
 
@@ -276,7 +276,7 @@ export function SimuladorPreco() {
                   {((resultado.custoTotal / resultado.precoIdeal) * 100).toFixed(0)}%
                 </div>
                 <div
-                  className="bg-[#28A263] flex items-center justify-center text-white text-sm font-bold"
+                  className="bg-[#7FD19F] flex items-center justify-center text-white text-sm font-bold"
                   style={{ width: `${resultado.margemReal}%` }}
                 >
                   {resultado.margemReal.toFixed(0)}%
@@ -286,9 +286,9 @@ export function SimuladorPreco() {
           </div>
 
           {/* Insights */}
-          <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-            <h4 className="font-bold text-[#001529] mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-[#28A263]" />
+          <div className="p-6 rounded-2xl border border-[rgba(0,0,0,0.1)]">
+            <h4 className="font-bold text-[#0E3B2E] mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-[#7FD19F]" />
               Análise e Recomendações
             </h4>
 
@@ -302,8 +302,8 @@ export function SimuladorPreco() {
               )}
 
               {margemDesejada >= 40 && margemDesejada <= 60 && (
-                <div className="p-3 rounded-xl bg-[#28A263]/10 border border-[#28A263]/20">
-                  <p className="text-sm text-[#28A263]">
+                <div className="p-3 rounded-xl bg-[#7FD19F]/10 border border-[#7FD19F]/20">
+                  <p className="text-sm text-[#7FD19F]">
                     Margem ideal! Seu preço está competitivo e lucrativo.
                   </p>
                 </div>
@@ -314,21 +314,21 @@ export function SimuladorPreco() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-[rgba(0,21,41,0.5)]">10 vendas/mês:</span>
-                    <span className="font-bold text-[#001529]">{formatCurrency(resultado.lucro * 10)}</span>
+                    <span className="font-bold text-[#0E3B2E]">{formatCurrency(resultado.lucro * 10)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[rgba(0,21,41,0.5)]">30 vendas/mês:</span>
-                    <span className="font-bold text-[#001529]">{formatCurrency(resultado.lucro * 30)}</span>
+                    <span className="font-bold text-[#0E3B2E]">{formatCurrency(resultado.lucro * 30)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[rgba(0,21,41,0.5)]">50 vendas/mês:</span>
-                    <span className="font-bold text-[#28A263] text-base">{formatCurrency(resultado.lucro * 50)}</span>
+                    <span className="font-bold text-[#7FD19F] text-base">{formatCurrency(resultado.lucro * 50)}</span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-[#F8F9FA] rounded-xl p-4 border border-[rgba(0,0,0,0.1)]">
-                <div className="text-sm font-bold text-[#001529] mb-2">💡 Dica profissional:</div>
+                <div className="text-sm font-bold text-[#0E3B2E] mb-2">💡 Dica profissional:</div>
                 <p className="text-sm text-[rgba(0,21,41,0.6)]">
                   Considere criar pacotes com diferentes faixas de preço para atingir diferentes perfis de clientes.
                 </p>

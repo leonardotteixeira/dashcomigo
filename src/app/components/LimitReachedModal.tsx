@@ -97,9 +97,9 @@ export function LimitReachedModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-br from-[#001529] to-[#003a6d] p-6 text-white relative">
+        <div className="bg-gradient-to-br from-[#0E3B2E] to-[#0E3B2E] p-6 text-white relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-1.5 hover:bg-white/10 rounded-lg transition-colors"
@@ -131,13 +131,13 @@ export function LimitReachedModal({
 
         {/* Usage bar */}
         <div className="px-6 pt-5 pb-2">
-          <div className="flex justify-between text-xs font-medium text-[#001529]/60 mb-1.5">
+          <div className="flex justify-between text-xs font-medium text-[#0E3B2E]/60 mb-1.5">
             <span>Uso atual</span>
             <span className="text-[#ef4444]">
               {usage}/{isFinite(limit) ? limit : "∞"} utilizados
             </span>
           </div>
-          <div className="w-full h-2 bg-[#F5F7FA] rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-[#F4EFE6] rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-[#ef4444] to-[#f97316] rounded-full"
               style={{ width: "100%" }}
@@ -147,12 +147,12 @@ export function LimitReachedModal({
 
         {/* Benefits */}
         <div className="px-6 py-4">
-          <p className="text-xs font-bold text-[#001529]/50 uppercase tracking-widest mb-3">
+          <p className="text-xs font-bold text-[#0E3B2E]/50 uppercase tracking-widest mb-3">
             Com o Plano PRO você terá:
           </p>
           <ul className="space-y-2">
             {benefits.map((b, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-[#001529]">
+              <li key={i} className="flex items-center gap-2 text-sm text-[#0E3B2E]">
                 <div className="w-5 h-5 rounded-full bg-[#10b981]/10 flex items-center justify-center flex-shrink-0">
                   <span className="text-[#10b981] text-xs font-bold">✓</span>
                 </div>
@@ -166,7 +166,7 @@ export function LimitReachedModal({
         <div className="px-6 pb-6 flex flex-col gap-2">
           <button
             onClick={() => { navigate("/checkout"); onClose(); }}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity shadow-md"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity shadow-md"
           >
             <Crown className="w-4 h-4" />
             Fazer Upgrade para PRO
@@ -174,7 +174,7 @@ export function LimitReachedModal({
           </button>
           <button
             onClick={onClose}
-            className="w-full text-sm text-[#001529]/50 hover:text-[#001529] py-2 transition-colors"
+            className="w-full text-sm text-[#0E3B2E]/50 hover:text-[#0E3B2E] py-2 transition-colors"
           >
             Continuar no Plano Gratuito
           </button>

@@ -214,7 +214,7 @@ export function DashboardLayout() {
             {/* Financial KPI Strip + Welcome + Notifications */}
             <div className="flex items-center gap-4">
               <HeaderKPIStrip />
-              <div className="hidden xl:block h-6 w-px bg-[#E5E7EB]" />
+              <div className="hidden xl:block h-6 w-px bg-[rgba(20,18,15,0.13)]" />
               <div className="hidden lg:block text-right">
                 <p className="text-sm font-semibold text-[#0E3B2E]">
                   <span className="capitalize">{user.name.split(" ")[0]}</span>

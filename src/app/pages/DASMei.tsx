@@ -121,7 +121,7 @@ export function DASMei() {
     >
       <div className={spacing.sectionGap}>
         {/* Activity Selector */}
-        <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+        <div className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
           <label className="text-sm font-medium mb-3 block" style={{ color: colors.textPrimary }}>Sua atividade principal</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ATIVIDADES.map((a) => {
@@ -206,7 +206,7 @@ export function DASMei() {
         })()}
 
         {/* Info expandable */}
-        <div className="rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+        <div className="bg-[#EBE4D6] rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
           <button
             onClick={() => setShowInfo(!showInfo)}
             className="w-full flex items-center justify-between p-6 text-left hover:opacity-80 transition-opacity"
@@ -233,7 +233,7 @@ export function DASMei() {
         </div>
 
         {/* History — last 12 months */}
-        <div className="rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+        <div className="bg-[#EBE4D6] rounded-2xl shadow-sm border overflow-hidden" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
           <div className="p-6" style={{ borderBottom: `1px solid ${colors.borderDefault}` }}>
             <h3 className="font-semibold" style={{ color: colors.textPrimary }}>Histórico — últimos 12 meses</h3>
           </div>
@@ -305,17 +305,17 @@ export function DASMei() {
         {/* Summary */}
         {Object.keys(paidMonths).length > 0 && (
           <div className="grid grid-cols-3 gap-6">
-            <div className="rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+            <div className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
               <p className="text-2xl font-bold" style={{ color: colors.success }}>{Object.keys(paidMonths).length}</p>
               <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Meses pagos</p>
             </div>
-            <div className="rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+            <div className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
               <p className="text-2xl font-bold" style={{ color: colors.textPrimary }}>
                 R$ {Object.values(paidMonths).reduce((s, p) => s + p.valor, 0).toFixed(2).replace(".", ",")}
               </p>
               <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>Total pago</p>
             </div>
-            <div className="rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+            <div className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border text-center" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
               <p className="text-2xl font-bold" style={{ color: colors.warning }}>
                 R$ {(valorDAS * 12).toFixed(2).replace(".", ",")}
               </p>

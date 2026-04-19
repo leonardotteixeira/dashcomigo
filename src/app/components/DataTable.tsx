@@ -32,21 +32,21 @@ export function DataTable({
 
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-12 text-center">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-12 text-center">
         {emptyState || <p className="text-[rgba(0,21,41,0.6)]">Nenhum registro encontrado</p>}
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto border border-[#E5E7EB] rounded-2xl bg-white">
+    <div className="overflow-x-auto border border-[rgba(20,18,15,0.13)] rounded-2xl bg-white">
       <table className="w-full">
-        <thead className="bg-[#F5F7FA] border-b border-[#E5E7EB]">
+        <thead className="bg-[#F4EFE6] border-b border-[rgba(20,18,15,0.13)]">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-6 py-4 text-left text-sm font-semibold text-[#001529] ${col.width || ""}`}
+                className={`px-6 py-4 text-left text-sm font-semibold text-[#0E3B2E] ${col.width || ""}`}
               >
                 {col.label}
               </th>
@@ -58,14 +58,14 @@ export function DataTable({
             <tr
               key={idx}
               onClick={() => onRowClick?.(row)}
-              className={`border-b border-[#E5E7EB] last:border-b-0 ${
-                onRowClick ? "cursor-pointer hover:bg-[#F5F7FA]" : ""
+              className={`border-b border-[rgba(20,18,15,0.13)] last:border-b-0 ${
+                onRowClick ? "cursor-pointer hover:bg-[#F4EFE6]" : ""
               } transition-colors`}
             >
               {columns.map((col) => (
                 <td
                   key={`${idx}-${col.key}`}
-                  className={`px-6 py-4 text-sm text-[#001529] ${col.width || ""}`}
+                  className={`px-6 py-4 text-sm text-[#0E3B2E] ${col.width || ""}`}
                 >
                   {col.render ? col.render(row[col.key], row) : row[col.key]}
                 </td>

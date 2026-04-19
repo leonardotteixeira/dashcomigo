@@ -34,7 +34,7 @@ export function TestimonialsSection() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 gap-6">
           <div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-2 leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-bold text-[#0E3B2E] mb-2 leading-tight">
               O que nossos <span className="text-[#2DDB81]">clientes</span>
               <br />dizem
             </h2>
@@ -63,7 +63,7 @@ export function TestimonialsSection() {
               }`}
             >
               <div className="space-y-4">
-                <h3 className="text-[#001529] text-xl font-light leading-snug">
+                <h3 className="text-[#0E3B2E] text-xl font-light leading-snug">
                   {testimonial.content.length > 60
                     ? testimonial.content.substring(0, 60) + "..."
                     : testimonial.content}

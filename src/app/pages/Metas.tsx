@@ -152,7 +152,7 @@ export function Metas() {
         {loading ? (
           <div className="text-center py-12" style={{ color: colors.textSecondary }}>Carregando...</div>
         ) : metaMesAtual ? (
-          <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+          <div className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-sm" style={{ color: colors.textSecondary }}>{formatMes(mesAtual())}</p>
@@ -223,7 +223,7 @@ export function Metas() {
                 return (
                   <div
                     key={goal.id}
-                    className="rounded-2xl p-6 shadow-sm border"
+                    className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border"
                     style={{ backgroundColor: colors.bgLight, borderColor }}
                   >
                     <p className="text-xs" style={{ color: colors.textSecondary }}>
@@ -256,7 +256,7 @@ export function Metas() {
         {/* Modal */}
         {modalOpen && (
           <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-            <div className="rounded-2xl w-full max-w-sm shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+            <div className="bg-[#EBE4D6] rounded-2xl w-full max-w-sm shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-bold text-lg" style={{ color: colors.textPrimary }}>Nova Meta</h2>

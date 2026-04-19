@@ -18,7 +18,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
   if (variant === "compact") {
     return (
       <>
-        <div className="bg-gradient-to-br from-[#003a6d] to-[#0066FF] text-white rounded-xl p-4 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#0E3B2E] to-[#0066FF] text-white rounded-xl p-4 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
@@ -30,7 +30,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
             </p>
             <button 
               onClick={() => setShowPaywall(true)}
-              className="w-full bg-white text-[#003a6d] font-semibold py-2 rounded-lg hover:bg-white/90 transition-colors text-sm"
+              className="w-full bg-white text-[#0E3B2E] font-semibold py-2 rounded-lg hover:bg-white/90 transition-colors text-sm"
             >
               Conhecer Plano
             </button>
@@ -48,7 +48,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
 
   return (
     <>
-      <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] text-white rounded-2xl p-7 relative overflow-hidden shadow-lg">
+      <div className="bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E] text-white rounded-2xl p-7 relative overflow-hidden shadow-lg">
         <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16" />
 
@@ -130,7 +130,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
 
           <button 
             onClick={() => setShowPaywall(true)}
-            className="w-full bg-white text-[#003a6d] font-bold py-4 rounded-xl hover:bg-white/95 transition-all flex items-center justify-center gap-2 shadow-lg mb-3"
+            className="w-full bg-white text-[#0E3B2E] font-bold py-4 rounded-xl hover:bg-white/95 transition-all flex items-center justify-center gap-2 shadow-lg mb-3"
           >
             Conhecer o Plano PRO
             <ArrowRight className="w-4 h-4" />

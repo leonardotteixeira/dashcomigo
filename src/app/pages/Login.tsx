@@ -46,10 +46,10 @@ function GoogleLoginButton({ loading, loginWithGoogle, navigate }: {
       type="button"
       onClick={handleGoogleLogin}
       disabled={googleLoading || loading}
-      className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-all font-semibold text-[#0E3B2E] disabled:opacity-60 disabled:cursor-not-allowed"
+      className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[rgba(20,18,15,0.13)] rounded-lg hover:bg-[#F4EFE6] transition-all font-semibold text-[#0E3B2E] disabled:opacity-60 disabled:cursor-not-allowed"
     >
       {googleLoading ? (
-        <span className="w-5 h-5 border-2 border-[#001529]/20 border-t-[#001529] rounded-full animate-spin" />
+        <span className="w-5 h-5 border-2 border-[#0E3B2E]/20 border-t-[#0E3B2E] rounded-full animate-spin" />
       ) : (
         <GoogleIcon />
       )}
@@ -186,7 +186,7 @@ export function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
-                  className="w-full bg-white border border-[#E5E7EB] rounded-lg pl-12 pr-4 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
+                  className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg pl-12 pr-4 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
                   autoComplete="email"
                 />
               </div>
@@ -205,7 +205,7 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full bg-white border border-[#E5E7EB] rounded-lg pl-12 pr-12 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
+                  className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg pl-12 pr-12 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
                   autoComplete="current-password"
                 />
                 <button
@@ -222,7 +222,7 @@ export function Login() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded border-[#E5E7EB] text-[#003a6d] focus:ring-[#0E3B2E] focus:ring-offset-0"
+                  className="w-4 h-4 rounded border-[rgba(20,18,15,0.13)] text-[#0E3B2E] focus:ring-[#0E3B2E] focus:ring-offset-0"
                 />
                 <span className="text-sm text-[#0E3B2E]/60">Lembrar de mim</span>
               </label>
@@ -254,7 +254,7 @@ export function Login() {
 
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#E5E7EB]"></div>
+                <div className="w-full border-t border-[rgba(20,18,15,0.13)]"></div>
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-4 bg-background text-[#0E3B2E]/60">ou continue com</span>

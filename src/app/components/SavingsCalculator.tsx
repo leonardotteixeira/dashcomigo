@@ -88,7 +88,7 @@ function ProValuePanel() {
 
       <button
         onClick={() => navigate("/app/relatorios")}
-        className="mt-auto w-full flex items-center justify-center gap-2 bg-[#001529] text-white font-semibold py-3 rounded-lg hover:bg-[#002140] transition-all text-sm"
+        className="mt-auto w-full flex items-center justify-center gap-2 bg-[#0E3B2E] text-white font-semibold py-3 rounded-lg hover:bg-[#0E3B2E] transition-all text-sm"
       >
         Ver relatórios completos <ArrowRight className="w-4 h-4" />
       </button>

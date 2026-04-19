@@ -242,7 +242,7 @@ export function ContasAPagar() {
                 setShowModal(true);
               }
             }}
-            className="flex items-center gap-2 bg-[#28A263] hover:bg-[#20915a] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
+            className="flex items-center gap-2 bg-[#7FD19F] hover:bg-[#1F5A3A] text-[#0E3B2E] px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Nova Conta
@@ -257,27 +257,27 @@ export function ContasAPagar() {
           { label: "Vencidas", value: fmtBRL(totalOverdue), count: overdueCount, sub: "contas atrasadas", color: "text-red-600", bg: "bg-red-50", icon: AlertCircle },
           { label: "Pagas (mês)", value: fmtBRL(totalPaid), count: paidCount, sub: "contas quitadas", color: "text-green-600", bg: "bg-green-50", icon: CheckCircle },
         ].map(({ label, value, count, sub, color, bg, icon: Icon }) => (
-          <div key={label} className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+          <div key={label} className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center`}>
                 <Icon className={`w-5 h-5 ${color}`} />
               </div>
-              <span className="text-xs font-semibold text-[#001529]/60 uppercase tracking-wider">{label}</span>
+              <span className="text-xs font-semibold text-[#0E3B2E]/60 uppercase tracking-wider">{label}</span>
             </div>
-            <p className="text-2xl font-bold text-[#001529] mb-1">{value}</p>
-            <p className="text-xs text-[#001529]/50">{count} {sub}</p>
+            <p className="text-2xl font-bold text-[#0E3B2E] mb-1">{value}</p>
+            <p className="text-xs text-[#0E3B2E]/50">{count} {sub}</p>
           </div>
         ))}
       </div>
 
       {/* Filters + Export */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center justify-between">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-[#001529]/50" />
+          <Filter className="w-4 h-4 text-[#0E3B2E]/50" />
           <div className="flex gap-2">
             {(
               [
-                { key: "all", label: "Todas", active: "bg-[#003a6d] text-white" },
+                { key: "all", label: "Todas", active: "bg-[#0E3B2E] text-white" },
                 { key: "pendente", label: "Pendentes", active: "bg-amber-500 text-white" },
                 { key: "vencido", label: "Vencidas", active: "bg-red-500 text-white" },
                 { key: "pago", label: "Pagas", active: "bg-green-500 text-white" },
@@ -287,7 +287,7 @@ export function ContasAPagar() {
                 key={key}
                 onClick={() => setFilter(key)}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                  filter === key ? active : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                  filter === key ? active : "bg-[#F4EFE6] text-[#0E3B2E] hover:bg-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 {label}
@@ -297,7 +297,7 @@ export function ContasAPagar() {
         </div>
         <button
           onClick={handleExport}
-          className="flex items-center gap-2 px-3 py-1.5 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-colors text-xs font-semibold text-[#001529]"
+          className="flex items-center gap-2 px-3 py-1.5 border border-[rgba(20,18,15,0.13)] rounded-lg hover:bg-[#F4EFE6] transition-colors text-xs font-semibold text-[#0E3B2E]"
         >
           <Download className="w-3.5 h-3.5" />
           Exportar
@@ -309,11 +309,11 @@ export function ContasAPagar() {
       {/* Bills List */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-[#28A263]" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#7FD19F]" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-12 text-center">
-          <p className="text-[#001529]/50 text-sm">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-12 text-center">
+          <p className="text-[#0E3B2E]/50 text-sm">
             {payables.length === 0
               ? "Nenhuma conta cadastrada. Clique em \"Nova Conta\" para começar."
               : "Nenhuma conta com este filtro."}
@@ -329,7 +329,7 @@ export function ContasAPagar() {
             return (
               <div
                 key={bill.id}
-                className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow group"
+                className="border border-[rgba(20,18,15,0.13)] rounded-xl p-5 hover:shadow-md transition-shadow group"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3 flex-1">
@@ -338,17 +338,17 @@ export function ContasAPagar() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 className="font-semibold text-[#001529]">{bill.descricao}</h3>
+                        <h3 className="font-semibold text-[#0E3B2E]">{bill.descricao}</h3>
                         {bill.ehRecorrente && (
-                          <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#003a6d]/10 text-[#003a6d]">
+                          <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#0E3B2E]/10 text-[#0E3B2E]">
                             Recorrente
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#001529]/60 mb-2">{bill.categoria}</p>
+                      <p className="text-xs text-[#0E3B2E]/60 mb-2">{bill.categoria}</p>
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-[#001529]/40" />
-                        <span className="text-xs text-[#001529]/70">
+                        <Calendar className="w-3.5 h-3.5 text-[#0E3B2E]/40" />
+                        <span className="text-xs text-[#0E3B2E]/70">
                           Vencimento: {fmtDate(bill.dataVencimento)}
                         </span>
                         {bill.computedStatus === "pendente" && daysUntil <= 5 && daysUntil > 0 && (
@@ -369,7 +369,7 @@ export function ContasAPagar() {
                   </div>
 
                   <div className="text-right flex-shrink-0">
-                    <p className="font-bold text-[#001529] mb-2">{fmtBRL(bill.valor)}</p>
+                    <p className="font-bold text-[#0E3B2E] mb-2">{fmtBRL(bill.valor)}</p>
                     <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold ${cfg.bg} ${cfg.color} border ${cfg.border}`}>
                       {cfg.label}
                     </span>
@@ -377,7 +377,7 @@ export function ContasAPagar() {
                       <button
                         onClick={() => handlePayNow(bill.id)}
                         disabled={payingId === bill.id}
-                        className="mt-2 flex items-center gap-1 w-full justify-center bg-[#003a6d] hover:bg-[#002a50] text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-60"
+                        className="mt-2 flex items-center gap-1 w-full justify-center bg-[#0E3B2E] hover:bg-[#002a50] text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-60"
                       >
                         {payingId === bill.id ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -389,7 +389,7 @@ export function ContasAPagar() {
                     )}
                     <button
                       onClick={() => handleDelete(bill.id)}
-                      className="mt-1 opacity-0 group-hover:opacity-100 p-1 text-[#001529]/30 hover:text-red-500 transition-all block ml-auto"
+                      className="mt-1 opacity-0 group-hover:opacity-100 p-1 text-[#0E3B2E]/30 hover:text-red-500 transition-all block ml-auto"
                       title="Excluir"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -416,12 +416,12 @@ export function ContasAPagar() {
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
         >
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
-              <h2 className="text-lg font-bold text-[#001529]">Nova Conta a Pagar</h2>
+          <div className="rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(20,18,15,0.13)]">
+              <h2 className="text-lg font-bold text-[#0E3B2E]">Nova Conta a Pagar</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1.5 text-[#001529]/40 hover:text-[#001529] rounded-lg hover:bg-[#F5F7FA] transition-colors"
+                className="p-1.5 text-[#0E3B2E]/40 hover:text-[#0E3B2E] rounded-lg hover:bg-[#F4EFE6] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -429,20 +429,20 @@ export function ContasAPagar() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-[#001529] mb-2">Descrição</label>
+                <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Descrição</label>
                 <input
                   type="text"
                   value={form.descricao}
                   onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
                   placeholder="Ex: Aluguel Escritório"
-                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[#001529]/40 outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[#001529] mb-2">Valor (R$)</label>
+                  <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Valor (R$)</label>
                   <input
                     type="number"
                     min="0.01"
@@ -450,28 +450,28 @@ export function ContasAPagar() {
                     value={form.valor}
                     onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
                     placeholder="0,00"
-                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#001529] mb-2">Vencimento</label>
+                  <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Vencimento</label>
                   <input
                     type="date"
                     value={form.dataVencimento}
                     onChange={(e) => setForm((f) => ({ ...f, dataVencimento: e.target.value }))}
-                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#001529] mb-2">Categoria</label>
+                <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Categoria</label>
                 <select
                   value={form.categoria}
                   onChange={(e) => setForm((f) => ({ ...f, categoria: e.target.value }))}
-                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] bg-white transition-all"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] bg-white transition-all"
                   required
                 >
                   <option value="">Selecionar...</option>
@@ -482,13 +482,13 @@ export function ContasAPagar() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#001529] mb-2">Observações</label>
+                <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Observações</label>
                 <textarea
                   value={form.anotacoes}
                   onChange={(e) => setForm((f) => ({ ...f, anotacoes: e.target.value }))}
                   placeholder="Informações adicionais..."
                   rows={2}
-                  className="w-full px-4 py-2.5 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[#001529]/40 outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all resize-none"
+                  className="w-full px-4 py-2.5 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all resize-none"
                 />
               </div>
 
@@ -497,18 +497,18 @@ export function ContasAPagar() {
                   type="checkbox"
                   checked={form.ehRecorrente}
                   onChange={(e) => setForm((f) => ({ ...f, ehRecorrente: e.target.checked }))}
-                  className="w-4 h-4 accent-[#28A263]"
+                  className="w-4 h-4 accent-[#7FD19F]"
                 />
-                <span className="text-sm font-medium text-[#001529]">Conta recorrente</span>
+                <span className="text-sm font-medium text-[#0E3B2E]">Conta recorrente</span>
               </label>
 
               {form.ehRecorrente && (
                 <div>
-                  <label className="block text-sm font-semibold text-[#001529] mb-2">Frequência</label>
+                  <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Frequência</label>
                   <select
                     value={form.frequenciaRecorrencia}
                     onChange={(e) => setForm((f) => ({ ...f, frequenciaRecorrencia: e.target.value as "mensal" | "anual" }))}
-                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] bg-white"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] bg-white"
                   >
                     <option value="mensal">Mensal</option>
                     <option value="anual">Anual</option>
@@ -520,14 +520,14 @@ export function ContasAPagar() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 border border-[#E5E7EB] rounded-xl text-sm font-semibold text-[#001529]/60 hover:bg-[#F5F7FA] transition-colors"
+                  className="flex-1 py-2.5 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm font-semibold text-[#0E3B2E]/60 hover:bg-[#F4EFE6] transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2.5 bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl text-sm font-semibold transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 bg-[#7FD19F] hover:bg-[#1F5A3A] text-[#0E3B2E] rounded-xl text-sm font-semibold transition-all disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saving ? "Salvando..." : "Salvar Conta"}

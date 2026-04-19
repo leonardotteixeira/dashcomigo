@@ -86,7 +86,7 @@ export function Checkout() {
         <Button
           variant="ghost"
           onClick={() => navigate("/pricing")}
-          className="mb-6 text-[#001529] hover:text-[#28A263] hover:bg-[#F0F8F5] rounded-xl"
+          className="mb-6 text-[#0E3B2E] hover:text-[#28A263] hover:bg-[#F0F8F5] rounded-xl"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar aos planos
@@ -97,7 +97,7 @@ export function Checkout() {
             <Crown className="w-8 h-8 text-[#28A263]" />
           </div>
 
-          <h1 className="text-3xl font-bold text-[#001529] mb-2">Upgrade para PRO</h1>
+          <h1 className="text-3xl font-bold text-[#0E3B2E] mb-2">Upgrade para PRO</h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-4">Desbloqueie todas as funcionalidades</p>
 
           {/* Price highlight */}
@@ -111,7 +111,7 @@ export function Checkout() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#001529] text-left mb-2">
+              <label className="block text-sm font-medium text-[#0E3B2E] text-left mb-2">
                 Nome completo
               </label>
               <input
@@ -119,14 +119,14 @@ export function Checkout() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu nome completo"
-                className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors"
+                className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors"
                 disabled={loading}
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#001529] text-left mb-2">
+              <label className="block text-sm font-medium text-[#0E3B2E] text-left mb-2">
                 CPF ou CNPJ
               </label>
               <input
@@ -135,7 +135,7 @@ export function Checkout() {
                 onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
                 placeholder="000.000.000-00"
                 maxLength={18}
-                className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors"
+                className="w-full px-4 py-3 bg-white border border-[#E8EBF1] text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] rounded-xl focus:border-[#28A263] focus:outline-none focus:ring-1 focus:ring-[#28A263]/20 transition-colors"
                 disabled={loading}
                 required
               />

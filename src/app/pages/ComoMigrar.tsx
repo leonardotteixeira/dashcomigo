@@ -43,12 +43,12 @@ export function ComoMigrar() {
       <Header onScrollToSimulator={() => {}} />
       <main className="pt-24 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-8 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E] mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Voltar ao início
           </Link>
 
           <div className="mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-4">
+            <h1 className="text-4xl lg:text-5xl font-bold text-[#0E3B2E] mb-4">
               Como migrar de <span className="text-[#28A263]">MEI para ME</span>
             </h1>
             <p className="text-lg text-[rgba(0,21,41,0.6)] max-w-2xl">
@@ -57,12 +57,12 @@ export function ComoMigrar() {
           </div>
 
           {/* Quando migrar */}
-          <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
+          <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
                 <AlertCircle className="w-5 h-5 text-yellow-600" />
               </div>
-              <h2 className="text-2xl font-bold text-[#001529]">Quando é hora de migrar?</h2>
+              <h2 className="text-2xl font-bold text-[#0E3B2E]">Quando é hora de migrar?</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {[
@@ -83,11 +83,11 @@ export function ComoMigrar() {
 
           {/* Steps */}
           <div className="space-y-6 mb-12">
-            <h2 className="text-2xl font-bold text-[#001529]">Passo a passo da migração</h2>
+            <h2 className="text-2xl font-bold text-[#0E3B2E]">Passo a passo da migração</h2>
             {steps.map((step) => {
               const Icon = step.icon;
               return (
-                <div key={step.number} className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
+                <div key={step.number} className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0">
                       <div className="w-14 h-14 bg-[#28A263]/20 rounded-2xl flex items-center justify-center">
@@ -95,7 +95,7 @@ export function ComoMigrar() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-[#001529] mb-2">{step.title}</h3>
+                      <h3 className="text-xl font-bold text-[#0E3B2E] mb-2">{step.title}</h3>
                       <p className="text-[rgba(0,21,41,0.6)] leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
@@ -105,8 +105,8 @@ export function ComoMigrar() {
           </div>
 
           {/* Custos */}
-          <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
-            <h2 className="text-2xl font-bold text-[#001529] mb-4">Custos da migração</h2>
+          <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
+            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">Custos da migração</h2>
             <div className="text-[rgba(0,21,41,0.6)] space-y-3 leading-relaxed">
               <p>Os custos podem variar conforme o estado e a complexidade do negócio:</p>
               <div className="grid md:grid-cols-3 gap-4 mt-4">
@@ -126,8 +126,8 @@ export function ComoMigrar() {
           </div>
 
           {/* Dicas */}
-          <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
-            <h2 className="text-2xl font-bold text-[#001529] mb-4">Dicas importantes</h2>
+          <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 mb-8">
+            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">Dicas importantes</h2>
             <ul className="space-y-3">
               {[
                 "Faça a simulação antes de migrar para garantir que será vantajoso financeiramente",
@@ -147,7 +147,7 @@ export function ComoMigrar() {
 
           {/* CTA */}
           <div className="bg-[#28A263]/10 rounded-2xl border border-[#28A263]/20 p-8 text-center">
-            <h2 className="text-2xl font-bold text-[#001529] mb-3">Descubra se vale a pena migrar</h2>
+            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-3">Descubra se vale a pena migrar</h2>
             <p className="text-[rgba(0,21,41,0.6)] mb-6">
               Use nosso simulador gratuito e compare os impostos do MEI vs ME em segundos.
             </p>

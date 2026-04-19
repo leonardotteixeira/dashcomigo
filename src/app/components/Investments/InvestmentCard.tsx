@@ -42,7 +42,7 @@ export function InvestmentCard({ recommendation, highlight = false }: Investment
       className={`p-6 rounded-xl border transition-all ${
         highlight
           ? 'bg-white border-[#28A263]/30 shadow-md hover:shadow-lg'
-          : 'bg-white border-[#E5E7EB] hover:shadow-md'
+          : 'bg-[#EBE4D6] border-[rgba(20,18,15,0.13)] hover:shadow-md'
       }`}
     >
       {recommendation.recommended && (
@@ -53,13 +53,13 @@ export function InvestmentCard({ recommendation, highlight = false }: Investment
 
       {/* Header */}
       <div className="mb-4">
-        <h3 className="text-xl font-bold text-[#001529] mb-1">{recommendation.name}</h3>
+        <h3 className="text-xl font-bold text-[#0E3B2E] mb-1">{recommendation.name}</h3>
         <p className="text-sm text-[rgba(0,21,41,0.6)]">{recommendation.description}</p>
       </div>
 
       {/* Key metrics */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="p-3 bg-[#F9FAFB] rounded-lg border border-[#E5E7EB]">
+        <div className="p-3 bg-[#F9FAFB] rounded-lg border border-[rgba(20,18,15,0.13)]">
           <p className="text-xs text-[rgba(0,21,41,0.6)]">Rentabilidade</p>
           <p className="text-lg font-bold text-[#28A263]">{(recommendation.expectedAnnualReturn * 100).toFixed(1)}%</p>
           <p className="text-xs text-[rgba(0,21,41,0.55)]">ao ano</p>
@@ -73,14 +73,14 @@ export function InvestmentCard({ recommendation, highlight = false }: Investment
       </div>
 
       {/* Valor mínimo */}
-      <div className="mb-4 p-3 bg-[#F9FAFB] rounded-lg border border-[#E5E7EB]">
+      <div className="mb-4 p-3 bg-[#F9FAFB] rounded-lg border border-[rgba(20,18,15,0.13)]">
         <p className="text-xs text-[rgba(0,21,41,0.6)]">Valor Mínimo para Começar</p>
-        <p className="font-bold text-[#001529]">{fmt(recommendation.minAmount)}</p>
+        <p className="font-bold text-[#0E3B2E]">{fmt(recommendation.minAmount)}</p>
       </div>
 
       {/* Como funciona */}
       <div className="mb-4">
-        <h4 className="text-sm font-bold text-[#001529] mb-2">Como funciona?</h4>
+        <h4 className="text-sm font-bold text-[#0E3B2E] mb-2">Como funciona?</h4>
         <p className="text-sm text-[rgba(0,21,41,0.6)] leading-relaxed">{recommendation.howItWorks}</p>
       </div>
 
@@ -108,7 +108,7 @@ export function InvestmentCard({ recommendation, highlight = false }: Investment
       {/* Provider info */}
       {recommendation.provider && (
         <div className="mb-4 text-xs text-[rgba(0,21,41,0.55)]">
-          Provedor: <span className="text-[#001529] font-medium">{recommendation.provider}</span>
+          Provedor: <span className="text-[#0E3B2E] font-medium">{recommendation.provider}</span>
         </div>
       )}
 
@@ -126,7 +126,7 @@ export function InvestmentCard({ recommendation, highlight = false }: Investment
       {!recommendation.externalLink && (
         <Button
           disabled
-          className="w-full bg-[#F9FAFB] text-[rgba(0,21,41,0.4)] rounded-lg border border-[#E5E7EB]"
+          className="w-full bg-[#F9FAFB] text-[rgba(0,21,41,0.4)] rounded-lg border border-[rgba(20,18,15,0.13)]"
         >
           Em desenvolvimento
         </Button>

@@ -48,13 +48,13 @@ export function RecomendacoesInvestimento() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-1">Recomendações de Investimento</h1>
+          <h1 className="text-3xl font-bold text-[#0E3B2E] mb-1">Recomendações de Investimento</h1>
           <p className="text-[rgba(0,21,41,0.6)]">Descubra onde investir seu dinheiro de forma segura</p>
         </div>
         <Button
           variant="ghost"
           size="lg"
-          className="text-[rgba(0,21,41,0.6)] hover:text-[#001529]"
+          className="text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E]"
           onClick={() => navigate('/app/dashboard')}
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
@@ -68,8 +68,8 @@ export function RecomendacoesInvestimento() {
       {step === 'questionnaire' && (
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Questionnaire */}
-          <div className="p-6 bg-white rounded-xl border border-[#E8EBF1] shadow-sm">
-            <h2 className="text-2xl font-bold text-[#001529] mb-6">
+          <div className="p-6 rounded-xl border border-[#E8EBF1] shadow-sm">
+            <h2 className="text-2xl font-bold text-[#0E3B2E] mb-6">
               Vamos conhecer seu perfil
             </h2>
             <QuestionarioRisco onComplete={handleQuestionarioComplete} />
@@ -103,7 +103,7 @@ export function RecomendacoesInvestimento() {
           <div className="space-y-6">
             {/* Curto prazo */}
             <div>
-              <h2 className="text-2xl font-bold text-[#001529] mb-4">⏱️ Curto Prazo (até 1 ano)</h2>
+              <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">⏱️ Curto Prazo (até 1 ano)</h2>
               <p className="text-[rgba(0,21,41,0.6)] mb-4">
                 Para dinheiro que você pode precisar em breve. Baixo risco, retorno moderado.
               </p>
@@ -120,7 +120,7 @@ export function RecomendacoesInvestimento() {
 
             {/* Médio prazo */}
             <div className="pt-6 border-t border-[#E8EBF1]">
-              <h2 className="text-2xl font-bold text-[#001529] mb-4">📈 Médio Prazo (1 a 5 anos)</h2>
+              <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">📈 Médio Prazo (1 a 5 anos)</h2>
               <p className="text-[rgba(0,21,41,0.6)] mb-4">
                 Equilíbrio entre segurança e crescimento. Risco moderado, bom retorno.
               </p>
@@ -137,7 +137,7 @@ export function RecomendacoesInvestimento() {
 
             {/* Longo prazo */}
             <div className="pt-6 border-t border-[#E8EBF1]">
-              <h2 className="text-2xl font-bold text-[#001529] mb-4">🚀 Longo Prazo (5+ anos)</h2>
+              <h2 className="text-2xl font-bold text-[#0E3B2E] mb-4">🚀 Longo Prazo (5+ anos)</h2>
               <p className="text-[rgba(0,21,41,0.6)] mb-4">
                 Para construir patrimônio. Maior risco, maior potencial de retorno.
               </p>
@@ -168,7 +168,7 @@ export function RecomendacoesInvestimento() {
           {/* CTA buttons */}
           <div className="flex gap-3 justify-center pt-6">
             <Button
-              className="bg-[#F9FAFB] hover:bg-[#E8EBF1] text-[#001529] rounded-lg border border-[#E8EBF1]"
+              className="bg-[#F9FAFB] hover:bg-[#E8EBF1] text-[#0E3B2E] rounded-lg border border-[#E8EBF1]"
               onClick={() => setStep('questionnaire')}
             >
               Refazer Questionário
