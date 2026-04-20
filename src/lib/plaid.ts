@@ -35,7 +35,8 @@ export interface PlaidAccount {
  */
 export async function createPlaidLinkToken(userId: string): Promise<string> {
   try {
-    const response = await fetch('/api/plaid/create-link-token', {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const response = await fetch(`${backendUrl}/api/plaid/create-link-token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId }),
@@ -59,7 +60,8 @@ export async function createPlaidLinkToken(userId: string): Promise<string> {
  */
 export async function exchangePublicToken(publicToken: string, userId: string): Promise<string> {
   try {
-    const response = await fetch('/api/plaid/exchange-token', {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const response = await fetch(`${backendUrl}/api/plaid/exchange-token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ publicToken, userId }),
@@ -83,7 +85,8 @@ export async function exchangePublicToken(publicToken: string, userId: string): 
  */
 export async function syncPlaidTransactions(userId: string): Promise<number> {
   try {
-    const response = await fetch('/api/plaid/sync-transactions', {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const response = await fetch(`${backendUrl}/api/plaid/sync-transactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId }),
@@ -107,7 +110,8 @@ export async function syncPlaidTransactions(userId: string): Promise<number> {
  */
 export async function getPlaidAccounts(userId: string): Promise<PlaidAccount[]> {
   try {
-    const response = await fetch(`/api/plaid/accounts?userId=${userId}`);
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const response = await fetch(`${backendUrl}/api/plaid/accounts?userId=${userId}`);
 
     if (!response.ok) {
       throw new Error('Failed to get accounts');
@@ -127,7 +131,8 @@ export async function getPlaidAccounts(userId: string): Promise<PlaidAccount[]> 
  */
 export async function disconnectPlaidAccount(userId: string, itemId: string): Promise<void> {
   try {
-    const response = await fetch('/api/plaid/disconnect', {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const response = await fetch(`${backendUrl}/api/plaid/disconnect`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, itemId }),
