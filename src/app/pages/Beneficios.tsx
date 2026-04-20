@@ -11,7 +11,7 @@ const benefits = [
     icon: Clock,
     title: "Economize tempo",
     description:
-      "Chega de planilhas complicadas e anotações no caderno. Com o FinMEI você registra uma transação em menos de 30 segundos e tem tudo organizado automaticamente.",
+      "Chega de planilhas complicadas e anotações no caderno. Com o DashComigo você registra uma transação em menos de 30 segundos e tem tudo organizado automaticamente.",
     highlight: "−3h por semana em burocracia",
   },
   {
@@ -64,30 +64,32 @@ const comparisons = [
 
 export function Beneficios() {
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen" style={{ background: "#F4EFE6" }}>
       <LandingNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
+      <section className="pt-32 pb-20" style={{ background: "#0E3B2E" }}>
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="inline-block bg-white/10 text-white/80 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-            Por que escolher o FinMEI?
+          <span className="inline-block text-sm font-medium px-4 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(127,209,159,0.2)", color: "#7FD19F" }}>
+            Por que escolher o DashComigo?
           </span>
-          <h1 className="font-extrabold text-white text-5xl mb-6 leading-tight">
+          <h1 className="font-extrabold text-5xl mb-6 leading-tight" style={{ color: "#F4EFE6" }}>
             Gestão financeira feita para o MEI brasileiro
           </h1>
-          <p className="text-xl text-white/80 leading-relaxed font-light max-w-2xl mx-auto">
-            Não é mais um software genérico de contabilidade. O FinMEI resolve os problemas reais de quem empreende no Brasil como MEI.
+          <p className="text-xl leading-relaxed font-light max-w-2xl mx-auto"
+            style={{ color: "rgba(244,239,230,0.75)" }}>
+            Não é mais um software genérico de contabilidade. O DashComigo resolve os problemas reais de quem empreende no Brasil como MEI.
           </p>
         </div>
       </section>
 
       {/* Benefits */}
-      <section className="py-24 bg-white" id="beneficios">
+      <section className="py-24" id="beneficios" style={{ background: "#F4EFE6" }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="font-bold text-[#001529] text-4xl mb-4">O que você ganha</h2>
-            <p className="text-lg text-[#001529]/60 max-w-2xl mx-auto">
+            <h2 className="font-bold text-4xl mb-4" style={{ color: "#0E3B2E" }}>O que você ganha</h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "rgba(14,59,46,0.6)" }}>
               Benefícios concretos que impactam diretamente o seu dia a dia e o crescimento do seu negócio.
             </p>
           </div>
@@ -96,13 +98,16 @@ export function Beneficios() {
             {benefits.map((b) => {
               const Icon = b.icon;
               return (
-                <div key={b.title} className="bg-white border border-[#E5E7EB] rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center mb-5">
-                    <Icon className="w-6 h-6 text-[#003a6d]" />
+                <div key={b.title} className="rounded-2xl p-7 transition-shadow hover:shadow-md"
+                  style={{ background: "#EBE4D6", border: "1px solid rgba(20,18,15,0.1)" }}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+                    style={{ background: "rgba(14,59,46,0.08)" }}>
+                    <Icon className="w-6 h-6" style={{ color: "#0E3B2E" }} />
                   </div>
-                  <h3 className="font-bold text-[#001529] text-xl mb-3">{b.title}</h3>
-                  <p className="text-[#001529]/60 leading-relaxed mb-4">{b.description}</p>
-                  <span className="inline-block bg-[#003a6d]/8 text-[#003a6d] text-xs font-semibold px-3 py-1.5 rounded-full">
+                  <h3 className="font-bold text-xl mb-3" style={{ color: "#0E3B2E" }}>{b.title}</h3>
+                  <p className="leading-relaxed mb-4" style={{ color: "rgba(14,59,46,0.6)" }}>{b.description}</p>
+                  <span className="inline-block text-xs font-semibold px-3 py-1.5 rounded-full"
+                    style={{ background: "rgba(127,209,159,0.2)", color: "#1F5A3A" }}>
                     {b.highlight}
                   </span>
                 </div>
@@ -113,46 +118,46 @@ export function Beneficios() {
       </section>
 
       {/* Comparison table */}
-      <section className="py-24 bg-[#F5F7FA]">
+      <section className="py-24" style={{ background: "#EBE4D6" }}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-bold text-[#001529] text-4xl mb-4">FinMEI vs alternativas</h2>
-            <p className="text-lg text-[#001529]/60">Veja por que o FinMEI é a melhor escolha para o MEI</p>
+            <h2 className="font-bold text-4xl mb-4" style={{ color: "#0E3B2E" }}>DashComigo vs alternativas</h2>
+            <p className="text-lg" style={{ color: "rgba(14,59,46,0.6)" }}>Veja por que o DashComigo é a melhor escolha para o MEI</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] overflow-hidden">
+          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(20,18,15,0.13)" }}>
             <table className="w-full">
               <thead>
-                <tr className="bg-[#001529] text-white">
-                  <th className="text-left p-5 font-semibold text-base">Funcionalidade</th>
-                  <th className="text-center p-5 font-bold text-base text-[#4ECDC4]">FinMEI</th>
-                  <th className="text-center p-5 font-semibold text-base text-white/70">Planilha</th>
-                  <th className="text-center p-5 font-semibold text-base text-white/70">Outros ERPs</th>
+                <tr style={{ background: "#0E3B2E" }}>
+                  <th className="text-left p-5 font-semibold text-base" style={{ color: "#F4EFE6" }}>Funcionalidade</th>
+                  <th className="text-center p-5 font-bold text-base" style={{ color: "#7FD19F" }}>DashComigo</th>
+                  <th className="text-center p-5 font-semibold text-base" style={{ color: "rgba(244,239,230,0.7)" }}>Planilha</th>
+                  <th className="text-center p-5 font-semibold text-base" style={{ color: "rgba(244,239,230,0.7)" }}>Outros ERPs</th>
                 </tr>
               </thead>
               <tbody>
                 {comparisons.map((row, i) => (
-                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-[#F5F7FA]"}>
-                    <td className="p-4 text-[#001529] font-medium">{row.feature}</td>
+                  <tr key={row.feature} style={{ background: i % 2 === 0 ? "#F4EFE6" : "#EBE4D6" }}>
+                    <td className="p-4 font-medium" style={{ color: "#0E3B2E" }}>{row.feature}</td>
                     <td className="p-4 text-center">
                       {row.finmei ? (
-                        <CheckCircle className="w-5 h-5 text-emerald-500 mx-auto" />
+                        <CheckCircle className="w-5 h-5 mx-auto" style={{ color: "#7FD19F" }} />
                       ) : (
-                        <span className="text-[#001529]/30 text-xl">—</span>
+                        <span className="text-xl" style={{ color: "rgba(14,59,46,0.3)" }}>—</span>
                       )}
                     </td>
                     <td className="p-4 text-center">
                       {row.planilha ? (
-                        <CheckCircle className="w-5 h-5 text-emerald-500 mx-auto" />
+                        <CheckCircle className="w-5 h-5 mx-auto" style={{ color: "#7FD19F" }} />
                       ) : (
-                        <span className="text-[#001529]/30 text-xl">—</span>
+                        <span className="text-xl" style={{ color: "rgba(14,59,46,0.3)" }}>—</span>
                       )}
                     </td>
                     <td className="p-4 text-center">
                       {row.outros ? (
-                        <CheckCircle className="w-5 h-5 text-emerald-500 mx-auto" />
+                        <CheckCircle className="w-5 h-5 mx-auto" style={{ color: "#7FD19F" }} />
                       ) : (
-                        <span className="text-[#001529]/30 text-xl">—</span>
+                        <span className="text-xl" style={{ color: "rgba(14,59,46,0.3)" }}>—</span>
                       )}
                     </td>
                   </tr>
@@ -164,34 +169,36 @@ export function Beneficios() {
       </section>
 
       {/* Testimonial */}
-      <section className="py-20 bg-white">
+      <section className="py-20" style={{ background: "#F4EFE6" }}>
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-2xl text-[#001529] font-medium italic leading-relaxed mb-6">
-            "Antes eu gastava horas toda semana tentando organizar as finanças no Excel. Com o FinMEI, levo 10 minutos e tenho tudo que preciso para tomar decisões."
+          <p className="text-2xl font-medium italic leading-relaxed mb-6" style={{ color: "#0E3B2E" }}>
+            "Antes eu gastava horas toda semana tentando organizar as finanças no Excel. Com o DashComigo, levo 10 minutos e tenho tudo que preciso para tomar decisões."
           </p>
-          <p className="text-[#001529]/60 font-semibold">— Ana Silva, MEI de Serviços Digitais, São Paulo</p>
+          <p className="font-semibold" style={{ color: "rgba(14,59,46,0.6)" }}>— Ana Silva, MEI de Serviços Digitais, São Paulo</p>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-[#001529] to-[#003a6d]">
+      <section className="py-20" style={{ background: "#0E3B2E" }}>
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="font-extrabold text-white text-4xl mb-6">
+          <h2 className="font-extrabold text-4xl mb-6" style={{ color: "#F4EFE6" }}>
             Experimente sem compromisso
           </h2>
-          <p className="text-xl text-white/80 mb-10 font-light">
+          <p className="text-xl mb-10 font-light" style={{ color: "rgba(244,239,230,0.75)" }}>
             Cadastro gratuito, sem cartão de crédito. Comece a usar agora.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link
               to="/signup"
-              className="inline-flex items-center gap-2 bg-white text-[#001529] px-10 py-5 rounded-lg font-bold hover:bg-white/90 transition-all shadow-2xl text-lg"
+              className="inline-flex items-center gap-2 px-10 py-5 rounded-lg font-bold transition-all shadow-2xl text-lg"
+              style={{ background: "#7FD19F", color: "#0E3B2E" }}
             >
               Criar conta grátis <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               to="/planos"
-              className="inline-flex items-center gap-2 border border-white/30 text-white px-8 py-5 rounded-lg font-semibold hover:bg-white/10 transition-all text-lg"
+              className="inline-flex items-center gap-2 px-8 py-5 rounded-lg font-semibold transition-all text-lg"
+              style={{ border: "1px solid rgba(244,239,230,0.3)", color: "#F4EFE6" }}
             >
               Ver planos
             </Link>

@@ -128,6 +128,7 @@ export function FluxoCaixa() {
   });
   const [suggestion, setSuggestion] = useState<{ pfpj: PfPj; score: number } | null>(null);
   const [showReviewAlert, setShowReviewAlert] = useState(false);
+  const [manualPfPj, setManualPfPj] = useState(false);
 
   // ─── Auto-suggest when description or valor changes ───────────────────────
 
@@ -142,9 +143,11 @@ export function FluxoCaixa() {
     const s = classifyPfPj(trimmed, val, formData.tipo);
     setSuggestion(s);
     setShowReviewAlert(s.score < 70);
-    // Only auto-apply if user hasn't manually changed it yet
-    setFormData((f) => ({ ...f, pfpj: s.pfpj, pfpj_score: s.score }));
-  }, [formData.descricao, formData.valor, formData.tipo]);
+    // Only auto-apply if user hasn't manually selected PF/PJ
+    if (!manualPfPj) {
+      setFormData((f) => ({ ...f, pfpj: s.pfpj, pfpj_score: s.score }));
+    }
+  }, [formData.descricao, formData.valor, formData.tipo, manualPfPj]);
 
   // ─── Create transaction ───────────────────────────────────────────────────
 
@@ -205,6 +208,7 @@ export function FluxoCaixa() {
     });
     setSuggestion(null);
     setShowReviewAlert(false);
+    setManualPfPj(false);
   };
 
   // ─── Derived values ───────────────────────────────────────────────────────
@@ -284,7 +288,7 @@ export function FluxoCaixa() {
         actions={
           <button
             onClick={() => { resetForm(); setShowModal(true); }}
-            className="flex items-center gap-2 bg-[#28A263] hover:bg-[#20915a] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
+            className="flex items-center gap-2 bg-[#7FD19F] hover:bg-[#1F5A3A] text-[#0E3B2E] px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Nova Transação
@@ -319,7 +323,7 @@ export function FluxoCaixa() {
       )}
 
       {/* PF/PJ TABs */}
-      <div className="flex gap-1 bg-[#F5F7FA] rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-[#F4EFE6] rounded-xl p-1 w-fit">
         {(
           [
             { key: "all", label: "Todos", icon: null },
@@ -332,8 +336,8 @@ export function FluxoCaixa() {
             onClick={() => setActiveTab(key)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
               activeTab === key
-                ? "bg-white text-[#001529] shadow-sm"
-                : "text-[rgba(0,21,41,0.55)] hover:text-[#001529]"
+                ? "bg-white text-[#0E3B2E] shadow-sm"
+                : "text-[rgba(0,21,41,0.55)] hover:text-[#0E3B2E]"
             }`}
           >
             {label}
@@ -384,12 +388,12 @@ export function FluxoCaixa() {
       {/* PF/PJ split summary (only in "all" tab) */}
       {activeTab === "all" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+          <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
                 <Building2 className="w-4 h-4 text-blue-600" />
               </div>
-              <span className="font-semibold text-[#001529] text-sm">Empresa (PJ)</span>
+              <span className="font-semibold text-[#0E3B2E] text-sm">Empresa (PJ)</span>
             </div>
             <div className="flex justify-between text-sm">
               <div>
@@ -409,12 +413,12 @@ export function FluxoCaixa() {
             </div>
           </div>
 
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+          <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
                 <User className="w-4 h-4 text-purple-600" />
               </div>
-              <span className="font-semibold text-[#001529] text-sm">Pessoal (PF)</span>
+              <span className="font-semibold text-[#0E3B2E] text-sm">Pessoal (PF)</span>
             </div>
             <div className="flex justify-between text-sm">
               <div>
@@ -437,15 +441,15 @@ export function FluxoCaixa() {
       )}
 
       {/* Filters */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 flex items-center gap-2 bg-[#F5F7FA] px-3 py-2 rounded-lg">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-4 flex flex-col sm:flex-row gap-3">
+        <div className="flex-1 flex items-center gap-2 bg-[#F4EFE6] px-3 py-2 rounded-lg">
           <Search className="w-4 h-4 text-[rgba(0,21,41,0.4)]" />
           <input
             type="text"
             placeholder="Buscar por descrição ou categoria..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-transparent outline-none text-sm flex-1 text-[#001529] placeholder:text-[rgba(0,21,41,0.4)]"
+            className="bg-transparent outline-none text-sm flex-1 text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)]"
           />
         </div>
         <div className="flex gap-2">
@@ -465,8 +469,8 @@ export function FluxoCaixa() {
                     ? "bg-green-500 text-white"
                     : key === "saida"
                     ? "bg-red-500 text-white"
-                    : "bg-[#001529] text-white"
-                  : "bg-[#F5F7FA] text-[rgba(0,21,41,0.6)] hover:bg-[#E5E7EB]"
+                    : "bg-[#0E3B2E] text-white"
+                  : "bg-[#F4EFE6] text-[rgba(0,21,41,0.6)] hover:bg-[rgba(20,18,15,0.13)]"
               }`}
             >
               {label}
@@ -475,7 +479,7 @@ export function FluxoCaixa() {
         </div>
         <button
           onClick={handleExport}
-          className="flex items-center gap-2 px-3 py-1.5 border border-[#E5E7EB] rounded-lg text-xs font-semibold text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 border border-[rgba(20,18,15,0.13)] rounded-lg text-xs font-semibold text-[rgba(0,21,41,0.6)] hover:bg-[#F4EFE6] transition-colors"
         >
           <Download className="w-3.5 h-3.5" />
           Exportar XLSX
@@ -483,10 +487,10 @@ export function FluxoCaixa() {
       </div>
 
       {/* Transactions table */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 animate-spin text-[#28A263]" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#7FD19F]" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
@@ -499,7 +503,7 @@ export function FluxoCaixa() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#F5F7FA] border-b border-[#E5E7EB]">
+              <thead className="bg-[#F4EFE6] border-b border-[rgba(20,18,15,0.13)]">
                 <tr>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Data</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-[rgba(0,21,41,0.5)] uppercase tracking-wider">Descrição</th>
@@ -509,7 +513,7 @@ export function FluxoCaixa() {
                   <th className="px-5 py-3" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F5F7FA]">
+              <tbody className="divide-y divide-[#F4EFE6]">
                 {filtered.map((t) => {
                   const isExpanded = expandedId === t.id;
                   return (
@@ -523,7 +527,7 @@ export function FluxoCaixa() {
                         </td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium text-[#001529]">{t.descricao || "—"}</span>
+                            <span className="text-sm font-medium text-[#0E3B2E]">{t.descricao || "—"}</span>
                             <span
                               className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${
                                 t.pfpj === "PF"
@@ -589,12 +593,12 @@ export function FluxoCaixa() {
                       </tr>
                       {isExpanded && (
                         <tr className="bg-[#F9FAFB]">
-                          <td colSpan={6} className="px-5 py-4 border-t border-[#E5E7EB]">
+                          <td colSpan={6} className="px-5 py-4 border-t border-[rgba(20,18,15,0.13)]">
                             <div className="flex flex-wrap gap-6 text-sm">
                               {/* Meta */}
                               <div className="space-y-1 min-w-[140px]">
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Classificação</p>
-                                <p className="text-[#001529] font-medium">
+                                <p className="text-[#0E3B2E] font-medium">
                                   {t.pfpj === "PF" ? "👤 Pessoa Física" : "🏢 Pessoa Jurídica"}
                                   {(t.pfpjScore ?? 100) < 100 && (
                                     <span className={`ml-2 text-xs ${(t.pfpjScore ?? 100) < 70 ? "text-amber-500" : "text-green-600"}`}>
@@ -605,7 +609,7 @@ export function FluxoCaixa() {
                               </div>
                               <div className="space-y-1 min-w-[140px]">
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Criado em</p>
-                                <p className="text-[#001529] font-medium">
+                                <p className="text-[#0E3B2E] font-medium">
                                   {fmtDate(
                                     t.createdAt instanceof Date && !isNaN(t.createdAt.getTime())
                                       ? t.createdAt.toISOString()
@@ -629,7 +633,7 @@ export function FluxoCaixa() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={(e) => e.stopPropagation()}
-                                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#E5E7EB] text-xs text-[#0066FF] hover:bg-blue-50 transition-colors"
+                                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[rgba(20,18,15,0.13)] text-xs text-[#0E3B2E] hover:bg-[#EBE4D6] transition-colors"
                                       >
                                         <FileText className="w-3 h-3" />
                                         {filename.length > 20 ? filename.slice(0, 20) + "…" : filename}
@@ -639,7 +643,7 @@ export function FluxoCaixa() {
                                   </div>
                                 )}
                                 <label
-                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-dashed border-[#E5E7EB] text-xs text-[rgba(0,21,41,0.5)] hover:border-[#0066FF] hover:text-[#0066FF] cursor-pointer transition-colors"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-dashed border-[rgba(20,18,15,0.13)] text-xs text-[rgba(0,21,41,0.5)] hover:border-[#0E3B2E] hover:text-[#0E3B2E] cursor-pointer transition-colors"
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   {uploadingId === t.id ? (
@@ -679,12 +683,12 @@ export function FluxoCaixa() {
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
         >
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
-              <h2 className="text-lg font-bold text-[#001529]">Nova Transação</h2>
+          <div className="rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ background: "#F4EFE6" }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(20,18,15,0.13)]">
+              <h2 className="text-lg font-bold text-[#0E3B2E]">Nova Transação</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1.5 text-[rgba(0,21,41,0.4)] hover:text-[#001529] rounded-lg hover:bg-[#F5F7FA] transition-colors"
+                className="p-1.5 text-[rgba(0,21,41,0.4)] hover:text-[#0E3B2E] rounded-lg hover:bg-[#F4EFE6] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -693,7 +697,7 @@ export function FluxoCaixa() {
             <form onSubmit={handleCreate} className="p-6 space-y-5">
               {/* Tipo */}
               <div>
-                <label className="block text-sm font-semibold text-[#001529] mb-2">Tipo</label>
+                <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Tipo</label>
                 <div className="flex gap-2">
                   {(["entrada", "saida"] as const).map((t) => (
                     <button
@@ -711,7 +715,7 @@ export function FluxoCaixa() {
                           ? t === "entrada"
                             ? "bg-green-500 border-green-500 text-white"
                             : "bg-red-500 border-red-500 text-white"
-                          : "bg-white border-[#E5E7EB] text-[rgba(0,21,41,0.6)] hover:border-[#001529]"
+                          : "bg-[#EBE4D6] border-[rgba(20,18,15,0.13)] text-[rgba(0,21,41,0.6)] hover:border-[#0E3B2E]"
                       }`}
                     >
                       {t === "entrada" ? "↑ Receita" : "↓ Despesa"}
@@ -722,13 +726,13 @@ export function FluxoCaixa() {
 
               {/* Descrição */}
               <div>
-                <label className="block text-sm font-semibold text-[#001529] mb-2">Descrição</label>
+                <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Descrição</label>
                 <input
                   type="text"
                   value={formData.descricao}
                   onChange={(e) => setFormData((f) => ({ ...f, descricao: e.target.value }))}
                   placeholder="Ex: Pagamento Cliente X"
-                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                   required
                 />
               </div>
@@ -736,7 +740,7 @@ export function FluxoCaixa() {
               {/* Valor + Data */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[#001529] mb-2">Valor (R$)</label>
+                  <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Valor (R$)</label>
                   <input
                     type="number"
                     min="0.01"
@@ -744,17 +748,17 @@ export function FluxoCaixa() {
                     value={formData.valor}
                     onChange={(e) => setFormData((f) => ({ ...f, valor: e.target.value }))}
                     placeholder="0,00"
-                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#001529] mb-2">Data</label>
+                  <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Data</label>
                   <input
                     type="date"
                     value={formData.data}
                     onChange={(e) => setFormData((f) => ({ ...f, data: e.target.value }))}
-                    className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
@@ -762,11 +766,11 @@ export function FluxoCaixa() {
 
               {/* Categoria */}
               <div>
-                <label className="block text-sm font-semibold text-[#001529] mb-2">Categoria</label>
+                <label className="block text-sm font-semibold text-[#0E3B2E] mb-2">Categoria</label>
                 <select
                   value={formData.categoria}
                   onChange={(e) => setFormData((f) => ({ ...f, categoria: e.target.value }))}
-                  className="w-full h-11 px-4 border border-[#E5E7EB] rounded-xl text-sm text-[#001529] outline-none focus:border-[#28A263] focus:ring-2 focus:ring-[#28A263]/15 transition-all bg-white"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all bg-white"
                   required
                 >
                   <option value="">Selecionar...</option>
@@ -779,7 +783,7 @@ export function FluxoCaixa() {
               {/* PF/PJ Selector */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-semibold text-[#001529]">Classificação</label>
+                  <label className="text-sm font-semibold text-[#0E3B2E]">Classificação</label>
                   {suggestion && (
                     <span
                       className={`text-xs font-medium flex items-center gap-1 ${
@@ -809,24 +813,22 @@ export function FluxoCaixa() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormData((f) => ({ ...f, pfpj: "PJ", pfpj_score: 100 }))}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
-                      formData.pfpj === "PJ"
-                        ? "bg-blue-50 border-blue-500 text-blue-700"
-                        : "bg-white border-[#E5E7EB] text-[rgba(0,21,41,0.55)] hover:border-blue-300"
-                    }`}
+                    onClick={() => { setManualPfPj(true); setFormData((f) => ({ ...f, pfpj: "PJ", pfpj_score: 100 })); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all"
+                    style={formData.pfpj === "PJ"
+                      ? { background: "#0E3B2E", borderColor: "#0E3B2E", color: "#F4EFE6" }
+                      : { background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)", color: "rgba(0,21,41,0.55)" }}
                   >
                     <Building2 className="w-4 h-4" />
                     🏢 Empresa
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData((f) => ({ ...f, pfpj: "PF", pfpj_score: 100 }))}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
-                      formData.pfpj === "PF"
-                        ? "bg-purple-50 border-purple-500 text-purple-700"
-                        : "bg-white border-[#E5E7EB] text-[rgba(0,21,41,0.55)] hover:border-purple-300"
-                    }`}
+                    onClick={() => { setManualPfPj(true); setFormData((f) => ({ ...f, pfpj: "PF", pfpj_score: 100 })); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border-2 transition-all"
+                    style={formData.pfpj === "PF"
+                      ? { background: "#7FD19F", borderColor: "#1F5A3A", color: "#0E3B2E" }
+                      : { background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)", color: "rgba(0,21,41,0.55)" }}
                   >
                     <User className="w-4 h-4" />
                     👤 Pessoal
@@ -839,14 +841,14 @@ export function FluxoCaixa() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 border border-[#E5E7EB] rounded-xl text-sm font-semibold text-[rgba(0,21,41,0.6)] hover:bg-[#F5F7FA] transition-colors"
+                  className="flex-1 py-2.5 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm font-semibold text-[rgba(0,21,41,0.6)] hover:bg-[#F4EFE6] transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2.5 bg-[#28A263] hover:bg-[#20915a] text-white rounded-xl text-sm font-semibold transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 bg-[#7FD19F] hover:bg-[#1F5A3A] text-[#0E3B2E] rounded-xl text-sm font-semibold transition-all disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {saving ? "Salvando..." : "Salvar Transação"}

@@ -153,7 +153,7 @@ export default function AccountsPayable() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-5">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center">
               <Clock className="w-4 h-4 text-[#f59e0b]" />
@@ -168,7 +168,7 @@ export default function AccountsPayable() {
           </p>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-5">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-[#ef4444]/10 flex items-center justify-center">
               <AlertCircle className="w-4 h-4 text-[#ef4444]" />
@@ -183,7 +183,7 @@ export default function AccountsPayable() {
           </p>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-5">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-[#10b981]/10 flex items-center justify-center">
               <CheckCircle className="w-4 h-4 text-[#10b981]" />
@@ -200,7 +200,7 @@ export default function AccountsPayable() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-[#001529]/60" />
@@ -210,7 +210,7 @@ export default function AccountsPayable() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   filter === "all"
                     ? "bg-[#003a6d] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 Todas
@@ -220,7 +220,7 @@ export default function AccountsPayable() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   filter === "pending"
                     ? "bg-[#f59e0b] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 Pendentes
@@ -230,7 +230,7 @@ export default function AccountsPayable() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   filter === "overdue"
                     ? "bg-[#ef4444] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 Vencidas
@@ -240,7 +240,7 @@ export default function AccountsPayable() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   filter === "paid"
                     ? "bg-[#10b981] text-white"
-                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[#E5E7EB]"
+                    : "bg-[#F5F7FA] text-[#001529] hover:bg-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 Pagas
@@ -248,7 +248,7 @@ export default function AccountsPayable() {
             </div>
           </div>
 
-          <button className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-colors text-sm font-medium text-[#001529]">
+          <button className="flex items-center gap-2 px-4 py-2 border border-[rgba(20,18,15,0.13)] rounded-lg hover:bg-[#F5F7FA] transition-colors text-sm font-medium text-[#001529]">
             <Download className="w-4 h-4" />
             Exportar
           </button>
@@ -265,7 +265,7 @@ export default function AccountsPayable() {
           return (
             <div
               key={bill.id}
-              className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
+              className="border border-[rgba(20,18,15,0.13)] rounded-xl p-5 hover:shadow-md transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -348,7 +348,7 @@ export default function AccountsPayable() {
       </div>
 
       {filteredBills.length === 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-12 text-center">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-xl p-12 text-center">
           <p className="text-[#001529]/60">Nenhuma conta encontrada</p>
         </div>
       )}

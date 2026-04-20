@@ -158,9 +158,9 @@ export function Profile() {
 
   // ── Input class helper ────────────────────────────────────────────────────
   const inputCls =
-    "w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] bg-[#F5F7FA] text-sm text-[#001529] placeholder:text-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/20 focus:border-[#003a6d] transition-colors";
+    "w-full px-3 py-2.5 rounded-xl border border-[rgba(20,18,15,0.13)] bg-[#F4EFE6] text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/20 focus:border-[#0E3B2E] transition-colors";
   const labelCls =
-    "block text-[10px] font-bold text-[#001529]/50 uppercase tracking-widest mb-1.5";
+    "block text-[10px] font-bold text-[#0E3B2E]/50 uppercase tracking-widest mb-1.5";
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -170,11 +170,11 @@ export function Profile() {
       />
 
       {/* ── 1. PROFILE HEADER CARD ─────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
         <div className="flex items-center gap-6">
           {/* Avatar */}
           <div className="relative flex-shrink-0">
-            <div className="w-20 h-20 rounded-full bg-[#003a6d] flex items-center justify-center overflow-hidden ring-4 ring-[#003a6d]/10">
+            <div className="w-20 h-20 rounded-full bg-[#0E3B2E] flex items-center justify-center overflow-hidden ring-4 ring-[#0E3B2E]/10">
               {user?.avatarUrl ? (
                 <img
                   src={user.avatarUrl}
@@ -193,7 +193,7 @@ export function Profile() {
             {/* Camera button */}
             <button
               onClick={handleAvatarClick}
-              className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#003a6d] rounded-full flex items-center justify-center border-2 border-white hover:bg-[#002a50] transition-colors shadow-md"
+              className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#0E3B2E] rounded-full flex items-center justify-center border-2 border-white hover:bg-[#002a50] transition-colors shadow-md"
               title="Alterar foto"
             >
               <Camera className="w-3.5 h-3.5 text-white" />
@@ -209,10 +209,10 @@ export function Profile() {
 
           {/* Name / subtitle / badge */}
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-[#001529] truncate">
+            <h2 className="text-xl font-bold text-[#0E3B2E] truncate">
               {user?.name ?? "—"}
             </h2>
-            <p className="text-sm text-[#001529]/60 mt-0.5">
+            <p className="text-sm text-[#0E3B2E]/60 mt-0.5">
               Microempreendedor Individual
             </p>
             <span
@@ -236,7 +236,7 @@ export function Profile() {
           {/* Change photo link */}
           <button
             onClick={handleAvatarClick}
-            className="text-sm font-medium text-[#003a6d] hover:underline flex-shrink-0 hidden sm:block"
+            className="text-sm font-medium text-[#0E3B2E] hover:underline flex-shrink-0 hidden sm:block"
           >
             Alterar foto
           </button>
@@ -244,16 +244,16 @@ export function Profile() {
       </div>
 
       {/* ── 2. PERSONAL INFORMATION CARD ─────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-[#003a6d]/10 flex items-center justify-center">
-            <User className="w-5 h-5 text-[#003a6d]" />
+          <div className="w-10 h-10 rounded-xl bg-[#0E3B2E]/10 flex items-center justify-center">
+            <User className="w-5 h-5 text-[#0E3B2E]" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#001529]">
+            <h2 className="text-base font-bold text-[#0E3B2E]">
               Informações Pessoais
             </h2>
-            <p className="text-xs text-[#001529]/50">Atualize seus dados cadastrais</p>
+            <p className="text-xs text-[#0E3B2E]/50">Atualize seus dados cadastrais</p>
           </div>
         </div>
 
@@ -277,9 +277,9 @@ export function Profile() {
                 type="email"
                 value={user?.email ?? ""}
                 disabled
-                className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] bg-[#F0F0F0] text-sm text-[#001529]/50 cursor-not-allowed"
+                className="w-full px-3 py-2.5 rounded-xl border border-[rgba(20,18,15,0.13)] bg-[#F0F0F0] text-sm text-[#0E3B2E]/50 cursor-not-allowed"
               />
-              <p className="text-[10px] text-[#001529]/40 mt-1">
+              <p className="text-[10px] text-[#0E3B2E]/40 mt-1">
                 Email não pode ser alterado
               </p>
             </div>
@@ -362,14 +362,14 @@ export function Profile() {
             <button
               type="button"
               onClick={handlePersonalCancel}
-              className="px-4 py-2 text-sm font-medium text-[#001529]/60 hover:text-[#001529] border border-[#E5E7EB] rounded-xl hover:bg-[#F5F7FA] transition-colors"
+              className="px-4 py-2 text-sm font-medium text-[#0E3B2E]/60 hover:text-[#0E3B2E] border border-[rgba(20,18,15,0.13)] rounded-xl hover:bg-[#F4EFE6] transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={personalLoading}
-              className="px-6 py-2 text-sm font-bold text-white bg-[#003a6d] rounded-xl hover:bg-[#002a50] transition-colors disabled:opacity-60"
+              className="px-6 py-2 text-sm font-bold text-white bg-[#0E3B2E] rounded-xl hover:bg-[#002a50] transition-colors disabled:opacity-60"
             >
               {personalLoading ? "Salvando..." : "Salvar"}
             </button>
@@ -378,16 +378,16 @@ export function Profile() {
       </div>
 
       {/* ── 3. MEI INFORMATION CARD ──────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
             <Building2 className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#001529]">
+            <h2 className="text-base font-bold text-[#0E3B2E]">
               Informações MEI
             </h2>
-            <p className="text-xs text-[#001529]/50">
+            <p className="text-xs text-[#0E3B2E]/50">
               Dados do seu negócio como Microempreendedor
             </p>
           </div>
@@ -395,57 +395,57 @@ export function Profile() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Opening / member date */}
-          <div className="bg-[#F5F7FA] rounded-xl p-4 border border-[#E5E7EB]">
+          <div className="bg-[#F4EFE6] rounded-xl p-4 border border-[rgba(20,18,15,0.13)]">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                 <Calendar className="w-4 h-4 text-blue-600" />
               </div>
-              <p className="text-[10px] font-bold text-[#001529]/50 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-[#0E3B2E]/50 uppercase tracking-widest">
                 Membro desde
               </p>
             </div>
-            <p className="text-lg font-bold text-[#001529]">
+            <p className="text-lg font-bold text-[#0E3B2E]">
               {new Date().getFullYear()}
             </p>
-            <p className="text-xs text-[#001529]/50 mt-0.5">
+            <p className="text-xs text-[#0E3B2E]/50 mt-0.5">
               Ano de abertura da conta
             </p>
           </div>
 
           {/* Annual MEI limit */}
-          <div className="bg-[#F5F7FA] rounded-xl p-4 border border-[#E5E7EB]">
+          <div className="bg-[#F4EFE6] rounded-xl p-4 border border-[rgba(20,18,15,0.13)]">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
                 <Shield className="w-4 h-4 text-purple-600" />
               </div>
-              <p className="text-[10px] font-bold text-[#001529]/50 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-[#0E3B2E]/50 uppercase tracking-widest">
                 Limite Anual MEI
               </p>
             </div>
-            <p className="text-lg font-bold text-[#001529]">R$ 81.000</p>
-            <p className="text-xs text-[#001529]/50 mt-0.5">
+            <p className="text-lg font-bold text-[#0E3B2E]">R$ 81.000</p>
+            <p className="text-xs text-[#0E3B2E]/50 mt-0.5">
               Faturamento bruto anual permitido
             </p>
           </div>
 
           {/* Current month revenue */}
-          <div className="bg-[#F5F7FA] rounded-xl p-4 border border-[#E5E7EB]">
+          <div className="bg-[#F4EFE6] rounded-xl p-4 border border-[rgba(20,18,15,0.13)]">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
                 <TrendingUp className="w-4 h-4 text-emerald-600" />
               </div>
-              <p className="text-[10px] font-bold text-[#001529]/50 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-[#0E3B2E]/50 uppercase tracking-widest">
                 Receita do Mês
               </p>
             </div>
             {metricsLoading ? (
-              <div className="h-6 w-24 bg-[#E5E7EB] rounded animate-pulse" />
+              <div className="h-6 w-24 bg-[rgba(20,18,15,0.13)] rounded animate-pulse" />
             ) : (
               <p className="text-lg font-bold text-emerald-600">
                 {fmt(monthReceitas)}
               </p>
             )}
-            <p className="text-xs text-[#001529]/50 mt-0.5">
+            <p className="text-xs text-[#0E3B2E]/50 mt-0.5">
               Faturamento no mês atual
             </p>
           </div>
@@ -453,14 +453,14 @@ export function Profile() {
       </div>
 
       {/* ── 4. SECURITY SECTION ──────────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
             <KeyRound className="w-5 h-5 text-red-500" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#001529]">Segurança</h2>
-            <p className="text-xs text-[#001529]/50">
+            <h2 className="text-base font-bold text-[#0E3B2E]">Segurança</h2>
+            <p className="text-xs text-[#0E3B2E]/50">
               Altere sua senha para manter a conta protegida
             </p>
           </div>
@@ -517,8 +517,8 @@ export function Profile() {
           </div>
 
           {/* Password rules */}
-          <div className="bg-[#F5F7FA] border border-[#E5E7EB] rounded-xl p-4">
-            <p className="text-[10px] font-bold text-[#001529]/50 uppercase tracking-widest mb-3">
+          <div className="bg-[#F4EFE6] border border-[rgba(20,18,15,0.13)] rounded-xl p-4">
+            <p className="text-[10px] font-bold text-[#0E3B2E]/50 uppercase tracking-widest mb-3">
               Requisitos de senha
             </p>
             <ul className="space-y-1.5">
@@ -527,9 +527,9 @@ export function Profile() {
                 "Deve ser diferente da senha atual",
                 "Confirmação deve ser igual à nova senha",
               ].map((rule, i) => (
-                <li key={i} className="flex items-center gap-2 text-xs text-[#001529]/60">
-                  <div className="w-4 h-4 rounded-full bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[#003a6d] text-[9px] font-bold">✓</span>
+                <li key={i} className="flex items-center gap-2 text-xs text-[#0E3B2E]/60">
+                  <div className="w-4 h-4 rounded-full bg-[#0E3B2E]/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[#0E3B2E] text-[9px] font-bold">✓</span>
                   </div>
                   {rule}
                 </li>
@@ -568,14 +568,14 @@ export function Profile() {
       </div>
 
       {/* ── 5. NOTIFICATIONS SECTION ─────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
             <Bell className="w-5 h-5 text-orange-500" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[#001529]">Notificações</h2>
-            <p className="text-xs text-[#001529]/50">
+            <h2 className="text-base font-bold text-[#0E3B2E]">Notificações</h2>
+            <p className="text-xs text-[#0E3B2E]/50">
               Configure seus alertas e lembretes automáticos
             </p>
           </div>
@@ -583,12 +583,12 @@ export function Profile() {
 
         <div className="space-y-4">
           {/* Toggle row */}
-          <div className="flex items-center justify-between p-4 rounded-xl border border-[#E5E7EB] bg-[#F5F7FA]">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-[rgba(20,18,15,0.13)] bg-[#F4EFE6]">
             <div className="flex-1 pr-4">
-              <p className="font-semibold text-sm text-[#001529]">
+              <p className="font-semibold text-sm text-[#0E3B2E]">
                 Lembretes de Cobrança
               </p>
-              <p className="text-xs text-[#001529]/60 mt-0.5">
+              <p className="text-xs text-[#0E3B2E]/60 mt-0.5">
                 Receba emails automáticos para propostas vencidas e contas a pagar
               </p>
             </div>
@@ -598,8 +598,8 @@ export function Profile() {
               disabled={notifLoading}
               aria-checked={user?.receivePaymentReminders ?? false}
               role="switch"
-              className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 ${
-                user?.receivePaymentReminders ? "bg-[#003a6d]" : "bg-[#D1D5DB]"
+              className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 ${
+                user?.receivePaymentReminders ? "bg-[#0E3B2E]" : "bg-[#D1D5DB]"
               } ${notifLoading ? "opacity-60" : ""}`}
             >
               <span

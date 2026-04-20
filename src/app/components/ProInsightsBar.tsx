@@ -171,7 +171,7 @@ function StatItem({
   value,
   growth,
   icon: Icon,
-  valueColor = "text-[#001529]",
+  valueColor = "text-[#0E3B2E]",
   loading,
 }: {
   label: string;
@@ -183,15 +183,15 @@ function StatItem({
 }) {
   return (
     <div className="flex items-center gap-3 px-5 py-3">
-      <div className="w-8 h-8 rounded-lg bg-white border border-[#E5E7EB] flex items-center justify-center flex-shrink-0 shadow-sm">
-        <Icon className="w-4 h-4 text-[#001529]/50" />
+      <div className="w-8 h-8 rounded-lg border border-[rgba(20,18,15,0.13)] flex items-center justify-center flex-shrink-0 shadow-sm">
+        <Icon className="w-4 h-4 text-[#0E3B2E]/50" />
       </div>
       <div>
-        <p className="text-[10px] font-semibold text-[#001529]/40 uppercase tracking-wider leading-none mb-1">
+        <p className="text-[10px] font-semibold text-[#0E3B2E]/40 uppercase tracking-wider leading-none mb-1">
           {label}
         </p>
         {loading ? (
-          <div className="h-4 w-20 bg-[#E5E7EB] rounded animate-pulse" />
+          <div className="h-4 w-20 bg-[rgba(20,18,15,0.13)] rounded animate-pulse" />
         ) : (
           <div className="flex items-center gap-1.5">
             <p className={`text-sm font-bold leading-none ${valueColor}`}>{value}</p>
@@ -247,7 +247,7 @@ export function ProInsightsBar() {
   const InsightIcon = insight.icon;
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm overflow-hidden">
+    <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl shadow-sm overflow-hidden">
       {/* Metrics strip */}
       <div className="flex items-stretch divide-x divide-[#F0F0F0] overflow-x-auto">
         <StatItem
@@ -291,8 +291,8 @@ export function ProInsightsBar() {
           </div>
           {loading ? (
             <div className="space-y-1.5">
-              <div className="h-3 w-48 bg-[#E5E7EB] rounded animate-pulse" />
-              <div className="h-3 w-32 bg-[#E5E7EB] rounded animate-pulse" />
+              <div className="h-3 w-48 bg-[rgba(20,18,15,0.13)] rounded animate-pulse" />
+              <div className="h-3 w-32 bg-[rgba(20,18,15,0.13)] rounded animate-pulse" />
             </div>
           ) : (
             <p className={`text-xs font-medium leading-relaxed ${tone.text}`}>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="108" viewBox="0 0 520 108" fill="none">
+  <title>DashComigo — Knockout (on dark)</title>
+  <rect width="520" height="108" fill="#0E3B2E"></rect>
+  <circle cx="54" cy="54" r="34" stroke="#F4EFE6" stroke-width="10" fill="none"></circle>
+  <circle cx="90" cy="54" r="12" fill="#7FD19F"></circle>
+  <text x="128" y="72" font-family="Geist, Inter, Helvetica, Arial, sans-serif" font-weight="600" font-size="46" letter-spacing="-1.6" fill="#F4EFE6">Dashcomigo</text>
+</svg>

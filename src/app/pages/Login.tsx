@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
-import { TrendingUp, Mail, Lock, ArrowRight, Shield, Zap, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, ArrowRight, Shield, Zap, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
+import { Logo, LogoMark } from "../components/ui/Logo";
 
 function GoogleIcon() {
   return (
@@ -45,10 +46,10 @@ function GoogleLoginButton({ loading, loginWithGoogle, navigate }: {
       type="button"
       onClick={handleGoogleLogin}
       disabled={googleLoading || loading}
-      className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[#E5E7EB] rounded-lg hover:bg-[#F5F7FA] transition-all font-semibold text-[#001529] disabled:opacity-60 disabled:cursor-not-allowed"
+      className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[rgba(20,18,15,0.13)] rounded-lg hover:bg-[#F4EFE6] transition-all font-semibold text-[#0E3B2E] disabled:opacity-60 disabled:cursor-not-allowed"
     >
       {googleLoading ? (
-        <span className="w-5 h-5 border-2 border-[#001529]/20 border-t-[#001529] rounded-full animate-spin" />
+        <span className="w-5 h-5 border-2 border-[#0E3B2E]/20 border-t-[#0E3B2E] rounded-full animate-spin" />
       ) : (
         <GoogleIcon />
       )}
@@ -97,15 +98,12 @@ export function Login() {
   return (
     <div className="min-h-screen bg-background grid lg:grid-cols-2">
       {/* Left side - Branding & Benefits */}
-      <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#001529] to-[#003a6d] p-12 relative overflow-hidden">
+      <div className="hidden lg:flex flex-col justify-between bg-[#0E3B2E] p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
 
         <div className="relative z-10">
-          <Link to="/" className="flex items-center gap-3 mb-16">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <TrendingUp className="w-7 h-7 text-white" />
-            </div>
-            <span className="font-extrabold text-3xl text-white">FinMEI</span>
+          <Link to="/" className="flex items-center mb-16">
+            <Logo variant="knockout" />
           </Link>
 
           <h1 className="font-extrabold text-white mb-6 leading-tight" style={{ fontSize: "3.5rem" }}>
@@ -163,27 +161,24 @@ export function Login() {
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <Link to="/" className="lg:hidden flex items-center gap-3 mb-12 justify-center">
-            <div className="w-10 h-10 rounded-xl bg-[#003a6d] flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-white" />
-            </div>
-            <span className="font-extrabold text-2xl text-[#001529]">FinMEI</span>
+          <Link to="/" className="lg:hidden flex items-center mb-12 justify-center">
+            <Logo />
           </Link>
 
           <div className="mb-10">
-            <h2 className="font-extrabold text-[#001529] mb-3 text-4xl">Bem-vindo de volta</h2>
-            <p className="text-[#001529]/60 text-lg">
+            <h2 className="font-extrabold text-[#0E3B2E] mb-3 text-4xl">Bem-vindo de volta</h2>
+            <p className="text-[#0E3B2E]/60 text-lg">
               Entre na sua conta para continuar
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-[#001529] mb-2 font-semibold">
+              <label htmlFor="email" className="block text-[#0E3B2E] mb-2 font-semibold">
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#001529]/40" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0E3B2E]/40" />
                 <input
                   id="email"
                   type="email"
@@ -191,18 +186,18 @@ export function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
-                  className="w-full bg-white border border-[#E5E7EB] rounded-lg pl-12 pr-4 py-4 text-[#001529] placeholder:text-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d] focus:border-transparent transition-all"
+                  className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg pl-12 pr-4 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
                   autoComplete="email"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-[#001529] mb-2 font-semibold">
+              <label htmlFor="password" className="block text-[#0E3B2E] mb-2 font-semibold">
                 Senha
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#001529]/40" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0E3B2E]/40" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -210,13 +205,13 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full bg-white border border-[#E5E7EB] rounded-lg pl-12 pr-12 py-4 text-[#001529] placeholder:text-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d] focus:border-transparent transition-all"
+                  className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg pl-12 pr-12 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#001529]/40 hover:text-[#001529] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#0E3B2E]/40 hover:text-[#0E3B2E] transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -227,13 +222,13 @@ export function Login() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded border-[#E5E7EB] text-[#003a6d] focus:ring-[#003a6d] focus:ring-offset-0"
+                  className="w-4 h-4 rounded border-[rgba(20,18,15,0.13)] text-[#0E3B2E] focus:ring-[#0E3B2E] focus:ring-offset-0"
                 />
-                <span className="text-sm text-[#001529]/60">Lembrar de mim</span>
+                <span className="text-sm text-[#0E3B2E]/60">Lembrar de mim</span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-[#003a6d] hover:text-[#002a50] transition-colors font-semibold"
+                className="text-sm text-[#1F5A3A] hover:text-[#0E3B2E] transition-colors font-semibold"
               >
                 Esqueceu a senha?
               </Link>
@@ -242,7 +237,7 @@ export function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center justify-center gap-2 w-full bg-[#003a6d] text-white px-6 py-4 rounded-lg font-bold hover:bg-[#002a50] transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 w-full bg-[#0E3B2E] text-white px-6 py-4 rounded-lg font-bold hover:bg-[#082219] transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -259,10 +254,10 @@ export function Login() {
 
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#E5E7EB]"></div>
+                <div className="w-full border-t border-[rgba(20,18,15,0.13)]"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-background text-[#001529]/60">ou continue com</span>
+                <span className="px-4 bg-background text-[#0E3B2E]/60">ou continue com</span>
               </div>
             </div>
 
@@ -270,11 +265,11 @@ export function Login() {
             <GoogleLoginButton loading={loading} loginWithGoogle={loginWithGoogle} navigate={navigate} />
           </form>
 
-          <p className="mt-8 text-center text-[#001529]/60">
+          <p className="mt-8 text-center text-[#0E3B2E]/60">
             Não tem uma conta?{" "}
             <Link
               to="/signup"
-              className="text-[#003a6d] hover:text-[#002a50] transition-colors font-semibold"
+              className="text-[#1F5A3A] hover:text-[#0E3B2E] transition-colors font-semibold"
             >
               Criar conta grátis
             </Link>

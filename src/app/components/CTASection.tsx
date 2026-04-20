@@ -22,7 +22,7 @@ export function CTASection({ onScrollToSimulator }: CTASectionProps) {
               </span>
             </div>
 
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-[#001529] leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-extrabold text-[#0E3B2E] leading-tight">
               A melhor ferramenta para o seu negócio!
             </h2>
 

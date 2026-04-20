@@ -32,7 +32,7 @@ export function KPICard({ icon: Icon, label, value, description, trend, color = 
   return (
     <div
       onClick={onClick}
-      className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:border-[#0066FF]/20 hover:shadow-md transition-all duration-300 cursor-pointer group"
+      className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 hover:border-[#0066FF]/20 hover:shadow-md transition-all duration-300 cursor-pointer group"
     >
       <div className="flex items-start justify-between mb-4">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorStyles[color]} group-hover:scale-110 transition-transform`}>
@@ -47,7 +47,7 @@ export function KPICard({ icon: Icon, label, value, description, trend, color = 
         )}
       </div>
       <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">{label}</p>
-      <p className="text-2xl font-bold text-[#001529]">{value}</p>
+      <p className="text-2xl font-bold text-[#0E3B2E]">{value}</p>
       {description && <p className="text-xs text-[rgba(0,21,41,0.4)] mt-1">{description}</p>}
     </div>
   );

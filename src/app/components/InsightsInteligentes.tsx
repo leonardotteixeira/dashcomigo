@@ -144,14 +144,14 @@ export default function InsightsInteligentes() {
   const displayed = insights.slice(0, 3);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col">
+    <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm flex flex-col">
       {/* Header */}
       <div className="mb-5">
         <div className="flex items-center gap-2 mb-1">
-          <TrendingUp className="w-5 h-5 text-[#003a6d]" />
-          <h3 className="font-bold text-[#001529]">Insights Inteligentes</h3>
+          <TrendingUp className="w-5 h-5 text-[#0E3B2E]" />
+          <h3 className="font-bold text-[#0E3B2E]">Insights Inteligentes</h3>
         </div>
-        <p className="text-xs text-[#001529]/50">Baseado nos seus dados recentes</p>
+        <p className="text-xs text-[#0E3B2E]/50">Baseado nos seus dados recentes</p>
       </div>
 
       {/* Insights list */}
@@ -165,8 +165,8 @@ export default function InsightsInteligentes() {
                 <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${dotCls} border border-white`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#001529] leading-snug">{insight.title}</p>
-                <p className="text-xs text-[#001529]/55 mt-0.5 leading-relaxed">{insight.description}</p>
+                <p className="text-sm font-semibold text-[#0E3B2E] leading-snug">{insight.title}</p>
+                <p className="text-xs text-[#0E3B2E]/55 mt-0.5 leading-relaxed">{insight.description}</p>
               </div>
             </div>
           );
@@ -176,7 +176,7 @@ export default function InsightsInteligentes() {
       {/* CTA */}
       <button
         onClick={() => navigate("/app/relatorios")}
-        className="mt-4 flex items-center justify-center gap-1 text-sm font-semibold text-[#003a6d] hover:text-[#002a50] transition-colors"
+        className="mt-4 flex items-center justify-center gap-1 text-sm font-semibold text-[#0E3B2E] hover:text-[#002a50] transition-colors"
       >
         Ver análise completa
         <ChevronRight className="w-4 h-4" />

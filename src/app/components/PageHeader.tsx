@@ -21,7 +21,7 @@ export function PageHeader({ title, description, badge, actions }: PageHeaderPro
     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
       <div className="flex-1">
         <div className="flex flex-wrap items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-[#001529]">{title}</h1>
+          <h1 className="text-3xl font-bold text-[#0E3B2E]">{title}</h1>
           {badge && (
             <span className={`text-xs font-bold px-3 py-1.5 rounded-full border uppercase tracking-wide ${badgeStyles[badge.color || "green"]}`}>
               {badge.text}

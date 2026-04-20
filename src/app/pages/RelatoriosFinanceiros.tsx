@@ -94,7 +94,7 @@ function Paywall() {
       </div>
 
       {/* overlay card */}
-      <div className="relative z-10 bg-white border border-[#E5E7EB] rounded-2xl p-10 text-center max-w-md shadow-xl">
+      <div className="relative z-10 border border-[rgba(20,18,15,0.13)] rounded-2xl p-10 text-center max-w-md shadow-xl">
         <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
           <Lock className="w-8 h-8 text-amber-500" />
         </div>
@@ -104,10 +104,10 @@ function Paywall() {
             Exclusivo PRO
           </span>
         </div>
-        <h2 className="text-2xl font-bold text-[#001529] mb-3">
+        <h2 className="text-2xl font-bold text-[#0E3B2E] mb-3">
           Relatórios Avançados
         </h2>
-        <p className="text-[#001529]/60 mb-6 leading-relaxed">
+        <p className="text-[#0E3B2E]/60 mb-6 leading-relaxed">
           Análise preditiva, gráficos avançados, exportação para Excel e PDF,
           insights inteligentes e muito mais — disponíveis apenas no plano PRO.
         </p>
@@ -117,7 +117,7 @@ function Paywall() {
         >
           Fazer Upgrade → PRO
         </button>
-        <p className="mt-3 text-xs text-[#001529]/40">
+        <p className="mt-3 text-xs text-[#0E3B2E]/40">
           Cancele quando quiser. Sem compromisso.
         </p>
       </div>
@@ -512,10 +512,10 @@ export function RelatoriosFinanceiros() {
               PRO
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-[#001529]">
+          <h1 className="text-2xl font-bold text-[#0E3B2E]">
             Relatórios Avançados
           </h1>
-          <p className="text-[#001529]/60 text-sm mt-0.5">
+          <p className="text-[#0E3B2E]/60 text-sm mt-0.5">
             Análise completa com insights preditivos e inteligência financeira
           </p>
         </div>
@@ -525,13 +525,13 @@ export function RelatoriosFinanceiros() {
           <div className="relative">
             <button
               onClick={() => setPeriodOpen((v) => !v)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E5E7EB] rounded-xl text-sm font-medium text-[#001529] hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm font-medium text-[#0E3B2E] hover:bg-gray-50 transition-colors"
             >
               Últimos {period} meses
               <ChevronDown className="w-4 h-4" />
             </button>
             {periodOpen && (
-              <div className="absolute right-0 top-full mt-1 bg-white border border-[#E5E7EB] rounded-xl shadow-lg z-20 overflow-hidden min-w-[140px]">
+              <div className="absolute right-0 top-full mt-1 border border-[rgba(20,18,15,0.13)] rounded-xl shadow-lg z-20 overflow-hidden min-w-[140px]">
                 {(["3", "6", "12"] as const).map((p) => (
                   <button
                     key={p}
@@ -542,7 +542,7 @@ export function RelatoriosFinanceiros() {
                     className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
                       period === p
                         ? "font-semibold text-[#10b981]"
-                        : "text-[#001529]"
+                        : "text-[#0E3B2E]"
                     }`}
                   >
                     {p} meses
@@ -562,7 +562,7 @@ export function RelatoriosFinanceiros() {
 
           <button
             onClick={handleExportPdf}
-            className="flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] hover:bg-[#001529] text-white rounded-xl text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] hover:bg-[#0E3B2E] text-white rounded-xl text-sm font-medium transition-colors"
           >
             <FileText className="w-4 h-4" />
             PDF
@@ -614,16 +614,16 @@ export function RelatoriosFinanceiros() {
       {/* ── 3. Main KPIs ────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Receita Total */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-[#001529]/60 font-medium">
+            <span className="text-sm text-[#0E3B2E]/60 font-medium">
               Receita Total
             </span>
             <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
               <TrendingUp className="w-4 h-4 text-emerald-600" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#001529]">
+          <p className="text-2xl font-bold text-[#0E3B2E]">
             {fmtShort(totalReceita)}
           </p>
           <div className="flex items-center gap-1 mt-2">
@@ -640,21 +640,21 @@ export function RelatoriosFinanceiros() {
               {growthReceita >= 0 ? "+" : ""}
               {growthReceita.toFixed(1)}%
             </span>
-            <span className="text-xs text-[#001529]/40">vs período anterior</span>
+            <span className="text-xs text-[#0E3B2E]/40">vs período anterior</span>
           </div>
         </div>
 
         {/* Despesa Total */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-[#001529]/60 font-medium">
+            <span className="text-sm text-[#0E3B2E]/60 font-medium">
               Despesa Total
             </span>
             <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center">
               <TrendingDown className="w-4 h-4 text-red-500" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#001529]">
+          <p className="text-2xl font-bold text-[#0E3B2E]">
             {fmtShort(totalDespesa)}
           </p>
           <div className="flex items-center gap-1 mt-2">
@@ -671,14 +671,14 @@ export function RelatoriosFinanceiros() {
               {growthDespesa >= 0 ? "+" : ""}
               {growthDespesa.toFixed(1)}%
             </span>
-            <span className="text-xs text-[#001529]/40">vs período anterior</span>
+            <span className="text-xs text-[#0E3B2E]/40">vs período anterior</span>
           </div>
         </div>
 
         {/* Lucro Líquido */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-[#001529]/60 font-medium">
+            <span className="text-sm text-[#0E3B2E]/60 font-medium">
               Lucro Líquido
             </span>
             <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -687,7 +687,7 @@ export function RelatoriosFinanceiros() {
           </div>
           <p
             className={`text-2xl font-bold ${
-              totalLucro >= 0 ? "text-[#001529]" : "text-red-500"
+              totalLucro >= 0 ? "text-[#0E3B2E]" : "text-red-500"
             }`}
           >
             {fmtShort(totalLucro)}
@@ -706,14 +706,14 @@ export function RelatoriosFinanceiros() {
               {growthLucro >= 0 ? "+" : ""}
               {growthLucro.toFixed(1)}%
             </span>
-            <span className="text-xs text-[#001529]/40">vs período anterior</span>
+            <span className="text-xs text-[#0E3B2E]/40">vs período anterior</span>
           </div>
         </div>
 
         {/* Margem de Lucro */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-[#001529]/60 font-medium">
+            <span className="text-sm text-[#0E3B2E]/60 font-medium">
               Margem de Lucro
             </span>
             <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center">
@@ -722,7 +722,7 @@ export function RelatoriosFinanceiros() {
           </div>
           <p
             className={`text-2xl font-bold ${
-              margemLucro >= 0 ? "text-[#001529]" : "text-red-500"
+              margemLucro >= 0 ? "text-[#0E3B2E]" : "text-red-500"
             }`}
           >
             {margemLucro.toFixed(1)}%
@@ -742,7 +742,7 @@ export function RelatoriosFinanceiros() {
                 }}
               />
             </div>
-            <p className="text-xs text-[#001529]/40 mt-1">
+            <p className="text-xs text-[#0E3B2E]/40 mt-1">
               {margemLucro > 25
                 ? "Margem saudável"
                 : margemLucro > 10
@@ -754,14 +754,14 @@ export function RelatoriosFinanceiros() {
       </div>
 
       {/* ── 4. Predictive Analysis chart ────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-1">
           <Target className="w-5 h-5 text-[#8B5CF6]" />
-          <h2 className="text-base font-semibold text-[#001529]">
+          <h2 className="text-base font-semibold text-[#0E3B2E]">
             Análise Preditiva – Próximos 3 Meses
           </h2>
         </div>
-        <p className="text-xs text-[#001529]/50 mb-4">
+        <p className="text-xs text-[#0E3B2E]/50 mb-4">
           Linhas sólidas = histórico · linhas tracejadas = projeção
         </p>
         <ResponsiveContainer width="100%" height={300}>
@@ -849,22 +849,22 @@ export function RelatoriosFinanceiros() {
           return (
             <div
               key={f.month}
-              className="bg-white border border-[#E5E7EB] rounded-2xl p-6"
+              className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6"
             >
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-purple-500" />
-                <span className="text-sm font-semibold text-[#001529]/60 uppercase tracking-wide">
+                <span className="text-sm font-semibold text-[#0E3B2E]/60 uppercase tracking-wide">
                   {f.label}
                 </span>
                 <span className="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
                   Projeção
                 </span>
               </div>
-              <p className="text-xl font-bold text-[#001529]">
+              <p className="text-xl font-bold text-[#0E3B2E]">
                 {fmt(f.lucro)}
               </p>
-              <p className="text-xs text-[#001529]/50 mt-0.5">lucro previsto</p>
-              <div className="mt-3 flex items-center justify-between text-xs text-[#001529]/60">
+              <p className="text-xs text-[#0E3B2E]/50 mt-0.5">lucro previsto</p>
+              <div className="mt-3 flex items-center justify-between text-xs text-[#0E3B2E]/60">
                 <span>Receita: {fmtShort(f.receitas)}</span>
                 <span>Margem: {margin.toFixed(1)}%</span>
               </div>
@@ -874,8 +874,8 @@ export function RelatoriosFinanceiros() {
       </div>
 
       {/* ── 6. Bar chart evolução ────────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-        <h2 className="text-base font-semibold text-[#001529] mb-4">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
+        <h2 className="text-base font-semibold text-[#0E3B2E] mb-4">
           Evolução de Receitas, Despesas e Lucro
         </h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -913,12 +913,12 @@ export function RelatoriosFinanceiros() {
       {/* ── 7 & 8. Category breakdowns ──────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Revenue by category */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-          <h2 className="text-base font-semibold text-[#001529] mb-4">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
+          <h2 className="text-base font-semibold text-[#0E3B2E] mb-4">
             Receitas por Categoria
           </h2>
           {revCategoryData.length === 0 ? (
-            <p className="text-[#001529]/40 text-sm text-center py-8">
+            <p className="text-[#0E3B2E]/40 text-sm text-center py-8">
               Sem dados de receitas no período.
             </p>
           ) : (
@@ -959,10 +959,10 @@ export function RelatoriosFinanceiros() {
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-xs text-[#001529]/70 truncate flex-1">
+                    <span className="text-xs text-[#0E3B2E]/70 truncate flex-1">
                       {item.name}
                     </span>
-                    <span className="text-xs font-semibold text-[#001529] flex-shrink-0">
+                    <span className="text-xs font-semibold text-[#0E3B2E] flex-shrink-0">
                       {item.pct}%
                     </span>
                   </div>
@@ -973,12 +973,12 @@ export function RelatoriosFinanceiros() {
         </div>
 
         {/* Expenses by category */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-          <h2 className="text-base font-semibold text-[#001529] mb-4">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
+          <h2 className="text-base font-semibold text-[#0E3B2E] mb-4">
             Despesas por Categoria
           </h2>
           {expCategoryData.length === 0 ? (
-            <p className="text-[#001529]/40 text-sm text-center py-8">
+            <p className="text-[#0E3B2E]/40 text-sm text-center py-8">
               Sem dados de despesas no período.
             </p>
           ) : (
@@ -1019,10 +1019,10 @@ export function RelatoriosFinanceiros() {
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-xs text-[#001529]/70 truncate flex-1">
+                    <span className="text-xs text-[#0E3B2E]/70 truncate flex-1">
                       {item.name}
                     </span>
-                    <span className="text-xs font-semibold text-[#001529] flex-shrink-0">
+                    <span className="text-xs font-semibold text-[#0E3B2E] flex-shrink-0">
                       {item.pct}%
                     </span>
                   </div>
@@ -1034,8 +1034,8 @@ export function RelatoriosFinanceiros() {
       </div>
 
       {/* ── 9. PF vs PJ ─────────────────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-        <h2 className="text-base font-semibold text-[#001529] mb-4">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
+        <h2 className="text-base font-semibold text-[#0E3B2E] mb-4">
           Clientes: Pessoa Física vs Jurídica
         </h2>
         <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -1071,10 +1071,10 @@ export function RelatoriosFinanceiros() {
                 <Users className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-xs text-[#001529]/60 font-medium">
+                <p className="text-xs text-[#0E3B2E]/60 font-medium">
                   Pessoa Física
                 </p>
-                <p className="text-lg font-bold text-[#001529]">
+                <p className="text-lg font-bold text-[#0E3B2E]">
                   {fmtShort(pfTotal)}
                 </p>
                 <p className="text-xs text-blue-600 font-semibold">
@@ -1087,10 +1087,10 @@ export function RelatoriosFinanceiros() {
                 <Building2 className="w-5 h-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-xs text-[#001529]/60 font-medium">
+                <p className="text-xs text-[#0E3B2E]/60 font-medium">
                   Pessoa Jurídica
                 </p>
-                <p className="text-lg font-bold text-[#001529]">
+                <p className="text-lg font-bold text-[#0E3B2E]">
                   {fmtShort(pjTotal)}
                 </p>
                 <p className="text-xs text-purple-600 font-semibold">
@@ -1103,8 +1103,8 @@ export function RelatoriosFinanceiros() {
       </div>
 
       {/* ── 10. Area chart cash flow ─────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-        <h2 className="text-base font-semibold text-[#001529] mb-4">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
+        <h2 className="text-base font-semibold text-[#0E3B2E] mb-4">
           Fluxo de Caixa – Entradas vs Saídas
         </h2>
         <ResponsiveContainer width="100%" height={280}>
@@ -1165,9 +1165,9 @@ export function RelatoriosFinanceiros() {
       {/* ── 11. Receivables vs Payables ─────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* A Receber */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-[#001529]">
+            <h2 className="text-base font-semibold text-[#0E3B2E]">
               A Receber (pendente)
             </h2>
             <span className="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold">
@@ -1175,7 +1175,7 @@ export function RelatoriosFinanceiros() {
             </span>
           </div>
           {Object.keys(pendingReceivablesByMonth).length === 0 ? (
-            <p className="text-[#001529]/40 text-sm text-center py-6">
+            <p className="text-[#0E3B2E]/40 text-sm text-center py-6">
               Nenhum recebimento pendente.
             </p>
           ) : (
@@ -1192,8 +1192,8 @@ export function RelatoriosFinanceiros() {
                   return (
                     <div key={key}>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="text-[#001529]/70">{display}</span>
-                        <span className="font-semibold text-[#001529]">
+                        <span className="text-[#0E3B2E]/70">{display}</span>
+                        <span className="font-semibold text-[#0E3B2E]">
                           {fmt(val)}
                         </span>
                       </div>
@@ -1208,8 +1208,8 @@ export function RelatoriosFinanceiros() {
                 })}
             </div>
           )}
-          <div className="mt-4 pt-4 border-t border-[#E5E7EB] flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#001529]">Total</span>
+          <div className="mt-4 pt-4 border-t border-[rgba(20,18,15,0.13)] flex items-center justify-between">
+            <span className="text-sm font-semibold text-[#0E3B2E]">Total</span>
             <span className="text-base font-bold text-emerald-600">
               {fmt(totalPendingReceivables)}
             </span>
@@ -1217,9 +1217,9 @@ export function RelatoriosFinanceiros() {
         </div>
 
         {/* A Pagar */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-[#001529]">
+            <h2 className="text-base font-semibold text-[#0E3B2E]">
               A Pagar (pendente)
             </h2>
             <span className="text-xs bg-red-100 text-red-600 px-2.5 py-1 rounded-full font-semibold">
@@ -1227,7 +1227,7 @@ export function RelatoriosFinanceiros() {
             </span>
           </div>
           {Object.keys(pendingPayablesByMonth).length === 0 ? (
-            <p className="text-[#001529]/40 text-sm text-center py-6">
+            <p className="text-[#0E3B2E]/40 text-sm text-center py-6">
               Nenhum pagamento pendente.
             </p>
           ) : (
@@ -1244,8 +1244,8 @@ export function RelatoriosFinanceiros() {
                   return (
                     <div key={key}>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="text-[#001529]/70">{display}</span>
-                        <span className="font-semibold text-[#001529]">
+                        <span className="text-[#0E3B2E]/70">{display}</span>
+                        <span className="font-semibold text-[#0E3B2E]">
                           {fmt(val)}
                         </span>
                       </div>
@@ -1260,8 +1260,8 @@ export function RelatoriosFinanceiros() {
                 })}
             </div>
           )}
-          <div className="mt-4 pt-4 border-t border-[#E5E7EB] flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#001529]">Total</span>
+          <div className="mt-4 pt-4 border-t border-[rgba(20,18,15,0.13)] flex items-center justify-between">
+            <span className="text-sm font-semibold text-[#0E3B2E]">Total</span>
             <span className="text-base font-bold text-red-500">
               {fmt(totalPendingPayables)}
             </span>
@@ -1271,17 +1271,17 @@ export function RelatoriosFinanceiros() {
 
       {/* ── 12. Performance Metrics ──────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
             <BarChart3 className="w-5 h-5 text-emerald-600" />
           </div>
-          <p className="text-xs text-[#001529]/60 font-medium mb-1">
+          <p className="text-xs text-[#0E3B2E]/60 font-medium mb-1">
             Margem de Lucro
           </p>
-          <p className="text-2xl font-bold text-[#001529]">
+          <p className="text-2xl font-bold text-[#0E3B2E]">
             {margemLucro.toFixed(1)}%
           </p>
-          <p className="text-xs text-[#001529]/40 mt-1">
+          <p className="text-xs text-[#0E3B2E]/40 mt-1">
             {margemLucro > 25
               ? "Acima do benchmark"
               : margemLucro > 10
@@ -1290,64 +1290,64 @@ export function RelatoriosFinanceiros() {
           </p>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
             <DollarSign className="w-5 h-5 text-blue-600" />
           </div>
-          <p className="text-xs text-[#001529]/60 font-medium mb-1">
+          <p className="text-xs text-[#0E3B2E]/60 font-medium mb-1">
             Ticket Médio
           </p>
-          <p className="text-2xl font-bold text-[#001529]">
+          <p className="text-2xl font-bold text-[#0E3B2E]">
             {fmtShort(ticketMedio)}
           </p>
-          <p className="text-xs text-[#001529]/40 mt-1">
+          <p className="text-xs text-[#0E3B2E]/40 mt-1">
             por transação de entrada
           </p>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
             <TrendingUp className="w-5 h-5 text-amber-600" />
           </div>
-          <p className="text-xs text-[#001529]/60 font-medium mb-1">
+          <p className="text-xs text-[#0E3B2E]/60 font-medium mb-1">
             Taxa de Crescimento
           </p>
           <p
             className={`text-2xl font-bold ${
-              growthReceita >= 0 ? "text-[#001529]" : "text-red-500"
+              growthReceita >= 0 ? "text-[#0E3B2E]" : "text-red-500"
             }`}
           >
             {growthReceita >= 0 ? "+" : ""}
             {growthReceita.toFixed(1)}%
           </p>
-          <p className="text-xs text-[#001529]/40 mt-1">
+          <p className="text-xs text-[#0E3B2E]/40 mt-1">
             receitas vs período anterior
           </p>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+        <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
           <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mb-3">
             <Target className="w-5 h-5 text-purple-600" />
           </div>
-          <p className="text-xs text-[#001529]/60 font-medium mb-1">
+          <p className="text-xs text-[#0E3B2E]/60 font-medium mb-1">
             Receita Recorrente
           </p>
-          <p className="text-2xl font-bold text-[#001529]">{pctRecorrente}%</p>
-          <p className="text-xs text-[#001529]/40 mt-1">
+          <p className="text-2xl font-bold text-[#0E3B2E]">{pctRecorrente}%</p>
+          <p className="text-xs text-[#0E3B2E]/40 mt-1">
             estimado por categorias repetidas
           </p>
         </div>
       </div>
 
       {/* ── 13. Detailed Monthly Table ───────────────────────────────────────── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-        <h2 className="text-base font-semibold text-[#001529] mb-4">
+      <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6">
+        <h2 className="text-base font-semibold text-[#0E3B2E] mb-4">
           Tabela Mensal Detalhada
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E7EB]">
+              <tr className="border-b border-[rgba(20,18,15,0.13)]">
                 {[
                   "Mês",
                   "Receita",
@@ -1359,7 +1359,7 @@ export function RelatoriosFinanceiros() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left py-3 px-3 text-xs font-semibold text-[#001529]/50 uppercase tracking-wide"
+                    className="text-left py-3 px-3 text-xs font-semibold text-[#0E3B2E]/50 uppercase tracking-wide"
                   >
                     {h}
                   </th>
@@ -1377,11 +1377,11 @@ export function RelatoriosFinanceiros() {
                 return (
                   <tr
                     key={row.month}
-                    className={`border-b border-[#E5E7EB]/50 hover:bg-gray-50/50 transition-colors ${
+                    className={`border-b border-[rgba(20,18,15,0.13)]/50 hover:bg-gray-50/50 transition-colors ${
                       idx % 2 === 0 ? "" : "bg-gray-50/30"
                     }`}
                   >
-                    <td className="py-3 px-3 font-medium text-[#001529]">
+                    <td className="py-3 px-3 font-medium text-[#0E3B2E]">
                       {row.label}
                     </td>
                     <td className="py-3 px-3 text-emerald-600 font-medium">
@@ -1397,7 +1397,7 @@ export function RelatoriosFinanceiros() {
                     >
                       {fmt(row.lucro)}
                     </td>
-                    <td className="py-3 px-3 text-[#001529]/70">{margin}%</td>
+                    <td className="py-3 px-3 text-[#0E3B2E]/70">{margin}%</td>
                     <td className="py-3 px-3 text-emerald-600">
                       {aReceber > 0 ? fmt(aReceber) : "–"}
                     </td>
@@ -1409,8 +1409,8 @@ export function RelatoriosFinanceiros() {
               })}
             </tbody>
             <tfoot>
-              <tr className="border-t-2 border-[#E5E7EB] bg-gray-50">
-                <td className="py-3 px-3 font-bold text-[#001529]">TOTAL</td>
+              <tr className="border-t-2 border-[rgba(20,18,15,0.13)] bg-gray-50">
+                <td className="py-3 px-3 font-bold text-[#0E3B2E]">TOTAL</td>
                 <td className="py-3 px-3 font-bold text-emerald-600">
                   {fmt(totalReceita)}
                 </td>
@@ -1424,7 +1424,7 @@ export function RelatoriosFinanceiros() {
                 >
                   {fmt(totalLucro)}
                 </td>
-                <td className="py-3 px-3 font-bold text-[#001529]">
+                <td className="py-3 px-3 font-bold text-[#0E3B2E]">
                   {margemLucro.toFixed(1)}%
                 </td>
                 <td className="py-3 px-3 font-bold text-emerald-600">

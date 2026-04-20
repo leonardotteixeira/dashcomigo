@@ -91,25 +91,28 @@ const tools = [
 
 export function Ferramentas() {
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen" style={{ background: "#F4EFE6" }}>
       <LandingNav />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
+      <section className="pt-32 pb-20" style={{ background: "#0E3B2E" }}>
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="inline-block bg-white/10 text-white/80 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+          <span className="inline-block text-sm font-medium px-4 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(127,209,159,0.2)", color: "#7FD19F" }}>
             Todas as ferramentas em um só lugar
           </span>
-          <h1 className="font-extrabold text-white text-5xl mb-6 leading-tight">
+          <h1 className="font-extrabold text-5xl mb-6 leading-tight" style={{ color: "#F4EFE6" }}>
             Tudo que o MEI precisa para crescer com controle
           </h1>
-          <p className="text-xl text-white/80 leading-relaxed font-light max-w-2xl mx-auto">
-            Do fluxo de caixa às propostas comerciais — o FinMEI centraliza a gestão financeira do seu negócio em uma plataforma simples e intuitiva.
+          <p className="text-xl leading-relaxed font-light max-w-2xl mx-auto"
+            style={{ color: "rgba(244,239,230,0.75)" }}>
+            Do fluxo de caixa às propostas comerciais — o DashComigo centraliza a gestão financeira do seu negócio em uma plataforma simples e intuitiva.
           </p>
           <div className="flex justify-center gap-4 mt-10">
             <Link
               to="/signup"
-              className="inline-flex items-center gap-2 bg-white text-[#001529] px-8 py-4 rounded-lg font-bold hover:bg-white/90 transition-all shadow-xl text-lg"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold transition-all shadow-xl text-lg"
+              style={{ background: "#7FD19F", color: "#0E3B2E" }}
             >
               Testar grátis <ArrowRight className="w-5 h-5" />
             </Link>
@@ -118,11 +121,11 @@ export function Ferramentas() {
       </section>
 
       {/* Tools grid */}
-      <section className="py-24 bg-white" id="ferramentas">
+      <section className="py-24" id="ferramentas" style={{ background: "#EBE4D6" }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="font-bold text-[#001529] text-4xl mb-4">Ferramentas disponíveis</h2>
-            <p className="text-lg text-[#001529]/60 max-w-2xl mx-auto">
+            <h2 className="font-bold text-4xl mb-4" style={{ color: "#0E3B2E" }}>Ferramentas disponíveis</h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "rgba(14,59,46,0.6)" }}>
               Cada ferramenta foi desenvolvida pensando nas necessidades reais do microempreendedor individual brasileiro.
             </p>
           </div>
@@ -134,27 +137,29 @@ export function Ferramentas() {
                 <Link
                   key={tool.title}
                   to={tool.href}
-                  className="group bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm hover:shadow-lg hover:border-[#003a6d]/30 transition-all"
+                  className="group rounded-2xl p-6 transition-all block"
+                  style={{ background: "#F4EFE6", border: "1px solid rgba(20,18,15,0.1)" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 24px rgba(14,59,46,0.1)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none"; }}
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center group-hover:bg-[#003a6d]/20 transition-colors">
-                      <Icon className="w-6 h-6 text-[#003a6d]" />
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-colors"
+                      style={{ background: "rgba(14,59,46,0.08)" }}>
+                      <Icon className="w-6 h-6" style={{ color: "#0E3B2E" }} />
                     </div>
                     {tool.badge && (
-                      <span
-                        className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                          tool.badge === "PRO"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-blue-100 text-blue-700"
-                        }`}
-                      >
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                        tool.badge === "PRO" ? "bg-amber-100 text-amber-700" : ""
+                      }`}
+                        style={tool.badge !== "PRO" ? { background: "rgba(127,209,159,0.2)", color: "#1F5A3A" } : {}}>
                         {tool.badge}
                       </span>
                     )}
                   </div>
-                  <h3 className="font-bold text-[#001529] text-lg mb-2">{tool.title}</h3>
-                  <p className="text-[#001529]/60 text-sm leading-relaxed">{tool.description}</p>
-                  <div className="mt-4 flex items-center gap-1 text-[#003a6d] text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                  <h3 className="font-bold text-lg mb-2" style={{ color: "#0E3B2E" }}>{tool.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "rgba(14,59,46,0.6)" }}>{tool.description}</p>
+                  <div className="mt-4 flex items-center gap-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ color: "#1F5A3A" }}>
                     Abrir ferramenta <ArrowRight className="w-4 h-4" />
                   </div>
                 </Link>
@@ -165,17 +170,18 @@ export function Ferramentas() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-[#001529] to-[#003a6d]">
+      <section className="py-20" style={{ background: "#0E3B2E" }}>
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="font-extrabold text-white text-4xl mb-6">
+          <h2 className="font-extrabold text-4xl mb-6" style={{ color: "#F4EFE6" }}>
             Comece a usar hoje, grátis
           </h2>
-          <p className="text-xl text-white/80 mb-10 font-light">
+          <p className="text-xl mb-10 font-light" style={{ color: "rgba(244,239,230,0.75)" }}>
             Acesso imediato a todas as ferramentas essenciais. Sem cartão de crédito.
           </p>
           <Link
             to="/signup"
-            className="inline-block bg-white text-[#001529] px-10 py-5 rounded-lg font-bold hover:bg-white/90 transition-all shadow-2xl text-lg"
+            className="inline-block px-10 py-5 rounded-lg font-bold transition-all shadow-2xl text-lg"
+            style={{ background: "#7FD19F", color: "#0E3B2E" }}
           >
             Criar conta gratuita
           </Link>

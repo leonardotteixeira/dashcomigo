@@ -18,18 +18,18 @@ export function SimuladorMEI() {
           <Button
             variant="ghost"
             onClick={() => navigate("/app")}
-            className="text-[rgba(0,21,41,0.6)] hover:text-[#001529] hover:bg-[rgba(0,0,0,0.05)] rounded-xl mb-6"
+            className="text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E] hover:bg-[rgba(0,0,0,0.05)] rounded-xl mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar ao Dashboard
           </Button>
 
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-[#28A263]/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-              <Calculator className="w-6 h-6 text-[#28A263]" />
+            <div className="w-12 h-12 bg-[#7FD19F]/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <Calculator className="w-6 h-6 text-[#7FD19F]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-[#001529]">Simulador MEI → ME</h1>
+              <h1 className="text-3xl font-bold text-[#0E3B2E]">Simulador MEI → ME</h1>
               <p className="text-[rgba(0,21,41,0.6)] mt-2">
                 Compare seus impostos como MEI e ME no Simples Nacional. Descubra se vale a pena migrar e quanto você pode economizar.
               </p>

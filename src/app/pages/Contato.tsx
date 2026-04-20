@@ -18,6 +18,7 @@ export function Contato() {
     mensagem: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitHover, setSubmitHover] = useState(false);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -31,11 +32,11 @@ export function Contato() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen" style={{ background: "#F4EFE6" }}>
       <LandingNav />
 
       {/* Header */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d]">
+      <section className="pt-32 pb-16" style={{ background: "#0E3B2E" }}>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h1 className="font-extrabold text-white text-5xl mb-4">Entre em Contato</h1>
           <p className="text-xl text-white/80 font-light">Estamos aqui para ajudar você</p>
@@ -43,38 +44,40 @@ export function Contato() {
       </section>
 
       {/* Content */}
-      <section className="py-20">
+      <section className="py-20" style={{ background: "#F4EFE6" }}>
         <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
           {/* Contact info */}
           <div className="space-y-8">
-            <h2 className="font-bold text-[#001529] text-2xl">Fale conosco</h2>
+            <h2 className="font-bold text-2xl" style={{ color: "#0E3B2E" }}>Fale conosco</h2>
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-[#003a6d]" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(14,59,46,0.1)" }}>
+                  <Mail className="w-6 h-6" style={{ color: "#0E3B2E" }} />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#001529] mb-1">Email</p>
+                  <p className="font-semibold mb-1" style={{ color: "#0E3B2E" }}>Email</p>
                   <a
-                    href="mailto:contato@finmei.com.br"
-                    className="text-[#003a6d] hover:underline"
+                    href="mailto:contato@dashcomigo.com.br"
+                    className="hover:underline"
+                    style={{ color: "#0E3B2E" }}
                   >
-                    contato@finmei.com.br
+                    contato@dashcomigo.com.br
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="w-6 h-6 text-[#003a6d]" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(14,59,46,0.1)" }}>
+                  <MessageCircle className="w-6 h-6" style={{ color: "#0E3B2E" }} />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#001529] mb-1">WhatsApp</p>
+                  <p className="font-semibold mb-1" style={{ color: "#0E3B2E" }}>WhatsApp</p>
                   <a
                     href="https://wa.me/5511999999999"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#003a6d] hover:underline"
+                    className="hover:underline"
+                    style={{ color: "#0E3B2E" }}
                   >
                     (11) 99999-9999
                   </a>
@@ -82,33 +85,33 @@ export function Contato() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#003a6d]/10 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-[#003a6d]" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(14,59,46,0.1)" }}>
+                  <Clock className="w-6 h-6" style={{ color: "#0E3B2E" }} />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#001529] mb-1">Horário de atendimento</p>
-                  <p className="text-[#001529]/60">Seg-Sex, 9h às 18h</p>
+                  <p className="font-semibold mb-1" style={{ color: "#0E3B2E" }}>Horário de atendimento</p>
+                  <p style={{ color: "rgba(14,59,46,0.6)" }}>Seg-Sex, 9h às 18h</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Form */}
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 shadow-sm">
+          <div className="border rounded-2xl p-8 shadow-sm" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
             {submitted ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(127,209,159,0.2)" }}>
+                  <svg className="w-8 h-8" style={{ color: "#1F5A3A" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="font-bold text-[#001529] text-xl mb-2">Mensagem enviada!</h3>
-                <p className="text-[#001529]/60">Entraremos em contato em breve.</p>
+                <h3 className="font-bold text-xl mb-2" style={{ color: "#0E3B2E" }}>Mensagem enviada!</h3>
+                <p style={{ color: "rgba(14,59,46,0.6)" }}>Entraremos em contato em breve.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="nome" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="nome" className="block text-sm font-semibold mb-1" style={{ color: "#0E3B2E" }}>
                     Nome completo
                   </label>
                   <input
@@ -118,13 +121,14 @@ export function Contato() {
                     required
                     value={form.nome}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] placeholder-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d]"
+                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E]"
+                    style={{ background: "#F4EFE6", color: "#0E3B2E", borderColor: "rgba(20,18,15,0.13)" }}
                     placeholder="Seu nome"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="email" className="block text-sm font-semibold mb-1" style={{ color: "#0E3B2E" }}>
                     Email
                   </label>
                   <input
@@ -134,13 +138,14 @@ export function Contato() {
                     required
                     value={form.email}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] placeholder-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d]"
+                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E]"
+                    style={{ background: "#F4EFE6", color: "#0E3B2E", borderColor: "rgba(20,18,15,0.13)" }}
                     placeholder="seu@email.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="assunto" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="assunto" className="block text-sm font-semibold mb-1" style={{ color: "#0E3B2E" }}>
                     Assunto
                   </label>
                   <select
@@ -149,7 +154,8 @@ export function Contato() {
                     required
                     value={form.assunto}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d] bg-white"
+                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E]"
+                    style={{ background: "#F4EFE6", color: "#0E3B2E", borderColor: "rgba(20,18,15,0.13)" }}
                   >
                     <option value="">Selecione um assunto</option>
                     <option value="duvidas">Dúvidas</option>
@@ -160,7 +166,7 @@ export function Contato() {
                 </div>
 
                 <div>
-                  <label htmlFor="mensagem" className="block text-sm font-semibold text-[#001529] mb-1">
+                  <label htmlFor="mensagem" className="block text-sm font-semibold mb-1" style={{ color: "#0E3B2E" }}>
                     Mensagem
                   </label>
                   <textarea
@@ -170,14 +176,18 @@ export function Contato() {
                     rows={5}
                     value={form.mensagem}
                     onChange={handleChange}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-4 py-3 text-[#001529] placeholder-[#001529]/40 focus:outline-none focus:ring-2 focus:ring-[#003a6d]/30 focus:border-[#003a6d] resize-none"
+                    className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E]/30 focus:border-[#0E3B2E] resize-none"
+                    style={{ background: "#F4EFE6", color: "#0E3B2E", borderColor: "rgba(20,18,15,0.13)" }}
                     placeholder="Escreva sua mensagem..."
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-[#003a6d] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#002a50] transition-all"
+                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all"
+                  style={{ background: submitHover ? "#1F5A3A" : "#0E3B2E", color: "#F4EFE6" }}
+                  onMouseEnter={() => setSubmitHover(true)}
+                  onMouseLeave={() => setSubmitHover(false)}
                 >
                   Enviar mensagem
                 </button>

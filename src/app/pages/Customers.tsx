@@ -66,7 +66,7 @@ export function Customers() {
     >
       <div className="space-y-8">
         <div
-          className="rounded-2xl p-6 shadow-sm border"
+          className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border"
           style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
         >
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg" style={{ backgroundColor: colors.bgLighter }}>
@@ -86,7 +86,7 @@ export function Customers() {
           {filtered.map((customer) => (
             <div
               key={customer.id}
-              className="rounded-2xl p-6 shadow-sm border hover:shadow-md transition-all cursor-pointer"
+              className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border hover:shadow-md transition-all cursor-pointer"
               style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
             >
               <div className="flex items-start gap-4">

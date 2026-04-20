@@ -268,7 +268,7 @@ export function GeradorPropostas() {
       );
     }
 
-    lines.push(``, `Meu Fluxo`);
+    lines.push(``, `DashComigo`);
     return lines.join("\n");
   };
 
@@ -475,12 +475,12 @@ export function GeradorPropostas() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#001529] mb-1">Propostas</h1>
+            <h1 className="text-3xl font-bold text-[#0E3B2E] mb-1">Propostas</h1>
             <p className="text-[rgba(0,21,41,0.6)]">Gerencie seus contratos e orçamentos com precisão</p>
           </div>
           <Button
             size="lg"
-            className="bg-[#28A263] hover:bg-[#1f7d4a] text-white rounded-xl"
+            className="bg-[#7FD19F] hover:bg-[#1f7d4a] text-white rounded-xl"
             onClick={() => { resetForm(); setViewMode("create"); }}
           >
             <Plus className="w-5 h-5 mr-2" />
@@ -496,7 +496,7 @@ export function GeradorPropostas() {
               Plano gratuito: <span className="text-foreground font-medium">{usageCount}/{FREE_LIMIT}</span> propostas criadas hoje
             </span>
             {limitReached && (
-              <Button size="sm" className="ml-auto bg-[#28A263] hover:bg-primary text-foreground text-xs rounded-lg" onClick={() => navigate("/checkout")}>
+              <Button size="sm" className="ml-auto bg-[#7FD19F] hover:bg-primary text-foreground text-xs rounded-lg" onClick={() => navigate("/checkout")}>
                 <Crown className="w-3 h-3 mr-1" /> Upgrade PRO
               </Button>
             )}
@@ -511,7 +511,7 @@ export function GeradorPropostas() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "bg-[#28A263] text-foreground"
+                  ? "bg-[#7FD19F] text-foreground"
                   : "bg-card text-muted-foreground hover:text-foreground border border-border"
               }`}
             >
@@ -535,7 +535,7 @@ export function GeradorPropostas() {
                   {proposals.length === 0 ? "Crie sua primeira proposta comercial profissional" : "Tente outro filtro"}
                 </p>
                 {proposals.length === 0 && (
-                  <Button className="bg-[#28A263] hover:bg-primary text-foreground rounded-xl" onClick={() => setViewMode("create")}>
+                  <Button className="bg-[#7FD19F] hover:bg-primary text-foreground rounded-xl" onClick={() => setViewMode("create")}>
                     <Plus className="w-4 h-4 mr-2" /> Criar Proposta
                   </Button>
                 )}
@@ -660,7 +660,7 @@ export function GeradorPropostas() {
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       size="sm"
-                      className="bg-[#28A263] hover:bg-primary text-foreground rounded-lg text-xs"
+                      className="bg-[#7FD19F] hover:bg-primary text-foreground rounded-lg text-xs"
                       onClick={() => handleCopyText(selectedProposal)}
                     >
                       {copied ? <Check className="w-3 h-3 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
@@ -745,7 +745,7 @@ export function GeradorPropostas() {
               </div>
               <div className="flex gap-2">
                 <Button
-                  className="flex-1 bg-[#28A263] hover:bg-primary text-foreground rounded-lg"
+                  className="flex-1 bg-[#7FD19F] hover:bg-primary text-foreground rounded-lg"
                   onClick={handleConfirmPayment}
                 >
                   Confirmar
@@ -779,7 +779,7 @@ export function GeradorPropostas() {
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 mt-4">
-              <Button size="lg" className="w-full bg-[#28A263] hover:bg-primary text-foreground rounded-xl" onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}>
+              <Button size="lg" className="w-full bg-[#7FD19F] hover:bg-primary text-foreground rounded-xl" onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}>
                 <Crown className="w-4 h-4 mr-2" /> Ver Planos PRO
               </Button>
               <Button size="lg" className="w-full bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl" onClick={() => setLimitDialogOpen(false)}>
@@ -826,7 +826,7 @@ export function GeradorPropostas() {
                 key={t}
                 onClick={() => setTipo(t)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  tipo === t ? "bg-[#28A263] text-foreground" : "bg-muted text-muted-foreground border border-border hover:text-foreground"
+                  tipo === t ? "bg-[#7FD19F] text-foreground" : "bg-muted text-muted-foreground border border-border hover:text-foreground"
                 }`}
               >
                 {t === "orcamento" ? "Orçamento" : "Contrato"}
@@ -927,7 +927,7 @@ export function GeradorPropostas() {
           <div className="flex gap-3">
             <Button
               size="lg"
-              className="flex-1 bg-[#28A263] hover:bg-primary text-foreground rounded-xl h-12"
+              className="flex-1 bg-[#7FD19F] hover:bg-primary text-foreground rounded-xl h-12"
               onClick={handleSave}
               disabled={saving || !nomeCliente || !nomeServico}
             >
@@ -965,7 +965,7 @@ export function GeradorPropostas() {
             <div className="p-8 bg-white min-h-[500px]">
               <div id="proposal-preview" className="space-y-6">
                 {template === "premium" ? (
-                  <div className="bg-[#28A263] rounded-xl p-5 mb-2">
+                  <div className="bg-[#7FD19F] rounded-xl p-5 mb-2">
                     <h1 className="text-2xl font-bold text-foreground">Proposta Comercial</h1>
                     <p className="text-green-100 text-sm mt-1">{new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>
                   </div>
@@ -1040,7 +1040,7 @@ export function GeradorPropostas() {
 
                 <div className="text-center pt-4 border-t border-slate-200">
                   <p className="text-sm text-slate-600 mb-2">Estamos à disposição para esclarecer dúvidas.</p>
-                  <p className="text-xs text-slate-500 font-bold">Meu Fluxo</p>
+                  <p className="text-xs text-slate-500 font-bold">DashComigo</p>
                 </div>
               </div>
             </div>

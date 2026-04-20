@@ -9,12 +9,12 @@ export function SobreOMEI() {
       <Header onScrollToSimulator={() => {}} />
       <main className="pt-24 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-8 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E] mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Voltar ao início
           </Link>
 
           <div className="mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-[#001529] mb-4">
+            <h1 className="text-4xl lg:text-5xl font-bold text-[#0E3B2E] mb-4">
               O que é o <span className="text-[#28A263]">MEI</span>?
             </h1>
             <p className="text-lg text-[rgba(0,21,41,0.6)] max-w-2xl">
@@ -24,16 +24,16 @@ export function SobreOMEI() {
 
           <div className="space-y-8">
             {/* O que é */}
-            <section className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
+            <section className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center">
                   <Building2 className="w-5 h-5 text-[#28A263]" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#001529]">O que é o MEI?</h2>
+                <h2 className="text-2xl font-bold text-[#0E3B2E]">O que é o MEI?</h2>
               </div>
               <div className="text-[rgba(0,21,41,0.6)] space-y-4 leading-relaxed">
                 <p>
-                  O <strong className="text-[#001529]">Microempreendedor Individual (MEI)</strong> é um regime simplificado criado pelo governo brasileiro em 2008 para formalizar trabalhadores autônomos e pequenos empreendedores.
+                  O <strong className="text-[#0E3B2E]">Microempreendedor Individual (MEI)</strong> é um regime simplificado criado pelo governo brasileiro em 2008 para formalizar trabalhadores autônomos e pequenos empreendedores.
                 </p>
                 <p>
                   Com o MEI, o empreendedor obtém um CNPJ, pode emitir notas fiscais, tem acesso a benefícios previdenciários (aposentadoria, auxílio-doença, salário-maternidade) e paga impostos reduzidos através de uma guia mensal fixa chamada DAS.
@@ -45,12 +45,12 @@ export function SobreOMEI() {
             </section>
 
             {/* Requisitos */}
-            <section className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
+            <section className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center">
                   <FileText className="w-5 h-5 text-[#28A263]" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#001529]">Quem pode ser MEI?</h2>
+                <h2 className="text-2xl font-bold text-[#0E3B2E]">Quem pode ser MEI?</h2>
               </div>
               <div className="text-[rgba(0,21,41,0.6)] space-y-3 leading-relaxed">
                 <p>Para se enquadrar como MEI, você precisa atender aos seguintes requisitos:</p>
@@ -72,12 +72,12 @@ export function SobreOMEI() {
             </section>
 
             {/* Quanto custa */}
-            <section className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
+            <section className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center">
                   <DollarSign className="w-5 h-5 text-[#28A263]" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#001529]">Quanto custa ser MEI?</h2>
+                <h2 className="text-2xl font-bold text-[#0E3B2E]">Quanto custa ser MEI?</h2>
               </div>
               <div className="text-[rgba(0,21,41,0.6)] space-y-4 leading-relaxed">
                 <p>O MEI paga uma contribuição mensal fixa através do DAS (Documento de Arrecadação do Simples Nacional):</p>
@@ -101,12 +101,12 @@ export function SobreOMEI() {
             </section>
 
             {/* Vantagens */}
-            <section className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
+            <section className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-[#28A263]/20 rounded-xl flex items-center justify-center">
                   <TrendingUp className="w-5 h-5 text-[#28A263]" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#001529]">Vantagens do MEI</h2>
+                <h2 className="text-2xl font-bold text-[#0E3B2E]">Vantagens do MEI</h2>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 {[
@@ -118,7 +118,7 @@ export function SobreOMEI() {
                   { title: "Simplicidade", desc: "Declaração anual simples (DASN-SIMEI) sem contador" },
                 ].map((item) => (
                   <div key={item.title} className="bg-[#F8F9FA] rounded-xl p-5 border border-[rgba(0,0,0,0.05)] hover:border-[rgba(0,0,0,0.1)] transition-all">
-                    <h3 className="text-[#001529] font-bold mb-1">{item.title}</h3>
+                    <h3 className="text-[#0E3B2E] font-bold mb-1">{item.title}</h3>
                     <p className="text-sm text-[rgba(0,21,41,0.6)]">{item.desc}</p>
                   </div>
                 ))}
@@ -126,12 +126,12 @@ export function SobreOMEI() {
             </section>
 
             {/* Quando sair */}
-            <section className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
+            <section className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-8 hover:border-[rgba(0,0,0,0.15)] transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
                   <AlertTriangle className="w-5 h-5 text-yellow-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-[#001529]">Quando sair do MEI?</h2>
+                <h2 className="text-2xl font-bold text-[#0E3B2E]">Quando sair do MEI?</h2>
               </div>
               <div className="text-[rgba(0,21,41,0.6)] space-y-4 leading-relaxed">
                 <p>Você precisa considerar a migração do MEI para ME (Microempresa) quando:</p>

@@ -182,7 +182,7 @@ export function Estoque() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#001529] mb-1">Estoque</h1>
+          <h1 className="text-3xl font-bold text-[#0E3B2E] mb-1">Estoque</h1>
           <p className="text-[rgba(0,21,41,0.6)]">Gerencie seus produtos e movimentações</p>
         </div>
         <button
@@ -194,7 +194,7 @@ export function Estoque() {
             resetItemForm();
             setModal("item");
           }}
-          className="flex items-center gap-2 bg-[#28A263] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
+          className="flex items-center gap-2 bg-[#7FD19F] hover:bg-[#1f7d4a] text-white font-semibold px-4 py-2 rounded-xl transition-colors"
         >
           <Plus className="w-5 h-5" />
           Novo Item
@@ -203,44 +203,44 @@ export function Estoque() {
 
       {/* Summary Cards */}
       <div className="grid md:grid-cols-4 gap-4">
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
-            <Package className="w-5 h-5 text-[#0066FF]" />
+        <div className="p-6 rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#0E3B2E]/20 rounded-xl flex items-center justify-center mb-4">
+            <Package className="w-5 h-5 text-[#0E3B2E]" />
           </div>
           <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Total de Itens</p>
-          <p className="text-2xl font-bold text-[#001529]">{summary.totalItems}</p>
+          <p className="text-2xl font-bold text-[#0E3B2E]">{summary.totalItems}</p>
           <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">{summary.categoryCount} categorias</p>
         </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#28A263]/20 rounded-xl flex items-center justify-center mb-4">
-            <ArrowUpCircle className="w-5 h-5 text-[#28A263]" />
+        <div className="p-6 rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#7FD19F]/20 rounded-xl flex items-center justify-center mb-4">
+            <ArrowUpCircle className="w-5 h-5 text-[#7FD19F]" />
           </div>
           <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Valor em Estoque</p>
-          <p className="text-2xl font-bold text-[#28A263]">{formatCurrency(summary.totalValue)}</p>
+          <p className="text-2xl font-bold text-[#7FD19F]">{formatCurrency(summary.totalValue)}</p>
           <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">custo total</p>
         </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${alertItems.length > 0 ? "bg-red-500/20" : "bg-[#28A263]/20"}`}>
-            <AlertTriangle className={`w-5 h-5 ${alertItems.length > 0 ? "text-red-500" : "text-[#28A263]"}`} />
+        <div className="p-6 rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${alertItems.length > 0 ? "bg-red-500/20" : "bg-[#7FD19F]/20"}`}>
+            <AlertTriangle className={`w-5 h-5 ${alertItems.length > 0 ? "text-red-500" : "text-[#7FD19F]"}`} />
           </div>
           <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Alertas</p>
-          <p className={`text-2xl font-bold ${alertItems.length > 0 ? "text-red-500" : "text-[#001529]"}`}>
+          <p className={`text-2xl font-bold ${alertItems.length > 0 ? "text-red-500" : "text-[#0E3B2E]"}`}>
             {alertItems.length}
           </p>
           <p className="text-xs text-[rgba(0,21,41,0.5)] mt-2">abaixo do mínimo</p>
         </div>
-        <div className="p-6 bg-white rounded-2xl border border-[rgba(0,0,0,0.1)]">
-          <div className="w-11 h-11 bg-[#0066FF]/20 rounded-xl flex items-center justify-center mb-4">
-            <Package className="w-5 h-5 text-[#0066FF]" />
+        <div className="p-6 rounded-2xl border border-[rgba(0,0,0,0.1)]">
+          <div className="w-11 h-11 bg-[#0E3B2E]/20 rounded-xl flex items-center justify-center mb-4">
+            <Package className="w-5 h-5 text-[#0E3B2E]" />
           </div>
           <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Uso do Plano</p>
-          <p className="text-2xl font-bold text-[#001529]">
+          <p className="text-2xl font-bold text-[#0E3B2E]">
             {limitStatus.used}/{limitStatus.limit === Infinity ? "∞" : limitStatus.limit}
           </p>
           {limitStatus.limit !== Infinity && (
             <div className="w-full bg-[#E8E8E8] rounded-full h-2 mt-3">
               <div
-                className="bg-[#28A263] h-2 rounded-full"
+                className="bg-[#7FD19F] h-2 rounded-full"
                 style={{ width: `${Math.min(limitStatus.percentage, 100)}%` }}
               />
             </div>

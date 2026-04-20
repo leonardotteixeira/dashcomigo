@@ -46,17 +46,17 @@ export function AlocacaoVisual({ allocation }: AlocacaoVisualProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-[#001529] mb-2">Sua Alocação</h3>
+        <h3 className="text-lg font-bold text-[#0E3B2E] mb-2">Sua Alocação</h3>
         <p className="text-sm text-[rgba(0,21,41,0.6)]">Perfil: {allocation.riskProfile === 'conservador' ? '🛡️ Conservador' : allocation.riskProfile === 'moderado' ? '⚖️ Moderado' : '📈 Agressivo'}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {buckets.map((bucket, idx) => (
-          <div key={idx} className="p-6 rounded-xl border border-[#E5E7EB] bg-white hover:shadow-md transition-all">
+          <div key={idx} className="p-6 rounded-xl border border-[rgba(20,18,15,0.13)] bg-white hover:shadow-md transition-all">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-2xl mb-1">{bucket.icon}</p>
-                <p className="font-bold text-[#001529]">{bucket.label}</p>
+                <p className="font-bold text-[#0E3B2E]">{bucket.label}</p>
                 <p className="text-xs text-[rgba(0,21,41,0.55)]">{bucket.subtitle}</p>
               </div>
               <div className="text-right">
@@ -65,7 +65,7 @@ export function AlocacaoVisual({ allocation }: AlocacaoVisualProps) {
               </div>
             </div>
 
-            <div className="p-3 bg-[#F9FAFB] rounded-lg border border-[#E5E7EB]">
+            <div className="p-3 bg-[#F9FAFB] rounded-lg border border-[rgba(20,18,15,0.13)]">
               <p className="text-xs text-[rgba(0,21,41,0.6)]">Valor alocado</p>
               <p className="text-lg font-bold text-[#28A263]">
                 {fmt(bucket.amount)}
@@ -76,7 +76,7 @@ export function AlocacaoVisual({ allocation }: AlocacaoVisualProps) {
       </div>
 
       {/* Retorno esperado */}
-      <div className="p-6 bg-white rounded-xl border border-[#E8EBF1] shadow-sm">
+      <div className="p-6 rounded-xl border border-[#E8EBF1] shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-[rgba(0,21,41,0.6)] mb-1">Retorno Anual Esperado</p>
@@ -84,11 +84,11 @@ export function AlocacaoVisual({ allocation }: AlocacaoVisualProps) {
           </div>
           <div className="text-right">
             <p className="text-xs text-[rgba(0,21,41,0.6)] mb-1">Esta recomendação é válida por</p>
-            <p className="font-bold text-[#001529]">90 dias</p>
+            <p className="font-bold text-[#0E3B2E]">90 dias</p>
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-[#E5E7EB]">
+        <div className="mt-4 pt-4 border-t border-[rgba(20,18,15,0.13)]">
           <p className="text-xs text-[rgba(0,21,41,0.55)]">
             💡 Baseado em rentabilidades históricas. Passado não garante futuro.
           </p>

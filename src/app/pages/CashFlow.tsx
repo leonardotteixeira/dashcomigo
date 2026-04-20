@@ -201,7 +201,7 @@ export default function CashFlow() {
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div
-            className="rounded-2xl p-6 shadow-sm border"
+            className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border"
             style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -225,7 +225,7 @@ export default function CashFlow() {
           </div>
 
           <div
-            className="rounded-2xl p-6 shadow-sm border"
+            className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border"
             style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -248,7 +248,7 @@ export default function CashFlow() {
           </div>
 
           <div
-            className="rounded-2xl p-6 shadow-sm border"
+            className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border"
             style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -271,7 +271,7 @@ export default function CashFlow() {
 
         {/* Filters and Search */}
         <div
-          className="rounded-2xl p-6 shadow-sm border"
+          className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border"
           style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
         >
           <div className="flex flex-col lg:flex-row gap-4">
@@ -341,7 +341,7 @@ export default function CashFlow() {
 
         {/* Transactions List */}
         <div
-          className="rounded-2xl shadow-sm border overflow-hidden"
+          className="bg-[#EBE4D6] rounded-2xl shadow-sm border overflow-hidden"
           style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}
         >
           <div className="overflow-x-auto">

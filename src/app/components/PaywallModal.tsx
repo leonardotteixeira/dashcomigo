@@ -1,5 +1,6 @@
-import { X, Zap, Check, TrendingUp, Shield, Clock, Crown } from "lucide-react";
+import { X, Check, Shield, MessageCircle, Zap } from "lucide-react";
 import { Dialog, DialogContent } from "./ui/dialog";
+import { useNavigate } from "react-router";
 
 interface PaywallModalProps {
   isOpen: boolean;
@@ -8,143 +9,127 @@ interface PaywallModalProps {
   featureName?: string;
 }
 
-export default function PaywallModal({ isOpen, onClose, trigger, featureName }: PaywallModalProps) {
-  const content = {
-    limit_reached: {
-      title: "Aproveite todos os recursos",
-      subtitle: "Continue gerenciando suas finanças sem interrupções",
-      description: "Você está próximo do limite do plano gratuito. Com o plano PRO, você não precisa se preocupar com limites.",
-    },
-    feature_locked: {
-      title: `Desbloqueie ${featureName || "este recurso"}`,
-      subtitle: "Turbine sua gestão financeira com o plano PRO",
-      description: "Este recurso está disponível exclusivamente para usuários PRO. Faça upgrade e aproveite todas as funcionalidades.",
-    },
-    export_blocked: {
-      title: "Continue exportando seus relatórios",
-      subtitle: "Nunca mais fique sem exportações",
-      description: "Você atingiu o limite de exportações do plano gratuito. Com o plano PRO, exporte quantas vezes precisar.",
-    },
-  };
+const CONTENT = {
+  limit_reached: {
+    eyebrow: "Limite atingido",
+    title: "Você não precisa parar aqui",
+    body: "Seus lançamentos do mês acabaram. Com o Essencial ou 360, você registra tudo sem interrupção — e o negócio continua rodando.",
+  },
+  feature_locked: {
+    eyebrow: "Recurso PRO",
+    title: (name?: string) => `${name || "Este recurso"} não está no Gratuito`,
+    body: "Desbloqueie a plataforma completa com o Essencial, ou tenha a plataforma + um especialista humano com o 360.",
+  },
+  export_blocked: {
+    eyebrow: "Exportações esgotadas",
+    title: "Seus relatórios merecem sair do sistema",
+    body: "Você atingiu o limite de exportações do mês. Com o Essencial ou 360, exporte quando quiser — sem burocracia.",
+  },
+};
 
-  const current = content[trigger];
+export default function PaywallModal({ isOpen, onClose, trigger, featureName }: PaywallModalProps) {
+  const navigate = useNavigate();
+  const c = CONTENT[trigger];
+  const title = typeof c.title === "function" ? c.title(featureName) : c.title;
+
+  const handleUpgrade = (plan: "essencial" | "360") => {
+    onClose();
+    navigate("/checkout");
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg p-0 gap-0 bg-white border-none overflow-hidden">
-        {/* Header mais limpo */}
-        <div className="bg-gradient-to-br from-[#001529] via-[#002140] to-[#003a6d] text-white p-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20" />
-          
+      <DialogContent className="max-w-md p-0 gap-0 border-none overflow-hidden"
+        style={{ background: "#F4EFE6" }}>
+
+        {/* Header */}
+        <div className="p-7 pb-5 relative" style={{ background: "#0E3B2E" }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16"
+            style={{ background: "rgba(127,209,159,0.08)" }} />
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
+            className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+            style={{ background: "rgba(244,239,230,0.1)", color: "rgba(244,239,230,0.7)" }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(244,239,230,0.2)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(244,239,230,0.1)"; }}
           >
             <X className="w-4 h-4" />
           </button>
-
-          <div className="relative">
-            <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center mb-4">
-              <Crown className="w-6 h-6 text-white" />
-            </div>
-            
-            <h2 className="text-2xl font-bold mb-2">
-              {current.title}
-            </h2>
-            
-            <p className="text-white/90 text-sm">
-              {current.subtitle}
-            </p>
-          </div>
+          <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "rgba(127,209,159,0.8)" }}>
+            {c.eyebrow}
+          </p>
+          <h2 className="text-xl font-bold leading-snug" style={{ color: "#F4EFE6" }}>{title}</h2>
         </div>
 
-        {/* Body com benefícios */}
-        <div className="p-8">
-          <p className="text-sm text-[#001529]/70 mb-6">
-            {current.description}
+        {/* Body */}
+        <div className="p-7">
+          <p className="text-sm leading-relaxed mb-7" style={{ color: "rgba(14,59,46,0.7)" }}>
+            {c.body}
           </p>
 
-          {/* Benefícios em destaque */}
-          <div className="space-y-3 mb-6">
-            <div className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Check className="w-3 h-3 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-[#001529]">
-                  Transações e exportações ilimitadas
-                </p>
-                <p className="text-xs text-[#001529]/60">
-                  Sem se preocupar com limites mensais
-                </p>
-              </div>
+          {/* Plan comparison — compact */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            {/* Essencial */}
+            <div className="p-4 rounded-xl" style={{ background: "#EBE4D6", border: "1px solid rgba(20,18,15,0.1)" }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "rgba(14,59,46,0.5)" }}>Essencial</p>
+              <p className="text-lg font-bold mb-1" style={{ color: "#0E3B2E" }}>R$ 29,90</p>
+              <p className="text-xs mb-3" style={{ color: "rgba(14,59,46,0.5)" }}>/mês</p>
+              {["Plataforma completa", "Sem limites", "Suporte por chat"].map(f => (
+                <div key={f} className="flex items-center gap-1.5 mb-1">
+                  <Check className="w-3 h-3 flex-shrink-0" style={{ color: "#1F5A3A" }} />
+                  <span className="text-xs" style={{ color: "rgba(14,59,46,0.7)" }}>{f}</span>
+                </div>
+              ))}
+              <button
+                onClick={() => handleUpgrade("essencial")}
+                className="w-full mt-3 py-2 rounded-lg text-xs font-semibold transition-all"
+                style={{ background: "transparent", color: "#0E3B2E", border: "1.5px solid #0E3B2E" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#0E3B2E"; e.currentTarget.style.color = "#F4EFE6"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0E3B2E"; }}
+              >
+                Assinar Essencial
+              </button>
             </div>
 
-            <div className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Check className="w-3 h-3 text-green-600" />
+            {/* 360 */}
+            <div className="p-4 rounded-xl relative" style={{ background: "#0E3B2E" }}>
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap"
+                style={{ background: "#7FD19F", color: "#0E3B2E" }}>
+                Recomendado
               </div>
-              <div>
-                <p className="text-sm font-semibold text-[#001529]">
-                  Relatórios avançados e insights
-                </p>
-                <p className="text-xs text-[#001529]/60">
-                  Análises detalhadas para melhores decisões
-                </p>
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "rgba(127,209,159,0.6)" }}>360</p>
+              <div className="mb-1">
+                <p className="text-lg font-bold" style={{ color: "#7FD19F" }}>R$ 59,90</p>
+                <p className="text-xs line-through" style={{ color: "rgba(244,239,230,0.35)" }}>R$ 99,90/mês</p>
               </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Check className="w-3 h-3 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-[#001529]">
-                  Integrações e automações
-                </p>
-                <p className="text-xs text-[#001529]/60">
-                  Conecte com seu banco e economize tempo
-                </p>
-              </div>
+              <p className="text-xs mb-3" style={{ color: "rgba(244,239,230,0.4)" }}>preço de lançamento</p>
+              {["Tudo do Essencial", "+ Especialista humano", "WhatsApp + chat"].map((f, i) => (
+                <div key={f} className="flex items-center gap-1.5 mb-1">
+                  <Check className="w-3 h-3 flex-shrink-0" style={{ color: i === 1 ? "#7FD19F" : "rgba(127,209,159,0.6)" }} />
+                  <span className="text-xs font-medium" style={{ color: i === 1 ? "#7FD19F" : "rgba(244,239,230,0.75)", fontWeight: i === 1 ? "600" : "400" }}>{f}</span>
+                </div>
+              ))}
+              <button
+                onClick={() => handleUpgrade("360")}
+                className="w-full mt-3 py-2 rounded-lg text-xs font-bold transition-all"
+                style={{ background: "#7FD19F", color: "#0E3B2E" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#F4EFE6"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "#7FD19F"; }}
+              >
+                Quero o 360 →
+              </button>
             </div>
           </div>
 
-          {/* Preço com ancoragem */}
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 mb-5 border border-green-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-[#001529]/60 mb-1">A partir de</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-[#001529]">R$ 29,90</span>
-                  <span className="text-sm text-[#001529]/60">/mês</span>
-                </div>
-                <p className="text-xs text-[#001529]/60 mt-1">
-                  Menos de R$ 1,00 por dia
-                </p>
-              </div>
-              <div className="text-right">
-                <div className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-1">
-                  -40% OFF
-                </div>
-                <p className="text-xs text-[#001529]/60 line-through">R$ 49,90</p>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Principal */}
-          <button className="w-full bg-gradient-to-r from-[#003a6d] to-[#0066FF] text-white font-bold py-4 rounded-xl hover:from-[#002a5d] hover:to-[#0056EF] transition-all shadow-lg mb-3">
-            Fazer Upgrade para PRO
-          </button>
-
-          {/* Redutores de fricção */}
-          <div className="flex items-center justify-center gap-6 text-xs text-[#001529]/60">
+          {/* Reassurance */}
+          <div className="flex items-center justify-center gap-5">
             <div className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5" />
-              <span>Cancele quando quiser</span>
+              <Shield className="w-3.5 h-3.5" style={{ color: "rgba(14,59,46,0.5)" }} />
+              <span className="text-xs" style={{ color: "rgba(14,59,46,0.5)" }}>Cancele quando quiser</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5" />
-              <span>7 dias grátis</span>
+              <Zap className="w-3.5 h-3.5" style={{ color: "rgba(14,59,46,0.5)" }} />
+              <span className="text-xs" style={{ color: "rgba(14,59,46,0.5)" }}>Acesso imediato</span>
             </div>
           </div>
         </div>

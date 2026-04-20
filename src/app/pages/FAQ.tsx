@@ -15,7 +15,7 @@ const faqData: FAQItem[] = [
   // Plataforma
   {
     category: "Plataforma",
-    question: "O Meu Fluxo é gratuito?",
+    question: "O DashComigo é gratuito?",
     answer: "Sim! Oferecemos um plano gratuito que inclui o Simulador MEI → ME ilimitado, 30 lançamentos por mês no Fluxo de Caixa, 2 propostas comerciais por dia e acesso ao Dashboard. Para recursos ilimitados e simuladores avançados, temos o plano PRO a partir de R$ 9,90/mês.",
   },
   {
@@ -103,7 +103,7 @@ export function FAQ() {
       <main className="pt-24 pb-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Back Link */}
-          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#001529] mb-10 transition-colors font-medium">
+          <Link to="/" className="inline-flex items-center gap-2 text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E] mb-10 transition-colors font-medium">
             <ArrowLeft className="w-4 h-4" />
             Voltar ao início
           </Link>
@@ -113,7 +113,7 @@ export function FAQ() {
             <div className="w-16 h-16 bg-[#28A263]/12 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <HelpCircle className="w-8 h-8 text-[#28A263]" />
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001529] mb-5 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0E3B2E] mb-5 leading-tight">
               Perguntas <span className="text-[#28A263]">Frequentes</span>
             </h1>
             <p className="text-lg sm:text-xl text-[rgba(0,21,41,0.65)] max-w-3xl mx-auto leading-relaxed">
@@ -130,7 +130,7 @@ export function FAQ() {
                 className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                   activeCategory === cat
                     ? "bg-[#28A263] text-white shadow-md"
-                    : "bg-[#F8F9FA] text-[#001529] hover:bg-[#F0F2F5] border border-[#E5E7EB]"
+                    : "bg-[#F8F9FA] text-[#0E3B2E] hover:bg-[#F0F2F5] border border-[rgba(20,18,15,0.13)]"
                 }`}
               >
                 {cat}
@@ -143,7 +143,7 @@ export function FAQ() {
             {filtered.map((item, index) => (
               <div
                 key={index}
-                className="group bg-white border border-[#E5E7EB] rounded-xl overflow-hidden hover:border-[#28A263]/25 hover:shadow-sm transition-all duration-200"
+                className="group border border-[rgba(20,18,15,0.13)] rounded-xl overflow-hidden hover:border-[#28A263]/25 hover:shadow-sm transition-all duration-200"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -153,14 +153,14 @@ export function FAQ() {
                     <span className="text-xs px-3 py-1.5 rounded-full bg-[#28A263]/12 text-[#28A263] border border-[#28A263]/20 font-bold uppercase tracking-wide flex-shrink-0">
                       {item.category}
                     </span>
-                    <span className="text-lg text-[#001529] font-semibold leading-tight">{item.question}</span>
+                    <span className="text-lg text-[#0E3B2E] font-semibold leading-tight">{item.question}</span>
                   </div>
                   <ChevronDown className={`w-5 h-5 text-[rgba(0,21,41,0.5)] flex-shrink-0 ml-4 transition-transform duration-300 ${
                     openIndex === index ? "rotate-180" : ""
                   }`} />
                 </button>
                 {openIndex === index && (
-                  <div className="px-6 sm:px-8 pb-8 sm:pb-10 bg-[#F8F9FA] border-t border-[#E5E7EB]">
+                  <div className="px-6 sm:px-8 pb-8 sm:pb-10 bg-[#F8F9FA] border-t border-[rgba(20,18,15,0.13)]">
                     <p className="text-base text-[rgba(0,21,41,0.65)] leading-relaxed">
                       {item.answer}
                     </p>
@@ -172,7 +172,7 @@ export function FAQ() {
 
           {/* CTA Section - Premium */}
           <div className="bg-gradient-to-br from-[#28A263]/8 to-white border border-[#28A263]/15 rounded-3xl p-10 sm:p-14 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#001529] mb-4">Ainda tem dúvidas?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0E3B2E] mb-4">Ainda tem dúvidas?</h2>
             <p className="text-lg text-[rgba(0,21,41,0.65)] mb-12 max-w-2xl mx-auto leading-relaxed">
               Não encontrou a resposta que procurava? Entre em contato conosco ou comece a usar a plataforma gratuitamente.
             </p>

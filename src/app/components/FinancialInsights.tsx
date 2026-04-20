@@ -117,8 +117,8 @@ export default function FinancialInsights() {
           <Lightbulb className="w-5 h-5 text-blue-600" />
         </div>
         <div>
-          <h3 className="font-semibold text-[#001529]">Insights Financeiros</h3>
-          <p className="text-xs text-[#001529]/60">Análise inteligente dos seus dados</p>
+          <h3 className="font-semibold text-[#0E3B2E]">Insights Financeiros</h3>
+          <p className="text-xs text-[#0E3B2E]/60">Análise inteligente dos seus dados</p>
         </div>
       </div>
 
@@ -134,7 +134,7 @@ export default function FinancialInsights() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className={`font-semibold text-sm ${insight.color}`}>{insight.title}</p>
-                    <p className="text-sm text-[#001529]/70 mt-1">{insight.message}</p>
+                    <p className="text-sm text-[#0E3B2E]/70 mt-1">{insight.message}</p>
                   </div>
                 </div>
               </div>
@@ -142,7 +142,7 @@ export default function FinancialInsights() {
           })
         ) : (
           <div className="text-center py-6">
-            <p className="text-sm text-[#001529]/60">
+            <p className="text-sm text-[#0E3B2E]/60">
               Adicione mais transações para gerar insights inteligentes
             </p>
           </div>

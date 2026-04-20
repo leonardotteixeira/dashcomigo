@@ -1,0 +1,17 @@
+/* DashComigo — Color Tokens (CSS) */
+:root {
+  /* Primary */
+  --dc-moss:        #0E3B2E;   /* primary brand · trust, permanence */
+  --dc-moss-deep:   #082219;   /* hover / pressed */
+  --dc-parchment:   #F4EFE6;   /* canvas · warm off-white */
+  --dc-parchment-2: #EBE4D6;   /* secondary surface */
+  --dc-signal:      #7FD19F;   /* accent · the companion */
+  --dc-signal-ink:  #1F5A3A;   /* signal text on parchment */
+  --dc-ink:         #14120F;   /* body text */
+  --dc-ink-60:      rgba(20, 18, 15, 0.60); /* secondary text */
+  --dc-ink-40:      rgba(20, 18, 15, 0.40); /* tertiary text */
+  --dc-ink-20:      rgba(20, 18, 15, 0.13); /* rules, hairlines */
+
+  /* Status */
+  --dc-warn:        #B04A3A;   /* use sparingly */
+}

@@ -145,10 +145,10 @@ export default function PrioridadesDoDia() {
   }
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">
+    <div className="border border-[rgba(20,18,15,0.13)] rounded-2xl p-6 shadow-sm">
       <div className="flex items-center gap-2 mb-5">
         <AlertCircle className="w-5 h-5 text-amber-500" />
-        <h3 className="font-semibold text-[#001529]">Prioridades do Dia</h3>
+        <h3 className="font-semibold text-[#0E3B2E]">Prioridades do Dia</h3>
       </div>
 
       <div className="space-y-3">
@@ -159,10 +159,10 @@ export default function PrioridadesDoDia() {
               key={suggestion.id}
               onClick={suggestion.onClick}
               disabled={suggestion.locked}
-              className={`w-full text-left flex items-start gap-3 p-3.5 rounded-lg border border-[#E5E7EB] transition-all ${
+              className={`w-full text-left flex items-start gap-3 p-3.5 rounded-lg border border-[rgba(20,18,15,0.13)] transition-all ${
                 suggestion.locked
-                  ? "opacity-60 cursor-not-allowed hover:border-[#E5E7EB]"
-                  : "hover:border-[#003a6d]/30 hover:shadow-sm cursor-pointer"
+                  ? "opacity-60 cursor-not-allowed hover:border-[rgba(20,18,15,0.13)]"
+                  : "hover:border-[#0E3B2E]/30 hover:shadow-sm cursor-pointer"
               } ${suggestion.bgColor}`}
             >
               <div className={`flex-shrink-0 w-10 h-10 rounded-lg ${suggestion.iconBg} flex items-center justify-center mt-0.5`}>
@@ -171,14 +171,14 @@ export default function PrioridadesDoDia() {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <p className="font-medium text-sm text-[#001529]">{suggestion.title}</p>
+                  <p className="font-medium text-sm text-[#0E3B2E]">{suggestion.title}</p>
                   {suggestion.proFeature && (
                     <span className="flex-shrink-0 text-xs bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded-full font-medium">
                       PRO
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-[#001529]/60">{suggestion.subtitle}</p>
+                <p className="text-xs text-[#0E3B2E]/60">{suggestion.subtitle}</p>
               </div>
 
               {suggestion.locked ? (
@@ -186,7 +186,7 @@ export default function PrioridadesDoDia() {
                   <Lock className="w-4 h-4" />
                 </div>
               ) : (
-                <div className="flex-shrink-0 text-xs text-[#003a6d] font-semibold">{suggestion.action} →</div>
+                <div className="flex-shrink-0 text-xs text-[#0E3B2E] font-semibold">{suggestion.action} →</div>
               )}
             </button>
           );

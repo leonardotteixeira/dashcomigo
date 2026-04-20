@@ -33,10 +33,9 @@ const FEATURES = [
       "Dashboard com insights em tempo real",
     ],
     preview: (
-      <div className="relative bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mx-auto max-w-sm">
+      <div className="relative rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mx-auto max-w-sm">
         <div className="flex items-center gap-3 mb-5">
-          <img src="/logo.png" alt="" className="h-10 w-auto" />
-          <span className="text-[#001529] font-bold">Meu Fluxo</span>
+          <img src="/logo.svg" alt="DashComigo" className="h-8 w-auto" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[
@@ -47,7 +46,7 @@ const FEATURES = [
           ].map((item) => (
             <div key={item.label} className={`${item.color} rounded-xl p-3 text-center`}>
               <item.Icon className={`w-6 h-6 mx-auto mb-1 ${item.iconColor}`} />
-              <span className="text-xs text-[#001529] font-medium">{item.label}</span>
+              <span className="text-xs text-[#0E3B2E] font-medium">{item.label}</span>
             </div>
           ))}
         </div>
@@ -67,9 +66,9 @@ const FEATURES = [
       "Sugestão automática de migração MEI → ME",
     ],
     preview: (
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
+      <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-[#001529] font-bold text-sm">Fluxo de Caixa</span>
+          <span className="text-[#0E3B2E] font-bold text-sm">Fluxo de Caixa</span>
           <span className="text-xs text-[#28A263] bg-[#28A263]/10 px-2 py-1 rounded-full">Março 2026</span>
         </div>
         <div className="grid grid-cols-3 gap-2 mb-4">
@@ -83,7 +82,7 @@ const FEATURES = [
           </div>
           <div className="bg-[#F8F9FA] rounded-xl p-3 text-center border border-[rgba(0,0,0,0.05)]">
             <p className="text-[10px] text-[rgba(0,21,41,0.6)]">Saldo</p>
-            <p className="text-sm font-bold text-[#001529]">R$ 8.300</p>
+            <p className="text-sm font-bold text-[#0E3B2E]">R$ 8.300</p>
           </div>
         </div>
         <div className="space-y-2">
@@ -114,9 +113,9 @@ const FEATURES = [
       "100% gratuito, sem cadastro",
     ],
     preview: (
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
+      <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
         <div className="text-center mb-4">
-          <span className="text-[#001529] font-bold text-sm">MEI vs ME — Comparativo</span>
+          <span className="text-[#0E3B2E] font-bold text-sm">MEI vs ME — Comparativo</span>
         </div>
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-[#F8F9FA] rounded-xl p-4 text-center border border-[rgba(0,0,0,0.05)]">
@@ -124,7 +123,7 @@ const FEATURES = [
             <p className="text-lg font-bold text-yellow-600">R$ 76,60</p>
             <p className="text-[10px] text-[rgba(0,21,41,0.5)]">/mês fixo</p>
           </div>
-          <div className="bg-[#F5F7FA] rounded-xl p-4 text-center border border-[#28A263]/30">
+          <div className="bg-[#F4EFE6] rounded-xl p-4 text-center border border-[#28A263]/30">
             <p className="text-xs text-[rgba(0,21,41,0.6)] mb-1">Custo ME</p>
             <p className="text-lg font-bold text-[#28A263]">R$ 540</p>
             <p className="text-[10px] text-[rgba(0,21,41,0.5)]">6% s/ R$ 9.000</p>
@@ -150,34 +149,34 @@ const FEATURES = [
       "Disponível no plano PRO",
     ],
     preview: (
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
+      <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
         <div className="flex gap-2 mb-4">
           <div className="flex-1 bg-purple-500/10 border border-purple-500/20 rounded-xl p-3 text-center">
             <DollarSign className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-            <p className="text-xs text-[#001529] font-medium">Preço Ideal</p>
+            <p className="text-xs text-[#0E3B2E] font-medium">Preço Ideal</p>
             <p className="text-lg font-bold text-purple-600">R$ 150/h</p>
           </div>
           <div className="flex-1 bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 text-center">
             <TrendingUp className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-xs text-[#001529] font-medium">Lucro Projetado</p>
+            <p className="text-xs text-[#0E3B2E] font-medium">Lucro Projetado</p>
             <p className="text-lg font-bold text-blue-600">R$ 180k</p>
           </div>
         </div>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <div className="h-2 flex-1 bg-[#F5F7FA] rounded-full overflow-hidden">
+            <div className="h-2 flex-1 bg-[#F4EFE6] rounded-full overflow-hidden">
               <div className="h-full w-[85%] bg-[#28A263] rounded-full" />
             </div>
             <span className="text-[10px] text-[rgba(0,21,41,0.6)] w-16">Otimista</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-2 flex-1 bg-[#F5F7FA] rounded-full overflow-hidden">
+            <div className="h-2 flex-1 bg-[#F4EFE6] rounded-full overflow-hidden">
               <div className="h-full w-[60%] bg-blue-500 rounded-full" />
             </div>
             <span className="text-[10px] text-[rgba(0,21,41,0.6)] w-16">Realista</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-2 flex-1 bg-[#F5F7FA] rounded-full overflow-hidden">
+            <div className="h-2 flex-1 bg-[#F4EFE6] rounded-full overflow-hidden">
               <div className="h-full w-[35%] bg-yellow-500 rounded-full" />
             </div>
             <span className="text-[10px] text-[rgba(0,21,41,0.6)] w-16">Pessimista</span>
@@ -199,9 +198,9 @@ const FEATURES = [
       "Copiar, enviar por email ou baixar PDF",
     ],
     preview: (
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
+      <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-[#001529] font-bold text-sm">Propostas</span>
+          <span className="text-[#0E3B2E] font-bold text-sm">Propostas</span>
           <div className="flex gap-2">
             <span className="text-[10px] bg-yellow-500/20 text-yellow-600 px-2 py-0.5 rounded-full">3 Aguardando</span>
             <span className="text-[10px] bg-[#28A263]/20 text-[#28A263] px-2 py-0.5 rounded-full">5 Aprovadas</span>
@@ -215,7 +214,7 @@ const FEATURES = [
           ].map((p) => (
             <div key={p.cliente} className="bg-[#F8F9FA] rounded-lg p-3 flex items-center justify-between border border-[rgba(0,0,0,0.05)]">
               <div>
-                <p className="text-xs text-[#001529] font-medium">{p.cliente}</p>
+                <p className="text-xs text-[#0E3B2E] font-medium">{p.cliente}</p>
                 <p className="text-[10px] text-[rgba(0,21,41,0.5)]">{p.tipo} — {p.valor}</p>
               </div>
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${p.statusColor}`}>{p.status}</span>
@@ -238,9 +237,9 @@ const FEATURES = [
       "Acesso rápido a todas as ferramentas",
     ],
     preview: (
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
+      <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-[#001529] font-bold text-sm">Dashboard</span>
+          <span className="text-[#0E3B2E] font-bold text-sm">Dashboard</span>
           <span className="text-[10px] text-[rgba(0,21,41,0.6)]">Março 2026</span>
         </div>
         <div className="grid grid-cols-2 gap-2 mb-4">
@@ -251,7 +250,7 @@ const FEATURES = [
           </div>
           <div className="bg-[#F8F9FA] rounded-xl p-3 border border-[rgba(0,0,0,0.05)]">
             <p className="text-[10px] text-[rgba(0,21,41,0.6)]">Margem Lucro</p>
-            <p className="text-sm font-bold text-[#001529]">68%</p>
+            <p className="text-sm font-bold text-[#0E3B2E]">68%</p>
             <p className="text-[10px] text-[#28A263]">↑ 5% vs mês anterior</p>
           </div>
         </div>
@@ -282,11 +281,11 @@ const FEATURES = [
       "Dashboard com visão completa do negócio",
     ],
     preview: (
-      <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mx-auto max-w-sm text-center">
+      <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mx-auto max-w-sm text-center">
         <div className="w-20 h-20 bg-[#28A263]/20 rounded-full flex items-center justify-center mx-auto mb-4">
           <Zap className="w-10 h-10 text-[#28A263]" />
         </div>
-        <h3 className="text-[#001529] font-bold text-lg mb-2">Você está pronto!</h3>
+        <h3 className="text-[#0E3B2E] font-bold text-lg mb-2">Você está pronto!</h3>
         <p className="text-[rgba(0,21,41,0.6)] text-sm mb-4">
           Todas as ferramentas estão disponíveis para você explorar agora mesmo.
         </p>
@@ -299,7 +298,7 @@ const FEATURES = [
           ].map((item) => (
             <div key={item.label} className="bg-[#F8F9FA] rounded-lg p-2 flex items-center gap-2 border border-[rgba(0,0,0,0.05)]">
               <item.icon className={`w-4 h-4 ${item.color}`} />
-              <span className="text-[10px] text-[#001529]">{item.label}</span>
+              <span className="text-[10px] text-[#0E3B2E]">{item.label}</span>
             </div>
           ))}
         </div>
@@ -404,7 +403,7 @@ export function Onboarding() {
                   <current.icon className="w-6 h-6" style={{ color: current.color }} />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-[#001529]">{current.title}</h2>
+                  <h2 className="text-3xl font-bold text-[#0E3B2E]">{current.title}</h2>
                   <p className="text-[rgba(0,21,41,0.6)] text-sm mt-1">{current.subtitle}</p>
                 </div>
               </div>
@@ -433,7 +432,7 @@ export function Onboarding() {
                 <Button
                   variant="ghost"
                   onClick={goBack}
-                  className="text-[rgba(0,21,41,0.6)] hover:text-[#001529] hover:bg-[rgba(0,0,0,0.05)] rounded-xl"
+                  className="text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E] hover:bg-[rgba(0,0,0,0.05)] rounded-xl"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Voltar
@@ -442,7 +441,7 @@ export function Onboarding() {
               <button
                 onClick={handleSkip}
                 disabled={saving}
-                className="text-sm text-[rgba(0,21,41,0.6)] hover:text-[#001529] transition-colors font-medium"
+                className="text-sm text-[rgba(0,21,41,0.6)] hover:text-[#0E3B2E] transition-colors font-medium"
               >
                 Pular tour
               </button>
