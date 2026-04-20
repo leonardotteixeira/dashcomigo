@@ -14,6 +14,7 @@ import {
   PiggyBank,
   Building2,
   User,
+  Banknote,
 } from "lucide-react";
 import {
   LineChart,
@@ -44,6 +45,7 @@ import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
 import PfPjDistribution from "../components/PfPjDistribution";
 import { ProInsightsBar } from "../components/ProInsightsBar";
+import { PlaidLink } from "../components/PlaidLink";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -209,6 +211,33 @@ export function Dashboard() {
                 <span>{lucroGrowthPct >= 0 ? "+" : ""}{lucroGrowthPct.toFixed(1)}% vs mês anterior</span>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Plaid Integration Card */}
+        <div className="bg-gradient-to-r from-[#0066FF] to-[#0052CC] rounded-2xl p-6 shadow-md text-white">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                  <Banknote className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Conectar seu Banco</h3>
+                  <p className="text-sm text-white/90">Importe transações automaticamente via Open Finance</p>
+                </div>
+              </div>
+              <p className="text-sm text-white/80 mb-4">
+                Sincronize seus dados bancários com segurança e veja PF/PJ classificados automaticamente
+              </p>
+            </div>
+            <PlaidLink
+              className="whitespace-nowrap"
+              onSuccess={() => {
+                // Recarregar transações
+                window.location.reload();
+              }}
+            />
           </div>
         </div>
 
