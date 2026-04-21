@@ -1,152 +1,164 @@
-# Open Finance Strategy — Dashcomigo
+# Estratégia Open Finance — Dashcomigo
 
 ---
 
-## What Is Open Finance?
+## O que é Open Finance?
 
-Open Finance is Brazil's regulatory framework (mandated by the Central Bank of Brazil — Banco Central) that requires financial institutions to share customer data with authorized third parties through standardized APIs — with the customer's explicit consent.
+Open Finance é o marco regulatório brasileiro (determinado pelo Banco Central do Brasil) que obriga as instituições financeiras a compartilhar dados de clientes com terceiros autorizados por meio de APIs padronizadas — mediante consentimento explícito do usuário.
 
-Since 2023, Brazilian Open Finance has enabled:
-- **Account data sharing** (balances, transactions, credit history)
-- **Investment portfolio sharing** (holdings, performance, allocation)
-- **Payment initiation** (direct payments without card networks)
-- **40M+ active consents** shared across the ecosystem
+Desde 2023, o Open Finance brasileiro possibilitou:
 
-For Dashcomigo, Open Finance is not a feature — it is the **foundation of the entire product**.
+- **Compartilhamento de dados de conta** (saldos, transações, histórico de crédito)
+- **Compartilhamento de carteira de investimentos** (posições, rentabilidade, alocação)
+- **Iniciação de pagamento** (pagamentos diretos sem as redes de cartão)
+- **Mais de 40 milhões de consentimentos ativos** em todo o ecossistema
 
----
-
-## Why Open Finance Is Central to Dashcomigo
-
-### The Problem With Manual Finance Apps
-Traditional financial apps require users to manually enter every transaction. The result:
-- Data is always incomplete
-- Users abandon the app within weeks
-- Insights are based on partial information — and therefore wrong
-
-### The Open Finance Difference
-With Open Finance, Dashcomigo becomes **automatic**:
-- Transactions appear without any user action
-- Investment portfolios are imported directly from banks
-- Cash flow reflects the real bank balance, not what the user remembered to enter
-- The platform becomes a true **single source of financial truth**
+Para o Dashcomigo, o Open Finance não é uma funcionalidade — é a **fundação de todo o produto**.
 
 ---
 
-## Our Integration: Pluggy
+## Por que o Open Finance é Central para o Dashcomigo
 
-Dashcomigo uses **Pluggy** as its Open Finance infrastructure provider.
+### O Problema dos Aplicativos Financeiros Manuais
 
-Pluggy is a Brazilian fintech that provides:
-- A single SDK connecting to **200+ Brazilian financial institutions**
-- Standardized data models for accounts, transactions, and investments
-- Real-time webhooks for data updates
-- Full compliance with Banco Central's Open Finance regulations
+Aplicativos financeiros tradicionais exigem que o usuário lance manualmente cada transação. O resultado:
 
-### Current Integration
+- Os dados estão sempre incompletos
+- Os usuários abandonam o aplicativo em semanas
+- Os insights são baseados em informações parciais — e, portanto, equivocados
 
-| Feature | Status |
-|---------|--------|
-| Connect widget (user consent flow) | ✅ Live |
-| Transaction import + classification | ✅ Live |
-| Investment portfolio import | ✅ Live |
-| Background sync (every 6 hours) | ✅ Live |
-| Multi-account aggregation | 🔄 In Progress |
-| Webhook real-time updates | 📋 Planned |
+### A Diferença do Open Finance
 
-### Supported Investment Types
+Com o Open Finance, o Dashcomigo se torna **automático**:
+
+- Transações aparecem sem nenhuma ação do usuário
+- Carteiras de investimentos são importadas diretamente dos bancos
+- O fluxo de caixa reflete o saldo bancário real, não o que o usuário se lembrou de lançar
+- A plataforma se torna a verdadeira **fonte única de verdade financeira**
+
+---
+
+## Nossa Integração: Pluggy
+
+O Dashcomigo utiliza a **Pluggy** como provedor de infraestrutura Open Finance.
+
+A Pluggy é uma fintech brasileira que oferece:
+
+- Um único SDK conectado a **mais de 200 instituições financeiras brasileiras**
+- Modelos de dados padronizados para contas, transações e investimentos
+- Webhooks em tempo real para atualização de dados
+- Conformidade total com as regulamentações Open Finance do Banco Central
+
+### Integração Atual
+
+| Funcionalidade | Status |
+|----------------|--------|
+| Widget de conexão (fluxo de consentimento) | Ativo |
+| Importação e classificação de transações | Ativo |
+| Importação de carteira de investimentos | Ativo |
+| Sincronização em segundo plano (a cada 6 horas) | Ativo |
+| Agregação de múltiplas contas | Em desenvolvimento |
+| Atualizações em tempo real via webhook | Planejado |
+
+### Tipos de Investimento Suportados
+
 - Renda Fixa (CDB, LCI, LCA, Tesouro Direto)
-- Ações (equities)
+- Ações
 - ETFs
-- Fundos de Investimento (Mutual Funds)
+- Fundos de Investimento
 - Previdência (PGBL, VGBL)
-- FIIs (Real Estate Funds)
+- FIIs (Fundos de Investimento Imobiliário)
 - COEs
 - Criptomoedas
 
 ---
 
-## Data Pipeline
+## Pipeline de Dados
 
-When a user connects their bank account, Dashcomigo runs the following pipeline:
+Quando um usuário conecta sua conta bancária, o Dashcomigo executa o seguinte fluxo:
 
 ```
-Pluggy Widget (user consent)
-        ↓
-Backend receives itemId + institutionId
-        ↓
-┌─────────────────────────────────────┐
-│         INGESTION PIPELINE          │
-│                                     │
-│  1. Fetch transactions from Pluggy  │
-│  2. Normalize to internal format    │
-│  3. Classify: PF vs. PJ            │
-│  4. Idempotent persistence          │
-│     (no duplicates)                 │
-└─────────────────────────────────────┘
-        ↓
-┌─────────────────────────────────────┐
-│      INVESTMENT PIPELINE           │
-│                                     │
-│  1. Fetch all investment types      │
-│  2. Map to standard categories      │
-│  3. Deduplicate by name + type      │
-│  4. Store with current value        │
-└─────────────────────────────────────┘
-        ↓
-PocketBase (cloud database)
-        ↓
-React Frontend (real-time UI update)
+Widget Pluggy (consentimento do usuário)
+        |
+Backend recebe itemId + institutionId
+        |
++---------------------------------------+
+|         PIPELINE DE INGESTÃO          |
+|                                       |
+|  1. Busca transacoes na Pluggy        |
+|  2. Normaliza para formato interno    |
+|  3. Classifica: PF versus PJ          |
+|  4. Persistencia idempotente          |
+|     (sem duplicatas)                  |
++---------------------------------------+
+        |
++---------------------------------------+
+|      PIPELINE DE INVESTIMENTOS        |
+|                                       |
+|  1. Busca todos os tipos de ativo     |
+|  2. Mapeia para categorias padrao     |
+|  3. Deduplica por nome + tipo         |
+|  4. Armazena com valor atual          |
++---------------------------------------+
+        |
+PocketBase (banco de dados em nuvem)
+        |
+Frontend React (atualiza a UI em tempo real)
 ```
 
 ---
 
-## How Open Finance Transforms the Platform
+## Como o Open Finance Transforma a Plataforma
 
-### Before Open Finance
-| User Action | Effort |
-|-------------|--------|
-| Add a transaction | Manual entry every time |
-| Know current balance | Check bank app separately |
-| Track investments | Manually check broker app |
-| Generate report | Based on incomplete data |
+### Sem Open Finance
 
-### After Open Finance
-| User Action | Effort |
-|-------------|--------|
-| Transactions appear | Zero — automatic |
-| Current balance | Always real, always synced |
-| Investment portfolio | Imported automatically |
-| Generate report | Complete, accurate, instant |
+| Ação do Usuário | Esforço |
+|-----------------|---------|
+| Adicionar uma transação | Lançamento manual toda vez |
+| Conhecer o saldo atual | Abrir o aplicativo do banco separadamente |
+| Acompanhar investimentos | Verificar manualmente o app da corretora |
+| Gerar relatório | Baseado em dados incompletos |
 
----
+### Com Open Finance
 
-## Future Open Finance Capabilities
-
-### Phase 2: Intelligence Layer
-- **Pattern recognition**: Identify recurring expenses, unusual spikes, seasonal patterns
-- **Automatic PF/PJ separation**: AI-assisted classification of personal vs. business transactions
-- **Predictive cash flow**: "Based on your last 6 months, you'll have R$X available in 30 days"
-- **Investment alerts**: "Your CDB expires in 15 days — here are reinvestment options"
-
-### Phase 3: Financial Advisor Layer
-- **Personalized investment recommendations** based on actual cash position and risk profile
-- **Credit intelligence**: "Based on your revenue history, you qualify for R$X in credit"
-- **DAS optimization**: "You saved R$X vs. other tax regimes this quarter"
-- **Multi-entity view**: Entrepreneurs with multiple businesses see consolidated picture
-
-### Phase 4: Financial Product Marketplace
-- **Embedded financial products**: Credit, insurance, investment products surfaced in context
-- **Revenue sharing model**: Commission on financial product placement
-- **B2B data services**: Anonymized, aggregated insights for financial institutions (with full LGPD compliance)
+| Ação do Usuário | Esforço |
+|-----------------|---------|
+| Transações aparecem | Zero — automático |
+| Saldo atual | Sempre real, sempre sincronizado |
+| Carteira de investimentos | Importada automaticamente |
+| Gerar relatório | Completo, preciso, instantâneo |
 
 ---
 
-## Regulatory & Security Considerations
+## Capacidades Futuras do Open Finance
 
-- All data shared via Open Finance requires **explicit user consent**
-- Consent can be revoked at any time through the platform
-- Data is processed and stored in compliance with **LGPD** (Brazil's data protection law)
-- Pluggy is a **registered Open Finance participant** with Banco Central
-- No raw credentials are ever stored — only OAuth tokens with limited scope
-- Data is encrypted in transit and at rest
+### Fase 2: Camada de Inteligência
+
+- **Reconhecimento de padrões**: identificar despesas recorrentes, picos incomuns e sazonalidades
+- **Separação automática PF/PJ**: classificação assistida por IA de transações pessoais versus empresariais
+- **Previsão de fluxo de caixa**: "Com base nos últimos 6 meses, você terá R$ X disponíveis em 30 dias"
+- **Alertas de investimento**: "Seu CDB vence em 15 dias — veja opções de reaplicação"
+
+### Fase 3: Camada de Assessoria Financeira
+
+- **Recomendações personalizadas de investimento** com base na posição real de caixa e perfil de risco
+- **Inteligência de crédito**: "Com base no seu histórico de faturamento, você pode acessar até R$ X em crédito"
+- **Otimização do DAS**: "Você economizou R$ X em comparação com outros regimes tributários este trimestre"
+- **Visão multi-empresa**: empreendedores com mais de um negócio veem a foto consolidada
+
+### Fase 4: Marketplace de Produtos Financeiros
+
+- **Produtos financeiros embutidos**: crédito, seguro e investimentos apresentados no contexto certo
+- **Modelo de receita compartilhada**: comissão sobre a colocação de produtos financeiros
+- **Serviços de dados B2B**: insights anônimos e agregados para instituições financeiras (com total conformidade à LGPD)
+
+---
+
+## Considerações Regulatórias e de Segurança
+
+- Todo dado compartilhado via Open Finance exige **consentimento explícito do usuário**
+- O consentimento pode ser revogado a qualquer momento pela plataforma
+- Os dados são processados e armazenados em conformidade com a **LGPD** (Lei Geral de Proteção de Dados)
+- A Pluggy é um **participante registrado do Open Finance** junto ao Banco Central
+- Nenhuma credencial bruta é armazenada — apenas tokens OAuth com escopo limitado
+- Dados criptografados em trânsito e em repouso

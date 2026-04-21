@@ -1,370 +1,384 @@
 # DASHCOMIGO
-## Investor Document — Q2 2026
+## Documento para Investidores — Q2 2026
 
-> *Financial Intelligence for Brazilian Entrepreneurs*
-
----
-
----
-
-# EXECUTIVE SUMMARY
-
-**Dashcomigo** is a SaaS financial management platform built for Brazil's 15.4 million MEIs (Microempreendedores Individuais) and small business owners.
-
-The platform connects to users' bank accounts via Brazil's Open Finance infrastructure, automatically imports transactions and investment portfolios, and delivers the financial clarity that entrepreneurs need to make better decisions — every day.
-
-**Key facts:**
-- Platform is live and operational
-- Open Finance integration active via Pluggy (200+ Brazilian institutions)
-- Real investment portfolio tracking (8 asset classes)
-- Full financial reporting suite
-- PRO subscription at R$49/month
-
-**We are seeking pre-seed investment to accelerate growth, launch mobile, and build the AI intelligence layer.**
+> *Inteligencia Financeira para Empreendedores Brasileiros*
 
 ---
 
 ---
 
-# SECTION 1: THE PROBLEM
+# RESUMO EXECUTIVO
 
-## Financial Blindness Is Killing Brazilian Businesses
+O **Dashcomigo** e uma plataforma SaaS de gestao financeira construida para os 15,4 milhoes de MEIs (Microempreendedores Individuais) e pequenos empresarios brasileiros.
 
-Brazil registers **15.4 million MEIs** — the fastest-growing entrepreneurial segment in Latin America. Yet the vast majority run their finances without any real visibility:
+A plataforma se conecta as contas bancarias dos usuarios via infraestrutura Open Finance do Brasil, importa automaticamente transacoes e carteiras de investimento e entrega a clareza financeira de que os empreendedores precisam para tomar melhores decisoes — todos os dias.
 
-- Transactions scattered across personal and business accounts
-- Investment portfolios tracked manually (or not at all)
-- Cash flow managed by "feeling" rather than data
-- Tax obligations discovered last-minute
-- No tool built specifically for their reality and price point
+**Dados principais:**
 
-**The consequence is severe:**
-> 60% of small businesses in Brazil fail within 5 years.
-> Financial disorganization is the #1 cited cause.
+- Plataforma ativa e em operacao
+- Integracao com Open Finance via Pluggy (mais de 200 instituicoes brasileiras)
+- Rastreamento real de carteira de investimentos (8 classes de ativos)
+- Suite completa de relatorios financeiros
+- Assinatura PRO a R$ 49 por mes
 
-### What They Have Today
-| Tool | Problem |
-|------|---------|
-| Spreadsheets | Manual, always outdated, error-prone |
-| Personal bank app | Shows one account, no business context |
-| Generic finance apps | Built for individuals, not entrepreneurs |
-| Enterprise accounting software | Too expensive (R$150–500+/month), too complex |
-| Nothing | The most common "solution" |
-
-**There is no platform built specifically for the MEI entrepreneur that combines real banking data, investment tracking, and business financial management at an accessible price.**
+**Buscamos investimento pre-seed para acelerar o crescimento, lancar o app mobile e construir a camada de inteligencia artificial.**
 
 ---
 
 ---
 
-# SECTION 2: THE SOLUTION
+# SECAO 1: O PROBLEMA
 
-## Dashcomigo — The Financial OS for Brazilian Entrepreneurs
+## A Cegueira Financeira Esta Destruindo Negocios Brasileiros
 
-Dashcomigo gives every MEI the financial tools previously available only to companies with a full finance team:
+O Brasil registra **15,4 milhoes de MEIs** — o segmento empreendedor que mais cresce na America Latina. No entanto, a grande maioria toca suas financas sem nenhuma visibilidade real:
 
-**Automatic** — Connects to banks via Open Finance. No manual entry required.
+- Transacoes espalhadas entre contas pessoais e empresariais
+- Carteiras de investimentos controladas manualmente — ou nao controladas
+- Fluxo de caixa gerenciado pela "intuicao" em vez de dados
+- Obrigacoes tributarias descobertas de ultima hora
+- Nenhuma ferramenta construida especificamente para sua realidade e faixa de preco
 
-**Complete** — Cash flow, payables, receivables, investments, taxes, reports — all in one place.
+**A consequencia e severa:**
 
-**Intelligent** — Classifies transactions, forecasts cash flow, tracks portfolio performance vs. CDI.
+> 60% das pequenas empresas no Brasil fecham nos primeiros 5 anos.
+> A desorganizacao financeira e a causa numero 1 citada.
 
-**Accessible** — R$49/month. Less than a business lunch.
+### O que Usam Hoje
+
+| Ferramenta | Problema |
+|------------|---------|
+| Planilhas | Manual, sempre desatualizada, sujeita a erros |
+| App do banco | Mostra uma conta, sem contexto empresarial |
+| Apps de financas pessoais | Feitos para individuos, nao empreendedores |
+| Software de contabilidade corporativo | Muito caro (R$ 150 a 500+/mes), muito complexo |
+| Nada | A "solucao" mais comum |
+
+**Nao existe plataforma construida especificamente para o MEI que combine dados bancarios reais, rastreamento de investimentos e gestao financeira empresarial a um preco acessivel.**
 
 ---
 
 ---
 
-# SECTION 3: THE PRODUCT
+# SECAO 2: A SOLUCAO
 
-## What Dashcomigo Does
+## Dashcomigo — O Sistema Operacional Financeiro para Empreendedores Brasileiros
 
-### Core Modules (Live)
+O Dashcomigo oferece a cada MEI as ferramentas financeiras que antes so empresas com um time completo de financas podiam ter:
+
+**Automatico** — Conecta-se aos bancos via Open Finance. Sem lancamentos manuais.
+
+**Completo** — Fluxo de caixa, contas a pagar, contas a receber, investimentos, impostos, relatorios — tudo em um unico lugar.
+
+**Inteligente** — Classifica transacoes, prevê fluxo de caixa, acompanha o desempenho da carteira versus o CDI.
+
+**Acessivel** — R$ 49 por mes. Menos do que um almoco de negocios.
+
+---
+
+---
+
+# SECAO 3: O PRODUTO
+
+## O que o Dashcomigo Faz
+
+### Modulos Principais (Ativos)
 
 **Dashboard**
-Real-time command center showing cash balance, receivables, payables, and Open Finance status. Smart alerts for overdue items and cash flow risks.
+Central de comando em tempo real mostrando saldo em caixa, contas a receber, contas a pagar e status do Open Finance. Alertas inteligentes para itens vencidos e riscos no fluxo de caixa.
 
-**Cash Flow**
-Automatic bank transaction import via Open Finance. Intelligent classification of income vs. expenses, personal vs. business. Monthly evolution with trend analysis.
+**Fluxo de Caixa**
+Importacao automatica de transacoes bancarias via Open Finance. Classificacao inteligente de receitas versus despesas, pessoal versus empresarial. Evolucao mensal com analise de tendencia.
 
-**Accounts Payable & Receivable**
-Track bills, client invoices, and obligations. Status management (pending / paid / overdue). Due date alerts.
+**Contas a Pagar e a Receber**
+Controle de boletos, faturas de clientes e obrigacoes. Gestao de status (pendente, pago, vencido). Alertas de vencimento.
 
-**Investment Portfolio**
-Real investment data imported directly from banks via Open Finance. Tracks: Renda Fixa, Ações, ETFs, Fundos de Investimento, Previdência, FIIs, COEs, Criptomoedas. Shows total invested, current value, return %, and CDI comparison.
+**Carteira de Investimentos**
+Dados reais de investimentos importados diretamente dos bancos via Open Finance. Acompanha: Renda Fixa, Acoes, ETFs, Fundos de Investimento, Previdencia, FIIs, COEs, Criptomoedas. Mostra total investido, valor atual, rentabilidade percentual e comparativo com o CDI.
 
-**Financial Reports (PRO)**
-Advanced analysis for 3, 6, or 12-month periods. Revenue vs. expense charts. Cash flow forecast. Portfolio evolution vs. CDI benchmark. Export to Excel and PDF.
+**Relatorios Financeiros (PRO)**
+Analise avancada para periodos de 3, 6 ou 12 meses. Graficos de receita versus despesa. Previsao de fluxo de caixa. Evolucao da carteira versus benchmark CDI. Exportacao para Excel e PDF.
 
-**MEI Tax (DAS)**
-Revenue tracking vs. MEI annual limit. DAS simulation and due date reminders.
+**Imposto MEI (DAS)**
+Controle do faturamento versus limite anual do MEI. Simulacao do DAS e lembretes de vencimento.
 
 ---
 
-### The Open Finance Advantage
+### A Vantagem do Open Finance
 
-When a user connects their bank through Dashcomigo:
+Quando um usuario conecta seu banco ao Dashcomigo:
 
 ```
-User clicks "Connect Bank"
-         ↓
-Pluggy secure widget (2 minutes)
-         ↓
-Automatic data import begins:
-  • All transactions (6+ months)
-  • Full investment portfolio
-  • Account balances
-         ↓
-Dashboard updates in real time
-         ↓
-Background sync every 6 hours
-— forever, automatically —
+Usuario clica em "Conectar Banco"
+         |
+Widget seguro Pluggy (2 minutos)
+         |
+Importacao automatica de dados:
+  - Todas as transacoes (6+ meses)
+  - Carteira completa de investimentos
+  - Saldos das contas
+         |
+Dashboard atualizado em tempo real
+         |
+Sincronizacao em segundo plano a cada 6 horas
+— para sempre, automaticamente —
 ```
 
-No spreadsheets. No manual entry. No incomplete data.
+Sem planilhas. Sem lancamentos manuais. Sem dados incompletos.
 
 ---
 
 ---
 
-# SECTION 4: OPEN FINANCE STRATEGY
+# SECAO 4: ESTRATEGIA OPEN FINANCE
 
-## Why Open Finance Changes Everything
+## Por que o Open Finance Muda Tudo
 
-Brazil's Open Finance framework, mandated by the Central Bank, is now fully operational with 40M+ active consents.
+O marco regulatorio Open Finance do Brasil, determinado pelo Banco Central, esta plenamente operacional com mais de 40 milhoes de consentimentos ativos.
 
-For Dashcomigo, Open Finance is not a feature — it is the platform's core infrastructure layer.
+Para o Dashcomigo, o Open Finance nao e uma funcionalidade — e a camada de infraestrutura central da plataforma.
 
-### The Transformation
+### A Transformacao
 
-| Without Open Finance | With Open Finance |
-|---------------------|-------------------|
-| User must enter every transaction | Automatic import from all connected banks |
-| Data is always incomplete | Data is always complete and accurate |
-| Investment tracking is manual | Portfolio imported directly from banks |
-| Reports based on partial info | Reports based on full financial picture |
-| Users abandon the app | Users rely on the app as source of truth |
+| Sem Open Finance | Com Open Finance |
+|-----------------|-----------------|
+| Usuario precisa lancar cada transacao | Importacao automatica de todos os bancos conectados |
+| Dados estao sempre incompletos | Dados sempre completos e precisos |
+| Controle de investimentos e manual | Carteira importada diretamente dos bancos |
+| Relatorios baseados em dados parciais | Relatorios baseados na foto financeira completa |
+| Usuarios abandonam o app | Usuarios dependem do app como fonte de verdade |
 
-### Supported Institutions
-Pluggy connects to **200+ Brazilian financial institutions** including Itaú, Bradesco, Banco do Brasil, Caixa, Nubank, Inter, BTG, XP, and all major brokers.
+### Instituicoes Suportadas
 
-### Future Open Finance Capabilities
+A Pluggy conecta-se a **mais de 200 instituicoes financeiras brasileiras**, incluindo Itau, Bradesco, Banco do Brasil, Caixa, Nubank, Inter, BTG, XP e todas as principais corretoras.
 
-**2026:** Real-time webhooks, multi-bank aggregation, payment initiation
-**2027:** AI-powered transaction classification, predictive alerts
-**2028:** Embedded financial product marketplace via Open Finance data
+### Capacidades Futuras do Open Finance
 
----
-
----
-
-# SECTION 5: MARKET OPPORTUNITY
-
-## A Massive, Underserved Market
-
-### The Numbers
-
-| Segment | Size |
-|---------|------|
-| Registered MEIs in Brazil | 15.4 million |
-| Small businesses (ME + EPP) | 21 million total |
-| MEIs using digital financial tools | ~3 million |
-| MEIs willing to pay R$49/month for better control | Estimated 10–15% |
-
-### Market Size
-
-- **TAM:** R$4.2 billion/year (all financial management software for SMBs in Brazil)
-- **SAM:** R$1.76 billion/year (digitally active MEIs + small businesses)
-- **SOM (5-year):** R$59M ARR (10,000 paid users at R$49/month + marketplace)
-
-### Growth Tailwinds
-
-1. **Open Finance adoption** growing 40% year-over-year
-2. **MEI formalization** increasing — 1.5M new MEIs registered in 2024 alone
-3. **Smartphone penetration** reaching 90%+ in Brazil
-4. **Financial literacy** increasing with government and fintech education programs
-5. **Remote work normalization** creating more solo entrepreneurs
+**2026:** Webhooks em tempo real, agregacao multi-banco, iniciacao de pagamento
+**2027:** Classificacao de transacoes com IA, alertas preditivos
+**2028:** Marketplace de produtos financeiros embarcado com base em dados do Open Finance
 
 ---
 
 ---
 
-# SECTION 6: BUSINESS MODEL
+# SECAO 5: OPORTUNIDADE DE MERCADO
 
-## How Dashcomigo Makes Money
+## Um Mercado Vasto e Mal Atendido
 
-### Primary: SaaS Subscriptions
+### Os Numeros
 
-| Plan | Price | Features |
-|------|-------|---------|
-| Free | R$0 | Basic dashboard, limited features |
-| PRO | R$49/month | Full platform, Open Finance, reports |
-| PRO+ *(2027)* | R$99/month | AI insights, multi-entity, API access |
+| Segmento | Tamanho |
+|----------|---------|
+| MEIs registrados no Brasil | 15,4 milhoes |
+| Pequenas empresas (ME + EPP) | 21 milhoes no total |
+| MEIs usando ferramentas financeiras digitais | Cerca de 3 milhoes |
+| MEIs dispostos a pagar R$ 49/mes por mais controle | Estimativa de 10 a 15% |
 
-**Unit Economics:**
-- Customer Acquisition Cost: R$80–120 (target)
-- Average LTV (PRO): R$588 (12 months)
-- LTV/CAC Ratio: >5x
-- Target Gross Margin: >80%
+### Tamanho de Mercado
 
-### Future: Financial Product Marketplace (2027+)
+- **TAM:** R$ 4,2 bilhoes por ano (todos os softwares de gestao financeira para PMEs no Brasil)
+- **SAM:** R$ 1,76 bilhao por ano (MEIs + pequenas empresas digitalmente ativos)
+- **SOM (5 anos):** R$ 59 milhoes de ARR (10.000 usuarios pagantes a R$ 49/mes + marketplace)
 
-When Dashcomigo recommends and connects users to financial products:
-- Investment products: 0.3–0.5% of invested amount
-- Business credit referrals: 1–2% commission
-- Insurance policies: 15–25% of first-year premium
+### Ventos Favoraveis do Mercado
 
-### Future: B2B API (2027+)
-White-label access for accountants and financial advisors: R$299–999/month
-
----
-
-### Revenue Projections
-
-| Period | Paid Users | MRR | ARR |
-|--------|-----------|-----|-----|
-| Q4 2026 | 100 | R$4,900 | R$58,800 |
-| Q2 2027 | 500 | R$24,500 | R$294,000 |
-| Q4 2027 | 1,500 | R$73,500 | R$882,000 |
-| Q2 2028 | 3,000 | R$147,000 | R$1,764,000 |
-| 2028 + marketplace | 10,000 | R$600,000+ | R$7.2M+ |
+1. Adocao do Open Finance crescendo 40% ao ano
+2. Formalizacao de MEIs em expansao — 1,5 milhao de novos MEIs registrados so em 2024
+3. Penetracao de smartphones acima de 90% no Brasil
+4. Educacao financeira em ascensao com programas governamentais e de fintechs
+5. Normalizacao do trabalho remoto criando mais empreendedores independentes
 
 ---
 
 ---
 
-# SECTION 7: ROADMAP
+# SECAO 6: MODELO DE NEGOCIO
 
-## Building the Future of MEI Finance
+## Como o Dashcomigo Gera Receita
 
-### Now — Foundation (Live)
-- ✅ Core platform (dashboard, cash flow, payables, receivables)
-- ✅ Open Finance via Pluggy (200+ institutions)
-- ✅ Real investment portfolio import and tracking
-- ✅ Advanced financial reports with investment analysis
-- ✅ PRO subscription plan
+### Principal: Assinaturas SaaS
 
-### 2026 — Intelligence
-- Smart alerts and predictive cash flow warnings
-- Multi-bank aggregation
-- Improved AI transaction classification
-- Investment rebalancing suggestions
-- Scheduled report delivery
+| Plano | Preco | Funcionalidades |
+|-------|-------|----------------|
+| Gratis | R$ 0 | Dashboard basico, funcionalidades limitadas |
+| PRO | R$ 49/mes | Plataforma completa, Open Finance, relatorios |
+| PRO+ *(2027)* | R$ 99/mes | Insights de IA, multi-empresa, acesso a API |
 
-### 2027 — Platform
-- Mobile apps (iOS + Android)
-- AI financial advisor layer
-- B2B white-label API for accountants
-- NF-e integration
-- Financial product marketplace (credit, insurance)
+**Economia Unitaria:**
 
-### 2028+ — Ecosystem
-- Conversational AI financial advisor
-- Credit score simulation
-- Multi-entity management
-- Data intelligence services (LGPD compliant)
+- Custo de Aquisicao de Cliente: R$ 80 a 120 (meta)
+- LTV medio (PRO): R$ 588 (12 meses)
+- Relacao LTV/CAC: acima de 5x
+- Margem Bruta alvo: acima de 80%
+
+### Futuro: Marketplace de Produtos Financeiros (2027+)
+
+Quando o Dashcomigo recomenda e conecta usuarios a produtos financeiros:
+
+- Produtos de investimento: 0,3 a 0,5% do valor investido
+- Indicacoes de credito empresarial: 1 a 2% de comissao
+- Apolices de seguro: 15 a 25% do premio do primeiro ano
+
+### Futuro: API B2B (2027+)
+
+Acesso white-label para contadores e assessores financeiros: R$ 299 a 999 por mes
+
+---
+
+### Projecoes de Receita
+
+| Periodo | Usuarios Pagantes | MRR | ARR |
+|---------|-------------------|-----|-----|
+| Q4 2026 | 100 | R$ 4.900 | R$ 58.800 |
+| Q2 2027 | 500 | R$ 24.500 | R$ 294.000 |
+| Q4 2027 | 1.500 | R$ 73.500 | R$ 882.000 |
+| Q2 2028 | 3.000 | R$ 147.000 | R$ 1.764.000 |
+| 2028 + marketplace | 10.000 | R$ 600.000+ | R$ 7,2 milhoes+ |
 
 ---
 
 ---
 
-# SECTION 8: COMPETITIVE LANDSCAPE
+# SECAO 7: ROADMAP
 
-## Why Dashcomigo Wins
+## Construindo o Futuro das Financas do MEI
+
+### Agora — Fundacao (Ativo)
+
+- Plataforma principal (dashboard, fluxo de caixa, contas a pagar, contas a receber)
+- Open Finance via Pluggy (mais de 200 instituicoes)
+- Importacao e rastreamento real de carteira de investimentos
+- Relatorios financeiros avancados com analise de investimentos
+- Plano de assinatura PRO
+
+### 2026 — Inteligencia
+
+- Alertas inteligentes e avisos preditivos de fluxo de caixa
+- Agregacao multi-banco
+- Classificacao de transacoes aprimorada com IA
+- Sugestoes de rebalanceamento de investimentos
+- Entrega agendada de relatorios
+
+### 2027 — Plataforma
+
+- Apps mobile (iOS e Android)
+- Camada de assessor financeiro com IA
+- API B2B white-label para contadores
+- Integracao com NF-e
+- Marketplace de produtos financeiros (credito, seguro)
+
+### 2028+ — Ecossistema
+
+- Assessor financeiro conversacional com IA
+- Simulacao de score de credito
+- Gestao multi-empresa
+- Servicos de inteligencia de dados (em conformidade com a LGPD)
+
+---
+
+---
+
+# SECAO 8: PANORAMA COMPETITIVO
+
+## Por que o Dashcomigo Vence
 
 | | Conta Azul | Granatum | Mobills | **Dashcomigo** |
 |-|------------|---------|---------|----------------|
-| **Price** | R$199+/mo | R$99+/mo | R$19/mo | **R$49/mo** |
-| **Built for MEIs** | ❌ SMB | ❌ Generic | ❌ Personal | **✅ Yes** |
-| **Open Finance** | Partial | ❌ No | ✅ Yes | **✅ Full** |
-| **Investment tracking** | ❌ No | ❌ No | Limited | **✅ Full** |
-| **Business reports** | ✅ Yes | ✅ Yes | ❌ No | **✅ Yes** |
-| **Cash flow + investments** | ❌ | ❌ | ❌ | **✅** |
+| **Preco** | R$ 199+/mes | R$ 99+/mes | R$ 19/mes | **R$ 49/mes** |
+| **Feito para MEIs** | Nao (PME) | Nao (generico) | Nao (pessoal) | **Sim** |
+| **Open Finance** | Parcial | Nao | Sim | **Completo** |
+| **Rastreamento de investimentos** | Nao | Nao | Limitado | **Completo** |
+| **Relatorios empresariais** | Sim | Sim | Nao | **Sim** |
+| **Caixa + investimentos** | Nao | Nao | Nao | **Sim** |
 
-**Dashcomigo is the only platform that combines:**
-1. Open Finance automatic data import
-2. Real investment portfolio tracking
-3. Business financial management (cash flow, payables, receivables)
-4. At a price accessible to MEIs (R$49/month)
+**O Dashcomigo e a unica plataforma que combina:**
 
-No direct competitor exists in this exact space.
+1. Importacao automatica via Open Finance
+2. Rastreamento real de carteira de investimentos
+3. Gestao financeira empresarial (fluxo de caixa, contas a pagar, contas a receber)
+4. A um preco acessivel para MEIs (R$ 49 por mes)
 
----
-
----
-
-# SECTION 9: THE TEAM
-
-## Founded by Someone Who Understands Both Worlds
-
-**Leonardo Teixeira — Founder & CEO**
-
-Background in financial markets and investment management through Alto Valor Investimentos. Deep expertise in financial products, investment strategies, and the Brazilian financial regulatory landscape.
-
-Built Dashcomigo from direct observation of a real market gap: entrepreneurs who desperately need financial clarity but have no adequate tool built for their reality.
-
-*Expanding team with funding: CTO, Growth Lead, Customer Success.*
+Nenhum concorrente direto existe neste espaco exato.
 
 ---
 
 ---
 
-# SECTION 10: THE ASK
+# SECAO 9: O TIME
 
-## Pre-Seed Investment
+## Fundado por Alguem que Conhece os Dois Mundos
 
-**Seeking:** R$[X] pre-seed round
+**Leonardo Teixeira — Fundador e CEO**
 
-**Use of Funds:**
+Formacao em mercados financeiros e gestao de investimentos pela Alto Valor Investimentos. Profundo conhecimento em produtos financeiros, estrategias de investimento e o ambiente regulatorio financeiro brasileiro.
 
-| Area | Allocation | Purpose |
-|------|------------|---------|
-| Product & Engineering | 50% | Mobile app, AI layer, B2B API, infrastructure |
-| Growth & Marketing | 30% | Digital acquisition, content, partnerships |
-| Operations | 15% | Team building, customer success |
-| Legal & Compliance | 5% | LGPD, data protection, Open Finance compliance |
+Construiu o Dashcomigo a partir da observacao direta de uma lacuna real de mercado: empreendedores que precisam desesperadamente de clareza financeira mas nao tem nenhuma ferramenta adequada construida para sua realidade.
 
-**Milestones with Funding:**
-- 6 months: 500 paid users, mobile app beta
-- 12 months: 2,000 paid users, AI alerts live
-- 18 months: 5,000 paid users, marketplace MVP
-- 24 months: 10,000 paid users, R$600K MRR
+*Expansao do time com o aporte: CTO, Lider de Crescimento, Sucesso do Cliente.*
 
 ---
 
 ---
 
-# SECTION 11: VISION
+# SECAO 10: O PEDIDO
 
-## The Future We Are Building
+## Investimento Pre-Seed
 
-> In ten years, every Brazilian MEI will use Dashcomigo every single day.
+**Buscando:** R$ [X] em rodada pre-seed
 
-Not because they have to — but because the alternative (financial blindness) is simply unacceptable once you've experienced real clarity.
+**Destino dos Recursos:**
 
-Dashcomigo will be:
-- The platform that predicts your cash crisis before it happens
-- The advisor that tells you exactly how much you can invest this month
-- The tool that files your DAS and suggests your tax regime automatically
-- The intelligence layer between the entrepreneur and the financial system
+| Area | Alocacao | Finalidade |
+|------|----------|------------|
+| Produto e Engenharia | 50% | App mobile, camada de IA, API B2B, infraestrutura |
+| Crescimento e Marketing | 30% | Aquisicao digital, conteudo, parcerias |
+| Operacoes | 15% | Construcao do time, sucesso do cliente |
+| Juridico e Conformidade | 5% | LGPD, protecao de dados, conformidade Open Finance |
 
-**We are not building a dashboard.**
+**Marcos com o Aporte:**
 
-**We are building financial equity for Brazil's 15 million entrepreneurs.**
+- 6 meses: 500 usuarios pagantes, beta do app mobile
+- 12 meses: 2.000 usuarios pagantes, alertas de IA ativos
+- 18 meses: 5.000 usuarios pagantes, MVP do marketplace
+- 24 meses: 10.000 usuarios pagantes, R$ 600.000 de MRR
 
 ---
 
 ---
 
-# CONTACT
+# SECAO 11: VISAO
+
+## O Futuro que Estamos Construindo
+
+> Em dez anos, todo MEI brasileiro usara o Dashcomigo todos os dias.
+
+Nao porque sao obrigados — mas porque a alternativa (cegueira financeira) e simplesmente inaceitavel depois de ter experimentado clareza de verdade.
+
+O Dashcomigo sera:
+
+- A plataforma que preve sua crise de caixa antes que ela aconteca
+- O assessor que te diz exatamente quanto voce pode investir este mes
+- A ferramenta que preenche seu DAS e sugere seu regime tributario automaticamente
+- A camada de inteligencia entre o empreendedor e o sistema financeiro
+
+**Nao estamos construindo um dashboard.**
+
+**Estamos construindo equidade financeira para os 15 milhoes de empreendedores do Brasil.**
+
+---
+
+---
+
+# CONTATO
 
 **Leonardo Teixeira**
-Founder & CEO, Dashcomigo
+Fundador e CEO, Dashcomigo
 
-📧 leonardo.teixeira@altovalorinvestimentos.com.br
+leonardo.teixeira@altovalorinvestimentos.com.br
 
 ---
 
-*This document is confidential and intended for potential investors only.*
-*All financial projections are estimates based on market research and internal modeling.*
-*Data as of Q2 2026.*
+*Este documento e confidencial e destinado exclusivamente a potenciais investidores.*
+*Todas as projecoes financeiras sao estimativas baseadas em pesquisa de mercado e modelagem interna.*
+*Dados de Q2 2026.*

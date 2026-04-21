@@ -1,33 +1,33 @@
-# Dashcomigo — Documentation Hub
+# Dashcomigo — Central de Documentação
 
-> **Financial intelligence for Brazilian entrepreneurs.**
+> **Inteligência financeira para empreendedores brasileiros.**
 
-This folder contains all strategic, product, and investor documentation for Dashcomigo. It is organized to serve as both internal alignment material and investor-ready content.
+Esta pasta reúne toda a documentação estratégica, de produto e para investidores do Dashcomigo. Serve tanto para alinhamento interno quanto para apresentação a potenciais investidores.
 
 ---
 
-## Documents
+## Documentos
 
-| File | Description |
-|------|-------------|
-| [vision.md](./vision.md) | Mission, vision, and long-term purpose |
-| [product.md](./product.md) | What the platform does today and tomorrow |
-| [open-finance.md](./open-finance.md) | Open Finance strategy and integration |
-| [roadmap.md](./roadmap.md) | Short, mid, and long-term product roadmap |
-| [business-model.md](./business-model.md) | Revenue model and monetization strategy |
-| [pitch.md](./pitch.md) | Full investor pitch narrative |
-| [investor-deck.md](./investor-deck.md) | Investor-ready document (PDF exportable) |
+| Arquivo | Descrição |
+|---------|-----------|
+| [vision.md](./vision.md) | Missão, visão e propósito de longo prazo |
+| [product.md](./product.md) | O que a plataforma faz hoje e o que fará |
+| [open-finance.md](./open-finance.md) | Estratégia e integração de Open Finance |
+| [roadmap.md](./roadmap.md) | Roadmap de produto: curto, médio e longo prazo |
+| [business-model.md](./business-model.md) | Modelo de receita e estratégia de monetização |
+| [pitch.md](./pitch.md) | Narrativa completa do pitch para investidores |
+| [investor-deck.md](./investor-deck.md) | Documento investor-ready (exportável em PDF) |
 
 ---
 
 ## Status
 
-> These documents reflect the **current vision and strategy** for Dashcomigo as of Q2 2026.
-> The platform is in active development. Open Finance features are in beta testing.
+> Estes documentos refletem a **visão e estratégia atual** do Dashcomigo em Q2 2026.
+> A plataforma está em desenvolvimento ativo. Funcionalidades de Open Finance estão em fase beta.
 
 ---
 
-## Contact
+## Contato
 
-**Leonardo Teixeira** — Founder & CEO, Dashcomigo
+**Leonardo Teixeira** — Fundador e CEO, Dashcomigo
 leonardo.teixeira@altovalorinvestimentos.com.br

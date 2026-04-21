@@ -1,174 +1,189 @@
-# Business Model — Dashcomigo
+# Modelo de Negocio — Dashcomigo
 
 ---
 
-## Revenue Model
+## Modelo de Receita
 
-Dashcomigo operates on a **SaaS subscription model** with tiered plans and future monetization through financial product distribution.
-
----
-
-## Subscription Tiers
-
-### Free Plan
-**Price:** R$0/month
-
-**Who it's for:** New entrepreneurs testing the platform, or those with very basic needs.
-
-**Includes:**
-- Dashboard with basic financial overview
-- Manual transaction entry (limited)
-- Basic cash flow view
-- Limited payables and receivables
-- MEI DAS simulator
-- Up to 1 bank connection (view only)
-
-**Purpose:** Customer acquisition funnel. Convert free users to paid through value demonstration.
+O Dashcomigo opera com um **modelo de assinatura SaaS** com planos escalonados e monetizacao futura por meio da distribuicao de produtos financeiros.
 
 ---
 
-### PRO Plan
-**Price:** R$49/month (or R$490/year — 2 months free)
+## Planos de Assinatura
 
-**Who it's for:** Active MEIs and small business owners managing their finances seriously.
+### Plano Gratis
 
-**Includes everything in Free, plus:**
-- Unlimited transactions
-- Full Open Finance integration (automatic bank sync)
-- Real investment portfolio tracking
-- Advanced financial reports (3/6/12 months)
-- P&L analysis and cash flow forecast
-- CDI benchmark comparison in reports
-- Export to Excel and PDF
-- Client and supplier management
-- Proposals module
-- Smart alerts and notifications
-- Priority support
+**Preco:** R$ 0 por mes
 
-**Target conversion rate:** 15–25% of active free users
+**Para quem:** Novos empreendedores testando a plataforma, ou quem tem necessidades muito basicas.
 
----
+**Inclui:**
 
-### PRO+ Plan *(Future — 2027)*
-**Price:** R$99/month
+- Dashboard com visao financeira basica
+- Lancamento manual de transacoes (limitado)
+- Visao basica de fluxo de caixa
+- Contas a pagar e a receber limitadas
+- Simulador do DAS MEI
+- Ate 1 conexao bancaria (somente leitura)
 
-**Who it's for:** Entrepreneurs with more complex needs or multiple businesses.
-
-**Includes everything in PRO, plus:**
-- Multi-entity management (multiple businesses, one account)
-- AI financial insights and recommendations
-- Advanced cash flow prediction (90 days)
-- Investment rebalancing suggestions
-- Accountant collaboration mode (read-only access for your accountant)
-- Custom report templates
-- API access for integrations
-- Dedicated account manager
+**Objetivo:** Canal de aquisicao de clientes. Converter usuarios gratuitos em pagantes por meio da demonstracao de valor.
 
 ---
 
-## Unit Economics (Targets)
+### Plano PRO
 
-| Metric | Target |
-|--------|--------|
-| CAC (Customer Acquisition Cost) | R$80–120 |
-| LTV (Lifetime Value) — PRO | R$588 (avg 12 months at R$49) |
-| LTV/CAC Ratio | >5x |
-| Monthly Churn Target | <3% |
-| Gross Margin | >80% (SaaS) |
+**Preco:** R$ 49 por mes (ou R$ 490 por ano — 2 meses gratis)
 
----
+**Para quem:** MEIs e pequenos empresarios que gerenciam suas financas com seriedade.
 
-## Future Monetization Streams
+**Inclui tudo do Gratis, mais:**
 
-### 1. Financial Product Marketplace (2027+)
-**Model:** Revenue sharing / referral commission
+- Transacoes ilimitadas
+- Integracao completa com Open Finance (sincronizacao automatica)
+- Acompanhamento real da carteira de investimentos
+- Relatorios financeiros avancados (3, 6 e 12 meses)
+- Analise de resultado e previsao de fluxo de caixa
+- Comparacao com benchmark CDI nos relatorios
+- Exportacao para Excel e PDF
+- Gestao de clientes e fornecedores
+- Modulo de propostas
+- Alertas e notificacoes inteligentes
+- Suporte prioritario
 
-When the platform surfaces relevant financial products — credit, investments, insurance — and a user converts, Dashcomigo earns a commission.
-
-Examples:
-- Recommending a CDB offer: 0.3–0.5% of invested amount
-- Business credit referral: 1–2% of credit amount
-- Insurance policy sale: 15–25% of premium
-
-Estimated contribution: 20–30% of total revenue by 2028
-
-### 2. B2B API — White Label (2027+)
-**Model:** Monthly API subscription
-
-Accountants, financial advisors, and other fintechs can access Dashcomigo's data aggregation and reporting infrastructure.
-
-Pricing: R$299–999/month per B2B account (depending on volume)
-
-### 3. Data Intelligence Services (2028+)
-**Model:** Aggregated insights subscriptions
-
-With user consent and full LGPD compliance, anonymized and aggregated financial behavior data can be valuable to:
-- Financial institutions (credit risk models)
-- Government agencies (economic health indicators)
-- Research institutions
-
-This is a long-term, high-margin opportunity.
-
-### 4. Premium Add-ons (2027+)
-- AI advisor sessions: R$19/month per add-on
-- Additional bank connections beyond plan limit
-- Custom report branding
+**Taxa de conversao alvo:** 15 a 25% dos usuarios gratuitos ativos
 
 ---
 
-## Go-To-Market Strategy
+### Plano PRO+ *(Futuro — 2027)*
 
-### Phase 1: Direct Digital (Current)
-- SEO-focused content marketing targeting MEI financial management queries
-- Social media (Instagram, YouTube) with financial education content
-- Google Ads targeting MEI-related keywords
-- WhatsApp-based onboarding and support
+**Preco:** R$ 99 por mes
 
-### Phase 2: Partnerships (2027)
-- Accounting firms — refer clients to Dashcomigo (affiliate program)
-- MEI service providers (DAS emitters, SEBRAE partners)
-- Fintech partnerships (embedded in other products)
+**Para quem:** Empreendedores com necessidades mais complexas ou multiplos negocios.
 
-### Phase 3: Community & Virality (2027+)
-- Referral program ("Invite a fellow MEI, get 1 month free")
-- MEI communities on WhatsApp and Telegram
-- Content creator partnerships (financial education influencers)
+**Inclui tudo do PRO, mais:**
 
----
-
-## Financial Projections
-
-### Conservative Scenario
-
-| Period | Paid Users | MRR | ARR |
-|--------|-----------|-----|-----|
-| Q4 2026 | 100 | R$4,900 | R$58,800 |
-| Q2 2027 | 500 | R$24,500 | R$294,000 |
-| Q4 2027 | 1,500 | R$73,500 | R$882,000 |
-| Q2 2028 | 3,000 | R$147,000 | R$1,764,000 |
-
-### Optimistic Scenario (with partnerships + B2B)
-
-| Period | Paid Users | MRR | ARR |
-|--------|-----------|-----|-----|
-| Q4 2026 | 200 | R$9,800 | R$117,600 |
-| Q2 2027 | 1,200 | R$58,800 | R$705,600 |
-| Q4 2027 | 4,000 | R$196,000 | R$2,352,000 |
-| Q2 2028 | 10,000 | R$490,000 | R$5,880,000 |
-
-*Projections include product marketplace commissions from Year 3 onward.*
+- Gestao multi-empresa (varios negocios, uma unica conta)
+- Insights e recomendacoes financeiras com IA
+- Previsao avancada de fluxo de caixa (90 dias)
+- Sugestoes de rebalanceamento da carteira
+- Modo colaboracao com contador (acesso somente leitura para seu contador)
+- Templates personalizados de relatorios
+- Acesso a API para integracoes
+- Gerente de conta dedicado
 
 ---
 
-## Competitive Landscape
+## Economia Unitaria (Metas)
 
-| Competitor | Focus | Price | Open Finance | Investment Tracking |
-|------------|-------|-------|-------------|---------------------|
-| Conta Azul | SMB accounting | R$199+/mo | Partial | No |
-| Nibo | Accounting | R$149+/mo | No | No |
-| Granatum | Cash flow | R$99+/mo | No | No |
-| Mobills | Personal finance | R$19/mo | Yes | Limited |
-| Organizze | Personal finance | R$15/mo | No | No |
-| **Dashcomigo** | **MEI/SMB all-in-one** | **R$49/mo** | **Yes (full)** | **Yes (full)** |
+| Metrica | Meta |
+|---------|------|
+| CAC (Custo de Aquisicao de Cliente) | R$ 80 a 120 |
+| LTV (Valor Vitalicio) — PRO | R$ 588 (media de 12 meses a R$ 49) |
+| Relacao LTV/CAC | Acima de 5x |
+| Churn mensal alvo | Abaixo de 3% |
+| Margem bruta | Acima de 80% (SaaS) |
 
-**Key differentiator:** Dashcomigo is the only platform combining Open Finance data, investment tracking, and business financial management at a price accessible to MEIs.
+---
+
+## Fontes Futuras de Monetizacao
+
+### 1. Marketplace de Produtos Financeiros (2027+)
+
+**Modelo:** Receita compartilhada / comissao por indicacao
+
+Quando a plataforma apresenta produtos financeiros relevantes — credito, investimentos, seguros — e o usuario converte, o Dashcomigo recebe uma comissao.
+
+Exemplos:
+
+- Recomendacao de oferta de CDB: 0,3 a 0,5% do valor investido
+- Indicacao de credito empresarial: 1 a 2% do valor do credito
+- Venda de apolice de seguro: 15 a 25% do premio
+
+Contribuicao estimada: 20 a 30% da receita total ate 2028
+
+### 2. API B2B — White Label (2027+)
+
+**Modelo:** Assinatura mensal de API
+
+Contadores, assessores financeiros e outras fintechs podem acessar a infraestrutura de agregacao de dados e relatorios do Dashcomigo.
+
+Preco: R$ 299 a 999 por mes por conta B2B (de acordo com o volume)
+
+### 3. Servicos de Inteligencia de Dados (2028+)
+
+**Modelo:** Assinaturas de insights agregados
+
+Com consentimento dos usuarios e total conformidade a LGPD, dados anonimizados e agregados de comportamento financeiro podem ser valiosos para:
+
+- Instituicoes financeiras (modelos de risco de credito)
+- Orgaos governamentais (indicadores de saude economica)
+- Instituicoes de pesquisa
+
+Trata-se de uma oportunidade de longo prazo com alta margem.
+
+### 4. Add-ons Premium (2027+)
+
+- Sessoes com assessor IA: R$ 19 por mes por add-on
+- Conexoes bancarias adicionais alem do limite do plano
+- Marca personalizada nos relatorios
+
+---
+
+## Estrategia de Go-To-Market
+
+### Fase 1: Digital Direto (Atual)
+
+- Marketing de conteudo com foco em SEO para buscas sobre gestao financeira MEI
+- Redes sociais (Instagram, YouTube) com conteudo de educacao financeira
+- Google Ads com palavras-chave relacionadas ao MEI
+- Onboarding e suporte via WhatsApp
+
+### Fase 2: Parcerias (2027)
+
+- Escritorios de contabilidade — indicam clientes para o Dashcomigo (programa de afiliados)
+- Prestadores de servicos para MEI (emissores de DAS, parceiros SEBRAE)
+- Parcerias com fintechs (embarcado em outros produtos)
+
+### Fase 3: Comunidade e Viralidade (2027+)
+
+- Programa de indicacao ("Convide um MEI, ganhe 1 mes gratis")
+- Comunidades de MEIs no WhatsApp e Telegram
+- Parcerias com criadores de conteudo (influenciadores de educacao financeira)
+
+---
+
+## Projecoes Financeiras
+
+### Cenario Conservador
+
+| Periodo | Usuarios Pagantes | MRR | ARR |
+|---------|-------------------|-----|-----|
+| Q4 2026 | 100 | R$ 4.900 | R$ 58.800 |
+| Q2 2027 | 500 | R$ 24.500 | R$ 294.000 |
+| Q4 2027 | 1.500 | R$ 73.500 | R$ 882.000 |
+| Q2 2028 | 3.000 | R$ 147.000 | R$ 1.764.000 |
+
+### Cenario Otimista (com parcerias + B2B)
+
+| Periodo | Usuarios Pagantes | MRR | ARR |
+|---------|-------------------|-----|-----|
+| Q4 2026 | 200 | R$ 9.800 | R$ 117.600 |
+| Q2 2027 | 1.200 | R$ 58.800 | R$ 705.600 |
+| Q4 2027 | 4.000 | R$ 196.000 | R$ 2.352.000 |
+| Q2 2028 | 10.000 | R$ 490.000 | R$ 5.880.000 |
+
+*As projecoes incluem comissoes do marketplace de produtos a partir do 3o ano.*
+
+---
+
+## Panorama Competitivo
+
+| Concorrente | Foco | Preco | Open Finance | Rastreamento de Investimentos |
+|-------------|------|-------|-------------|-------------------------------|
+| Conta Azul | Contabilidade PME | R$ 199+/mes | Parcial | Nao |
+| Nibo | Contabilidade | R$ 149+/mes | Nao | Nao |
+| Granatum | Fluxo de caixa | R$ 99+/mes | Nao | Nao |
+| Mobills | Financas pessoais | R$ 19/mes | Sim | Limitado |
+| Organizze | Financas pessoais | R$ 15/mes | Nao | Nao |
+| **Dashcomigo** | **MEI/PME completo** | **R$ 49/mes** | **Sim (completo)** | **Sim (completo)** |
+
+**Diferencial-chave:** O Dashcomigo e a unica plataforma que combina dados do Open Finance, rastreamento de investimentos e gestao financeira empresarial a um preco acessivel para o MEI.

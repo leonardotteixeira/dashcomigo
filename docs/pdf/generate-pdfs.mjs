@@ -77,14 +77,7 @@ const DOCS = [
 
 // ── HTML wrapper ──────────────────────────────────────────────────────────────
 function buildHTML(doc, markdownContent) {
-  // Replace emoji status markers with styled spans
-  const processedContent = markdownContent
-    .replace(/✅/g, '<span class="badge-done">✅</span>')
-    .replace(/🔄/g, '<span class="badge-wip">🔄</span>')
-    .replace(/📋/g, '<span class="badge-plan">📋</span>')
-    .replace(/🔮/g, '<span class="badge-future">🔮</span>');
-
-  const htmlBody = marked.parse(processedContent);
+  const htmlBody = marked.parse(markdownContent);
 
   return `<!DOCTYPE html>
 <html lang="en">

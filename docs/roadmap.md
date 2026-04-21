@@ -1,138 +1,151 @@
-# Product Roadmap — Dashcomigo
+# Roadmap de Produto — Dashcomigo
 
-> Last updated: Q2 2026
+> Atualizado em: Q2 2026
 
 ---
 
-## Overview
+## Visão Geral
 
 ```
-NOW ──────────── Q3 2026 ──────────── Q1 2027 ──────────── 2028+
-│                    │                    │                    │
-│  Foundation        │  Intelligence      │  Platform          │  Ecosystem
-│  (Live)            │  (In Progress)     │  (Planned)         │  (Vision)
-│                    │                    │                    │
-│  Core modules   ✅  │  Open Finance   🔄  │  AI insights    📋  │  Marketplace 🔮
-│  Open Finance   ✅  │  Smart reports  🔄  │  B2B API        📋  │  Credit layer🔮
-│  Investments    ✅  │  Multi-bank     🔄  │  Mobile app     📋  │  Advisor AI  🔮
+AGORA ─────────── Q3 2026 ─────────── Q1 2027 ─────────── 2028+
+│                     │                    │                   │
+│  Fundacao           │  Inteligencia      │  Plataforma       │  Ecossistema
+│  (Concluido)        │  (Em andamento)    │  (Planejado)      │  (Visao)
+│                     │                    │                   │
+│  Modulos core       │  Open Finance      │  IA e insights    │  Marketplace
+│  Open Finance       │  Relatorios        │  API B2B          │  Camada credito
+│  Investimentos      │  Multi-banco       │  App mobile       │  Assessor IA
 ```
 
 ---
 
-## Phase 1 — Foundation (Completed)
+## Fase 1 — Fundacao (Concluida)
 
-**Goal:** A working product covering the core needs of a Brazilian MEI.
+**Objetivo:** Um produto funcional que atende as necessidades centrais do MEI brasileiro.
 
-### Core Platform ✅
-- User authentication (email + Google OAuth)
-- Subscription plans (Free / PRO) with feature gating
-- Dashboard with real-time financial overview
-- Cash flow management (income and expenses)
-- Accounts payable and receivable modules
-- Client and supplier management
-- Proposals module
-- MEI DAS tax tracking and simulators
+### Plataforma Central
 
-### Open Finance ✅
-- Bank connection via Pluggy widget
-- Transaction ingestion pipeline (normalize → classify → persist)
-- PF/PJ automatic transaction classification
-- Investment portfolio import (8 asset types)
-- Background periodic sync every 6 hours
-- Idempotent sync — no duplicate records
+- Autenticacao de usuarios (e-mail + Google OAuth)
+- Planos de assinatura (Gratis / PRO) com controle de acesso por funcionalidade
+- Dashboard com visao financeira em tempo real
+- Gestao de fluxo de caixa (receitas e despesas)
+- Modulos de contas a pagar e a receber
+- Gestao de clientes e fornecedores
+- Modulo de propostas
+- Controle do DAS e simuladores para MEI
 
-### Reporting ✅
-- Advanced financial reports (PRO plan)
-- Revenue vs. expense analysis (3/6/12 months)
-- Category breakdown, cash flow forecast
-- Investment analysis with CDI benchmark comparison
-- Portfolio evolution chart
-- Excel and PDF export
+### Open Finance
 
----
+- Conexao bancaria via widget Pluggy
+- Pipeline de ingestao de transacoes (normalizar, classificar, persistir)
+- Classificacao automatica PF/PJ de transacoes
+- Importacao de carteira de investimentos (8 tipos de ativos)
+- Sincronizacao periodica em segundo plano a cada 6 horas
+- Sincronizacao idempotente — sem registros duplicados
 
-## Phase 2 — Intelligence (Q3 2026, In Progress)
+### Relatorios
 
-**Goal:** Make the platform smarter, more automatic, and more actionable.
-
-### Open Finance Improvements 🔄
-- Reliable multi-connection management (no duplicates across reconnects)
-- Multi-bank aggregation (connect more than one institution)
-- Webhook support for real-time transaction updates
-- Improved PF/PJ classification with learning rules
-
-### Smart Alerts 📋
-- Cash flow warning alerts ("Balance may go negative in 12 days")
-- Overdue payment notifications (push + email)
-- DAS due date reminders with available balance check
-- Investment expiry alerts (CDB, LCI maturity)
-
-### Reporting Enhancements 📋
-- Full P&L statement (DRE) by month
-- Accounts receivable aging report
-- Custom date range for all reports
-- Comparison: current period vs. previous period
-- Scheduled monthly report delivery via email
-
-### Investment Module 📋
-- Historical performance tracking over time
-- Asset-level return calculation
-- Rebalancing suggestions based on target allocation
-- Multi-benchmark comparison (CDI, IPCA, Ibovespa)
+- Relatorios financeiros avancados (plano PRO)
+- Analise de receitas versus despesas (3, 6 e 12 meses)
+- Composicao por categoria, previsao de fluxo de caixa
+- Analise de investimentos com comparacao ao benchmark CDI
+- Grafico de evolucao da carteira
+- Exportacao para Excel e PDF
 
 ---
 
-## Phase 3 — Platform (Q1 2027)
+## Fase 2 — Inteligencia (Q3 2026, Em Andamento)
 
-**Goal:** Scale into a comprehensive financial operating system.
+**Objetivo:** Tornar a plataforma mais inteligente, automatica e acionavel.
 
-### AI Insights Layer
-- Natural language financial summaries
-- Predictive cash flow (30/60/90 day projections)
-- Anomaly detection on unusual expenses
-- Personalized financial tips
-- AI-assisted tax optimization suggestions
+### Melhorias no Open Finance
 
-### Mobile Application
-- iOS and Android native apps
-- Push notifications for all alerts
-- Biometric authentication
+- Gerenciamento confiavel de multiplas conexoes (sem duplicatas entre reconexoes)
+- Agregacao multi-banco (conectar mais de uma instituicao)
+- Suporte a webhooks para atualizacoes de transacoes em tempo real
+- Classificacao PF/PJ aprimorada com regras de aprendizado
 
-### B2B Features
-- White-label version for accountants and financial advisors
-- API for third-party integrations
-- Multi-client management dashboard
+### Alertas Inteligentes
 
-### Platform Integrations
-- NF-e (nota fiscal eletrônica) import
-- Direct integration with MEI portal (gov.br)
-- Accounting software connectors (Contabilizei, Omie)
-- Marketplace integrations (Mercado Livre, Shopify)
+- Alertas de risco no fluxo de caixa ("Saldo pode ficar negativo em 12 dias")
+- Notificacoes de pagamentos vencidos (push + e-mail)
+- Lembretes de vencimento do DAS com verificacao de saldo disponivel
+- Alertas de vencimento de investimentos (CDB, LCI na data de resgate)
 
----
+### Melhorias nos Relatorios
 
-## Phase 4 — Ecosystem (2028+)
+- DRE completa (Demonstracao do Resultado do Exercicio) por mes
+- Relatorio de aging de contas a receber
+- Periodo personalizado para todos os relatorios
+- Comparativo: periodo atual versus periodo anterior
+- Entrega mensal agendada de relatorios por e-mail
 
-**Goal:** Build the financial ecosystem around the Brazilian entrepreneur.
+### Modulo de Investimentos
 
-### Financial Product Marketplace
-- Embedded credit offers based on revenue history
-- Business insurance marketplace
-- Investment product recommendations with execution
-
-### AI Financial Advisor
-- Conversational financial advisor (chat interface)
-- Goal-based financial planning
-- Retirement simulation for MEIs
-- Business succession planning tools
+- Acompanhamento historico de performance ao longo do tempo
+- Calculo de rentabilidade por ativo
+- Sugestoes de rebalanceamento com base na alocacao-alvo
+- Comparacao com multiplos benchmarks (CDI, IPCA, Ibovespa)
 
 ---
 
-## Success Metrics
+## Fase 3 — Plataforma (Q1 2027)
 
-| Phase | Key Metric | Target |
-|-------|------------|--------|
-| Phase 1 | Monthly Active Users | 500 |
-| Phase 2 | Open Finance adoption rate | >60% of paid users |
-| Phase 3 | Monthly Recurring Revenue | R$50K |
-| Phase 4 | Platform GMV | R$10M+ |
+**Objetivo:** Evoluir para um sistema operacional financeiro completo.
+
+### Camada de Insights com Inteligencia Artificial
+
+- Resumos financeiros em linguagem natural
+- Previsao de fluxo de caixa para 30, 60 e 90 dias
+- Deteccao de anomalias em despesas incomuns
+- Dicas financeiras personalizadas
+- Sugestoes de otimizacao tributaria assistidas por IA
+
+### Aplicativo Mobile
+
+- Aplicativos nativos para iOS e Android
+- Notificacoes push para todos os alertas
+- Autenticacao biometrica
+
+### Funcionalidades B2B
+
+- Versao white-label para contadores e assessores financeiros
+- API para integracoes com terceiros
+- Painel de gestao de multiplos clientes
+
+### Integracoes com a Plataforma
+
+- Importacao de NF-e (nota fiscal eletronica)
+- Integracao direta com o portal MEI (gov.br)
+- Conectores com softwares de contabilidade (Contabilizei, Omie)
+- Integracoes com marketplaces (Mercado Livre, Shopify)
+
+---
+
+## Fase 4 — Ecossistema (2028+)
+
+**Objetivo:** Construir o ecossistema financeiro em torno do empreendedor brasileiro.
+
+### Marketplace de Produtos Financeiros
+
+- Ofertas de credito baseadas no historico de faturamento
+- Marketplace de seguros empresariais
+- Recomendacao e execucao de produtos de investimento
+
+### Assessor Financeiro com Inteligencia Artificial
+
+- Assessor financeiro conversacional (interface de chat)
+- Planejamento financeiro orientado a metas
+- Simulacao de aposentadoria para MEIs
+- Ferramentas de planejamento de sucessao empresarial
+
+---
+
+## Metricas de Sucesso
+
+| Fase | Metrica Principal | Meta |
+|------|-------------------|------|
+| Fase 1 | Usuarios ativos mensais | 500 |
+| Fase 2 | Adocao do Open Finance | Mais de 60% dos usuarios pagantes |
+| Fase 3 | Receita recorrente mensal | R$ 50.000 |
+| Fase 4 | GMV da plataforma | Mais de R$ 10 milhoes |

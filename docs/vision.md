@@ -1,71 +1,71 @@
-# Vision — Dashcomigo
+# Visão — Dashcomigo
 
 ---
 
-## Who We Are
+## Quem Somos
 
-**Dashcomigo** is a financial management SaaS platform built specifically for Brazilian MEIs (Microempreendedores Individuais) and small business owners — the 15 million+ entrepreneurs who run their businesses without a CFO, an accountant on speed dial, or a dashboard that actually makes sense.
+O **Dashcomigo** é uma plataforma SaaS de gestão financeira desenvolvida especificamente para MEIs (Microempreendedores Individuais) e pequenos empresários brasileiros — os mais de 15 milhões de empreendedores que tocam seus negócios sem um CFO, sem contador disponível a qualquer hora, e sem um painel financeiro que faça sentido de verdade.
 
-We are building the financial operating system for the Brazilian self-employed economy.
-
----
-
-## The Problem
-
-Over **60% of small businesses in Brazil fail within the first five years** — and the leading cause is not lack of customers, but lack of financial visibility.
-
-Brazilian MEIs and small business owners face a common set of problems:
-
-- **No real-time view** of cash position, receivables, or payables
-- **Financial data scattered** across multiple bank accounts, spreadsheets, and apps
-- **No separation** between personal and business finances
-- **Zero insight** into whether their business is actually profitable
-- **No access** to the financial intelligence tools that large companies take for granted
-
-Existing solutions are either too complex (enterprise accounting software), too generic (Excel), or too disconnected from where money actually moves (bank apps).
+Estamos construindo o sistema operacional financeiro da economia autônoma brasileira.
 
 ---
 
-## Our Mission
+## O Problema
 
-> **Empower every Brazilian entrepreneur with the financial clarity they need to make better decisions — every day.**
+Mais de **60% das pequenas empresas no Brasil fecham nos primeiros cinco anos** — e a principal causa não é falta de clientes, mas falta de visibilidade financeira.
 
-Dashcomigo democratizes financial intelligence. We take the tools that only large corporations could afford — real-time dashboards, predictive analytics, investment tracking, Open Finance integration — and make them available to the smallest unit of the Brazilian economy: the solo entrepreneur.
+MEIs e pequenos empresários enfrentam um conjunto comum de problemas:
 
----
+- Nenhuma visão em tempo real do saldo, contas a receber ou a pagar
+- Dados financeiros espalhados entre múltiplas contas, planilhas e aplicativos
+- Ausência de separação entre finanças pessoais e empresariais
+- Nenhum indicador claro de se o negócio é de fato lucrativo
+- Sem acesso às ferramentas de inteligência financeira que grandes empresas utilizam como padrão
 
-## Our Vision
-
-> **To become the financial backbone of the Brazilian MEI ecosystem** — the single platform where entrepreneurs understand, control, and grow their money.
-
-In five years, Dashcomigo will be the platform that:
-
-- Automatically imports every transaction from every bank account via Open Finance
-- Predicts cash flow problems before they happen
-- Surfaces actionable insights ("You could invest R$800 this month based on your cash position")
-- Connects entrepreneurs to financial products tailored to their profile (credit, insurance, investments)
-- Replaces the need for a basic accountant for day-to-day financial management
+As soluções existentes são caras demais (softwares contábeis enterprise), genéricas demais (Excel) ou desconectadas de onde o dinheiro realmente circula (apps bancários).
 
 ---
 
-## Core Values
+## Nossa Missão
 
-| Value | What It Means |
-|-------|---------------|
-| **Clarity** | Financial data should be simple, not intimidating |
-| **Trust** | We handle sensitive financial data with the highest standards of security |
-| **Empowerment** | Every feature should help the entrepreneur make a better decision |
-| **Access** | Premium financial tools should not be exclusive to large companies |
-| **Brazil-first** | Built for the Brazilian regulatory environment, culture, and entrepreneur reality |
+> **Dar a cada empreendedor brasileiro a clareza financeira necessária para tomar melhores decisões — todos os dias.**
+
+O Dashcomigo democratiza a inteligência financeira. Colocamos à disposição do menor núcleo da economia brasileira — o empreendedor individual — as mesmas ferramentas que antes só grandes corporações podiam ter: dashboards em tempo real, análises preditivas, controle de investimentos e integração via Open Finance.
 
 ---
 
-## The Opportunity
+## Nossa Visão
 
-Brazil has:
-- **15+ million active MEIs** (SEBRAE, 2024)
-- **Open Finance fully operational** since 2023, with 40M+ consents shared
-- A growing **fintech ecosystem** that is reshaping how Brazilians interact with money
-- A **massive underserved market** of small business owners with no adequate financial management tool
+> **Ser a espinha dorsal financeira do ecossistema MEI brasileiro** — a plataforma única onde empreendedores entendem, controlam e fazem crescer seu dinheiro.
 
-Dashcomigo sits at the intersection of **financial management**, **Open Finance data**, and **AI-driven insights** — a combination no competitor has fully delivered for this audience.
+Em cinco anos, o Dashcomigo será a plataforma que:
+
+- Importa automaticamente cada transação de cada conta bancária via Open Finance
+- Prevê problemas de fluxo de caixa antes que eles aconteçam
+- Apresenta insights acionáveis ("Você pode investir R$800 este mês com base no seu saldo atual")
+- Conecta empreendedores a produtos financeiros alinhados ao seu perfil (crédito, seguro, investimentos)
+- Substitui a necessidade de um contador básico para a gestão financeira do dia a dia
+
+---
+
+## Valores
+
+| Valor | Significado |
+|-------|-------------|
+| **Clareza** | Dados financeiros devem ser simples, nunca intimidadores |
+| **Confiança** | Tratamos dados financeiros sensíveis com os mais altos padrões de segurança |
+| **Autonomia** | Cada funcionalidade deve ajudar o empreendedor a tomar uma decisão melhor |
+| **Acesso** | Ferramentas financeiras premium não devem ser exclusivas de grandes empresas |
+| **Brasil em primeiro lugar** | Construído para o ambiente regulatório, cultural e empreendedor brasileiro |
+
+---
+
+## A Oportunidade
+
+O Brasil tem:
+- **Mais de 15 milhões de MEIs ativos** (SEBRAE, 2024)
+- **Open Finance plenamente operacional** desde 2023, com mais de 40 milhões de consentimentos compartilhados
+- Um crescente **ecossistema fintech** que está transformando a relação dos brasileiros com o dinheiro
+- Um **mercado vasto e mal atendido** de pequenos empresários sem nenhuma ferramenta de gestão financeira adequada
+
+O Dashcomigo se posiciona na interseção entre **gestão financeira**, **dados de Open Finance** e **insights gerados por inteligência artificial** — uma combinação que nenhum concorrente entregou de forma completa para esse público.

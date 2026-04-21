@@ -1,137 +1,155 @@
-# Product — Dashcomigo
+# Produto — Dashcomigo
 
 ---
 
-## What Is Dashcomigo?
+## O que é o Dashcomigo?
 
-Dashcomigo is a **web-based financial management platform** for Brazilian MEIs and small business owners. It centralizes all financial activity — transactions, cash flow, receivables, payables, investments — into a single, intelligent dashboard.
+O Dashcomigo é uma **plataforma web de gestão financeira** para MEIs e pequenos empresários brasileiros. Centraliza toda a atividade financeira — transações, fluxo de caixa, contas a receber, contas a pagar e investimentos — em um único painel inteligente.
 
-The platform connects directly to Brazilian bank accounts via **Open Finance (Pluggy)**, transforming raw bank data into actionable financial intelligence.
+A plataforma se conecta diretamente às contas bancárias brasileiras via **Open Finance (Pluggy)**, transformando dados brutos do banco em inteligência financeira acionável.
 
 ---
 
-## What It Does Today
+## O que Faz Hoje
 
 ### 1. Dashboard
-The central command center. Shows at a glance:
-- Current cash balance (real-time)
-- Total receivables and payables
-- Monthly income vs. expenses
-- Open Finance connection status
-- Alerts and smart notifications
 
-### 2. Cash Flow Management
-- Automatic import of bank transactions via Open Finance
-- Manual transaction entry
-- Automatic classification: income vs. expense, PF vs. PJ (personal vs. business)
-- Monthly evolution chart
-- Category breakdown
+O centro de controle principal. Mostra de forma imediata:
 
-### 3. Accounts Payable
-- Track bills, invoices, and obligations
-- Status management: pending, paid, overdue
-- Due date alerts
-- Supplier tagging
+- Saldo atual em caixa (tempo real)
+- Total de contas a receber e a pagar
+- Receita mensal versus despesas
+- Status da conexão Open Finance
+- Alertas e notificações inteligentes
 
-### 4. Accounts Receivable
-- Track client payments and expected income
-- Overdue alerts
-- Client-level receivables view
+### 2. Gestão de Fluxo de Caixa
 
-### 5. Investment Tracking (Open Finance)
-- Real portfolio imported directly from banks via Open Finance
-- Supports: Renda Fixa, Ações, ETFs, Fundos de Investimento, Previdência, FIIs, COEs, Criptomoedas
-- Portfolio summary: total invested, current value, absolute and % return
-- Distribution by asset type
-- CDI benchmark comparison
-- For users without Open Finance: curated investment suggestions (Tesouro Direto, CDB, LCI/LCA, Fundos)
+- Importação automática de transações bancárias via Open Finance
+- Lançamento manual de transações
+- Classificação automática: receita versus despesa, PF versus PJ (pessoal versus empresarial)
+- Gráfico de evolução mensal
+- Detalhamento por categoria
 
-### 6. Financial Reports (PRO)
-- Advanced financial reporting with:
-  - Revenue vs. expense analysis over 3, 6, or 12 months
-  - Monthly P&L table
-  - Category breakdown charts
-  - Expense trend analysis
-  - Cash flow forecast (next 30 days)
-  - **Investment analysis section** (portfolio vs CDI, asset allocation chart)
-- Export to Excel (XLSX) and PDF
+### 3. Contas a Pagar
 
-### 7. Client Management
-- Client database
-- Revenue attribution per client
-- Client profitability view
+- Controle de boletos, faturas e obrigações
+- Gestão de status: pendente, pago, vencido
+- Alertas de vencimento
+- Categorização por fornecedor
 
-### 8. Supplier Management
-- Supplier registry
-- Expense tracking by supplier
+### 4. Contas a Receber
 
-### 9. Proposals
-- Create and send financial proposals
-- Track proposal status
+- Controle de pagamentos de clientes e receitas previstas
+- Alertas de inadimplência
+- Visão de recebíveis por cliente
 
-### 10. MEI Tax (DAS)
-- DAS tax simulation and reminders
-- Faturamento tracking vs. MEI limits
+### 5. Carteira de Investimentos (Open Finance)
 
-### 11. Simulators
-- Financial scenario simulators for planning
+- Portfólio real importado diretamente dos bancos via Open Finance
+- Suporte a: Renda Fixa, Ações, ETFs, Fundos de Investimento, Previdência, FIIs, COEs, Criptomoedas
+- Resumo da carteira: total investido, valor atual, rentabilidade absoluta e percentual
+- Distribuição por tipo de ativo
+- Comparação com benchmark CDI
+- Para usuários sem Open Finance: sugestões curadas de investimentos (Tesouro Direto, CDB, LCI/LCA, Fundos)
 
----
+### 6. Relatórios Financeiros (PRO)
 
-## What It Will Do — The Open Finance Vision
+- Relatórios financeiros avançados com:
+  - Análise de receitas versus despesas por 3, 6 ou 12 meses
+  - Tabela mensal de resultado
+  - Gráficos de composição por categoria
+  - Análise de tendência de despesas
+  - Previsão de fluxo de caixa (próximos 30 dias)
+  - Seção de análise de investimentos (portfólio versus CDI, gráfico de alocação de ativos)
+- Exportação para Excel (XLSX) e PDF
 
-Open Finance is the infrastructure layer that transforms Dashcomigo from a manual tracking tool into an **automatic financial intelligence engine**.
+### 7. Gestão de Clientes
 
-### Near Term (Active Development)
-- ✅ Bank connection via Pluggy widget
-- ✅ Automatic transaction import and classification
-- ✅ Investment portfolio import (real data from banks)
-- ✅ Periodic background sync (every 6 hours)
-- 🔄 Multi-account aggregation (multiple banks, one view)
-- 🔄 Smart deduplication across connections
+- Cadastro de clientes
+- Atribuição de receita por cliente
+- Visão de rentabilidade por cliente
 
-### Mid Term
-- 📋 Real-time alerts ("Your DAS is due in 5 days, and your cash position is R$X")
-- 📋 Cash flow prediction based on recurring transaction patterns
-- 📋 Automatic PF/PJ expense separation
-- 📋 Investment recommendations based on available cash
-- 📋 Comparison: "Your portfolio vs. peers in similar revenue bracket"
+### 8. Gestão de Fornecedores
 
-### Long Term
-- 🔮 AI-powered financial advisor layer
-- 🔮 Credit score simulation and loan eligibility
-- 🔮 Integration with financial product marketplace (insurance, credit, investments)
-- 🔮 Automated DAS filing assistance
-- 🔮 Multi-entity management (for entrepreneurs with multiple businesses)
+- Cadastro de fornecedores
+- Controle de despesas por fornecedor
+
+### 9. Propostas
+
+- Criação e envio de propostas comerciais
+- Acompanhamento de status das propostas
+
+### 10. Imposto MEI (DAS)
+
+- Simulação e lembretes de pagamento do DAS
+- Controle de faturamento versus limite anual do MEI
+
+### 11. Simuladores
+
+- Simuladores de cenários financeiros para planejamento
 
 ---
 
-## Technology Stack
+## O que Fará — A Visão Open Finance
 
-| Layer | Technology |
-|-------|------------|
+O Open Finance é a camada de infraestrutura que transforma o Dashcomigo de uma ferramenta de registro manual em um **motor automático de inteligência financeira**.
+
+### Curto Prazo (Em Desenvolvimento Ativo)
+
+- Conexão bancária via widget Pluggy
+- Importação e classificação automática de transações
+- Importação de carteira de investimentos (dados reais dos bancos)
+- Sincronização periódica em segundo plano (a cada 6 horas)
+- Agregação de múltiplas contas (vários bancos, uma visão única)
+- Deduplicação inteligente entre conexões
+
+### Médio Prazo
+
+- Alertas em tempo real ("Seu DAS vence em 5 dias e seu saldo é R$ X")
+- Previsão de fluxo de caixa baseada em padrões de transações recorrentes
+- Separação automática de despesas PF/PJ
+- Recomendações de investimento baseadas no caixa disponível
+- Comparativo: "Sua carteira versus empreendedores com faturamento similar"
+
+### Longo Prazo
+
+- Camada de assessoria financeira com inteligência artificial
+- Simulação de score de crédito e elegibilidade a empréstimos
+- Integração com marketplace de produtos financeiros (seguro, crédito, investimentos)
+- Auxílio ao preenchimento e pagamento automático do DAS
+- Gestão multi-empresa (para empreendedores com mais de um negócio)
+
+---
+
+## Stack Tecnológico
+
+| Camada | Tecnologia |
+|--------|------------|
 | Frontend | React + Vite + TypeScript + Tailwind CSS |
 | Backend | Node.js + Express + TypeScript |
-| Database | PocketBase (cloud-hosted) |
-| Open Finance | Pluggy SDK (Brazil Open Finance) |
-| Charts | Recharts |
-| Auth | PocketBase Auth + Google OAuth |
-| Payments | Stripe / Asaas |
-| Hosting | Railway (backend + database) |
+| Banco de Dados | PocketBase (hospedado em nuvem) |
+| Open Finance | Pluggy SDK (Open Finance Brasil) |
+| Gráficos | Recharts |
+| Autenticação | PocketBase Auth + Google OAuth |
+| Pagamentos | Stripe / Asaas |
+| Hospedagem | Railway (backend + banco de dados) |
 
 ---
 
-## Target User
+## Perfil do Usuário
 
-**Primary:** Brazilian MEI (Microempreendedor Individual)
-- Sole proprietors earning up to R$81,000/year
-- 15+ million registered in Brazil
-- Typically manages finances via WhatsApp, spreadsheets, or not at all
+**Principal:** MEI brasileiro (Microempreendedor Individual)
 
-**Secondary:** Small business owners (ME, EPP)
-- 1–20 employees
-- Need basic financial management without enterprise complexity
+- Autônomos com faturamento de até R$ 81.000 por ano
+- Mais de 15 milhões de cadastros ativos no Brasil
+- Gerenciam as finanças via WhatsApp, planilhas ou simplesmente não gerenciam
 
-**Tertiary:** Freelancers and autonomous professionals
-- Variable income, multiple clients
-- Need to separate personal from professional finances
+**Secundário:** Pequenos empresários (ME, EPP)
+
+- 1 a 20 funcionários
+- Precisam de gestão financeira básica sem a complexidade de sistemas corporativos
+
+**Terciário:** Freelancers e profissionais autônomos
+
+- Renda variável, múltiplos clientes
+- Necessidade de separar finanças pessoais das profissionais
