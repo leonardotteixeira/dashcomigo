@@ -311,7 +311,7 @@ Não existe concorrente direto neste posicionamento específico.
 
 **Leonardo Teixeira — Fundador e CEO**
 
-Graduando em Engenharia Agronômica pela UNICAMP (Universidade Estadual de Campinas), com trajetória consolidada no mercado financeiro. Atuou como assessor de investimentos em escritório credenciado à XP Investimentos e acumulou experiência na Sombrero Seguros, uma das maiores seguradoras agrícolas do Brasil. Atualmente integra a equipe de gestão de um fundo de investimento do tipo endowment, consolidando sua atuação em gestão de patrimônio, análise de risco e estruturação de produtos financeiros.
+Graduando em Engenharia Agrícola pela UNICAMP (Universidade Estadual de Campinas), com trajetória no mercado financeiro. Atuou em Business Intelligence em escritório credenciado à XP Investimentos e acumulou experiência na Sombrero Seguros, uma das maiores seguradoras agrícolas do Brasil. Atualmente integra a equipe de gestão de um fundo de investimento do tipo endowment, consolidando sua atuação em análise de dados financeiros, gestão de patrimônio e estruturação de produtos de investimento.
 
 Fundou o Dashcomigo a partir da observação direta de uma lacuna crítica de mercado: empreendedores que necessitam de clareza financeira, mas não dispõem de nenhuma ferramenta construída para sua realidade.
 
