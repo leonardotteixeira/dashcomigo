@@ -107,7 +107,7 @@ function buildHTML(doc, markdownContent) {
       <div class="cover-footer-left">
         <strong>Leonardo Teixeira</strong>
         Founder & CEO · Dashcomigo<br>
-        leonardo.teixeira@altovalorinvestimentos.com.br
+        contato@dashcomigo.com.br
       </div>
       <div class="cover-footer-right">
         Confidential · Q2 2026<br>

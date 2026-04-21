@@ -30,4 +30,4 @@ Esta pasta reúne toda a documentação estratégica, de produto e para investid
 ## Contato
 
 **Leonardo Teixeira** — Fundador e CEO, Dashcomigo
-leonardo.teixeira@altovalorinvestimentos.com.br
+contato@dashcomigo.com.br

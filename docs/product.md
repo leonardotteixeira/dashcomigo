@@ -6,7 +6,7 @@
 
 O Dashcomigo é uma **plataforma web de gestão financeira** para MEIs e pequenos empresários brasileiros. Centraliza toda a atividade financeira — transações, fluxo de caixa, contas a receber, contas a pagar e investimentos — em um único painel inteligente.
 
-A plataforma se conecta diretamente às contas bancárias brasileiras via **Open Finance (Pluggy)**, transformando dados brutos do banco em inteligência financeira acionável.
+A plataforma conecta-se diretamente às contas bancárias brasileiras via **Open Finance (Pluggy)**, transformando dados bancários brutos em inteligência financeira acionável.
 
 ---
 
@@ -14,11 +14,11 @@ A plataforma se conecta diretamente às contas bancárias brasileiras via **Open
 
 ### 1. Dashboard
 
-O centro de controle principal. Mostra de forma imediata:
+Central de comando em tempo real. Exibe de forma imediata:
 
-- Saldo atual em caixa (tempo real)
+- Saldo atual em caixa
 - Total de contas a receber e a pagar
-- Receita mensal versus despesas
+- Receitas e despesas do mês corrente
 - Status da conexão Open Finance
 - Alertas e notificações inteligentes
 
@@ -46,20 +46,20 @@ O centro de controle principal. Mostra de forma imediata:
 ### 5. Carteira de Investimentos (Open Finance)
 
 - Portfólio real importado diretamente dos bancos via Open Finance
-- Suporte a: Renda Fixa, Ações, ETFs, Fundos de Investimento, Previdência, FIIs, COEs, Criptomoedas
-- Resumo da carteira: total investido, valor atual, rentabilidade absoluta e percentual
-- Distribuição por tipo de ativo
+- Suporte a: Renda Fixa, Ações, ETFs, Fundos de Investimento, Previdência, FIIs, COEs e Criptomoedas
+- Resumo consolidado: total investido, valor atual, rentabilidade absoluta e percentual
+- Distribuição por classe de ativo
 - Comparação com benchmark CDI
-- Para usuários sem Open Finance: sugestões curadas de investimentos (Tesouro Direto, CDB, LCI/LCA, Fundos)
+- Para usuários sem Open Finance conectado: sugestões educativas de investimentos (Tesouro Direto, CDB, LCI/LCA, Fundos)
 
 ### 6. Relatórios Financeiros (PRO)
 
-- Relatórios financeiros avançados com:
-  - Análise de receitas versus despesas por 3, 6 ou 12 meses
-  - Tabela mensal de resultado
-  - Gráficos de composição por categoria
+- Análise avançada com períodos de 3, 6 ou 12 meses:
+  - Receitas versus despesas
+  - Resultado mensal (DRE simplificado)
+  - Composição de gastos por categoria
   - Análise de tendência de despesas
-  - Previsão de fluxo de caixa (próximos 30 dias)
+  - Previsão de fluxo de caixa para os próximos 30 dias
   - Seção de análise de investimentos (portfólio versus CDI, gráfico de alocação de ativos)
 - Exportação para Excel (XLSX) e PDF
 
@@ -86,7 +86,7 @@ O centro de controle principal. Mostra de forma imediata:
 
 ### 11. Simuladores
 
-- Simuladores de cenários financeiros para planejamento
+- Simuladores de cenários financeiros para planejamento e tomada de decisão
 
 ---
 
@@ -98,26 +98,26 @@ O Open Finance é a camada de infraestrutura que transforma o Dashcomigo de uma 
 
 - Conexão bancária via widget Pluggy
 - Importação e classificação automática de transações
-- Importação de carteira de investimentos (dados reais dos bancos)
-- Sincronização periódica em segundo plano (a cada 6 horas)
-- Agregação de múltiplas contas (vários bancos, uma visão única)
+- Importação de carteira de investimentos com dados reais dos bancos
+- Sincronização periódica em segundo plano a cada 6 horas
+- Agregação de múltiplas contas (vários bancos, uma visão unificada)
 - Deduplicação inteligente entre conexões
 
 ### Médio Prazo
 
-- Alertas em tempo real ("Seu DAS vence em 5 dias e seu saldo é R$ X")
+- Alertas contextuais em tempo real ("Seu DAS vence em 5 dias; seu saldo atual é R$ X")
 - Previsão de fluxo de caixa baseada em padrões de transações recorrentes
-- Separação automática de despesas PF/PJ
-- Recomendações de investimento baseadas no caixa disponível
-- Comparativo: "Sua carteira versus empreendedores com faturamento similar"
+- Separação automática de despesas PF/PJ com aprendizado contínuo
+- Recomendações de investimento com base no caixa disponível e no perfil de risco
+- Benchmark comparativo: "Sua carteira versus empreendedores com faturamento semelhante"
 
 ### Longo Prazo
 
-- Camada de assessoria financeira com inteligência artificial
-- Simulação de score de crédito e elegibilidade a empréstimos
-- Integração com marketplace de produtos financeiros (seguro, crédito, investimentos)
-- Auxílio ao preenchimento e pagamento automático do DAS
-- Gestão multi-empresa (para empreendedores com mais de um negócio)
+- Assessoria financeira com inteligência artificial
+- Simulação de score de crédito e pré-qualificação para crédito empresarial
+- Marketplace de produtos financeiros integrado (seguro, crédito, investimentos)
+- Auxílio ao pagamento e gestão do DAS
+- Gestão multi-empresa para empreendedores com mais de um negócio
 
 ---
 
@@ -136,20 +136,20 @@ O Open Finance é a camada de infraestrutura que transforma o Dashcomigo de uma 
 
 ---
 
-## Perfil do Usuário
+## Perfil do Usuário-Alvo
 
-**Principal:** MEI brasileiro (Microempreendedor Individual)
+**Primário — MEI (Microempreendedor Individual)**
 
-- Autônomos com faturamento de até R$ 81.000 por ano
+- Autônomos com faturamento anual de até R$ 81.000
 - Mais de 15 milhões de cadastros ativos no Brasil
-- Gerenciam as finanças via WhatsApp, planilhas ou simplesmente não gerenciam
+- Gerenciam as finanças por WhatsApp, planilhas ou, na maioria dos casos, de forma alguma
 
-**Secundário:** Pequenos empresários (ME, EPP)
+**Secundário — Pequenos Empresários (ME, EPP)**
 
-- 1 a 20 funcionários
-- Precisam de gestão financeira básica sem a complexidade de sistemas corporativos
+- Empresas com 1 a 20 funcionários
+- Necessitam de gestão financeira estruturada sem a complexidade de sistemas corporativos
 
-**Terciário:** Freelancers e profissionais autônomos
+**Terciário — Freelancers e Profissionais Autônomos**
 
-- Renda variável, múltiplos clientes
-- Necessidade de separar finanças pessoais das profissionais
+- Renda variável e múltiplos clientes
+- Necessidade de separar finanças pessoais das profissionais e controlar recebíveis

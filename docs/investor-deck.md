@@ -1,7 +1,7 @@
 # DASHCOMIGO
 ## Documento para Investidores — Q2 2026
 
-> *Inteligencia Financeira para Empreendedores Brasileiros*
+> *Inteligência Financeira para Empreendedores Brasileiros*
 
 ---
 
@@ -9,362 +9,362 @@
 
 # RESUMO EXECUTIVO
 
-O **Dashcomigo** e uma plataforma SaaS de gestao financeira construida para os 15,4 milhoes de MEIs (Microempreendedores Individuais) e pequenos empresarios brasileiros.
+O **Dashcomigo** é uma plataforma SaaS de gestão financeira construída para os 15,4 milhões de MEIs (Microempreendedores Individuais) e pequenos empresários brasileiros.
 
-A plataforma se conecta as contas bancarias dos usuarios via infraestrutura Open Finance do Brasil, importa automaticamente transacoes e carteiras de investimento e entrega a clareza financeira de que os empreendedores precisam para tomar melhores decisoes — todos os dias.
+A plataforma conecta-se às contas bancárias dos usuários via infraestrutura Open Finance do Brasil, importa automaticamente transações e carteiras de investimento, e entrega a clareza financeira necessária para que os empreendedores tomem melhores decisões — todos os dias.
 
 **Dados principais:**
 
-- Plataforma ativa e em operacao
-- Integracao com Open Finance via Pluggy (mais de 200 instituicoes brasileiras)
+- Plataforma ativa e em operação
+- Integração com Open Finance via Pluggy (mais de 200 instituições financeiras brasileiras)
 - Rastreamento real de carteira de investimentos (8 classes de ativos)
-- Suite completa de relatorios financeiros
-- Assinatura PRO a R$ 49 por mes
+- Suite completa de relatórios financeiros com análise de investimentos
+- Assinatura PRO a R$ 49/mês
 
-**Buscamos investimento pre-seed para acelerar o crescimento, lancar o app mobile e construir a camada de inteligencia artificial.**
-
----
+**Buscamos investimento pré-seed para acelerar o crescimento, lançar o aplicativo mobile e construir a camada de inteligência artificial.**
 
 ---
 
-# SECAO 1: O PROBLEMA
+---
 
-## A Cegueira Financeira Esta Destruindo Negocios Brasileiros
+# SEÇÃO 1: O PROBLEMA
 
-O Brasil registra **15,4 milhoes de MEIs** — o segmento empreendedor que mais cresce na America Latina. No entanto, a grande maioria toca suas financas sem nenhuma visibilidade real:
+## A Cegueira Financeira Está Destruindo Negócios Brasileiros
 
-- Transacoes espalhadas entre contas pessoais e empresariais
-- Carteiras de investimentos controladas manualmente — ou nao controladas
-- Fluxo de caixa gerenciado pela "intuicao" em vez de dados
-- Obrigacoes tributarias descobertas de ultima hora
-- Nenhuma ferramenta construida especificamente para sua realidade e faixa de preco
+O Brasil registra **15,4 milhões de MEIs** — o segmento empreendedor que mais cresce na América Latina. No entanto, a grande maioria conduz suas finanças sem nenhuma visibilidade real:
 
-**A consequencia e severa:**
+- Transações dispersas entre contas pessoais e empresariais
+- Carteiras de investimentos controladas manualmente — ou completamente ignoradas
+- Fluxo de caixa gerenciado pela intuição, sem dados confiáveis
+- Obrigações tributárias descobertas de última hora
+- Nenhuma ferramenta construída especificamente para sua realidade e capacidade de pagamento
+
+**A consequência é documentada:**
 
 > 60% das pequenas empresas no Brasil fecham nos primeiros 5 anos.
-> A desorganizacao financeira e a causa numero 1 citada.
+> A desorganização financeira é a principal causa citada.
 
-### O que Usam Hoje
+### O que os Empreendedores Usam Hoje
 
 | Ferramenta | Problema |
 |------------|---------|
-| Planilhas | Manual, sempre desatualizada, sujeita a erros |
-| App do banco | Mostra uma conta, sem contexto empresarial |
-| Apps de financas pessoais | Feitos para individuos, nao empreendedores |
-| Software de contabilidade corporativo | Muito caro (R$ 150 a 500+/mes), muito complexo |
-| Nada | A "solucao" mais comum |
+| Planilhas | Manual, sempre desatualizada e sujeita a erros |
+| Aplicativo do banco | Mostra uma única conta, sem contexto empresarial |
+| Apps de finanças pessoais | Projetados para pessoas físicas, não para empreendedores |
+| Software de contabilidade corporativo | Muito caro (R$ 150 a R$ 500+/mês) e complexo demais |
+| Nenhuma ferramenta | A realidade mais comum |
 
-**Nao existe plataforma construida especificamente para o MEI que combine dados bancarios reais, rastreamento de investimentos e gestao financeira empresarial a um preco acessivel.**
-
----
+**Não existe plataforma construída especificamente para o MEI que combine dados bancários reais, rastreamento de investimentos e gestão financeira empresarial a um preço acessível.**
 
 ---
 
-# SECAO 2: A SOLUCAO
+---
+
+# SEÇÃO 2: A SOLUÇÃO
 
 ## Dashcomigo — O Sistema Operacional Financeiro para Empreendedores Brasileiros
 
-O Dashcomigo oferece a cada MEI as ferramentas financeiras que antes so empresas com um time completo de financas podiam ter:
+O Dashcomigo oferece a cada MEI as ferramentas financeiras que antes eram exclusivas de empresas com um departamento financeiro estruturado:
 
-**Automatico** — Conecta-se aos bancos via Open Finance. Sem lancamentos manuais.
+**Automático** — Conecta-se aos bancos via Open Finance. Sem lançamentos manuais.
 
-**Completo** — Fluxo de caixa, contas a pagar, contas a receber, investimentos, impostos, relatorios — tudo em um unico lugar.
+**Completo** — Fluxo de caixa, contas a pagar, contas a receber, investimentos, impostos e relatórios — tudo em um único lugar.
 
-**Inteligente** — Classifica transacoes, prevê fluxo de caixa, acompanha o desempenho da carteira versus o CDI.
+**Inteligente** — Classifica transações, prevê o fluxo de caixa e acompanha o desempenho da carteira versus o CDI.
 
-**Acessivel** — R$ 49 por mes. Menos do que um almoco de negocios.
-
----
+**Acessível** — R$ 49/mês. Menos do que um almoço de negócios.
 
 ---
 
-# SECAO 3: O PRODUTO
+---
+
+# SEÇÃO 3: O PRODUTO
 
 ## O que o Dashcomigo Faz
 
-### Modulos Principais (Ativos)
+### Módulos Principais (Ativos)
 
 **Dashboard**
-Central de comando em tempo real mostrando saldo em caixa, contas a receber, contas a pagar e status do Open Finance. Alertas inteligentes para itens vencidos e riscos no fluxo de caixa.
+Central de comando em tempo real exibindo saldo em caixa, contas a receber, contas a pagar e status do Open Finance. Alertas inteligentes para pagamentos vencidos e riscos no fluxo de caixa.
 
 **Fluxo de Caixa**
-Importacao automatica de transacoes bancarias via Open Finance. Classificacao inteligente de receitas versus despesas, pessoal versus empresarial. Evolucao mensal com analise de tendencia.
+Importação automática de transações bancárias via Open Finance. Classificação inteligente de receitas versus despesas e de transações pessoais versus empresariais. Evolução mensal com análise de tendência.
 
 **Contas a Pagar e a Receber**
-Controle de boletos, faturas de clientes e obrigacoes. Gestao de status (pendente, pago, vencido). Alertas de vencimento.
+Controle de boletos, faturas e obrigações. Gestão de status (pendente, pago, vencido). Alertas de vencimento com antecedência configurável.
 
 **Carteira de Investimentos**
-Dados reais de investimentos importados diretamente dos bancos via Open Finance. Acompanha: Renda Fixa, Acoes, ETFs, Fundos de Investimento, Previdencia, FIIs, COEs, Criptomoedas. Mostra total investido, valor atual, rentabilidade percentual e comparativo com o CDI.
+Dados reais de investimentos importados diretamente dos bancos via Open Finance. Rastreia: Renda Fixa, Ações, ETFs, Fundos de Investimento, Previdência Privada, FIIs, COEs e Criptomoedas. Exibe o total investido, o valor atual, a rentabilidade percentual e a comparação com o CDI.
 
-**Relatorios Financeiros (PRO)**
-Analise avancada para periodos de 3, 6 ou 12 meses. Graficos de receita versus despesa. Previsao de fluxo de caixa. Evolucao da carteira versus benchmark CDI. Exportacao para Excel e PDF.
+**Relatórios Financeiros (PRO)**
+Análise avançada para períodos de 3, 6 ou 12 meses. Gráficos de receita versus despesa. Previsão de fluxo de caixa. Evolução da carteira versus benchmark CDI. Exportação para Excel e PDF.
 
 **Imposto MEI (DAS)**
-Controle do faturamento versus limite anual do MEI. Simulacao do DAS e lembretes de vencimento.
+Controle do faturamento versus o limite anual do MEI. Simulação do DAS e lembretes de vencimento com verificação automática de saldo.
 
 ---
 
 ### A Vantagem do Open Finance
 
-Quando um usuario conecta seu banco ao Dashcomigo:
+Quando um usuário conecta seu banco ao Dashcomigo:
 
 ```
-Usuario clica em "Conectar Banco"
+Usuário clica em "Conectar Banco"
          |
-Widget seguro Pluggy (2 minutos)
+Widget seguro Pluggy (menos de 2 minutos)
          |
-Importacao automatica de dados:
-  - Todas as transacoes (6+ meses)
+Importação automática de dados:
+  - Todas as transações (6+ meses de histórico)
   - Carteira completa de investimentos
-  - Saldos das contas
+  - Saldos atualizados das contas
          |
 Dashboard atualizado em tempo real
          |
-Sincronizacao em segundo plano a cada 6 horas
-— para sempre, automaticamente —
+Sincronização automática em segundo plano a cada 6 horas
+— de forma contínua e permanente —
 ```
 
-Sem planilhas. Sem lancamentos manuais. Sem dados incompletos.
+Sem planilhas. Sem lançamentos manuais. Sem dados incompletos.
 
 ---
 
 ---
 
-# SECAO 4: ESTRATEGIA OPEN FINANCE
+# SEÇÃO 4: ESTRATÉGIA OPEN FINANCE
 
 ## Por que o Open Finance Muda Tudo
 
-O marco regulatorio Open Finance do Brasil, determinado pelo Banco Central, esta plenamente operacional com mais de 40 milhoes de consentimentos ativos.
+O Open Finance brasileiro, regulamentado pelo Banco Central, está plenamente operacional com mais de 40 milhões de consentimentos ativos.
 
-Para o Dashcomigo, o Open Finance nao e uma funcionalidade — e a camada de infraestrutura central da plataforma.
+Para o Dashcomigo, o Open Finance não é uma funcionalidade — é a camada de infraestrutura central sobre a qual toda a plataforma é construída.
 
-### A Transformacao
+### A Transformação
 
 | Sem Open Finance | Com Open Finance |
 |-----------------|-----------------|
-| Usuario precisa lancar cada transacao | Importacao automatica de todos os bancos conectados |
-| Dados estao sempre incompletos | Dados sempre completos e precisos |
-| Controle de investimentos e manual | Carteira importada diretamente dos bancos |
-| Relatorios baseados em dados parciais | Relatorios baseados na foto financeira completa |
-| Usuarios abandonam o app | Usuarios dependem do app como fonte de verdade |
+| Usuário precisa registrar cada transação manualmente | Importação automática de todos os bancos conectados |
+| Dados sempre incompletos e desatualizados | Dados sempre completos e precisos |
+| Controle de investimentos é manual | Carteira importada diretamente dos bancos |
+| Relatórios baseados em informações parciais | Relatórios baseados na foto financeira completa |
+| Usuários abandonam o aplicativo | Usuários dependem do aplicativo como fonte de verdade |
 
-### Instituicoes Suportadas
+### Instituições Suportadas
 
-A Pluggy conecta-se a **mais de 200 instituicoes financeiras brasileiras**, incluindo Itau, Bradesco, Banco do Brasil, Caixa, Nubank, Inter, BTG, XP e todas as principais corretoras.
+A Pluggy conecta-se a **mais de 200 instituições financeiras brasileiras**, incluindo Itaú, Bradesco, Banco do Brasil, Caixa Econômica Federal, Nubank, Inter, BTG Pactual, XP Investimentos e todas as principais corretoras do país.
 
 ### Capacidades Futuras do Open Finance
 
-**2026:** Webhooks em tempo real, agregacao multi-banco, iniciacao de pagamento
-**2027:** Classificacao de transacoes com IA, alertas preditivos
-**2028:** Marketplace de produtos financeiros embarcado com base em dados do Open Finance
+**2026:** Webhooks em tempo real, agregação multi-banco e iniciação de pagamento
+**2027:** Classificação de transações com IA e alertas preditivos de fluxo de caixa
+**2028:** Marketplace de produtos financeiros embarcado com base em dados Open Finance
 
 ---
 
 ---
 
-# SECAO 5: OPORTUNIDADE DE MERCADO
+# SEÇÃO 5: OPORTUNIDADE DE MERCADO
 
 ## Um Mercado Vasto e Mal Atendido
 
-### Os Numeros
+### Os Números
 
 | Segmento | Tamanho |
 |----------|---------|
-| MEIs registrados no Brasil | 15,4 milhoes |
-| Pequenas empresas (ME + EPP) | 21 milhoes no total |
-| MEIs usando ferramentas financeiras digitais | Cerca de 3 milhoes |
-| MEIs dispostos a pagar R$ 49/mes por mais controle | Estimativa de 10 a 15% |
+| MEIs registrados no Brasil | 15,4 milhões |
+| Pequenas empresas (ME + EPP) | 21 milhões no total |
+| MEIs que utilizam ferramentas financeiras digitais | Cerca de 3 milhões |
+| MEIs dispostos a pagar R$ 49/mês por mais controle financeiro | Estimativa de 10% a 15% |
 
 ### Tamanho de Mercado
 
-- **TAM:** R$ 4,2 bilhoes por ano (todos os softwares de gestao financeira para PMEs no Brasil)
-- **SAM:** R$ 1,76 bilhao por ano (MEIs + pequenas empresas digitalmente ativos)
-- **SOM (5 anos):** R$ 59 milhoes de ARR (10.000 usuarios pagantes a R$ 49/mes + marketplace)
+- **TAM:** R$ 4,2 bilhões/ano (software de gestão financeira para PMEs no Brasil)
+- **SAM:** R$ 1,76 bilhão/ano (MEIs e pequenas empresas digitalmente ativos)
+- **SOM (horizonte de 5 anos):** R$ 59 milhões de ARR (10.000 usuários pagantes a R$ 49/mês + marketplace)
 
-### Ventos Favoraveis do Mercado
+### Ventos Favoráveis do Mercado
 
-1. Adocao do Open Finance crescendo 40% ao ano
-2. Formalizacao de MEIs em expansao — 1,5 milhao de novos MEIs registrados so em 2024
-3. Penetracao de smartphones acima de 90% no Brasil
-4. Educacao financeira em ascensao com programas governamentais e de fintechs
-5. Normalizacao do trabalho remoto criando mais empreendedores independentes
-
----
+1. Adoção do Open Finance crescendo 40% ao ano
+2. Formalização de MEIs em expansão — 1,5 milhão de novos registros somente em 2024
+3. Penetração de smartphones acima de 90% no Brasil
+4. Crescimento da educação financeira por programas governamentais e iniciativas de fintechs
+5. Normalização do trabalho remoto e da economia de serviços, gerando mais empreendedores individuais
 
 ---
 
-# SECAO 6: MODELO DE NEGOCIO
+---
+
+# SEÇÃO 6: MODELO DE NEGÓCIO
 
 ## Como o Dashcomigo Gera Receita
 
 ### Principal: Assinaturas SaaS
 
-| Plano | Preco | Funcionalidades |
+| Plano | Preço | Funcionalidades |
 |-------|-------|----------------|
-| Gratis | R$ 0 | Dashboard basico, funcionalidades limitadas |
-| PRO | R$ 49/mes | Plataforma completa, Open Finance, relatorios |
-| PRO+ *(2027)* | R$ 99/mes | Insights de IA, multi-empresa, acesso a API |
+| Gratuito | R$ 0 | Dashboard básico, funcionalidades limitadas |
+| PRO | R$ 49/mês | Plataforma completa, Open Finance, relatórios avançados |
+| PRO+ *(2027)* | R$ 99/mês | Insights de IA, gestão multi-empresa, acesso a API |
 
-**Economia Unitaria:**
+**Economia Unitária:**
 
-- Custo de Aquisicao de Cliente: R$ 80 a 120 (meta)
-- LTV medio (PRO): R$ 588 (12 meses)
-- Relacao LTV/CAC: acima de 5x
-- Margem Bruta alvo: acima de 80%
+- Custo de Aquisição de Cliente (CAC): R$ 80 a R$ 120 (meta)
+- LTV médio (Plano PRO): R$ 588 (12 meses)
+- Relação LTV/CAC: acima de 5x
+- Margem bruta alvo: acima de 80%
 
 ### Futuro: Marketplace de Produtos Financeiros (2027+)
 
-Quando o Dashcomigo recomenda e conecta usuarios a produtos financeiros:
+Quando o Dashcomigo recomenda e conecta usuários a produtos financeiros:
 
-- Produtos de investimento: 0,3 a 0,5% do valor investido
-- Indicacoes de credito empresarial: 1 a 2% de comissao
-- Apolices de seguro: 15 a 25% do premio do primeiro ano
+- Produtos de investimento: 0,3% a 0,5% do valor investido
+- Indicações de crédito empresarial: 1% a 2% de comissão
+- Apólices de seguro: 15% a 25% do prêmio do primeiro ano
 
 ### Futuro: API B2B (2027+)
 
-Acesso white-label para contadores e assessores financeiros: R$ 299 a 999 por mes
+Acesso white-label para contadores e assessores financeiros: R$ 299 a R$ 999/mês por conta.
 
 ---
 
-### Projecoes de Receita
+### Projeções de Receita
 
-| Periodo | Usuarios Pagantes | MRR | ARR |
+| Período | Usuários Pagantes | MRR | ARR |
 |---------|-------------------|-----|-----|
 | Q4 2026 | 100 | R$ 4.900 | R$ 58.800 |
 | Q2 2027 | 500 | R$ 24.500 | R$ 294.000 |
 | Q4 2027 | 1.500 | R$ 73.500 | R$ 882.000 |
 | Q2 2028 | 3.000 | R$ 147.000 | R$ 1.764.000 |
-| 2028 + marketplace | 10.000 | R$ 600.000+ | R$ 7,2 milhoes+ |
+| 2028 + marketplace | 10.000 | R$ 600.000+ | R$ 7,2 milhões+ |
 
 ---
 
 ---
 
-# SECAO 7: ROADMAP
+# SEÇÃO 7: ROADMAP
 
-## Construindo o Futuro das Financas do MEI
+## Construindo o Futuro das Finanças do MEI
 
-### Agora — Fundacao (Ativo)
+### Agora — Fundação (Ativo)
 
-- Plataforma principal (dashboard, fluxo de caixa, contas a pagar, contas a receber)
-- Open Finance via Pluggy (mais de 200 instituicoes)
-- Importacao e rastreamento real de carteira de investimentos
-- Relatorios financeiros avancados com analise de investimentos
-- Plano de assinatura PRO
+- Plataforma completa: dashboard, fluxo de caixa, contas a pagar e a receber
+- Open Finance via Pluggy (mais de 200 instituições)
+- Importação e rastreamento real de carteira de investimentos
+- Relatórios financeiros avançados com análise de investimentos
+- Plano de assinatura PRO disponível
 
-### 2026 — Inteligencia
+### 2026 — Inteligência
 
 - Alertas inteligentes e avisos preditivos de fluxo de caixa
-- Agregacao multi-banco
-- Classificacao de transacoes aprimorada com IA
-- Sugestoes de rebalanceamento de investimentos
-- Entrega agendada de relatorios
+- Agregação de múltiplas contas bancárias em um único painel
+- Classificação de transações aprimorada com modelos de IA
+- Sugestões de rebalanceamento de carteira
+- Entrega agendada de relatórios por e-mail
 
 ### 2027 — Plataforma
 
-- Apps mobile (iOS e Android)
-- Camada de assessor financeiro com IA
-- API B2B white-label para contadores
-- Integracao com NF-e
-- Marketplace de produtos financeiros (credito, seguro)
+- Aplicativos mobile para iOS e Android
+- Camada de assessoria financeira com inteligência artificial
+- API B2B white-label para contadores e assessores
+- Integração com NF-e (Nota Fiscal Eletrônica)
+- Marketplace de produtos financeiros (crédito e seguros)
 
 ### 2028+ — Ecossistema
 
-- Assessor financeiro conversacional com IA
-- Simulacao de score de credito
-- Gestao multi-empresa
-- Servicos de inteligencia de dados (em conformidade com a LGPD)
+- Assessor financeiro conversacional com IA (interface de chat)
+- Simulação de score de crédito e pré-qualificação
+- Gestão multi-empresa em um único painel consolidado
+- Serviços de inteligência de dados em conformidade com a LGPD
 
 ---
 
 ---
 
-# SECAO 8: PANORAMA COMPETITIVO
+# SEÇÃO 8: PANORAMA COMPETITIVO
 
 ## Por que o Dashcomigo Vence
 
 | | Conta Azul | Granatum | Mobills | **Dashcomigo** |
 |-|------------|---------|---------|----------------|
-| **Preco** | R$ 199+/mes | R$ 99+/mes | R$ 19/mes | **R$ 49/mes** |
-| **Feito para MEIs** | Nao (PME) | Nao (generico) | Nao (pessoal) | **Sim** |
-| **Open Finance** | Parcial | Nao | Sim | **Completo** |
-| **Rastreamento de investimentos** | Nao | Nao | Limitado | **Completo** |
-| **Relatorios empresariais** | Sim | Sim | Nao | **Sim** |
-| **Caixa + investimentos** | Nao | Nao | Nao | **Sim** |
+| **Preço** | R$ 199+/mês | R$ 99+/mês | R$ 19/mês | **R$ 49/mês** |
+| **Construído para MEIs** | Não (PME) | Não (genérico) | Não (pessoal) | **Sim** |
+| **Open Finance** | Parcial | Não | Sim | **Completo** |
+| **Rastreamento de Investimentos** | Não | Não | Limitado | **Completo** |
+| **Relatórios Empresariais** | Sim | Sim | Não | **Sim** |
+| **Caixa + Investimentos integrados** | Não | Não | Não | **Sim** |
 
-**O Dashcomigo e a unica plataforma que combina:**
+**O Dashcomigo é a única plataforma que combina:**
 
-1. Importacao automatica via Open Finance
-2. Rastreamento real de carteira de investimentos
-3. Gestao financeira empresarial (fluxo de caixa, contas a pagar, contas a receber)
-4. A um preco acessivel para MEIs (R$ 49 por mes)
+1. Importação automática de dados via Open Finance completo
+2. Rastreamento real de carteira de investimentos (dados reais, não manuais)
+3. Gestão financeira empresarial completa (fluxo de caixa, contas a pagar e a receber)
+4. Preço acessível ao MEI: R$ 49/mês
 
-Nenhum concorrente direto existe neste espaco exato.
-
----
+Não existe concorrente direto neste posicionamento específico.
 
 ---
 
-# SECAO 9: O TIME
+---
 
-## Fundado por Alguem que Conhece os Dois Mundos
+# SEÇÃO 9: O TIME
+
+## Fundado por Alguém que Conhece os Dois Mundos
 
 **Leonardo Teixeira — Fundador e CEO**
 
-Formacao em mercados financeiros e gestao de investimentos pela Alto Valor Investimentos. Profundo conhecimento em produtos financeiros, estrategias de investimento e o ambiente regulatorio financeiro brasileiro.
+Graduando em Engenharia Agronômica pela UNICAMP (Universidade Estadual de Campinas), com trajetória consolidada no mercado financeiro. Atuou como assessor de investimentos em escritório credenciado à XP Investimentos e acumulou experiência na Sombrero Seguros, uma das maiores seguradoras agrícolas do Brasil. Atualmente integra a equipe de gestão de um fundo de investimento do tipo endowment, consolidando sua atuação em gestão de patrimônio, análise de risco e estruturação de produtos financeiros.
 
-Construiu o Dashcomigo a partir da observacao direta de uma lacuna real de mercado: empreendedores que precisam desesperadamente de clareza financeira mas nao tem nenhuma ferramenta adequada construida para sua realidade.
+Fundou o Dashcomigo a partir da observação direta de uma lacuna crítica de mercado: empreendedores que necessitam de clareza financeira, mas não dispõem de nenhuma ferramenta construída para sua realidade.
 
-*Expansao do time com o aporte: CTO, Lider de Crescimento, Sucesso do Cliente.*
-
----
+*Expansão do time prevista com a captação: CTO, Líder de Crescimento e Customer Success.*
 
 ---
 
-# SECAO 10: O PEDIDO
+---
 
-## Investimento Pre-Seed
+# SEÇÃO 10: O PEDIDO
 
-**Buscando:** R$ [X] em rodada pre-seed
+## Investimento Pré-Seed
 
-**Destino dos Recursos:**
+**Captação:** R$ [X] em rodada pré-seed
 
-| Area | Alocacao | Finalidade |
+**Destinação dos Recursos:**
+
+| Área | Alocação | Finalidade |
 |------|----------|------------|
 | Produto e Engenharia | 50% | App mobile, camada de IA, API B2B, infraestrutura |
-| Crescimento e Marketing | 30% | Aquisicao digital, conteudo, parcerias |
-| Operacoes | 15% | Construcao do time, sucesso do cliente |
-| Juridico e Conformidade | 5% | LGPD, protecao de dados, conformidade Open Finance |
+| Crescimento e Marketing | 30% | Aquisição digital, conteúdo, parcerias estratégicas |
+| Operações | 15% | Expansão do time, customer success |
+| Jurídico e Conformidade | 5% | LGPD, proteção de dados, conformidade Open Finance |
 
 **Marcos com o Aporte:**
 
-- 6 meses: 500 usuarios pagantes, beta do app mobile
-- 12 meses: 2.000 usuarios pagantes, alertas de IA ativos
-- 18 meses: 5.000 usuarios pagantes, MVP do marketplace
-- 24 meses: 10.000 usuarios pagantes, R$ 600.000 de MRR
+- 6 meses: 500 usuários pagantes e beta do aplicativo mobile
+- 12 meses: 2.000 usuários pagantes e alertas inteligentes com IA ativos
+- 18 meses: 5.000 usuários pagantes e MVP do marketplace
+- 24 meses: 10.000 usuários pagantes e R$ 600.000 de MRR
 
 ---
 
 ---
 
-# SECAO 11: VISAO
+# SEÇÃO 11: VISÃO
 
 ## O Futuro que Estamos Construindo
 
-> Em dez anos, todo MEI brasileiro usara o Dashcomigo todos os dias.
+> Em dez anos, cada MEI brasileiro usará o Dashcomigo todos os dias.
 
-Nao porque sao obrigados — mas porque a alternativa (cegueira financeira) e simplesmente inaceitavel depois de ter experimentado clareza de verdade.
+Não porque é obrigado — mas porque a alternativa, a cegueira financeira, se torna simplesmente inaceitável depois de experimentar clareza de verdade.
 
-O Dashcomigo sera:
+O Dashcomigo será:
 
-- A plataforma que preve sua crise de caixa antes que ela aconteca
-- O assessor que te diz exatamente quanto voce pode investir este mes
-- A ferramenta que preenche seu DAS e sugere seu regime tributario automaticamente
-- A camada de inteligencia entre o empreendedor e o sistema financeiro
+- A plataforma que prevê a crise de caixa antes que ela aconteça
+- O assessor que indica exatamente quanto é possível investir neste mês
+- A ferramenta que gerencia o DAS e sugere o regime tributário mais vantajoso automaticamente
+- A camada de inteligência entre o empreendedor e o sistema financeiro brasileiro
 
-**Nao estamos construindo um dashboard.**
+**Não estamos construindo um dashboard.**
 
-**Estamos construindo equidade financeira para os 15 milhoes de empreendedores do Brasil.**
+**Estamos construindo equidade financeira para os 15 milhões de empreendedores do Brasil.**
 
 ---
 
@@ -375,10 +375,10 @@ O Dashcomigo sera:
 **Leonardo Teixeira**
 Fundador e CEO, Dashcomigo
 
-leonardo.teixeira@altovalorinvestimentos.com.br
+contato@dashcomigo.com.br
 
 ---
 
-*Este documento e confidencial e destinado exclusivamente a potenciais investidores.*
-*Todas as projecoes financeiras sao estimativas baseadas em pesquisa de mercado e modelagem interna.*
+*Este documento é confidencial e destinado exclusivamente a potenciais investidores.*
+*Todas as projeções financeiras são estimativas baseadas em pesquisa de mercado e modelagem interna.*
 *Dados de Q2 2026.*
