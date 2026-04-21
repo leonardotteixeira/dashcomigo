@@ -27,7 +27,7 @@ export function Contato() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setError(null); // Clear error when user starts typing
+    setError(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -35,7 +35,6 @@ export function Contato() {
     setError(null);
     setLoading(true);
 
-    // Client-side validation
     if (!form.nome.trim()) {
       setError("Por favor, insira seu nome.");
       setLoading(false);
@@ -61,48 +60,26 @@ export function Contato() {
     }
 
     try {
-      // Determine the API base URL
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ||
-        (import.meta.env.PROD ? "https://dashcomigo.com.br" : "http://localhost:3000");
-
-      const response = await fetch(`${apiBaseUrl}/api/contact`, {
+      const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nome: form.nome,
-          email: form.email,
-          assunto: form.assunto,
-          mensagem: form.mensagem,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(
-          errorData.error || "Erro ao enviar mensagem. Tente novamente em alguns minutos."
-        );
+        setError(errorData.error || "Erro ao enviar mensagem. Tente novamente em alguns minutos.");
         setLoading(false);
         return;
       }
 
       const data = await response.json();
 
-      if (data.success) {
-        // Show success state
+      if (data.ok) {
         setSubmitted(true);
-        setSuccessMessage(data.message);
+        setSuccessMessage("Entraremos em contato em breve.");
+        setForm({ nome: "", email: "", assunto: "", mensagem: "" });
 
-        // Reset form
-        setForm({
-          nome: "",
-          email: "",
-          assunto: "",
-          mensagem: "",
-        });
-
-        // Clear success message after 5 seconds
         setTimeout(() => {
           setSuccessMessage(null);
           setSubmitted(false);
@@ -302,19 +279,8 @@ export function Contato() {
                         viewBox="0 0 24 24"
                         style={{ color: "#F4EFE6" }}
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
                       <span>Enviando...</span>
                     </>
