@@ -19,16 +19,105 @@ export function Contato() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitHover, setSubmitHover] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setError(null); // Clear error when user starts typing
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setLoading(true);
+
+    // Client-side validation
+    if (!form.nome.trim()) {
+      setError("Por favor, insira seu nome.");
+      setLoading(false);
+      return;
+    }
+
+    if (!form.email.trim() || !form.email.includes("@")) {
+      setError("Por favor, insira um email válido.");
+      setLoading(false);
+      return;
+    }
+
+    if (!form.assunto) {
+      setError("Por favor, selecione um assunto.");
+      setLoading(false);
+      return;
+    }
+
+    if (form.mensagem.trim().length < 10) {
+      setError("A mensagem deve ter pelo menos 10 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Determine the API base URL
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ||
+        (import.meta.env.PROD ? "https://dashcomigo.com.br" : "http://localhost:3000");
+
+      const response = await fetch(`${apiBaseUrl}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: form.nome,
+          email: form.email,
+          assunto: form.assunto,
+          mensagem: form.mensagem,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(
+          errorData.error || "Erro ao enviar mensagem. Tente novamente em alguns minutos."
+        );
+        setLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success state
+        setSubmitted(true);
+        setSuccessMessage(data.message);
+
+        // Reset form
+        setForm({
+          nome: "",
+          email: "",
+          assunto: "",
+          mensagem: "",
+        });
+
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+          setSubmitted(false);
+        }, 5000);
+      } else {
+        setError(data.error || "Erro ao enviar mensagem. Tente novamente.");
+      }
+    } catch (err) {
+      console.error("Contact form error:", err);
+      setError(
+        "Erro de conexão. Verifique sua internet e tente novamente. Se o problema persistir, entre em contato via WhatsApp."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -73,13 +162,13 @@ export function Contato() {
                 <div>
                   <p className="font-semibold mb-1" style={{ color: "#0E3B2E" }}>WhatsApp</p>
                   <a
-                    href="https://wa.me/5511999999999"
+                    href="https://wa.me/5519996738694"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:underline"
                     style={{ color: "#0E3B2E" }}
                   >
-                    (11) 99999-9999
+                    (19) 99673-8694
                   </a>
                 </div>
               </div>
@@ -98,7 +187,7 @@ export function Contato() {
 
           {/* Form */}
           <div className="border rounded-2xl p-8 shadow-sm" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
-            {submitted ? (
+            {submitted && successMessage ? (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(127,209,159,0.2)" }}>
                   <svg className="w-8 h-8" style={{ color: "#1F5A3A" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,10 +195,19 @@ export function Contato() {
                   </svg>
                 </div>
                 <h3 className="font-bold text-xl mb-2" style={{ color: "#0E3B2E" }}>Mensagem enviada!</h3>
-                <p style={{ color: "rgba(14,59,46,0.6)" }}>Entraremos em contato em breve.</p>
+                <p style={{ color: "rgba(14,59,46,0.6)" }}>{successMessage}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                {error && (
+                  <div
+                    className="p-4 rounded-lg text-sm font-medium"
+                    style={{ background: "rgba(220, 38, 38, 0.1)", color: "#991B1B", border: "1px solid rgba(220, 38, 38, 0.3)" }}
+                  >
+                    {error}
+                  </div>
+                )}
+
                 <div>
                   <label htmlFor="nome" className="block text-sm font-semibold mb-1" style={{ color: "#0E3B2E" }}>
                     Nome completo
@@ -184,12 +282,45 @@ export function Contato() {
 
                 <button
                   type="submit"
-                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all"
-                  style={{ background: submitHover ? "#1F5A3A" : "#0E3B2E", color: "#F4EFE6" }}
-                  onMouseEnter={() => setSubmitHover(true)}
-                  onMouseLeave={() => setSubmitHover(false)}
+                  disabled={loading}
+                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
+                  style={{
+                    background: loading ? "rgba(14,59,46,0.5)" : submitHover ? "#1F5A3A" : "#0E3B2E",
+                    color: "#F4EFE6",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.7 : 1,
+                  }}
+                  onMouseEnter={() => !loading && setSubmitHover(true)}
+                  onMouseLeave={() => !loading && setSubmitHover(false)}
                 >
-                  Enviar mensagem
+                  {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        style={{ color: "#F4EFE6" }}
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span>Enviando...</span>
+                    </>
+                  ) : (
+                    "Enviar mensagem"
+                  )}
                 </button>
               </form>
             )}

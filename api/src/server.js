@@ -8,6 +8,7 @@ const checkoutRouter = require("./routes/checkout");
 const webhookRouter = require("./routes/webhook");
 const verifyPaymentRouter = require("./routes/verifyPayment");
 const checkPaymentByUserRouter = require("./routes/checkPaymentByUser");
+const contactRouter = require("./routes/contact");
 
 const app = express();
 
@@ -69,10 +70,21 @@ const checkoutLimiter = rateLimit({
   message: { error: "Limite de tentativas de checkout atingido. Tente novamente em 15 minutos." },
 });
 
+// Rate limiting para formulário de contato: 5 requests por hora por IP
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Limite de mensagens de contato atingido. Máximo 5 mensagens por hora." },
+});
+
 const corsOptions = {
   origin: [
     "https://bubuya.com.br",
     "https://www.bubuya.com.br",
+    "https://dashcomigo.com.br",
+    "https://www.dashcomigo.com.br",
     "https://simulador-financeiro-saas.vercel.app",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -94,6 +106,7 @@ app.use("/checkout", checkoutLimiter, checkoutRouter);
 app.use("/webhook", webhookRouter);
 app.use("/verify-payment", verifyPaymentRouter);
 app.use("/check-payment-by-user", checkPaymentByUserRouter);
+app.use("/api/contact", contactLimiter, contactRouter);
 
 // SPA fallback - serve index.html for all non-API routes
 app.get("*", (req, res) => {
