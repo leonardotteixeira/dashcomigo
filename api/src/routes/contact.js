@@ -148,9 +148,16 @@ router.post("/", async (req, res) => {
     }
 
     // Authenticate with PocketBase using admin credentials
+    if (!process.env.POCKETBASE_ADMIN_EMAIL || !process.env.POCKETBASE_ADMIN_PASSWORD) {
+      console.error("[ERROR] POCKETBASE_ADMIN_EMAIL or POCKETBASE_ADMIN_PASSWORD not configured");
+      return res.status(500).json({
+        error: "Erro de configuração do servidor. Tente novamente em alguns minutos.",
+        code: "CONFIG_ERROR",
+      });
+    }
     await pb.admins.authWithPassword(
-      process.env.POCKETBASE_ADMIN_EMAIL || "admin@example.com",
-      process.env.POCKETBASE_ADMIN_PASSWORD || "admin123"
+      process.env.POCKETBASE_ADMIN_EMAIL,
+      process.env.POCKETBASE_ADMIN_PASSWORD
     );
 
     // Store message in PocketBase with pending status
@@ -194,7 +201,7 @@ router.post("/", async (req, res) => {
 
     try {
       const emailResponse = await resend.emails.send({
-        from: "DashComigo <onboarding@resend.dev>", // Use Resend domain or verified sender
+        from: `DashComigo <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
         to: CONTACT_EMAIL,
         replyTo: email, // Set reply-to as sender's email
         subject: `[DashComigo] ${

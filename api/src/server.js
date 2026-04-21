@@ -79,14 +79,17 @@ const contactLimiter = rateLimit({
   message: { error: "Limite de mensagens de contato atingido. Máximo 5 mensagens por hora." },
 });
 
+const allowedOrigins = [
+  "https://dashcomigo.com.br",
+  "https://www.dashcomigo.com.br",
+  "https://simulador-financeiro-saas.vercel.app",
+];
+if (process.env.NODE_ENV !== "production") {
+  allowedOrigins.push("http://localhost:5173", "http://localhost:3000");
+}
+
 const corsOptions = {
-  origin: [
-    "https://bubuya.com.br",
-    "https://www.bubuya.com.br",
-    "https://dashcomigo.com.br",
-    "https://www.dashcomigo.com.br",
-    "https://simulador-financeiro-saas.vercel.app",
-  ],
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
