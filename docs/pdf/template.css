@@ -1,0 +1,313 @@
+/* ─────────────────────────────────────────────────────────
+   DASHCOMIGO — PDF Brand Template
+   Brand: #0E3B2E (dark green), #7FD19F (accent), #F4EFE6 (cream)
+   Font: Geist / Inter
+   ───────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --brand-dark:    #0E3B2E;
+  --brand-accent:  #7FD19F;
+  --brand-cream:   #F4EFE6;
+  --brand-green:   #10b981;
+  --brand-muted:   rgba(14,59,46,0.55);
+  --brand-border:  rgba(14,59,46,0.13);
+  --page-max:      780px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', 'Geist', Helvetica, Arial, sans-serif;
+  background: #ffffff;
+  color: var(--brand-dark);
+  font-size: 13px;
+  line-height: 1.65;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Page wrapper ── */
+.page {
+  width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ── Cover page ── */
+.cover {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--brand-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 64px 72px;
+  page-break-after: always;
+}
+
+.cover-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cover-logo svg { width: 48px; height: 48px; }
+
+.cover-logo-text {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.8px;
+}
+
+.cover-main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 0; }
+
+.cover-badge {
+  display: inline-block;
+  background: var(--brand-accent);
+  color: var(--brand-dark);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  width: fit-content;
+}
+
+.cover-title {
+  font-size: 52px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+}
+
+.cover-subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.cover-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 24px;
+}
+
+.cover-footer-left { color: rgba(255,255,255,0.6); font-size: 12px; }
+.cover-footer-left strong { color: rgba(255,255,255,0.9); display: block; font-size: 14px; margin-bottom: 3px; }
+.cover-footer-right { color: rgba(255,255,255,0.4); font-size: 11px; text-align: right; }
+
+/* ── Section divider ── */
+.section-break {
+  page-break-before: always;
+  padding-top: 56px;
+}
+
+/* ── Section header ── */
+.section-number {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 8px;
+}
+
+/* ── Typography ── */
+h1 {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--brand-dark);
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brand-dark);
+  letter-spacing: -0.4px;
+  margin-top: 40px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--brand-cream);
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-dark);
+  margin-top: 28px;
+  margin-bottom: 10px;
+}
+
+h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+p { margin-bottom: 12px; color: rgba(14,59,46,0.85); }
+
+strong { color: var(--brand-dark); font-weight: 600; }
+
+/* ── Subtitle under h1 ── */
+.doc-subtitle {
+  font-size: 15px;
+  color: var(--brand-muted);
+  margin-bottom: 40px;
+  margin-top: 4px;
+}
+
+/* ── Blockquote / callout ── */
+blockquote {
+  background: var(--brand-cream);
+  border-left: 4px solid var(--brand-green);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--brand-dark);
+}
+
+blockquote strong { color: var(--brand-dark); }
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+thead tr {
+  background: var(--brand-dark);
+  color: white;
+}
+
+thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+tbody tr { border-bottom: 1px solid var(--brand-border); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--brand-cream); }
+
+td {
+  padding: 9px 14px;
+  color: rgba(14,59,46,0.85);
+  vertical-align: middle;
+}
+
+td:first-child { font-weight: 500; color: var(--brand-dark); }
+
+/* ── Lists ── */
+ul, ol {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+li {
+  margin-bottom: 5px;
+  color: rgba(14,59,46,0.85);
+}
+
+li strong { color: var(--brand-dark); }
+
+/* ── Code / inline code ── */
+code {
+  background: var(--brand-cream);
+  color: var(--brand-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+}
+
+pre {
+  background: var(--brand-dark);
+  color: var(--brand-accent);
+  padding: 16px 20px;
+  border-radius: 10px;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+
+pre code { background: none; color: inherit; padding: 0; }
+
+/* ── Horizontal rule ── */
+hr {
+  border: none;
+  border-top: 1px solid var(--brand-border);
+  margin: 32px 0;
+}
+
+/* ── KPI cards ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.kpi-card {
+  background: var(--brand-cream);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.kpi-label { font-size: 11px; color: var(--brand-muted); font-weight: 500; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-value { font-size: 22px; font-weight: 800; color: var(--brand-dark); letter-spacing: -0.5px; }
+.kpi-sub { font-size: 11px; color: var(--brand-muted); margin-top: 4px; }
+
+/* ── Highlight box ── */
+.highlight {
+  background: linear-gradient(135deg, var(--brand-dark) 0%, #1a5c44 100%);
+  color: white;
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin: 24px 0;
+}
+
+.highlight h3 { color: var(--brand-accent); margin-top: 0; }
+.highlight p { color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+
+/* ── Status badges ── */
+.badge-done  { color: #059669; font-weight: 700; }
+.badge-wip   { color: #d97706; font-weight: 700; }
+.badge-plan  { color: #3b82f6; font-weight: 700; }
+.badge-future{ color: #8b5cf6; font-weight: 700; }
+
+/* ── Footer on each page ── */
+@media print {
+  .cover { height: 100vh; }
+  .section-break { page-break-before: always; }
+  body { font-size: 12px; }
+  h1 { font-size: 26px; }
+  .cover-title { font-size: 44px; }
+}
