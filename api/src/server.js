@@ -4,21 +4,20 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
+const { Resend } = require("resend");
+const PocketBase = require("pocketbase/cjs");
 
 const checkoutRouter = require("./routes/checkout");
 const webhookRouter = require("./routes/webhook");
 const verifyPaymentRouter = require("./routes/verifyPayment");
 const checkPaymentByUserRouter = require("./routes/checkPaymentByUser");
-const contactRouter = require("./routes/contact");
 
 const app = express();
 
 app.set("trust proxy", 1);
 
-// Healthcheck antes de qualquer middleware
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-// HTTPS redirect em produção
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
     if (req.headers["x-forwarded-proto"] !== "https") {
@@ -47,7 +46,7 @@ app.use(
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 30,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "Muitas requisições. Tente novamente em alguns minutos." },
@@ -61,14 +60,6 @@ const checkoutLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   message: { error: "Limite de tentativas de checkout atingido. Tente novamente em 15 minutos." },
-});
-
-const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Limite de mensagens de contato atingido. Máximo 5 mensagens por hora." },
 });
 
 const corsOptions = {
@@ -88,8 +79,34 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 app.use(express.json());
 
-// ── API routes ANTES do express.static ───────────────────────────────────────
-app.use("/api/contact", contactLimiter, contactRouter);
+// ── POST /api/contact ─────────────────────────────────────────────────────────
+app.post("/api/contact", async (req, res) => {
+  const { nome, email, assunto, mensagem } = req.body || {};
+
+  if (!nome || !email || !assunto || !mensagem) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+  }
+
+  console.log(`[Contact] ${nome} <${email}> — ${assunto}`);
+
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: "DashComigo <onboarding@resend.dev>",
+      to: process.env.CONTACT_EMAIL || "contato@dashcomigo.com.br",
+      replyTo: email,
+      subject: `[DashComigo] ${assunto} de ${nome}`,
+      html: `<p><b>Nome:</b> ${nome}</p><p><b>Email:</b> ${email}</p><p><b>Assunto:</b> ${assunto}</p><p><b>Mensagem:</b><br>${mensagem}</p>`,
+    });
+    console.log(`[Contact] Email enviado para ${process.env.CONTACT_EMAIL}`);
+  } catch (emailErr) {
+    console.error("[Contact] Falha ao enviar email:", emailErr.message);
+  }
+
+  return res.json({ success: true, message: "Mensagem recebida com sucesso. Entraremos em contato em breve." });
+});
+
+// ── Outras rotas da API ───────────────────────────────────────────────────────
 app.use("/checkout", checkoutLimiter, checkoutRouter);
 app.use("/webhook", webhookRouter);
 app.use("/verify-payment", verifyPaymentRouter);
