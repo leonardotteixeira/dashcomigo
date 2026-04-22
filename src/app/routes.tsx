@@ -1,4 +1,11 @@
-import { createHashRouter, Navigate } from "react-router";
+import { createHashRouter, Navigate, Outlet, useLocation } from "react-router";
+import { useEffect } from "react";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }, [pathname]);
+  return <Outlet />;
+}
 import { RouteError } from "./components/ErrorBoundary";
 import { DashboardLayout } from "./layouts/DashboardLayout";
 import { LandingPage } from "./pages/LandingPage";
@@ -50,6 +57,9 @@ import { Planos } from "./pages/Planos";
 import { NotFound } from "./pages/NotFound";
 
 export const router = createHashRouter([
+  {
+    Component: ScrollToTop,
+    children: [
   {
     path: "/",
     Component: LandingPage,
@@ -240,5 +250,7 @@ export const router = createHashRouter([
   {
     path: "*",
     Component: NotFound,
+  },
+    ],
   },
 ]);
