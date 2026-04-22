@@ -1,4 +1,4 @@
-import { X, TrendingUp, AlertCircle, Target, Sparkles } from "lucide-react";
+import { X, TrendingUp, AlertCircle, Target, ArrowRight, Flame } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCashFlow } from "../contexts/CashFlowContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -29,12 +29,11 @@ export default function WelcomeBackModal() {
 
   if (!isOpen) return null;
 
-  // Real data for highlights
   const streak = user?.loginStreak ?? 0;
+  const firstName = user?.name?.split(" ")[0] ?? "de volta";
   const fmt = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-  // Count upcoming obligations (from transactions that are payable in next 5 days)
   const now = new Date();
   const in5Days = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
   const upcomingCount = transactions.filter((t) => {
@@ -42,127 +41,225 @@ export default function WelcomeBackModal() {
     return t.tipo === "saida" && d >= now && d <= in5Days;
   }).length;
 
+  const STREAK_GOAL = 7;
+  const streakPct = Math.min((streak / STREAK_GOAL) * 100, 100);
+
   const highlights = [
     {
       icon: TrendingUp,
-      color: "text-success",
-      bgColor: "bg-success/10",
+      accent: "#10b981",
+      bg: "rgba(16,185,129,0.08)",
       label:
         summary.totalEntradas > 0
-          ? `Receitas: ${fmt(summary.totalEntradas)} este mês`
+          ? fmt(summary.totalEntradas)
+          : "—",
+      description:
+        summary.totalEntradas > 0
+          ? "Receitas registradas este mês"
           : "Nenhuma receita registrada ainda",
-      sublabel: summary.lucro >= 0 ? "Resultado positivo" : "Resultado negativo",
+      tag:
+        summary.lucro >= 0 ? "Resultado positivo" : "Resultado negativo",
+      tagColor: summary.lucro >= 0 ? "#10b981" : "#ef4444",
+      tagBg: summary.lucro >= 0 ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
     },
     {
       icon: AlertCircle,
-      color: "text-warning",
-      bgColor: "bg-warning/10",
+      accent: upcomingCount > 0 ? "#f59e0b" : "#10b981",
+      bg: upcomingCount > 0 ? "rgba(245,158,11,0.08)" : "rgba(16,185,129,0.08)",
       label:
         upcomingCount > 0
-          ? `${upcomingCount} ${upcomingCount === 1 ? "despesa vence" : "despesas vencem"} nos próximos 5 dias`
-          : "Nenhuma despesa vencendo nos próximos 5 dias",
-      sublabel: upcomingCount > 0 ? "Verifique suas contas" : "Tudo em dia!",
+          ? `${upcomingCount} ${upcomingCount === 1 ? "despesa" : "despesas"}`
+          : "Tudo em dia",
+      description:
+        upcomingCount > 0
+          ? `Vence${upcomingCount === 1 ? " nos" : "m nos"} próximos 5 dias`
+          : "Nenhuma despesa vencendo em breve",
+      tag: upcomingCount > 0 ? "Atenção necessária" : "Sem pendências",
+      tagColor: upcomingCount > 0 ? "#f59e0b" : "#10b981",
+      tagBg: upcomingCount > 0 ? "rgba(245,158,11,0.1)" : "rgba(16,185,129,0.1)",
     },
     {
       icon: Target,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
+      accent: "#2563eb",
+      bg: "rgba(37,99,235,0.08)",
       label:
         summary.margemLucro > 0
-          ? `Margem de lucro: ${summary.margemLucro.toFixed(0)}%`
-          : "Registre transações para ver sua margem",
-      sublabel:
+          ? `${summary.margemLucro.toFixed(0)}%`
+          : "—",
+      description:
+        summary.margemLucro > 0
+          ? "Margem de lucro líquido"
+          : "Registre transações para calcular",
+      tag:
         summary.margemLucro >= 40
-          ? "Excelente! Margem saudável."
+          ? "Margem excelente"
           : summary.margemLucro > 0
-          ? "Considere revisar preços"
-          : "Sem dados suficientes",
+          ? "Revisar preços"
+          : "Sem dados",
+      tagColor:
+        summary.margemLucro >= 40
+          ? "#10b981"
+          : summary.margemLucro > 0
+          ? "#f59e0b"
+          : "#6B7280",
+      tagBg:
+        summary.margemLucro >= 40
+          ? "rgba(16,185,129,0.1)"
+          : summary.margemLucro > 0
+          ? "rgba(245,158,11,0.1)"
+          : "rgba(107,114,128,0.1)",
     },
   ];
 
-  const STREAK_GOAL = 7;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
         onClick={() => setIsOpen(false)}
       />
 
-      <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
-        <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-6 border-b border-border">
+      {/* Modal */}
+      <div
+        className="relative w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
+        style={{ background: "#F4EFE6" }}
+      >
+        {/* Header */}
+        <div
+          className="relative px-6 pt-8 pb-6 overflow-hidden"
+          style={{ background: "#0E3B2E" }}
+        >
+          {/* Decorative circles */}
+          <div
+            className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-10"
+            style={{ background: "#fff" }}
+          />
+          <div
+            className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full opacity-5"
+            style={{ background: "#fff" }}
+          />
+
           <button
             onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 p-2 hover:bg-secondary rounded-lg transition-colors"
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
+            style={{ background: "rgba(255,255,255,0.12)" }}
           >
-            <X className="w-5 h-5 text-muted-foreground" />
+            <X className="w-4 h-4 text-white" />
           </button>
 
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h2 className="font-bold text-foreground">Bem-vindo de volta! 👋</h2>
-              <p className="text-sm text-muted-foreground">
-                Veja o que aconteceu desde sua última visita
-              </p>
-            </div>
+          <div className="relative">
+            <p className="text-sm font-medium mb-1" style={{ color: "rgba(255,255,255,0.6)" }}>
+              Bem-vindo de volta
+            </p>
+            <h2 className="text-2xl font-bold text-white mb-0.5">
+              Olá, {firstName}! 👋
+            </h2>
+            <p className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>
+              Veja o resumo desde sua última visita
+            </p>
           </div>
         </div>
 
-        <div className="p-6 space-y-4">
-          {highlights.map((item, index) => {
+        {/* Highlights */}
+        <div className="px-5 pt-5 space-y-3">
+          {highlights.map((item, i) => {
             const Icon = item.icon;
             return (
               <div
-                key={index}
-                className="flex items-start gap-3 p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                key={i}
+                className="flex items-center gap-4 rounded-2xl px-4 py-3.5"
+                style={{
+                  background: "#EBE4D6",
+                  border: "1px solid rgba(20,18,15,0.08)",
+                }}
               >
                 <div
-                  className={`w-10 h-10 rounded-lg ${item.bgColor} flex items-center justify-center flex-shrink-0`}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: item.bg }}
                 >
-                  <Icon className={`w-5 h-5 ${item.color}`} />
+                  <Icon className="w-5 h-5" style={{ color: item.accent }} />
                 </div>
-                <div>
-                  <p className="font-semibold text-foreground mb-0.5">{item.label}</p>
-                  <p className="text-sm text-muted-foreground">{item.sublabel}</p>
+
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-base font-bold leading-tight"
+                    style={{ color: "#0E3B2E" }}
+                  >
+                    {item.label}
+                  </p>
+                  <p
+                    className="text-xs mt-0.5 truncate"
+                    style={{ color: "rgba(14,59,46,0.55)" }}
+                  >
+                    {item.description}
+                  </p>
                 </div>
+
+                <span
+                  className="text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
+                  style={{ background: item.tagBg, color: item.tagColor }}
+                >
+                  {item.tag}
+                </span>
               </div>
             );
           })}
-
-          {streak > 0 && (
-            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg p-4 mt-4">
-              <p className="text-sm font-semibold text-foreground mb-1">
-                🔥 Sequência de {streak} {streak === 1 ? "dia" : "dias"}!
-              </p>
-              <p className="text-xs text-muted-foreground mb-3">
-                {streak >= STREAK_GOAL
-                  ? "Você atingiu a meta! Recompensa desbloqueada."
-                  : `Faltam ${STREAK_GOAL - streak} ${STREAK_GOAL - streak === 1 ? "dia" : "dias"} para ganhar 1 mês grátis do PRO!`}
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all"
-                    style={{ width: `${Math.min((streak / STREAK_GOAL) * 100, 100)}%` }}
-                  />
-                </div>
-                <span className="text-xs font-semibold text-amber-600">
-                  {Math.min(streak, STREAK_GOAL)}/{STREAK_GOAL}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
 
-        <div className="p-6 pt-0">
+        {/* Streak */}
+        {streak > 0 && (
+          <div
+            className="mx-5 mt-3 rounded-2xl px-4 py-3.5"
+            style={{
+              background: "linear-gradient(135deg, rgba(245,158,11,0.12), rgba(249,115,22,0.08))",
+              border: "1px solid rgba(245,158,11,0.2)",
+            }}
+          >
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center gap-2">
+                <Flame className="w-4 h-4 text-orange-500" />
+                <span className="text-sm font-bold" style={{ color: "#0E3B2E" }}>
+                  Sequência de {streak} {streak === 1 ? "dia" : "dias"}!
+                </span>
+              </div>
+              <span className="text-xs font-bold text-orange-600">
+                {Math.min(streak, STREAK_GOAL)}/{STREAK_GOAL}
+              </span>
+            </div>
+
+            <div
+              className="h-1.5 rounded-full overflow-hidden mb-1.5"
+              style={{ background: "rgba(245,158,11,0.15)" }}
+            >
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${streakPct}%`,
+                  background: "linear-gradient(90deg, #f59e0b, #f97316)",
+                }}
+              />
+            </div>
+
+            <p className="text-xs" style={{ color: "rgba(14,59,46,0.55)" }}>
+              {streak >= STREAK_GOAL
+                ? "Meta atingida! Recompensa desbloqueada 🎉"
+                : `Faltam ${STREAK_GOAL - streak} ${STREAK_GOAL - streak === 1 ? "dia" : "dias"} para ganhar 1 mês grátis do PRO`}
+            </p>
+          </div>
+        )}
+
+        {/* CTA */}
+        <div className="px-5 pt-4 pb-6">
           <button
             onClick={() => setIsOpen(false)}
-            className="w-full bg-primary text-primary-foreground font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-sm transition-all active:scale-[0.98]"
+            style={{
+              background: "#0E3B2E",
+              color: "#F4EFE6",
+            }}
           >
-            Continuar para o Dashboard
+            Ir para o Dashboard
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
