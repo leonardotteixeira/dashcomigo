@@ -116,6 +116,7 @@ app.use("/check-payment-by-user", checkPaymentByUserRouter);
 const frontendPath = path.join(__dirname, "../../dist");
 app.use(express.static(frontendPath));
 app.get("*", (req, res) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate");
   res.sendFile(path.join(frontendPath, "index.html"), (err) => {
     if (err) res.status(500).json({ error: "Could not load frontend" });
   });
