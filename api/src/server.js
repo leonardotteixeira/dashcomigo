@@ -104,15 +104,6 @@ const path = require("path");
 const frontendPath = path.join(__dirname, "../../dist");
 app.use(express.static(frontendPath));
 
-app.post("/api/contact", (req, res) => {
-  const { nome, email, assunto, mensagem } = req.body;
-  if (!nome || !email || !assunto || !mensagem) {
-    return res.status(400).json({ error: "Campos obrigatórios ausentes" });
-  }
-  console.log("[Contact]", { nome, email, assunto });
-  res.json({ ok: true });
-});
-
 app.use("/checkout", checkoutLimiter, checkoutRouter);
 app.use("/webhook", webhookRouter);
 app.use("/verify-payment", verifyPaymentRouter);

@@ -75,9 +75,9 @@ export function Contato() {
 
       const data = await response.json();
 
-      if (data.ok) {
+      if (data.success) {
         setSubmitted(true);
-        setSuccessMessage("Entraremos em contato em breve.");
+        setSuccessMessage(data.message || "Entraremos em contato em breve.");
         setForm({ nome: "", email: "", assunto: "", mensagem: "" });
 
         setTimeout(() => {
