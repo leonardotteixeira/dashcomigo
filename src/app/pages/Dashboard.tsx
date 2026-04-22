@@ -45,8 +45,9 @@ import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
 import PfPjDistribution from "../components/PfPjDistribution";
 import { ProInsightsBar } from "../components/ProInsightsBar";
-import { BankConnectionSelector } from "../components/BankConnectionSelector";
-import { useOpenFinanceStatus } from "../hooks/useOpenFinanceStatus";
+// Open Finance imports kept for future integration (components not yet committed)
+// import { BankConnectionSelector } from "../components/BankConnectionSelector";
+// import { useOpenFinanceStatus } from "../hooks/useOpenFinanceStatus";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -69,7 +70,8 @@ export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { summary, insights, transactions } = useCashFlow();
-  const { connected: ofConnected, connectedAt: ofConnectedAt, loading: ofLoading, refresh: ofRefresh } = useOpenFinanceStatus(user?.id);
+  // Open Finance status - disabled until full integration
+  const ofConnected = false, ofConnectedAt = null, ofLoading = false, ofRefresh = () => {};
   const {
     saldoAtual,
     monthReceitas,
