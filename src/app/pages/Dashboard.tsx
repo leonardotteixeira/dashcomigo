@@ -45,7 +45,8 @@ import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
 import PfPjDistribution from "../components/PfPjDistribution";
 import { ProInsightsBar } from "../components/ProInsightsBar";
-import { PlaidLink } from "../components/PlaidLink";
+import { BankConnectionSelector } from "../components/BankConnectionSelector";
+import { useOpenFinanceStatus } from "../hooks/useOpenFinanceStatus";
 
 function buildCashFlowChart(transactions: any[]) {
   return Array.from({ length: 4 }, (_, i) => {
@@ -68,6 +69,7 @@ export function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { summary, insights, transactions } = useCashFlow();
+  const { connected: ofConnected, connectedAt: ofConnectedAt, loading: ofLoading, refresh: ofRefresh } = useOpenFinanceStatus(user?.id);
   const {
     saldoAtual,
     monthReceitas,
@@ -214,32 +216,60 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Plaid Integration Card */}
-        <div className="bg-gradient-to-r from-[#0066FF] to-[#0052CC] rounded-2xl p-6 shadow-md text-white">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
+        {/* Open Finance - DESATIVADO até integração completa
+        {!ofLoading && !ofConnected && (
+          <div className="bg-gradient-to-r from-[#0066FF] to-[#0052CC] rounded-2xl p-6 shadow-md text-white">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Banknote className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Conectar seu Banco</h3>
+                    <p className="text-sm text-white/90">Importe transações automaticamente via Open Finance</p>
+                  </div>
+                </div>
+                <p className="text-sm text-white/80 mb-4">
+                  Sincronize seus dados bancários com segurança e veja PF/PJ classificados automaticamente
+                </p>
+              </div>
+              <BankConnectionSelector
+                userId={user?.id || ''}
+                onSuccess={() => {
+                  ofRefresh();
+                  window.location.reload();
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {!ofLoading && ofConnected && (
+          <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 shadow-md text-white">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
                   <Banknote className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">Conectar seu Banco</h3>
-                  <p className="text-sm text-white/90">Importe transações automaticamente via Open Finance</p>
+                  <h3 className="font-bold text-lg">✅ Open Finance Conectado</h3>
+                  <p className="text-sm text-white/90">
+                    Seus dados bancários estão sendo sincronizados automaticamente
+                    {ofConnectedAt && ` · Conectado em ${new Date(ofConnectedAt).toLocaleDateString('pt-BR')}`}
+                  </p>
                 </div>
               </div>
-              <p className="text-sm text-white/80 mb-4">
-                Sincronize seus dados bancários com segurança e veja PF/PJ classificados automaticamente
-              </p>
+              <button
+                onClick={() => navigate('/app/investimentos')}
+                className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2 rounded-lg transition"
+              >
+                Ver Carteira →
+              </button>
             </div>
-            <PlaidLink
-              className="whitespace-nowrap"
-              onSuccess={() => {
-                // Recarregar transações
-                window.location.reload();
-              }}
-            />
           </div>
-        </div>
+        )}
+        */}
 
         {/* Onboarding Checklist */}
         <OnboardingChecklist />
