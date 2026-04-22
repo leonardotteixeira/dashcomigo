@@ -216,8 +216,8 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Open Finance - DESATIVADO até integração completa
-        {!ofLoading && !ofConnected && (
+        {/* Open Finance - DESATIVADO até integração completa */}
+        {false && !ofLoading && !ofConnected && (
           <div className="bg-gradient-to-r from-[#0066FF] to-[#0052CC] rounded-2xl p-6 shadow-md text-white">
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -245,7 +245,7 @@ export function Dashboard() {
           </div>
         )}
 
-        {!ofLoading && ofConnected && (
+        {false && !ofLoading && ofConnected && (
           <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 shadow-md text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -269,7 +269,6 @@ export function Dashboard() {
             </div>
           </div>
         )}
-        */}
 
         {/* Onboarding Checklist */}
         <OnboardingChecklist />
