@@ -92,7 +92,7 @@ app.post("/api/contact", async (req, res) => {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "DashComigo <onboarding@resend.dev>",
+      from: "DashComigo <contato@dashcomigo.com.br>",
       to: process.env.CONTACT_EMAIL || "contato@dashcomigo.com.br",
       replyTo: email,
       subject: `[DashComigo] ${assunto} de ${nome}`,
