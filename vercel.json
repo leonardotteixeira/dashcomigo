@@ -64,6 +64,10 @@
       "destination": "https://simulador-financeiro-saas-production.up.railway.app/health"
     },
     {
+      "source": "/api/(.*)",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/api/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
