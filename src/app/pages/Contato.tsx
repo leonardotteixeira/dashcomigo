@@ -66,14 +66,14 @@ export function Contato() {
         body: JSON.stringify(form),
       });
 
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || "Erro ao enviar mensagem. Tente novamente em alguns minutos.");
+        setError(data.error || "Erro ao enviar mensagem. Tente novamente em alguns minutos.");
         setLoading(false);
         return;
       }
-
-      const data = await response.json();
 
       if (data.success) {
         setSubmitted(true);
