@@ -85,7 +85,7 @@ export default function QuickActions() {
                 <Icon className={`w-6 h-6 ${action.color}`} />
               </div>
               <span className="text-sm font-medium text-foreground text-center">{action.label}</span>
-              {action.proFeature && (
+              {action.proFeature && !isPro && (
                 <span className="text-xs bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded-full font-medium">
                   PRO
                 </span>

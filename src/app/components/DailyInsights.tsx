@@ -1,7 +1,12 @@
-import { Sparkles, TrendingUp, AlertTriangle, Target, Lightbulb, TrendingDown } from "lucide-react";
+import { Sparkles, TrendingUp, AlertTriangle, Target, Lightbulb, TrendingDown, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router";
 import { useCashFlow } from "../contexts/CashFlowContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function DailyInsights() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const isPro = user?.plan === "pro";
   const { transactions, summary } = useCashFlow();
 
   const now = new Date();
@@ -170,22 +175,38 @@ export default function DailyInsights() {
       )}
 
       <div className="mt-4 pt-4 border-t border-border">
-        <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg p-3 border border-primary/10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">
-                Desbloqueie Insights Avançados
-              </span>
+        {isPro ? (
+          <button
+            onClick={() => navigate("/app/relatorios")}
+            className="w-full flex items-center justify-between text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              Ver análise completa no relatório
+            </span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        ) : (
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg p-3 border border-primary/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">
+                  Desbloqueie Insights Avançados
+                </span>
+              </div>
+              <button
+                onClick={() => navigate("/pricing")}
+                className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+              >
+                Ver PRO
+              </button>
             </div>
-            <button className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors font-medium">
-              Ver PRO
-            </button>
+            <p className="text-xs text-muted-foreground mt-2">
+              Receba análises preditivas e sugestões personalizadas diariamente
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            Receba análises preditivas e sugestões personalizadas diariamente
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );
