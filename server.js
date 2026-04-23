@@ -1,37 +1,52 @@
 /**
- * Plaid API Routes
- * Backend integration for Open Finance
- *
- * Ensure you have these environment variables:
- * - PLAID_CLIENT_ID
- * - PLAID_SECRET
- * - PLAID_ENV=sandbox (or production)
+ * Express Server for Plaid Integration
+ * Run with: node server.js
  */
 
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 import PocketBase from 'pocketbase';
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 // Initialize PocketBase
 const pb = new PocketBase('https://pocketbase-production-d5ae.up.railway.app');
 
-// Initialize Plaid client
+// Initialize Plaid
+const PLAID_CLIENT_ID = process.env.VITE_PLAID_CLIENT_ID || process.env.PLAID_CLIENT_ID || '';
+const PLAID_SECRET = process.env.PLAID_SECRET || '';
+
+if (!PLAID_CLIENT_ID || !PLAID_SECRET) {
+  console.warn('⚠️ Plaid credentials not found in environment variables');
+  console.warn('Please set VITE_PLAID_CLIENT_ID and PLAID_SECRET in .env.local');
+}
+
 const configuration = new Configuration({
-  basePath: PlaidEnvironments.Sandbox, // Use 'Production' in production
+  basePath: 'https://sandbox.plaid.com',
   baseOptions: {
     headers: {
-      'PLAID-CLIENT-ID': process.env.VITE_PLAID_CLIENT_ID || '',
-      'PLAID-SECRET': process.env.PLAID_SECRET || '',
+      'PLAID-CLIENT-ID': PLAID_CLIENT_ID,
+      'PLAID-SECRET': PLAID_SECRET,
     },
   },
 });
 
 const plaidClient = new PlaidApi(configuration);
 
-/**
- * POST /api/plaid/create-link-token
- * Create a Plaid Link Token for frontend
- */
-export async function createLinkToken(req: any, res: any) {
+// Plaid Routes
+
+// POST /api/plaid/create-link-token
+app.post('/api/plaid/create-link-token', async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -42,8 +57,8 @@ export async function createLinkToken(req: any, res: any) {
     const response = await plaidClient.linkTokenCreate({
       user: { client_user_id: userId },
       client_name: 'Dashcomigo',
-      language: 'pt-BR',
-      country_codes: ['BR'],
+      language: 'en',
+      country_codes: ['US'],
       products: ['auth', 'transactions'],
     });
 
@@ -54,16 +69,20 @@ export async function createLinkToken(req: any, res: any) {
       expiration: response.data.expiration,
     });
   } catch (error) {
-    console.error('[Plaid] Error creating link token:', error);
-    return res.status(500).json({ error: 'Failed to create link token' });
+    console.error('[Plaid] Error creating link token:', error?.message || error);
+    if (error?.response?.data) {
+      console.error('[Plaid] Response data:', JSON.stringify(error.response.data, null, 2));
+    }
+    return res.status(500).json({
+      error: 'Failed to create link token',
+      details: error?.message || String(error),
+      plaidError: error?.response?.data || null
+    });
   }
-}
+});
 
-/**
- * POST /api/plaid/exchange-token
- * Exchange public token for access token and item ID
- */
-export async function exchangeToken(req: any, res: any) {
+// POST /api/plaid/exchange-token
+app.post('/api/plaid/exchange-token', async (req, res) => {
   try {
     const { publicToken, userId } = req.body;
 
@@ -71,7 +90,6 @@ export async function exchangeToken(req: any, res: any) {
       return res.status(400).json({ error: 'publicToken and userId required' });
     }
 
-    // Exchange for access token
     const exchangeResponse = await plaidClient.itemPublicTokenExchange({
       public_token: publicToken,
     });
@@ -81,17 +99,16 @@ export async function exchangeToken(req: any, res: any) {
 
     console.log('[Plaid] Token exchanged, item_id:', itemId);
 
-    // Store in PocketBase for later use
+    // Store in PocketBase
     try {
       await pb.collection('plaid_connections').create({
         user_id: userId,
         item_id: itemId,
-        access_token: accessToken, // Store encrypted in production!
-        connected_at: new Date(),
+        access_token: accessToken,
+        connected_at: new Date().toISOString(),
       });
     } catch (dbError) {
       console.warn('[Plaid] Could not store connection:', dbError);
-      // Continue anyway, token is still valid
     }
 
     return res.json({
@@ -102,13 +119,10 @@ export async function exchangeToken(req: any, res: any) {
     console.error('[Plaid] Error exchanging token:', error);
     return res.status(500).json({ error: 'Failed to exchange token' });
   }
-}
+});
 
-/**
- * POST /api/plaid/sync-transactions
- * Sync transactions from Plaid to Dashcomigo
- */
-export async function syncTransactions(req: any, res: any) {
+// POST /api/plaid/sync-transactions
+app.post('/api/plaid/sync-transactions', async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -116,7 +130,6 @@ export async function syncTransactions(req: any, res: any) {
       return res.status(400).json({ error: 'userId required' });
     }
 
-    // Get access token from PocketBase
     const connection = await pb
       .collection('plaid_connections')
       .getFirstListItem(`user_id = "${userId}"`)
@@ -126,7 +139,6 @@ export async function syncTransactions(req: any, res: any) {
       return res.status(404).json({ error: 'No Plaid connection found' });
     }
 
-    // Get transactions
     const now = new Date();
     const sixMonthsAgo = new Date(now.setMonth(now.getMonth() - 6));
 
@@ -142,11 +154,9 @@ export async function syncTransactions(req: any, res: any) {
     const transactions = txnResponse.data.transactions;
     console.log(`[Plaid] Fetched ${transactions.length} transactions`);
 
-    // Import to Dashcomigo
     let imported = 0;
     for (const txn of transactions) {
       try {
-        // Skip if already exists (by Plaid transaction_id)
         const existing = await pb
           .collection('transactions')
           .getFirstListItem(`plaid_id = "${txn.transaction_id}"`)
@@ -157,10 +167,8 @@ export async function syncTransactions(req: any, res: any) {
           continue;
         }
 
-        // Classify PF/PJ
         const pfpjType = classifyTransaction(txn.name, txn.amount);
 
-        // Create transaction in Dashcomigo
         await pb.collection('transactions').create({
           user_id: userId,
           plaid_id: txn.transaction_id,
@@ -170,7 +178,7 @@ export async function syncTransactions(req: any, res: any) {
           data: txn.date,
           descricao: txn.name,
           pf_pj_type: pfpjType,
-          pf_pj_confidence: 75, // Medium confidence for auto-imported
+          pfpj_score: 75,
           pf_pj_suggested_by: 'plaid',
         });
 
@@ -178,7 +186,6 @@ export async function syncTransactions(req: any, res: any) {
         console.log('[Plaid] Imported transaction:', txn.name);
       } catch (txnError) {
         console.warn('[Plaid] Error importing transaction:', txnError);
-        // Continue with next transaction
       }
     }
 
@@ -192,13 +199,10 @@ export async function syncTransactions(req: any, res: any) {
     console.error('[Plaid] Error syncing transactions:', error);
     return res.status(500).json({ error: 'Failed to sync transactions' });
   }
-}
+});
 
-/**
- * GET /api/plaid/accounts
- * Get list of connected accounts
- */
-export async function getAccounts(req: any, res: any) {
+// GET /api/plaid/accounts
+app.get('/api/plaid/accounts', async (req, res) => {
   try {
     const { userId } = req.query;
 
@@ -215,12 +219,11 @@ export async function getAccounts(req: any, res: any) {
       return res.json({ accounts: [] });
     }
 
-    // Get accounts from Plaid
     const response = await plaidClient.accountsGet({
       access_token: connection.access_token,
     });
 
-    const accounts = response.data.accounts.map((acc: any) => ({
+    const accounts = response.data.accounts.map((acc) => ({
       account_id: acc.account_id,
       name: acc.name,
       type: acc.type,
@@ -237,21 +240,17 @@ export async function getAccounts(req: any, res: any) {
     console.error('[Plaid] Error getting accounts:', error);
     return res.status(500).json({ error: 'Failed to get accounts' });
   }
-}
+});
 
-/**
- * POST /api/plaid/disconnect
- * Revoke Plaid access
- */
-export async function disconnect(req: any, res: any) {
+// POST /api/plaid/disconnect
+app.post('/api/plaid/disconnect', async (req, res) => {
   try {
-    const { userId, itemId } = req.body;
+    const { userId } = req.body;
 
     if (!userId) {
       return res.status(400).json({ error: 'userId required' });
     }
 
-    // Delete from PocketBase
     const connection = await pb
       .collection('plaid_connections')
       .getFirstListItem(`user_id = "${userId}"`)
@@ -266,34 +265,30 @@ export async function disconnect(req: any, res: any) {
     console.error('[Plaid] Error disconnecting:', error);
     return res.status(500).json({ error: 'Failed to disconnect' });
   }
-}
+});
 
 // Helper functions
-
-function classifyTransaction(description: string, amount: number): 'PF' | 'PJ' {
+function classifyTransaction(description, amount) {
   const desc = description.toLowerCase();
 
-  // PF keywords
   const pfKeywords = ['salário', 'salario', 'pessoal', 'retirada', 'mercado', 'supermercado', 'farmácia'];
   if (pfKeywords.some(kw => desc.includes(kw))) {
-    return 'PF';
+    return 'pf';
   }
 
-  // PJ keywords
   const pjKeywords = ['fornecedor', 'nota fiscal', 'cliente', 'empresa', 'aluguel', 'energia'];
   if (pjKeywords.some(kw => desc.includes(kw))) {
-    return 'PJ';
+    return 'pj';
   }
 
-  // Amount-based
-  if (Math.abs(amount) < 100) return 'PF';
-  if (Math.abs(amount) > 2000) return 'PJ';
+  if (Math.abs(amount) < 100) return 'pf';
+  if (Math.abs(amount) > 2000) return 'pj';
 
-  return 'PJ';
+  return 'pj';
 }
 
-function mapCategory(plaidCategory?: string): string {
-  const categoryMap: Record<string, string> = {
+function mapCategory(plaidCategory) {
+  const categoryMap = {
     'FOOD_AND_DRINK': 'Alimentação',
     'SHOPPING': 'Compras',
     'TRANSPORTATION': 'Transporte',
@@ -306,3 +301,14 @@ function mapCategory(plaidCategory?: string): string {
 
   return categoryMap[plaidCategory || ''] || 'Outros';
 }
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`📍 Plaid routes at http://localhost:${PORT}/api/plaid`);
+});
