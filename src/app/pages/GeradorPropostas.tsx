@@ -15,6 +15,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
+import { generateProposalPDF } from "../../utils/generateProposalPDF";
 
 type Template = "basico" | "detalhado" | "premium";
 type ProposalStatus = "aguardando" | "aprovada" | "recusada" | "paga" | "vencida";
@@ -451,10 +452,34 @@ export function GeradorPropostas() {
     );
   };
 
-  const handleDownloadPDF = () => {
-    document.body.classList.add("printing-proposal");
-    window.print();
-    document.body.classList.remove("printing-proposal");
+  const handleDownloadPDF = (proposal?: Proposal) => {
+    if (proposal) {
+      generateProposalPDF({
+        tipo: proposal.tipo,
+        template: proposal.template,
+        nomeCliente: proposal.nome_cliente,
+        emailCliente: proposal.email_cliente,
+        nomeServico: proposal.nome_servico,
+        descricao: proposal.descricao,
+        valor: Number(proposal.valor),
+        prazo: proposal.prazo,
+        condicoesPagamento: proposal.condicoes_pagamento,
+        validade: proposal.validade ?? 7,
+      });
+    } else {
+      generateProposalPDF({
+        tipo,
+        template,
+        nomeCliente,
+        emailCliente,
+        nomeServico,
+        descricao,
+        valor,
+        prazo,
+        condicoesPagamento,
+        validade,
+      });
+    }
   };
 
   const inputClass = "bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl focus:border-primary";
@@ -657,7 +682,7 @@ export function GeradorPropostas() {
                   </div>
 
                   {/* Action buttons */}
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <Button
                       size="sm"
                       className="bg-[#7FD19F] hover:bg-primary text-foreground rounded-lg text-xs"
@@ -673,6 +698,14 @@ export function GeradorPropostas() {
                     >
                       <Send className="w-3 h-3 mr-1" />
                       Enviar
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-lg text-xs"
+                      onClick={() => handleDownloadPDF(selectedProposal)}
+                    >
+                      <Download className="w-3 h-3 mr-1" />
+                      PDF
                     </Button>
                   </div>
 
