@@ -1,365 +1,269 @@
-# Financial SaaS — Complete Product Roadmap
+# DashComigo — Roadmap Atualizado
 
-> Generated: 2026-04-09
-> Stack: React + Vite + TypeScript · PocketBase · Railway
-> Target: MEI / Small Business owners in Brazil
-
----
-
-## 1. CURRENT STATE ANALYSIS
-
-### ✅ What Is Solid
-
-| Area | Status |
-|------|--------|
-| Auth system | Login, signup, Google OAuth, session persistence via PocketBase |
-| CashFlowContext | Fully synced — FluxoCaixa writes through context, Dashboard reads same state |
-| Feature gating architecture | `featureAccessService.ts` is clean, centralized, and extensible |
-| Deployment pipeline | Push → Railway auto-deploys in ~30s. Zero manual steps |
-| Dashboard KPIs | Real data via `useFinancialMetrics` (single source of truth) |
-| Profile page | Complete: personal info, MEI data, security, notifications |
-| Cross-posting | Paid payables/received receivables now create transactions |
-
-### ⚠️ What Is Fragile
-
-| Area | Risk |
-|------|------|
-| **Plan limits are client-side only** | Free users can call `pb.collection().create()` directly from DevTools and bypass all limits. `getVerifiedPlan()` exists but isn't used everywhere consistently |
-| **Reports page** | Was built with mock/static data. Real data wiring is incomplete |
-| **Transaction status/origin fields** | Cross-posted transactions write `origin: "payable"` but the PocketBase schema may not have that field — silent failures |
-| **Payables/Receivables sync is one-way** | When a payable is marked paid, a transaction is created. But if that transaction is deleted from FluxoCaixa, the payable still shows "pago" |
-| **No real-time updates** | PocketBase supports WebSocket subscriptions but they're not implemented. Two tabs open = data diverges |
-| **Login streak reward** | 7-day streak grants PRO permanently with no expiry. This can be gamed |
-
-### ❌ What Is Missing
-
-- No password reset / forgot password flow
-- No email verification enforcement (signup sends verification but doesn't gate access)
-- No actual payment processing for PRO upgrade (checkout page has no real Stripe/PIX integration)
-- No proper onboarding completion gate (users can skip onboarding)
-- No 404 / error boundary pages
-- No admin panel to manage users, view metrics, manually grant PRO
-- Proposals and Budgets modules may be stubs
-- No data export working end-to-end (Excel/PDF buttons exist but error handling is missing)
-
-### 🔴 What Is Risky
-
-| Risk | Impact |
-|------|--------|
-| PocketBase on Railway free tier | Cold starts, sleep after inactivity, data loss if volume not persisted |
-| No database migration system | Any schema change requires manual intervention |
-| No backup strategy | Single PocketBase instance = single point of failure |
-| Stripe/payment not integrated | PRO upgrade button exists but revenue capture is manual or broken |
-| `transactionsUsageToday` counter | Named "today" but used as monthly counter — naming mismatch creates potential double-counting bugs |
+> Última atualização: 2026-04-22
+> Stack: React + Vite + TypeScript · PocketBase · Railway · Vercel · Asaas
+> Produto: Gestão financeira para MEI e pequenas empresas no Brasil
 
 ---
 
-## 2. STRUCTURED ROADMAP
+## Estado Real do Produto (auditado em 2026-04-22)
+
+### ✅ Sólido e em Produção
+
+| Área | Detalhe |
+|------|---------|
+| Auth | Login, signup, Google OAuth, password reset, sessão persistente via PocketBase |
+| Pagamentos | Asaas integrado com webhook, sandbox, planos R$9,90 (1º mês) / R$29,90 (recorrente) |
+| FluxoCaixa | CRUD completo, filtros, PF/PJ classification, export XLSX |
+| Contas a Pagar | CRUD + status (pendente/pago/vencido) + export XLSX |
+| Contas a Receber | CRUD + status + export XLSX |
+| Propostas | CRUD completo, limite FREE/PRO, 5 status de ciclo de vida |
+| Estoque | CRUD + movimentações + alertas de estoque mínimo |
+| Metas | CRUD completo (PRO only), progress tracking, histórico 6 meses |
+| Relatórios | Dados reais de transações/payables/receivables, charts com Recharts |
+| DAS-MEI | Cálculo com alíquotas por atividade, registra como transação |
+| Simuladores | MEI/ME, Preço, Lucro — todos funcionais (Preço e Lucro são PRO) |
+| Clientes/Fornecedores | CRUD completo, filtros, status ativo/inativo |
+| Investimentos | Guia estático + motor de recomendação com questionário de risco |
+| Onboarding | Fluxo multi-step real (skippable) |
+| Perfil | Nome, telefone, CNPJ, avatar, senha — tudo salva no PocketBase |
+| Feature gating | `featureAccessService.ts` centralizado, limites corretos por plano |
+| Error boundary | Implementado em todas as rotas |
+| PF/PJ separation | Classificação heurística com scoring de confiança |
+| Design system | Tema warm green (#0E3B2E / #F4EFE6 / #EBE4D6) aplicado no Dashboard e Landing |
+
+### ⚠️ Parcialmente Implementado
+
+| Área | O que existe | O que falta |
+|------|--------------|-------------|
+| Email de cobrança | Toggle `receive_payment_reminders` no perfil; campos no schema | Scheduler, cron job, templates, lógica de disparo |
+| Transações recorrentes | Campos `ehRecorrente` + `frequenciaRecorrencia` no schema | Auto-geração de próximas ocorrências |
+| Bank sync (Open Finance) | Funções Pluggy + Belvo implementadas; BankConnectionSelector pronto | Feature desativada intencionalmente — backend routes precisam ser validados antes do re-enable |
+| Export PDF | Botões existem na UI (Propostas, Relatórios) | Nenhuma biblioteca de geração PDF conectada |
+| `pro_expires_at` | Campo existe para streak reward (30 dias trial) | Checkout Asaas não grava expiração local — depende da assinatura recorrente Asaas |
+
+### ❌ Não Implementado
+
+- NFS-e (botão existe na UI de propostas, sem backend)
+- CSV/OFX bank statement import
+- Cash Flow Forecast (projeção baseada em histórico)
+- MEI annual revenue limit tracker (barra de progresso R$X / R$81.000)
+- Category budget alerts (orçamento por categoria com alerta em 80%)
+- Financial health score (0–100)
+- PocketBase real-time subscriptions (sync entre abas)
+- Paginação real nas listas (atual: `getList(1, 500)` em todos os contextos)
+- Onboarding obrigatório (atualmente skippable)
+- In-app changelog
+- Referral program
+- NPS / feedback widget
+
+### ❗ Débito Técnico Confirmado
+
+| Item | Risco | Ação |
+|------|-------|------|
+| `transactionsUsageToday` → deveria ser `transactionsUsageThisMonth` | Bug latente de contagem dupla | Renomear em AuthContext + PocketBase schema |
+| `getList(1, 500)` em todos os contextos | App trava com 500+ registros | Implementar paginação cursor-based |
+| Limites de plano são client-side only | Usuário pode bypassar via DevTools | Adicionar regras server-side no PocketBase |
+| Railway auto-deploy via GitHub quebrado | Deploys manuais insustentáveis | Investigar watchPatterns no railway.json |
+| Bloco 2 planeja "supabase/functions/" | Stack real é PocketBase — referências erradas | Reescrever planos usando PocketBase job scheduler |
+| `payables`/`receivables` são coleções separadas de `transactions` | Sync one-way cria inconsistências | Avaliar migração para coleção unificada |
 
 ---
 
-### Phase 1 — Core Stability
-**Goal:** Every piece of data saves correctly, every limit is enforced server-side, nothing crashes silently.
-**Timeline:** 1–2 weeks
-
-#### Tasks
-
-**1.1 — Verify PocketBase schema matches code**
-- Add `origin` (`cashflow | payable | receivable`) and `status` (`pending | paid | received`) fields to the `transactions` collection
-- Add `address` and `cpf_cnpj` fields to `profiles` if not already there
-- *Dependency:* None
-- *Outcome:* No more silent field-write failures
-
-**1.2 — Move plan enforcement to PocketBase rules**
-- In PocketBase collection rules for `transactions`, `payables`, `receivables`: add a server-side rule that counts existing records and rejects creates beyond the free plan limit
-- This makes limits **impossible to bypass** from client
-- *Dependency:* PocketBase admin access
-- *Outcome:* Free plan limits are cryptographically enforced
-
-**1.3 — Fix `transactionsUsageToday` naming and logic**
-- Rename to `transactionsUsageThisMonth` across AuthContext, PocketBase schema, and FluxoCaixa
-- Ensure the counter resets on the 1st of each month, not daily
-- *Dependency:* 1.1
-- *Outcome:* Accurate usage tracking, no counting drift
-
-**1.4 — Add error boundaries and fallback UI**
-- Wrap each route in a React `ErrorBoundary` that shows a recovery screen instead of white-screen-of-death
-- Add a global `toast.error()` catch in every async context function that currently swallows errors silently
-- *Dependency:* None
-- *Outcome:* App never fully crashes; errors are surfaced to users
-
-**1.5 — Validate all PocketBase collection permissions**
-- Each collection should only allow operations where `@request.auth.id = userid`
-- Verify no collection is publicly readable/writable
-- *Dependency:* PocketBase admin access
-- *Outcome:* Zero data leakage between users
-
-**1.6 — Fix password reset flow**
-- PocketBase has `requestPasswordReset()` built in. Add a "Forgot password" link on the login page
-- *Dependency:* None
-- *Outcome:* Users can recover accounts without manual intervention
+## Roadmap por Prioridade
 
 ---
 
-### Phase 2 — UX & UI Refinement
-**Goal:** Every screen feels intentional, consistent, and fast.
-**Timeline:** 1–2 weeks
+### 🔴 Fase 1 — Crítico (Fazer Agora)
+**Meta:** Fechar gaps que afetam usuários pagantes e sustentabilidade do produto.
 
-#### Tasks
+#### 1.1 Email de Cobrança
+**Por quê:** Feature mais pedida; concorrentes (Conta Azul, Nibo, Bling) têm. Reduz churn por esquecimento.
 
-**2.1 — Audit every page for loading states**
-- Every data-fetching operation should show a skeleton loader, not a blank space
-- Currently inconsistent: some pages have skeletons, others flash empty states
-- *Dependency:* Phase 1 complete
-- *Outcome:* Perceived performance improves significantly
+**Implementação:**
+- Scheduled service no Railway (cron diário 08:00)
+- Verificar payables com `status=pendente` e `data_vencimento <= hoje + 3 dias`
+- Verificar receivables com `data_vencimento < hoje` e `status=pendente`
+- Enviar via Resend (já configurado) — máximo 3 lembretes por conta
+- Registrar envios em coleção `email_logs` no PocketBase
 
-**2.2 — Empty states for every list**
-- FluxoCaixa, ContasAPagar, ContasAReceber, Clientes, Fornecedores all need meaningful empty states with CTAs
-- *Dependency:* None
-- *Outcome:* New users understand what to do next
+**Arquivos a criar:**
+- `api/src/jobs/paymentReminders.js`
+- `api/src/routes/jobs.js` (endpoint de trigger manual para testes)
 
-**2.3 — Mobile responsiveness audit**
-- Test all pages at 375px width. Fix tables that overflow (FluxoCaixa, RelatoriosFinanceiros)
-- Modal forms need to be full-screen on mobile
-- *Dependency:* None
-- *Outcome:* Usable on any device
-
-**2.4 — Complete Proposals and Budgets modules**
-- Build the full CRUD: list view, form modal, PDF preview/export
-- *Dependency:* Phase 1 complete
-- *Outcome:* PRO users have access to all advertised features
-
-**2.5 — Reports page — wire to real data**
-- Replace every hardcoded/mock value in `RelatoriosFinanceiros.tsx` with data from `useFinancialMetrics`
-- Verify category donut charts use real category breakdowns
-- Verify trend charts use actual transaction data filtered by month
-- *Dependency:* Phase 1 complete
-- *Outcome:* Reports are trustworthy
-
-**2.6 — Consistent form validation UX**
-- All forms need: inline field-level validation, disabled submit while saving, success/error feedback
-- *Dependency:* None
-- *Outcome:* Users never wonder if something worked
+**Esforço:** 3 dias
 
 ---
 
-### Phase 3 — Monetization System
-**Goal:** PRO upgrades actually generate revenue. Free plan feels genuinely limited, not broken.
-**Timeline:** 1 week
+#### 1.2 PDF Export de Propostas
+**Por quê:** Feature PRO anunciada que não funciona. Destrói confiança no momento do upgrade.
 
-#### Tasks
+**Implementação:**
+- Instalar `@react-pdf/renderer`
+- Template de proposta em PDF (logo, itens, total, dados do cliente)
+- Botão "Exportar PDF" em GeradorPropostas já existe — conectar à geração real
 
-**3.1 — Integrate Stripe or Mercado Pago**
-- For Brazilian MEIs, Mercado Pago (PIX + credit card) is the highest-conversion option
-- On payment success: call `upgradeToPro()` and set a `pro_expires_at` timestamp in PocketBase
-- *Dependency:* Payment processor account
-- *Outcome:* Revenue capture works end-to-end
+**Arquivos a modificar:**
+- `src/app/pages/GeradorPropostas.tsx`
+- `src/app/components/ProposalPDF.tsx` (novo)
 
-**3.2 — Add `pro_expires_at` expiry logic**
-- Currently PRO is permanent once granted. Add expiry: check on every auth load, downgrade to free if expired
-- Build a "Your PRO expires in X days" banner for users within 7 days of expiry
-- *Dependency:* 3.1
-- *Outcome:* Subscription model is sustainable
-
-**3.3 — Fix login streak PRO reward**
-- Cap the 7-day streak reward at 30 days trial PRO (use `pro_expires_at`)
-- *Dependency:* 3.2
-- *Outcome:* Streak reward becomes a conversion funnel, not a permanent bypass
-
-**3.4 — Upgrade flow optimization**
-- Every `LimitReachedModal` CTA should deep-link to checkout with `?feature=clients` parameter
-- Show a confirmation screen after upgrade listing all features now unlocked
-- *Dependency:* 3.1
-- *Outcome:* Conversion rate from limit-hit to paid improves
-
-**3.5 — Usage dashboard for free users**
-- Add a "Your plan" card on Dashboard for free users showing resource usage
-- Example: "Transactions: 18/30 this month | Clients: 7/10"
-- *Dependency:* Phase 1 complete
-- *Outcome:* Creates urgency without being annoying
+**Esforço:** 1 dia
 
 ---
 
-### Phase 4 — Advanced Financial Features
-**Goal:** The product becomes genuinely valuable for financial decisions, not just data entry.
-**Timeline:** 2–3 weeks
+#### 1.3 MEI Annual Revenue Tracker no Dashboard
+**Por quê:** Maior ansiedade do MEI. Diferencial competitivo claro.
 
-#### Tasks
+**Implementação:**
+- Somar todas as entradas do ano corrente a partir de `transactions`
+- Exibir progress bar: `R$ X.XXX / R$ 81.000` com % e meses restantes
+- Alertas visuais em 75% (amarelo) e 90% (vermelho)
+- Card no Dashboard acima dos KPIs principais
 
-**4.1 — Cash Flow Forecast (PRO)**
-- Use the last 3 months of transactions to project next month's expected revenue and expenses
-- Show as a line chart: "Based on your history, you'll likely earn R$X next month"
-- *Dependency:* 2+ months of real transaction data
-- *Outcome:* Sticky PRO feature users return to weekly
+**Arquivos a modificar:**
+- `src/app/pages/Dashboard.tsx`
+- `src/utils/useFinancialMetrics.ts` (adicionar `anoReceitas`)
 
-**4.2 — Category budget alerts**
-- Let users set a monthly budget per expense category
-- Alert when 80% spent in a category
-- *Dependency:* Phase 2 complete
-- *Outcome:* Active engagement, not just passive reporting
-
-**4.3 — MEI annual revenue limit tracker**
-- Progress bar on Dashboard: "R$42.000 of R$81.000 annual MEI limit used (52%)"
-- Warn at 75% and 90%
-- *Dependency:* Correct transaction data from Phase 1
-- *Outcome:* Addresses one of the biggest anxieties MEIs have
-
-**4.4 — Recurring transactions**
-- Allow transactions and payables to be marked as recurring monthly/weekly
-- Auto-create the next instance on the recurrence date
-- *Dependency:* Phase 1 complete
-- *Outcome:* Reduces manual data entry, increases retention
-
-**4.5 — Financial health score**
-- A single 0–100 score computed from: margin %, expense ratio, cash buffer, payment punctuality
-- Show on Dashboard with a simple explanation
-- *Dependency:* 3 months of data
-- *Outcome:* Gamification that drives engagement
+**Esforço:** 1 dia
 
 ---
 
-### Phase 5 — Backend & Scalability
-**Goal:** The system can handle 1,000+ users without degrading.
-**Timeline:** 1 week (can run parallel to Phase 4)
+#### 1.4 Paginação nos Contextos
+**Por quê:** `getList(1, 500)` é uma time bomb. Usuários com 6+ meses de uso já sofrem.
 
-#### Tasks
+**Implementação:**
+- Substituir por `getList(page, 50, ...)` com infinite scroll ou load more
+- Priorizar: CashFlowContext, PayablesContext, ReceivablesContext
+- Manter filtros e ordenação funcionando com paginação
 
-**5.1 — Migrate PocketBase to persistent storage on Railway**
-- Ensure PocketBase data volume is mounted to a Railway volume, not ephemeral container storage
-- Set up automated daily backups to S3 or Railway volumes
-- *Dependency:* Railway paid plan
-- *Outcome:* Zero data loss on deploy or restart
+**Arquivos a modificar:**
+- `src/app/contexts/CashFlowContext.tsx`
+- `src/app/contexts/PayablesContext.tsx`
+- `src/app/contexts/ReceivablesContext.tsx`
 
-**5.2 — Add pagination to all list fetches**
-- Every `getList(1, 500, ...)` call is a ticking time bomb. Cap at 50 per page with cursor-based pagination
-- *Dependency:* Phase 2 complete
-- *Outcome:* App stays fast with 500+ transactions
-
-**5.3 — Add PocketBase real-time subscriptions**
-- Subscribe to `transactions`, `payables`, `receivables` collections for instant cross-tab updates
-- PocketBase has `pb.collection().subscribe()` built in
-- *Dependency:* Phase 1 complete
-- *Outcome:* No more "why isn't this updating?" support tickets
-
-**5.4 — Implement optimistic updates**
-- Show new items immediately with a loading indicator, then confirm or rollback on API response
-- *Dependency:* Phase 1 complete
-- *Outcome:* App feels instantaneous
-
-**5.5 — Add request deduplication and caching**
-- In-memory cache with TTL for expensive reads (category summaries, annual totals)
-- *Dependency:* None
-- *Outcome:* Reduces PocketBase load, faster page loads
+**Esforço:** 2 dias
 
 ---
 
-### Phase 6 — Growth & Retention
-**Goal:** Users activate quickly, come back daily, and refer others.
-**Timeline:** Ongoing
+#### 1.5 Consertar Railway Auto-Deploy
+**Por quê:** Deploy manual via `railway up` é insustentável. Cada update exige intervenção manual.
 
-#### Tasks
+**Investigação:**
+- Verificar `railway.json` — `watchPatterns` pode estar filtrando os arquivos errados
+- Verificar webhook do GitHub no Railway dashboard
+- Alternativa: configurar GitHub Actions para rodar `railway up` no push para `main`
 
-**6.1 — Complete the onboarding flow**
-- After completion, show a personalized Dashboard based on their business type
-- Block dashboard access until onboarding is done (currently skippable)
-- *Dependency:* Phase 2 complete
-- *Outcome:* Activation rate increases (first-week retention)
-
-**6.2 — Email notification system**
-- Set up: weekly financial summary, due payment reminders (3 days before / day of / 1 day after), MEI limit alerts
-- *Dependency:* Email provider (SendGrid, Resend) configured in PocketBase
-- *Outcome:* Passive retention — users re-engage without opening the app
-
-**6.3 — Referral program**
-- Give 1 month PRO for each paying referral
-- Unique referral link in Profile page, tracked via `referred_by` field in profiles
-- *Dependency:* Phase 3 complete
-- *Outcome:* Organic growth channel
-
-**6.4 — In-app changelog / "What's New"**
-- Sidebar badge for new features
-- One-time modal on first login after deploy
-- *Dependency:* None
-- *Outcome:* Users discover features they paid for
-
-**6.5 — NPS / feedback widget**
-- After 14 days of usage, show a 1-question survey: "How likely are you to recommend this to another MEI?"
-- *Dependency:* Phase 6.1 complete
-- *Outcome:* Identifies unhappy users before churn, collects testimonials
+**Esforço:** 2–4 horas
 
 ---
 
-## 3. TOP 5 IMMEDIATE ACTIONS
+#### 1.6 Server-Side Plan Enforcement no PocketBase
+**Por quê:** Hoje qualquer usuário FREE pode abrir DevTools e criar registros ilimitados.
 
-Do these in order, this week:
+**Implementação:**
+- Regras de coleção no PocketBase admin para `transactions`, `payables`, `receivables`, `contacts`, `proposals`
+- Contar registros existentes do usuário antes de permitir `create`
+- Retornar 403 se limite excedido
 
-| # | Action | Why | Effort |
-|---|--------|-----|--------|
-| **1** | **Add `origin` + `status` fields to PocketBase `transactions` collection** | Cross-posting silently fails without these fields. All data sync work is fragile without this | 30 min |
-| **2** | **Enforce plan limits in PocketBase collection rules (server-side)** | Right now any user can open DevTools and create unlimited records. P0 security issue for a paid product | 2 hours |
-| **3** | **Wire Reports page to real `useFinancialMetrics` data** | Reports is the #1 PRO-only feature. If it shows fake data, it destroys trust the moment a user upgrades | 4 hours |
-| **4** | **Add password reset flow** | Without this, every forgotten password = permanent account loss or manual support intervention | 2 hours |
-| **5** | **Integrate Mercado Pago / Stripe** | The entire monetization system is a facade until a real payment is processed | 1 day |
+**Esforço:** 2 horas (requer acesso ao PocketBase admin)
 
 ---
 
-## 4. PRODUCT THINKING
+### 🟡 Fase 2 — Alta Prioridade (Próximas 2–3 semanas)
 
-### What Could Increase Retention
+#### 2.1 Cash Flow Forecast (PRO)
+Usar os últimos 3 meses de transações para projetar receitas e despesas do próximo mês. Exibir como gráfico de linha com banda de confiança. Feature sticky que traz usuários de volta semanalmente.
 
-The single highest-impact retention driver for a MEI financial tool is **proactive alerts**. Users don't open a finance app because they want to — they open it when they're worried. Build the worry triggers:
+**Arquivos:** `src/utils/cashFlowForecast.ts` (novo) + `src/app/pages/RelatoriosFinanceiros.tsx`
 
-- "You have 3 bills due this week totaling R$1.200"
-- "Your expenses are 18% higher than last month"
-- "You've used 78% of your annual MEI limit"
+#### 2.2 Transações Recorrentes
+Scheduler diário que verifica `payables`/`receivables` com `ehRecorrente=true` e cria a próxima ocorrência na data correta. Campos no schema já existem.
 
-These should appear as push notifications (PWA supports this), emails, and Dashboard banners. Users who receive these alerts have 3× the 30-day retention of users who don't.
+**Arquivos:** `api/src/jobs/recurringTransactions.js` (novo)
 
-**Make data entry feel effortless.** The biggest churn reason for financial tools is "too much work to keep updated." Consider:
-- Bank statement import via CSV/OFX (single most-requested feature in this category)
-- Receipt photo → transaction (OCR via Google Vision API)
-- Recurring transactions (Phase 4 — do this early)
+#### 2.3 NFS-e via Nuvemfiscal
+Integrar API Nuvemfiscal (~R$30-50/mês, suporta 5.000 municípios). Botão "Emitir NFS-e" em propostas com status "aprovada" ou "paga". Salvar XML/PDF na coleção `nfs_emissions`.
 
-### What Could Increase PRO Conversion
+**Arquivos:**
+- `api/src/routes/nfse.js` (novo)
+- `src/app/components/EmitirNfsModal.tsx` (novo)
+- `src/app/contexts/NfsContext.tsx` (novo)
 
-The current upgrade flow is triggered by hitting a limit (reactive). The highest-converting SaaS products also use **proactive value demonstrations**:
+#### 2.4 Corrigir `transactionsUsageToday`
+Renomear para `transactionsUsageThisMonth` em AuthContext, PocketBase schema (`profiles` collection) e qualquer referência no codebase. Evitar bug de contagem dupla.
 
-1. **Show PRO features in a "preview" state** — don't hide them entirely. Show the Cash Flow Forecast chart with blurred data and a "Unlock with PRO" button. Users need to see the value before they'll pay for it.
+**Esforço:** 3 horas
 
-2. **The 30-day trial is your best conversion tool** — the login streak reward already grants a trial. Maximize this: show a trial countdown banner, send a "3 days left" email, and make the PRO features genuinely sticky during the trial.
-
-3. **Price anchor the annual plan** — show monthly price vs annual price ("R$29/mês ou R$197/ano — economize R$151"). Brazilian SaaS typically converts 60% of buyers to annual when the discount is 40%+.
-
-4. **Target the MEI annual limit anxiety** — "You've earned R$51.000 of your R$81.000 MEI limit. At this pace, you'll hit the limit in November. Upgrade PRO to get automatic alerts and transition planning tools." This converts at significantly higher rates than generic PRO pitches.
-
-### What Features Are Unnecessary (Cut or Defer)
-
-| Feature | Recommendation | Reason |
-|---------|----------------|--------|
-| **Bio field in Profile** | Remove | No one reads another user's bio in a financial tool |
-| **Login streak gamification** | Simplify | Being gamed (permanent PRO). Replace with a simple 30-day trial CTA |
-| **PF/PJ classification in Cash Flow** | Defer to Phase 4 | Adds significant complexity for a feature most MEIs won't use |
-| **`bio` and `company` fields** | Merge with `activityType` | Same concept, one field is enough |
-| **Investments Guide** | Keep as static content | Don't spend engineering time on it — it's a static page with external links |
+#### 2.5 Onboarding Obrigatório
+Gate o dashboard até o onboarding ser concluído. Personalizar experiência inicial baseada em tipo de negócio (serviços vs comércio → ocultar Estoque para serviços).
 
 ---
 
-## 5. EXECUTION GUIDANCE FOR AI-ASSISTED DEVELOPMENT
+### 🟢 Fase 3 — Médio Prazo (Próximo mês)
 
-When working with Claude on this roadmap, give tasks in this format for maximum precision:
-
-```
-Task: [Phase X.Y title]
-File(s): [exact file paths]
-Current behavior: [what it does now]
-Expected behavior: [what it should do]
-Constraint: [don't break X, must use Y pattern]
-```
-
-**The single most important technical decision still pending:** whether to keep `payables` and `receivables` as separate PocketBase collections or fully migrate them into the unified `transactions` collection. This decision affects every future feature.
-
-**Recommendation: migrate to unified.** The current split architecture will create bugs indefinitely. Do it once, cleanly, in Phase 1.
+| # | Feature | Impacto |
+|---|---------|---------|
+| 3.1 | **CSV/OFX import** de extrato bancário | Feature mais pedida na categoria; reduz atrito de entrada |
+| 3.2 | **Financial health score** (0–100) no Dashboard | Gamificação e engajamento |
+| 3.3 | **Category budget alerts** — orçamento por categoria + alerta em 80% | Engagement ativo, não só relatório passivo |
+| 3.4 | **PocketBase real-time subscriptions** — sync entre abas sem reload | Eliminar "por que não atualizou?" |
+| 3.5 | **In-app changelog** — badge na sidebar para features novas | Usuários descobrem o que pagaram |
+| 3.6 | **Re-enable Open Finance** (Pluggy/Belvo) — validar backend routes e reativar UI | Diferencial competitivo de longo prazo |
 
 ---
 
-*Last updated: 2026-04-09*
+### ⏩ Defer / Cortar
+
+| Feature | Decisão | Motivo |
+|---------|---------|--------|
+| Referral program | Defer pós 100 usuários pagantes | Overhead alto, ROI incerto agora |
+| NPS widget | Defer | Coletar feedback 1:1 primeiro |
+| Admin panel | Defer | PocketBase admin já cobre a necessidade |
+| Bio field no perfil | **Remover** | Campo inútil em ferramenta financeira |
+| Mercado Pago / Stripe | Cancelado | Asaas está em produção e funciona |
+| Supabase edge functions | Cancelado | Stack é PocketBase — não usar |
+| Annual plan pricing | Avaliar após primeiros 50 pagantes | Bom para retenção mas premature agora |
+
+---
+
+## Top 5 Ações Imediatas
+
+| # | Ação | Impacto | Esforço |
+|---|------|---------|---------|
+| **1** | Email de cobrança (scheduler + Resend) | Alto — automatiza cobranças, reduz churn | 3 dias |
+| **2** | PDF export de propostas | Alto — feature PRO que não funciona hoje | 1 dia |
+| **3** | MEI annual revenue tracker no Dashboard | Alto — resolve ansiedade principal do MEI | 1 dia |
+| **4** | Paginação nos contextos | Médio/Alto — performance para usuários maduros | 2 dias |
+| **5** | Consertar Railway auto-deploy | Operacional — sustentabilidade de deploy | 2–4 horas |
+
+---
+
+## O Que Aumenta Retenção
+
+**Alertas proativos** são o driver de retenção mais alto para ferramentas financeiras de MEI. Usuários não abrem o app por prazer — abrem quando estão preocupados. Construir os gatilhos de preocupação:
+
+- "Você tem 3 contas vencendo esta semana — R$1.200"
+- "Suas despesas estão 18% acima do mês passado"
+- "Você usou 78% do seu limite anual MEI"
+- "Proposta #12 está vencida há 5 dias sem confirmação"
+
+Usuários que recebem esses alertas têm 3× mais retenção em 30 dias.
+
+**Reduzir atrito de entrada de dados:**
+- CSV/OFX import de extrato (maior pedido da categoria)
+- Transações recorrentes (reduz entrada manual)
+- NFS-e integrada (elimina troca de ferramenta)
+
+---
+
+## Decisão Arquitetural Pendente
+
+**`payables` e `receivables` como coleções separadas vs unificar em `transactions`:**
+
+A arquitetura atual cria sync one-way: marcar payable como pago cria uma transação, mas deletar a transação não desfaz o payable. Isso gera bugs de inconsistência indefinidamente.
+
+**Recomendação: migrar para unificado** — mas somente após implementar testes end-to-end que garantam zero regressão. Fazer isso no início da Fase 3 como pré-requisito para cash flow forecast e budget alerts.
+
+---
+
+*Auditado e atualizado em 2026-04-22 com base na análise do codebase real.*
