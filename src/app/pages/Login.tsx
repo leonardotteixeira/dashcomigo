@@ -59,11 +59,19 @@ function GoogleLoginButton({ loading, loginWithGoogle, navigate }: {
 }
 
 function mapLoginError(error: unknown): string {
+  if (!navigator.onLine) return "Sem conexão com a internet. Verifique sua rede.";
+
+  // PocketBase ClientResponseError has a `status` property
+  const status = (error as { status?: number })?.status;
+  if (status === 400 || status === 401) return "Email ou senha incorretos. Verifique e tente novamente.";
+  if (status === 404) return "Nenhuma conta encontrada com este email.";
+  if (status === 429) return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
+  if (status && status >= 500) return "Erro no servidor. Tente novamente em instantes.";
+
+  // Fallback: match on message string
   const msg = error instanceof Error ? error.message : String(error);
   const lower = msg.toLowerCase();
-
-  if (!navigator.onLine) return "Sem conexão com a internet. Verifique sua rede.";
-  if (lower.includes("failed to authenticate") || lower.includes("invalid login") || lower.includes("invalid_credentials") || lower.includes("400")) {
+  if (lower.includes("failed to authenticate") || lower.includes("invalid") || lower.includes("400")) {
     return "Email ou senha incorretos. Verifique e tente novamente.";
   }
   if (lower.includes("not found") || lower.includes("404")) {
@@ -72,11 +80,8 @@ function mapLoginError(error: unknown): string {
   if (lower.includes("email not confirmed")) {
     return "Confirme seu email antes de entrar. Verifique sua caixa de entrada.";
   }
-  if (lower.includes("too many") || lower.includes("rate limit") || lower.includes("429")) {
+  if (lower.includes("too many") || lower.includes("rate limit")) {
     return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
-  }
-  if (lower.includes("500") || lower.includes("server")) {
-    return "Erro no servidor. Tente novamente em instantes.";
   }
   return "Não foi possível entrar. Tente novamente em instantes.";
 }

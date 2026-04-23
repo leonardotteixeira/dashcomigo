@@ -222,7 +222,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(mapProfile(authData.record));
       }
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Login failed");
+      throw error;
     }
   };
 
