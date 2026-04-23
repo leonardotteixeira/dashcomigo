@@ -1,4 +1,4 @@
-import { ArrowRight, TrendingUp, PieChart, Clock, Shield, CheckCircle, Users, MessageCircle, CalendarCheck, UserCheck, AlertCircle, ChevronRight, Zap, Quote, X } from "lucide-react";
+import { ArrowRight, TrendingUp, PieChart, Clock, CheckCircle, Users, MessageCircle, CalendarCheck, UserCheck, AlertCircle, ChevronRight, Zap, Quote, X } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { Logo, LogoMark } from "../components/ui/Logo";
 
@@ -22,11 +22,11 @@ export function LandingPage() {
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(14,59,46,0.7)")}>
               Ferramentas
             </a>
-            <a href="#especialista" className="font-semibold transition-colors" style={{ color: "rgba(14,59,46,0.7)" }}
+            <Link to="/especialista" className="font-semibold transition-colors" style={{ color: "rgba(14,59,46,0.7)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#0E3B2E")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(14,59,46,0.7)")}>
               Especialista
-            </a>
+            </Link>
             <a href="#planos" className="font-semibold transition-colors" style={{ color: "rgba(14,59,46,0.7)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#0E3B2E")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(14,59,46,0.7)")}>
@@ -92,13 +92,13 @@ export function LandingPage() {
                 Começar gratuitamente
                 <ArrowRight className="w-5 h-5" />
               </button>
-              <a
-                href="#especialista"
+              <Link
+                to="/especialista"
                 className="flex items-center justify-center gap-2 px-10 py-5 rounded-lg font-bold text-lg transition-all border-2"
                 style={{ borderColor: "rgba(14,59,46,0.3)", color: "#0E3B2E" }}
               >
                 Conhecer o Premium
-              </a>
+              </Link>
             </div>
 
             {/* Trust micro-signals */}

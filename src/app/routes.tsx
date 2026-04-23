@@ -51,6 +51,7 @@ import { Sobre } from "./pages/Sobre";
 import { Blog } from "./pages/Blog";
 import { BlogPost } from "./pages/BlogPost";
 import { Contato } from "./pages/Contato";
+import { EspecialistaPremium } from "./pages/EspecialistaPremium";
 import { Ferramentas } from "./pages/Ferramentas";
 import { Beneficios } from "./pages/Beneficios";
 import { Planos } from "./pages/Planos";
@@ -214,6 +215,10 @@ export const router = createHashRouter([
         Component: Simulators,
       },
     ],
+  },
+  {
+    path: "/especialista",
+    Component: EspecialistaPremium,
   },
   {
     path: "/ferramentas",
