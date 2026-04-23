@@ -116,7 +116,9 @@ export function Login() {
       toast.success("Login realizado com sucesso!");
       navigate("/app");
     } catch (error: unknown) {
+      console.error("[Login] erro capturado:", error);
       const msg = mapLoginError(error);
+      console.error("[Login] mensagem mapeada:", msg);
       setFormError(msg);
     } finally {
       setLoading(false);
