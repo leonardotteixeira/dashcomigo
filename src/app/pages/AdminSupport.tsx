@@ -125,22 +125,40 @@ export function AdminSupport() {
 
   const selectedConv = conversations.find(c => c.id === selectedId);
 
-  const filtered = conversations.filter(c => {
-    const matchFilter =
-      filter === "all" ? true :
-      filter === "open" ? c.status === "open" :
-      filter === "closed" ? c.status === "closed" :
-      c.isTicket;
-    if (!matchFilter) return false;
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      return (
-        (c.userName ?? "").toLowerCase().includes(q) ||
-        (c.userEmail ?? "").toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
+  const planOrder = { pro: 0, premium: 1, free: 2 };
+
+  const filtered = conversations
+    .filter(c => {
+      const matchFilter =
+        filter === "all" ? true :
+        filter === "open" ? c.status === "open" :
+        filter === "closed" ? c.status === "closed" :
+        c.isTicket;
+      if (!matchFilter) return false;
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        return (
+          (c.userName ?? "").toLowerCase().includes(q) ||
+          (c.userEmail ?? "").toLowerCase().includes(q)
+        );
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      // Priority 1: Plan (pro > premium > free)
+      const planDiff = planOrder[a.userPlan] - planOrder[b.userPlan];
+      if (planDiff !== 0) return planDiff;
+
+      // Priority 2: Unanswered first (last message from user = unanswered)
+      const lastMsgA = selectedMessages.filter(m => m.conversationId === a.id).pop();
+      const lastMsgB = selectedMessages.filter(m => m.conversationId === b.id).pop();
+      const aUnanswered = lastMsgA?.sender === "user" ? 1 : 0;
+      const bUnanswered = lastMsgB?.sender === "user" ? 1 : 0;
+      if (aUnanswered !== bUnanswered) return bUnanswered - aUnanswered;
+
+      // Priority 3: Most recent
+      return new Date(b.updated).getTime() - new Date(a.updated).getTime();
+    });
 
   return (
     <div className="flex flex-col h-full">
@@ -240,10 +258,20 @@ export function AdminSupport() {
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-0.5">
+                        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
                           <p className="text-sm font-semibold text-[#0E3B2E] truncate">
                             {conv.userName || conv.userEmail?.split("@")[0] || "Usuário"}
                           </p>
+                          {conv.userPlan === "pro" && (
+                            <span className="text-xs px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-semibold flex-shrink-0">
+                              PRO
+                            </span>
+                          )}
+                          {conv.userPlan === "premium" && (
+                            <span className="text-xs px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold flex-shrink-0">
+                              Premium
+                            </span>
+                          )}
                           {conv.isTicket && (
                             <Ticket className="w-3 h-3 text-[#0E3B2E]/50 flex-shrink-0" />
                           )}

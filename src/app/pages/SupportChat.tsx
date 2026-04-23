@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, MessageCircle, Ticket, CheckCircle, Lock, HeadphonesIcon } from "lucide-react";
+import { Send, MessageCircle, Ticket, CheckCircle, Lock, HeadphonesIcon, MessageSquare, Zap } from "lucide-react";
+import { useNavigate } from "react-router";
 import { useSupport } from "../contexts/SupportContext";
+import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
 function formatTime(dateStr: string) {
@@ -37,6 +39,7 @@ function groupByDate(msgs: ReturnType<typeof useSupport>["messages"]): MessageGr
 }
 
 export function SupportChat() {
+  const navigate = useNavigate();
   const {
     myConversation,
     messages,
@@ -44,6 +47,7 @@ export function SupportChat() {
     sendMessage,
     markAsTicket,
   } = useSupport();
+  const { user } = useAuth();
 
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -115,8 +119,19 @@ export function SupportChat() {
             <div className="w-9 h-9 rounded-full bg-[#0E3B2E] flex items-center justify-center">
               <HeadphonesIcon className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <p className="font-semibold text-[#0E3B2E] text-sm">Suporte DashComigo</p>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-0.5">
+                <p className="font-semibold text-[#0E3B2E] text-sm">Suporte DashComigo</p>
+                {user?.plan && (
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0 ${
+                    user.plan === "pro" ? "bg-purple-100 text-purple-700" :
+                    user.plan === "premium" ? "bg-blue-100 text-blue-700" :
+                    "bg-gray-100 text-gray-700"
+                  }`}>
+                    {user.plan === "pro" ? "PRO" : user.plan === "premium" ? "Premium" : "Gratuito"}
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-[rgba(14,59,46,0.6)]">
                 {loadingConversation
                   ? "Carregando..."
@@ -239,7 +254,68 @@ export function SupportChat() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area */}
+        {/* Upgrade & WhatsApp section */}
+        {!isClosed && (
+          <div className="border-t border-[rgba(20,18,15,0.13)] bg-[#EBE4D6]/50 px-4 py-3 flex flex-col gap-2">
+            {/* Free user upgrade prompt */}
+            {user?.plan === "free" && (
+              <button
+                onClick={() => navigate("/planos")}
+                className="flex items-center gap-2.5 p-3 rounded-lg bg-blue-50 border border-blue-100 hover:bg-blue-100 transition-colors text-left"
+              >
+                <Zap className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-blue-900">Respostas mais rápidas</p>
+                  <p className="text-xs text-blue-700">Upgrade para Premium ⚡</p>
+                </div>
+              </button>
+            )}
+
+            {/* Premium user: upsell to PRO for WhatsApp */}
+            {user?.plan === "premium" && (
+              <button
+                onClick={() => navigate("/planos")}
+                className="flex items-center gap-2.5 p-3 rounded-lg bg-purple-50 border border-purple-100 hover:bg-purple-100 transition-colors text-left"
+              >
+                <MessageSquare className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-purple-900">Planejamento financeiro personalizado</p>
+                  <p className="text-xs text-purple-700">Converse via WhatsApp com especialista — Upgrade PRO</p>
+                </div>
+              </button>
+            )}
+
+            {/* PRO user: WhatsApp access */}
+            {user?.plan === "pro" && (
+              <a
+                href="https://api.whatsapp.com/send?phone=5585988881234&text=Ol%C3%A1%2C%20sou%20usu%C3%A1rio%20PRO%20do%20DashComigo.%20Gostaria%20de%20planejar%20meu%20crescimento%20financeiro."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 p-3 rounded-lg bg-green-50 border border-green-100 hover:bg-green-100 transition-colors text-left"
+              >
+                <MessageSquare className="w-4 h-4 text-green-600 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-green-900">Especialista Financeiro</p>
+                  <p className="text-xs text-green-700">Converse no WhatsApp (resposta em até 2h úteis)</p>
+                </div>
+              </a>
+            )}
+
+            {/* Non-PRO: locked WhatsApp */}
+            {user?.plan !== "pro" && (
+              <button
+                onClick={() => navigate("/planos")}
+                className="flex items-center gap-2.5 p-3 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-150 transition-colors text-left opacity-60"
+              >
+                <Lock className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-gray-700">WhatsApp com Especialista (PRO)</p>
+                  <p className="text-xs text-gray-600">Desbloqueie com upgrade PRO</p>
+                </div>
+              </button>
+            )}
+          </div>
+        )}
         <div className="border-t border-[rgba(20,18,15,0.13)] px-4 py-4 bg-[#F4EFE6] flex-shrink-0">
           {isClosed ? (
             <div className="flex items-center justify-center gap-2 py-2 text-sm text-[rgba(14,59,46,0.5)]">

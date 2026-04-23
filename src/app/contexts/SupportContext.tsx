@@ -11,6 +11,8 @@ export interface Conversation {
   updated: string;
   userName?: string;
   userEmail?: string;
+  userPlan: "free" | "premium" | "pro";
+  hasUnreadMessages?: boolean;
 }
 
 export interface SupportMessage {
@@ -51,6 +53,7 @@ function mapConv(r: Record<string, any>): Conversation {
     updated: r.updated,
     userName: r.expand?.user_id?.name,
     userEmail: r.expand?.user_id?.email,
+    userPlan: (r.expand?.user_id?.plan ?? "free") as "free" | "premium" | "pro",
   };
 }
 
