@@ -159,7 +159,7 @@ export function FluxoCaixa() {
     if (!valor || valor <= 0) { toast.error("Informe um valor válido."); return; }
     if (!formData.categoria) { toast.error("Selecione uma categoria."); return; }
     if (user.plan === "free" && user.transactionsUsageToday >= 100) {
-      toast.error("Limite mensal atingido. Faça upgrade para PRO.");
+      toast.error("Limite mensal atingido. Faça upgrade para Premium.");
       return;
     }
 
@@ -317,7 +317,7 @@ export function FluxoCaixa() {
             </div>
           </div>
           <button className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors">
-            Upgrade PRO
+            Upgrade Premium
           </button>
         </div>
       )}

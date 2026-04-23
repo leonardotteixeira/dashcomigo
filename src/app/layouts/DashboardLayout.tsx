@@ -174,7 +174,7 @@ export function DashboardLayout() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-[#0E3B2E] truncate">{user.name}</p>
-                <p className="text-xs text-[rgba(20,18,15,0.6)] truncate">{user.plan === "pro" ? "Plano PRO" : "Plano Gratuito"}</p>
+                <p className="text-xs text-[rgba(20,18,15,0.6)] truncate">{user.plan === "pro" ? "Plano Premium" : "Plano Gratuito"}</p>
               </div>
             </Link>
 
@@ -220,7 +220,7 @@ export function DashboardLayout() {
                 <p className="text-sm font-semibold text-[#0E3B2E]">
                   <span className="capitalize">{user.name.split(" ")[0]}</span>
                 </p>
-                <p className="text-xs text-[#0E3B2E]/60">{user.plan === "pro" ? "✨ Plano PRO" : "Plano Gratuito"}</p>
+                <p className="text-xs text-[#0E3B2E]/60">{user.plan === "pro" ? "✨ Plano Premium" : "Plano Gratuito"}</p>
               </div>
               <NotificationCenter />
             </div>

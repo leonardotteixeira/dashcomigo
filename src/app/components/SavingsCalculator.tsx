@@ -49,7 +49,7 @@ function ProValuePanel() {
           <Crown className="w-4 h-4 text-amber-500" />
         </div>
         <div>
-          <h3 className="font-semibold text-foreground leading-tight">Seu Plano PRO</h3>
+          <h3 className="font-semibold text-foreground leading-tight">Seu Plano Premium</h3>
           <p className="text-xs text-muted-foreground">Acesso completo ativo</p>
         </div>
       </div>
@@ -115,7 +115,7 @@ function FreeUpsellPanel() {
     <div className="bg-card border border-border rounded-xl p-6">
       <div className="flex items-center gap-2 mb-4">
         <PiggyBank className="w-5 h-5 text-success" />
-        <h3 className="font-semibold text-foreground">Potencial de Economia com PRO</h3>
+        <h3 className="font-semibold text-foreground">Potencial de Economia com Premium</h3>
       </div>
 
       <div className="bg-gradient-to-br from-success/10 to-primary/10 border border-success/20 rounded-xl p-5 mb-4">
@@ -129,7 +129,7 @@ function FreeUpsellPanel() {
             <p className="font-semibold text-success">+R$ {annualSavings.toLocaleString("pt-BR")}/ano</p>
           </div>
           <div>
-            <p className="text-muted-foreground">Investimento PRO</p>
+            <p className="text-muted-foreground">Investimento Premium</p>
             <p className="font-semibold text-foreground">
               -R$ {(proCost * 12).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}/ano
             </p>

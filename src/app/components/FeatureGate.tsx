@@ -33,7 +33,7 @@ export function FeatureGate({
   feature,
   plan,
   children,
-  ctaText = "Disponível no Plano PRO",
+  ctaText = "Disponível no Plano Premium",
   lockedLabel,
   inline = false,
 }: FeatureGateProps) {
@@ -51,10 +51,10 @@ export function FeatureGate({
         <button
           onClick={() => navigate("/checkout")}
           className="absolute inset-0 flex items-center justify-center gap-1.5 bg-[#0E3B2E]/10 rounded-lg"
-          title="Disponível no PRO"
+          title="Disponível no Premium"
         >
           <Lock className="w-3.5 h-3.5 text-[#0E3B2E]" />
-          <span className="text-xs font-semibold text-[#0E3B2E]">PRO</span>
+          <span className="text-xs font-semibold text-[#0E3B2E]">Premium</span>
         </button>
       </div>
     );
@@ -82,7 +82,7 @@ export function FeatureGate({
         <h3 className="font-bold text-lg text-[#0E3B2E] mb-2">{ctaText}</h3>
 
         <p className="text-sm text-[#0E3B2E]/60 mb-5 max-w-xs">
-          Faça upgrade para o Plano PRO e desbloqueie esta funcionalidade e muito mais.
+          Faça upgrade para o Plano Premium e desbloqueie esta funcionalidade e muito mais.
         </p>
 
         <button
@@ -90,7 +90,7 @@ export function FeatureGate({
           className="flex items-center gap-2 bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity shadow-md"
         >
           <Crown className="w-4 h-4" />
-          Fazer Upgrade para PRO
+          Fazer Upgrade para Premium
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

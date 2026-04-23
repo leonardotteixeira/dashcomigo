@@ -64,7 +64,7 @@ export default function StreakCard() {
         </div>
         {rewardClaimed ? (
           <p className="text-xs text-green-600 font-semibold mb-2">
-            🎉 Recompensa ativa! Você ganhou 1 mês grátis do PRO.
+            🎉 Recompensa ativa! Você ganhou 1 mês grátis do Premium.
           </p>
         ) : goalReached ? (
           <p className="text-xs text-muted-foreground mb-2">
@@ -72,7 +72,7 @@ export default function StreakCard() {
           </p>
         ) : (
           <p className="text-xs text-muted-foreground mb-2">
-            Acesse {GOAL} dias seguidos e ganhe 1 mês grátis do PRO!
+            Acesse {GOAL} dias seguidos e ganhe 1 mês grátis do Premium!
           </p>
         )}
         <div className="flex items-center gap-2">

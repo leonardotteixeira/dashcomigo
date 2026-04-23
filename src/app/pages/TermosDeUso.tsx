@@ -137,7 +137,7 @@ export function TermosDeUso() {
           <section>
             <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>7. Planos e Assinatura</h2>
             <p className="mb-4">
-              A Plataforma oferece um plano gratuito com funcionalidades básicas e um plano PRO com recursos avançados:
+              A Plataforma oferece um plano gratuito com funcionalidades básicas e um plano Premium com recursos avançados:
             </p>
             <div className="border rounded-2xl p-6 mb-4" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
               <h3 className="font-bold mb-2" style={{ color: "#0E3B2E" }}>Plano Gratuito:</h3>
@@ -149,7 +149,7 @@ export function TermosDeUso() {
               </ul>
             </div>
             <div className="border rounded-2xl p-6" style={{ background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)" }}>
-              <h3 className="font-bold mb-2" style={{ color: "#0E3B2E" }}>Plano PRO:</h3>
+              <h3 className="font-bold mb-2" style={{ color: "#0E3B2E" }}>Plano Premium:</h3>
               <ul className="list-disc list-inside space-y-1 text-sm">
                 <li>Todas as ferramentas sem restrições</li>
                 <li>Propostas comerciais ilimitadas</li>
@@ -165,7 +165,7 @@ export function TermosDeUso() {
           <section>
             <h2 className="text-2xl font-bold mb-4" style={{ color: "#0E3B2E" }}>8. Cancelamento e Reembolso</h2>
             <p className="mb-4">
-              Você pode cancelar sua assinatura PRO a qualquer momento através de suas configurações de conta.
+              Você pode cancelar sua assinatura Premium a qualquer momento através de suas configurações de conta.
               O cancelamento entra em vigor no final do período de cobrança atual.
             </p>
             <p className="mb-4">

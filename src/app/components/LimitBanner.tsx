@@ -54,7 +54,7 @@ export function LimitBanner({ feature, usage, plan, className = "" }: LimitBanne
             {remaining} {remaining === 1 ? "item" : "itens"}
           </strong>{" "}
           de {description}
-          {period}. Atualize para o PRO e tenha acesso ilimitado.
+          {period}. Atualize para o Premium e tenha acesso ilimitado.
         </p>
       </div>
 
@@ -63,7 +63,7 @@ export function LimitBanner({ feature, usage, plan, className = "" }: LimitBanne
           onClick={() => navigate("/checkout")}
           className="flex items-center gap-1 text-xs font-semibold text-amber-700 hover:text-amber-900 border border-amber-300 rounded-lg px-3 py-1.5 hover:bg-amber-100 transition-colors"
         >
-          Ver PRO
+          Ver Premium
           <ArrowRight className="w-3 h-3" />
         </button>
         <button

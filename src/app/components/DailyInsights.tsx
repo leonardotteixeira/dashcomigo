@@ -199,7 +199,7 @@ export default function DailyInsights() {
                 onClick={() => navigate("/pricing")}
                 className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
-                Ver PRO
+                Ver Premium
               </button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">

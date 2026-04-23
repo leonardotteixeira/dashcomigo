@@ -110,7 +110,7 @@ export function Estoque() {
   async function handleAddItem(e: React.FormEvent) {
     e.preventDefault();
     if (!canAddItem()) {
-      toast.error("Limite atingido — faça upgrade para PRO");
+      toast.error("Limite atingido — faça upgrade para Premium");
       return;
     }
     try {
@@ -188,7 +188,7 @@ export function Estoque() {
         <button
           onClick={() => {
             if (!canAddItem()) {
-              toast.error("Limite atingido — faça upgrade para PRO");
+              toast.error("Limite atingido — faça upgrade para Premium");
               return;
             }
             resetItemForm();

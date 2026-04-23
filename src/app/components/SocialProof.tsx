@@ -12,7 +12,7 @@ export default function SocialProof() {
       name: "Maria S.",
       role: "Consultora MEI",
       avatar: "MS",
-      text: "Economizei R$ 4.500 no primeiro ano com as sugestões de otimização do PRO!",
+      text: "Economizei R$ 4.500 no primeiro ano com as sugestões de otimização do Premium!",
       rating: 5,
     },
     {
@@ -59,7 +59,7 @@ export default function SocialProof() {
         <div className="flex items-center gap-2 mb-4">
           <Award className="w-5 h-5 text-amber-500" />
           <h3 className="font-semibold text-foreground">
-            O que nossos usuários PRO dizem
+            O que nossos usuários Premium dizem
           </h3>
         </div>
 

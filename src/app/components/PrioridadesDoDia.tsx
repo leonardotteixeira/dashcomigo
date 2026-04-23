@@ -174,7 +174,7 @@ export default function PrioridadesDoDia() {
                   <p className="font-medium text-sm text-[#0E3B2E]">{suggestion.title}</p>
                   {suggestion.proFeature && !isPro && (
                     <span className="flex-shrink-0 text-xs bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded-full font-medium">
-                      PRO
+                      Premium
                     </span>
                   )}
                 </div>

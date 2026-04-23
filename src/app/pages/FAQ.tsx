@@ -16,7 +16,7 @@ const faqData: FAQItem[] = [
   {
     category: "Plataforma",
     question: "O DashComigo é gratuito?",
-    answer: "Sim! Oferecemos um plano gratuito que inclui o Simulador MEI → ME ilimitado, 30 lançamentos por mês no Fluxo de Caixa, 2 propostas comerciais por dia e acesso ao Dashboard. Para recursos ilimitados e simuladores avançados, temos o plano PRO a partir de R$ 9,90/mês.",
+    answer: "Sim! Oferecemos um plano gratuito que inclui o Simulador MEI → ME ilimitado, 30 lançamentos por mês no Fluxo de Caixa, 2 propostas comerciais por dia e acesso ao Dashboard. Para recursos ilimitados e simuladores avançados, temos o plano Premium a partir de R$ 9,90/mês.",
   },
   {
     category: "Plataforma",
@@ -30,8 +30,8 @@ const faqData: FAQItem[] = [
   },
   {
     category: "Plataforma",
-    question: "Posso cancelar o plano PRO a qualquer momento?",
-    answer: "Sim, o cancelamento pode ser feito a qualquer momento. Ao cancelar, você continua com acesso PRO até o final do período pago. Após isso, sua conta volta automaticamente para o plano gratuito sem perda de dados.",
+    question: "Posso cancelar o plano Premium a qualquer momento?",
+    answer: "Sim, o cancelamento pode ser feito a qualquer momento. Ao cancelar, você continua com acesso Premium até o final do período pago. Após isso, sua conta volta automaticamente para o plano gratuito sem perda de dados.",
   },
   {
     category: "Plataforma",

@@ -97,7 +97,7 @@ export function Checkout() {
             <Crown className="w-8 h-8 text-[#28A263]" />
           </div>
 
-          <h1 className="text-3xl font-bold text-[#0E3B2E] mb-2">Upgrade para PRO</h1>
+          <h1 className="text-3xl font-bold text-[#0E3B2E] mb-2">Upgrade para Premium</h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-4">Desbloqueie todas as funcionalidades</p>
 
           {/* Price highlight */}
@@ -169,8 +169,8 @@ export function Checkout() {
           <div className="space-y-3 text-left">
             {[
               "Fluxo de caixa: lançamentos ilimitados",
-              "Simulador de Preço Ideal (PRO)",
-              "Simulador de Lucro com projeções (PRO)",
+              "Simulador de Preço Ideal (Premium)",
+              "Simulador de Lucro com projeções (Premium)",
               "Propostas comerciais ilimitadas",
               "Relatórios e exportações completos",
               "PIX, boleto ou cartão",

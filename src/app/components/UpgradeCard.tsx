@@ -23,7 +23,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <Crown className="w-5 h-5" />
-              <span className="font-semibold">Plano PRO</span>
+              <span className="font-semibold">Plano Premium</span>
             </div>
             <p className="text-sm text-white/90 mb-3">
               {feature || "Recursos ilimitados para sua gestão"}
@@ -58,7 +58,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
               <Crown className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-lg">Plano PRO</h3>
+              <h3 className="font-bold text-lg">Plano Premium</h3>
               <p className="text-sm text-white/90">Gestão financeira completa</p>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function UpgradeCard({ variant = "compact", feature, context }: U
             onClick={() => setShowPaywall(true)}
             className="w-full bg-white text-[#0E3B2E] font-bold py-4 rounded-xl hover:bg-white/95 transition-all flex items-center justify-center gap-2 shadow-lg mb-3"
           >
-            Conhecer o Plano PRO
+            Conhecer o Plano Premium
             <ArrowRight className="w-4 h-4" />
           </button>
 

@@ -166,7 +166,7 @@ export default function CashFlow() {
                 </div>
                 <p className="text-sm mb-4" style={{ color: colors.textSecondary }}>
                   Você usou {currentTransactionCount} de {transactionLimit} transações mensais do plano gratuito.
-                  {limitPercentage >= 100 && " Upgrade para PRO e tenha transações ilimitadas!"}
+                  {limitPercentage >= 100 && " Upgrade para Premium e tenha transações ilimitadas!"}
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: colors.borderDefault }}>
@@ -192,7 +192,7 @@ export default function CashFlow() {
                 style={{ backgroundColor: colors.warning }}
                 className="text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-all font-semibold text-sm whitespace-nowrap"
               >
-                Upgrade PRO
+                Upgrade Premium
               </button>
             </div>
           </div>

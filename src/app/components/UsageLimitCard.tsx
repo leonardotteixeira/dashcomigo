@@ -31,7 +31,7 @@ export default function UsageLimitCard() {
               {isAtLimit ? "Limite atingido" : "Você está próximo do limite"}
             </h3>
             <p className="text-sm text-[#0E3B2E]/60">
-              Desbloqueie recursos ilimitados com o plano PRO
+              Desbloqueie recursos ilimitados com o plano Premium
             </p>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function UsageLimitCard() {
           onClick={() => setShowPaywall(true)}
           className="w-full bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-semibold py-3 rounded-xl hover:from-[#002a5d] hover:to-[#0056EF] transition-all text-sm"
         >
-          Ver Plano PRO
+          Ver Plano Premium
         </button>
         <p className="text-xs text-center text-[#0E3B2E]/50 mt-3">
           A partir de R$ 29,90/mês • Cancele quando quiser

@@ -77,7 +77,7 @@ export function GoalsProvider({ children }: { children: ReactNode }) {
   async function addGoal(data: Omit<Goal, "id" | "createdAt">) {
     if (!user) throw new Error("Usuário não autenticado");
     const plan = await getVerifiedPlan(user.id);
-    if (plan !== "pro") throw new Error("Metas de receita são apenas para plano PRO");
+    if (plan !== "pro") throw new Error("Metas de receita são apenas para plano Premium");
 
     const createData: Record<string, unknown> = {
       userid: user.id,

@@ -115,7 +115,7 @@ export function Reports() {
                 Exportações do plano gratuito
               </h4>
               <p className="text-sm text-[#0E3B2E]/70 mb-3">
-                Você atingiu o limite de {exportLimit} exportações mensais. Com o plano PRO, exporte sem limites.
+                Você atingiu o limite de {exportLimit} exportações mensais. Com o plano Premium, exporte sem limites.
               </p>
               <button 
                 onClick={() => {
@@ -124,7 +124,7 @@ export function Reports() {
                 }}
                 className="bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white px-4 py-2 rounded-lg hover:from-[#002a5d] hover:to-[#0056EF] transition-all font-semibold text-sm"
               >
-                Ver Plano PRO
+                Ver Plano Premium
               </button>
             </div>
           </div>

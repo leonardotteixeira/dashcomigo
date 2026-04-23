@@ -16,7 +16,7 @@ const CONTENT = {
     body: "Seus lançamentos do mês acabaram. Com o Essencial ou 360, você registra tudo sem interrupção — e o negócio continua rodando.",
   },
   feature_locked: {
-    eyebrow: "Recurso PRO",
+    eyebrow: "Recurso Premium",
     title: (name?: string) => `${name || "Este recurso"} não está no Gratuito`,
     body: "Desbloqueie a plataforma completa com o Essencial, ou tenha a plataforma + um especialista humano com o 360.",
   },

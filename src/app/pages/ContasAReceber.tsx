@@ -223,7 +223,7 @@ export function ContasAReceber() {
     const valor = parseFloat(form.valor.replace(",", "."));
     if (!valor || valor <= 0) { toast.error("Informe um valor válido"); return; }
     if (!form.dataVencimento) { toast.error("Informe a data de vencimento"); return; }
-    if (!canAddReceivable()) { toast.error("Limite de contas a receber atingido. Faça upgrade para PRO."); return; }
+    if (!canAddReceivable()) { toast.error("Limite de contas a receber atingido. Faça upgrade para Premium."); return; }
 
     setSaving(true);
     try {

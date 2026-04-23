@@ -61,9 +61,9 @@ export function Metas() {
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: `${colors.primary}/10` }}>
           <Lock className="w-8 h-8" style={{ color: colors.primary }} />
         </div>
-        <h2 className="text-2xl font-bold mb-3" style={{ color: colors.textPrimary }}>Metas de Receita são exclusivas do PRO</h2>
+        <h2 className="text-2xl font-bold mb-3" style={{ color: colors.textPrimary }}>Metas de Receita são exclusivas do Premium</h2>
         <p className="mb-8 max-w-md" style={{ color: colors.textSecondary }}>
-          Defina metas mensais e acompanhe seu progresso em tempo real com o plano PRO.
+          Defina metas mensais e acompanhe seu progresso em tempo real com o plano Premium.
         </p>
         <button
           onClick={() => navigate("/checkout")}
@@ -71,7 +71,7 @@ export function Metas() {
           style={{ backgroundColor: colors.primary }}
         >
           <Crown className="w-5 h-5" />
-          Fazer Upgrade para PRO
+          Fazer Upgrade para Premium
         </button>
       </div>
     );

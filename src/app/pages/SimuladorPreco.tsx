@@ -18,9 +18,9 @@ export function SimuladorPreco() {
           <div className="w-20 h-20 bg-[#F8F9FA] border border-[rgba(0,0,0,0.1)] rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-10 h-10 text-[rgba(0,21,41,0.6)]" />
           </div>
-          <h2 className="text-2xl font-bold text-[#0E3B2E] mb-3">Disponível no plano PRO</h2>
+          <h2 className="text-2xl font-bold text-[#0E3B2E] mb-3">Disponível no plano Premium</h2>
           <p className="text-[rgba(0,21,41,0.6)] mb-6">
-            O Simulador de Preço Ideal está disponível apenas para assinantes PRO.
+            O Simulador de Preço Ideal está disponível apenas para assinantes Premium.
             Calcule o preço perfeito para seus produtos e serviços.
           </p>
           <Button
@@ -29,7 +29,7 @@ export function SimuladorPreco() {
             onClick={() => navigate("/checkout")}
           >
             <Crown className="w-4 h-4 mr-2" />
-            Ver Planos PRO
+            Ver Planos Premium
           </Button>
         </div>
       </div>

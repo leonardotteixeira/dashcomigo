@@ -45,7 +45,7 @@ const tools = [
     description:
       "Veja gráficos de receita vs despesa, margem de lucro, categorias mais custosas e tendências do seu negócio.",
     href: "/app/relatorios",
-    badge: "PRO",
+    badge: "Premium",
   },
   {
     icon: Calculator,
@@ -77,7 +77,7 @@ const tools = [
     description:
       "Defina objetivos mensais ou anuais de receita, economias e lucro — e acompanhe seu progresso com visualizações claras.",
     href: "/app/metas",
-    badge: "PRO",
+    badge: "Premium",
   },
   {
     icon: Zap,
@@ -149,9 +149,9 @@ export function Ferramentas() {
                     </div>
                     {tool.badge && (
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                        tool.badge === "PRO" ? "bg-amber-100 text-amber-700" : ""
+                        tool.badge === "Premium" ? "bg-amber-100 text-amber-700" : ""
                       }`}
-                        style={tool.badge !== "PRO" ? { background: "rgba(127,209,159,0.2)", color: "#1F5A3A" } : {}}>
+                        style={tool.badge !== "Premium" ? { background: "rgba(127,209,159,0.2)", color: "#1F5A3A" } : {}}>
                         {tool.badge}
                       </span>
                     )}

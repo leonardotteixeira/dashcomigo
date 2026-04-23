@@ -40,7 +40,7 @@ export default function FeatureLock({ feature, description, size = "md" }: Featu
             onClick={() => setShowPaywall(true)}
             className="bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white px-6 py-2.5 rounded-xl hover:from-[#002a5d] hover:to-[#0056EF] transition-all font-semibold text-sm shadow-sm"
           >
-            Disponível no PRO
+            Disponível no Premium
           </button>
 
           <p className="text-xs text-[#0E3B2E]/50 mt-3">

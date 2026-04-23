@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
-import { Mail, Lock, ArrowRight, Shield, Zap, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, ArrowRight, Shield, Zap, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
-import { Logo, LogoMark } from "../components/ui/Logo";
+import { Logo } from "../components/ui/Logo";
 
 function GoogleIcon() {
   return (
@@ -58,11 +58,35 @@ function GoogleLoginButton({ loading, loginWithGoogle, navigate }: {
   );
 }
 
+function mapLoginError(error: unknown): string {
+  const msg = error instanceof Error ? error.message : String(error);
+  const lower = msg.toLowerCase();
+
+  if (!navigator.onLine) return "Sem conexão com a internet. Verifique sua rede.";
+  if (lower.includes("failed to authenticate") || lower.includes("invalid login") || lower.includes("invalid_credentials") || lower.includes("400")) {
+    return "Email ou senha incorretos. Verifique e tente novamente.";
+  }
+  if (lower.includes("not found") || lower.includes("404")) {
+    return "Nenhuma conta encontrada com este email.";
+  }
+  if (lower.includes("email not confirmed")) {
+    return "Confirme seu email antes de entrar. Verifique sua caixa de entrada.";
+  }
+  if (lower.includes("too many") || lower.includes("rate limit") || lower.includes("429")) {
+    return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
+  }
+  if (lower.includes("500") || lower.includes("server")) {
+    return "Erro no servidor. Tente novamente em instantes.";
+  }
+  return "Não foi possível entrar. Tente novamente em instantes.";
+}
+
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user, login, loginWithGoogle } = useAuth();
 
@@ -74,22 +98,21 @@ export function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+
+    if (!email.trim() || !password.trim()) {
+      setFormError("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
     setLoading(true);
     try {
       await login(email, password);
       toast.success("Login realizado com sucesso!");
       navigate("/app");
-    } catch (error: any) {
-      const msg = error?.message || "";
-      if (msg.includes("Invalid login credentials") || msg.includes("invalid_credentials")) {
-        toast.error("Email ou senha incorretos. Tente novamente.");
-      } else if (msg.includes("Email not confirmed")) {
-        toast.error("Confirme seu email antes de entrar. Verifique sua caixa de entrada.");
-      } else if (msg.includes("Too many requests")) {
-        toast.error("Muitas tentativas. Aguarde alguns minutos e tente novamente.");
-      } else {
-        toast.error("Erro ao entrar. Tente novamente.");
-      }
+    } catch (error: unknown) {
+      const msg = mapLoginError(error);
+      setFormError(msg);
     } finally {
       setLoading(false);
     }
@@ -183,7 +206,7 @@ export function Login() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setFormError(null); }}
                   placeholder="seu@email.com"
                   required
                   className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg pl-12 pr-4 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
@@ -202,7 +225,7 @@ export function Login() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); setFormError(null); }}
                   placeholder="••••••••"
                   required
                   className="w-full border border-[rgba(20,18,15,0.13)] rounded-lg pl-12 pr-12 py-4 text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 focus:outline-none focus:ring-2 focus:ring-[#0E3B2E] focus:border-transparent transition-all"
@@ -217,6 +240,13 @@ export function Login() {
                 </button>
               </div>
             </div>
+
+            {formError && (
+              <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">{formError}</p>
+              </div>
+            )}
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">

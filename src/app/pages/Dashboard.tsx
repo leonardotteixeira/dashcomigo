@@ -120,7 +120,7 @@ export function Dashboard() {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs bg-[#F4EFE6] px-3 py-1.5 rounded-full font-medium text-[#0E3B2E]/60">
-              {user?.plan === "pro" ? "Plano PRO" : "Plano Gratuito"}
+              {user?.plan === "pro" ? "Plano Premium" : "Plano Gratuito"}
             </span>
           </div>
         </div>

@@ -142,7 +142,7 @@ export default function OnboardingChecklist() {
             🎉 Parabéns! Você completou o onboarding!
           </p>
           <p className="text-xs text-muted-foreground">
-            Ganhe 7 dias grátis do plano PRO como recompensa
+            Ganhe 7 dias grátis do plano Premium como recompensa
           </p>
         </div>
       )}

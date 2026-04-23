@@ -243,7 +243,7 @@ export default function WelcomeBackModal() {
             <p className="text-xs" style={{ color: "rgba(14,59,46,0.55)" }}>
               {streak >= STREAK_GOAL
                 ? "Meta atingida! Recompensa desbloqueada 🎉"
-                : `Faltam ${STREAK_GOAL - streak} ${STREAK_GOAL - streak === 1 ? "dia" : "dias"} para ganhar 1 mês grátis do PRO`}
+                : `Faltam ${STREAK_GOAL - streak} ${STREAK_GOAL - streak === 1 ? "dia" : "dias"} para ganhar 1 mês grátis do Premium`}
             </p>
           </div>
         )}

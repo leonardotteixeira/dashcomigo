@@ -122,7 +122,7 @@ export function CheckoutSuccess() {
             Confirmando seu pagamento...
           </h1>
           <p className="text-[rgba(0,21,41,0.6)] mb-6">
-            Aguarde enquanto ativamos seu plano PRO.
+            Aguarde enquanto ativamos seu plano Premium.
           </p>
           <div className="flex justify-center gap-1.5 flex-wrap max-w-xs mx-auto">
             {Array.from({ length: MAX_ATTEMPTS }).map((_, i) => (
@@ -201,7 +201,7 @@ export function CheckoutSuccess() {
             </div>
 
             <h1 className="text-4xl font-bold text-[#0E3B2E] mb-3">
-              Bem-vindo ao PRO! 🎉
+              Bem-vindo ao Premium! 🎉
             </h1>
             <p className="text-lg text-[rgba(0,21,41,0.6)] mb-4">
               Sua conta foi atualizada com sucesso
@@ -210,7 +210,7 @@ export function CheckoutSuccess() {
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#F0F8F5] border border-[#28A263]/20 rounded-xl mb-8">
               <Crown className="w-5 h-5 text-[#28A263]" />
               <span className="font-bold text-[#28A263]">
-                {user?.name} • Plano PRO Ativo
+                {user?.name} • Plano Premium Ativo
               </span>
             </div>
 

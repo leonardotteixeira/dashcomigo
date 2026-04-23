@@ -225,7 +225,7 @@ export function Profile() {
               {user?.plan === "pro" ? (
                 <>
                   <Crown className="w-3 h-3" />
-                  Plano PRO
+                  Plano Premium
                 </>
               ) : (
                 "Plano Gratuito"

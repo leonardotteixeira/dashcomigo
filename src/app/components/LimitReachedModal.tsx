@@ -148,7 +148,7 @@ export function LimitReachedModal({
         {/* Benefits */}
         <div className="px-6 py-4">
           <p className="text-xs font-bold text-[#0E3B2E]/50 uppercase tracking-widest mb-3">
-            Com o Plano PRO você terá:
+            Com o Plano Premium você terá:
           </p>
           <ul className="space-y-2">
             {benefits.map((b, i) => (
@@ -169,7 +169,7 @@ export function LimitReachedModal({
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#0E3B2E] to-[#0066FF] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity shadow-md"
           >
             <Crown className="w-4 h-4" />
-            Fazer Upgrade para PRO
+            Fazer Upgrade para Premium
             <ArrowRight className="w-4 h-4" />
           </button>
           <button

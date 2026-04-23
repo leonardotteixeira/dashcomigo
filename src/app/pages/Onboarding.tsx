@@ -138,7 +138,7 @@ const FEATURES = [
   },
   {
     id: "simuladores-pro",
-    title: "Simuladores PRO",
+    title: "Simuladores Premium",
     subtitle: "Calcule o preço ideal dos seus serviços e projete seu lucro futuro com cenários personalizados.",
     color: "#A855F7",
     icon: Crown,
@@ -146,7 +146,7 @@ const FEATURES = [
       "Simulador de Preço: custos + margem ideal",
       "Simulador de Lucro: projeção a 12 meses",
       "Cenários otimista, realista e pessimista",
-      "Disponível no plano PRO",
+      "Disponível no plano Premium",
     ],
     preview: (
       <div className="rounded-2xl border border-[rgba(0,0,0,0.1)] p-5 mx-auto max-w-sm">

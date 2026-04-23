@@ -43,7 +43,7 @@ interface Proposal {
 const TEMPLATES: { id: Template; label: string; desc: string; badge?: string }[] = [
   { id: "basico", label: "Básico", desc: "Simples e direto ao ponto" },
   { id: "detalhado", label: "Detalhado", desc: "Inclui escopo e cronograma", badge: "Popular" },
-  { id: "premium", label: "Premium", desc: "Header destacado e termos", badge: "PRO" },
+  { id: "premium", label: "Premium", desc: "Header destacado e termos", badge: "Premium" },
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
@@ -522,7 +522,7 @@ export function GeradorPropostas() {
             </span>
             {limitReached && (
               <Button size="sm" className="ml-auto bg-[#7FD19F] hover:bg-primary text-foreground text-xs rounded-lg" onClick={() => navigate("/checkout")}>
-                <Crown className="w-3 h-3 mr-1" /> Upgrade PRO
+                <Crown className="w-3 h-3 mr-1" /> Upgrade Premium
               </Button>
             )}
           </div>
@@ -808,12 +808,12 @@ export function GeradorPropostas() {
               </div>
               <DialogTitle className="text-2xl font-bold text-foreground">Limite diário atingido!</DialogTitle>
               <DialogDescription className="text-muted-foreground mt-2">
-                Você usou todas as {FREE_LIMIT} propostas gratuitas de hoje. Faça upgrade para o PRO e gere propostas ilimitadas!
+                Você usou todas as {FREE_LIMIT} propostas gratuitas de hoje. Faça upgrade para o Premium e gere propostas ilimitadas!
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 mt-4">
               <Button size="lg" className="w-full bg-[#7FD19F] hover:bg-primary text-foreground rounded-xl" onClick={() => { setLimitDialogOpen(false); navigate("/checkout"); }}>
-                <Crown className="w-4 h-4 mr-2" /> Ver Planos PRO
+                <Crown className="w-4 h-4 mr-2" /> Ver Planos Premium
               </Button>
               <Button size="lg" className="w-full bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl" onClick={() => setLimitDialogOpen(false)}>
                 Fechar
@@ -884,7 +884,7 @@ export function GeradorPropostas() {
               >
                 {t.badge && (
                   <span className={`absolute top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${
-                    t.badge === "PRO" ? "bg-primary/20 text-primary" : "bg-blue-500/20 text-blue-400"
+                    t.badge === "Premium" ? "bg-primary/20 text-primary" : "bg-blue-500/20 text-blue-400"
                   }`}>{t.badge}</span>
                 )}
                 <p className={`font-bold text-sm ${template === t.id ? "text-primary" : "text-foreground"}`}>{t.label}</p>

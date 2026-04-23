@@ -310,7 +310,7 @@ function MeiSimulator() {
           suffix="R$"
         />
         {advanced && (
-          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no PRO" lockedLabel="Funcionalidade PRO">
+          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no Premium" lockedLabel="Funcionalidade Premium">
             <>
               <InputField
                 label="Taxa de Crescimento Mensal (%)"
@@ -517,7 +517,7 @@ function PriceSimulator() {
           suffix="%"
         />
         {advanced && (
-          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no PRO" lockedLabel="Funcionalidade PRO">
+          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no Premium" lockedLabel="Funcionalidade Premium">
             <>
               <InputField
                 label="Custos Fixos Mensais (R$)"
@@ -736,7 +736,7 @@ function ProfitSimulator() {
           suffix="R$"
         />
         {advanced && (
-          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no PRO" lockedLabel="Funcionalidade PRO">
+          <FeatureGate feature="simulators_advanced" plan={user?.plan ?? "free"} ctaText="Modo Avançado disponível no Premium" lockedLabel="Funcionalidade Premium">
             <>
               <InputField
                 label="Ticket Médio (R$)"
