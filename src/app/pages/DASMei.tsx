@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { CheckCircle, Clock, AlertTriangle, FileText, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle, Clock, AlertTriangle, Info, ChevronDown, ChevronUp, ExternalLink, CreditCard } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useCashFlow } from "../contexts/CashFlowContext";
 import { pb } from "../../lib/pocketbase";
@@ -120,6 +120,42 @@ export function DASMei() {
       description="Controle o pagamento mensal do Documento de Arrecadação do Simples Nacional"
     >
       <div className={spacing.sectionGap}>
+        {/* Gerar DAS-MEI CTA */}
+        <div className="rounded-2xl border p-6 shadow-sm" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${colors.primary}15` }}>
+                <CreditCard className="w-6 h-6" style={{ color: colors.primary }} />
+              </div>
+              <div>
+                <h3 className="font-bold text-base mb-1" style={{ color: colors.textPrimary }}>Emitir guia de pagamento</h3>
+                <p className="text-sm" style={{ color: colors.textSecondary }}>
+                  Você será redirecionado ao portal oficial do governo para gerar seu DAS-MEI.
+                </p>
+                {(user as any)?.cnpj ? (
+                  <p className="text-xs mt-1 font-medium" style={{ color: colors.primary }}>
+                    CNPJ: {(user as any).cnpj}
+                  </p>
+                ) : (
+                  <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>
+                    Tenha seu CNPJ em mãos para continuar.
+                  </p>
+                )}
+              </div>
+            </div>
+            <a
+              href="https://www8.receita.fazenda.gov.br/simplesnacional/aplicacoes/atspo/pgmei.app/identificacao"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-sm text-white transition-all hover:opacity-90"
+              style={{ backgroundColor: colors.primary }}
+            >
+              Gerar DAS-MEI
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+
         {/* Activity Selector */}
         <div className="bg-[#EBE4D6] rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
           <label className="text-sm font-medium mb-3 block" style={{ color: colors.textPrimary }}>Sua atividade principal</label>
@@ -326,8 +362,8 @@ export function DASMei() {
 
         <p className="text-xs text-center pb-4" style={{ color: colors.textSecondary }}>
           Valores baseados no salário mínimo de 2026 (R${SALARIO_MINIMO.toLocaleString("pt-BR")}). Para emitir a guia oficial, acesse o{" "}
-          <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/servicos-para-mei/pagamento-das-mei" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity" style={{ color: colors.primary }}>
-            Portal do Empreendedor
+          <a href="https://www8.receita.fazenda.gov.br/simplesnacional/aplicacoes/atspo/pgmei.app/identificacao" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity" style={{ color: colors.primary }}>
+            PGMEI — Portal do Simples Nacional
           </a>.
         </p>
       </div>
