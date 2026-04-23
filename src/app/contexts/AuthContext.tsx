@@ -23,6 +23,7 @@ export interface User {
   bestStreak: number;
   lastLoginDate?: string;
   streakRewardClaimed: boolean;
+  isAdmin: boolean;
 }
 
 interface AuthContextType {
@@ -72,6 +73,7 @@ function mapProfile(pbRecord: RecordModel): User {
     bestStreak: pbRecord.best_streak ?? 0,
     lastLoginDate: pbRecord.last_login_date ?? undefined,
     streakRewardClaimed: pbRecord.streak_reward_claimed ?? false,
+    isAdmin: pbRecord.is_admin ?? false,
   };
 }
 

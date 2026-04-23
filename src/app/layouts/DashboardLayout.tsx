@@ -18,6 +18,8 @@ import {
   Handshake,
   Truck,
   FileText,
+  MessageCircle,
+  ShieldCheck,
 } from "lucide-react";
 import { Logo, LogoMark } from "../components/ui/Logo";
 import { useState } from "react";
@@ -27,6 +29,7 @@ import LimitedOfferBanner from "../components/LimitedOfferBanner";
 import NotificationCenter from "../components/NotificationCenter";
 import FreePlanUsage from "../components/FreePlanUsage";
 import { MenuItem } from "../components/MenuItem";
+import { SupportWidget } from "../components/SupportWidget";
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -68,6 +71,8 @@ export function DashboardLayout() {
     { name: "Simuladores", href: "/app/simuladores", icon: Calculator },
     { name: "Investimentos", href: "/app/investimentos", icon: Landmark },
     { name: "DAS MEI", href: "/app/das-mei", icon: FileText },
+    { name: "Suporte", href: "/app/suporte", icon: MessageCircle },
+    ...(user.isAdmin ? [{ name: "Admin Chat", href: "/app/admin/suporte", icon: ShieldCheck }] : []),
   ];
 
   const handleLogout = () => {
@@ -232,6 +237,9 @@ export function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Floating support chat button */}
+      <SupportWidget />
     </div>
   );
 }

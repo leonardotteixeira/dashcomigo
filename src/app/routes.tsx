@@ -47,6 +47,8 @@ import { Reports } from "./pages/Reports";
 import { Budgets } from "./pages/Budgets";
 import { Customers } from "./pages/Customers";
 import { Simulators } from "./pages/Simulators";
+import { SupportChat } from "./pages/SupportChat";
+import { AdminSupport } from "./pages/AdminSupport";
 import { Sobre } from "./pages/Sobre";
 import { Blog } from "./pages/Blog";
 import { BlogPost } from "./pages/BlogPost";
@@ -213,6 +215,14 @@ export const router = createHashRouter([
       {
         path: "simuladores",
         Component: Simulators,
+      },
+      {
+        path: "suporte",
+        Component: SupportChat,
+      },
+      {
+        path: "admin/suporte",
+        Component: AdminSupport,
       },
     ],
   },

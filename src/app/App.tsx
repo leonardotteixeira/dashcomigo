@@ -2,6 +2,7 @@ import { RouterProvider } from "react-router";
 import { router } from "./routes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AuthProvider } from "./contexts/AuthContext";
+import { SupportProvider } from "./contexts/SupportContext";
 import { CashFlowProvider } from "./contexts/CashFlowContext";
 import { PayablesProvider } from "./contexts/PayablesContext";
 import { ReportsProvider } from "./contexts/ReportsContext";
@@ -29,7 +30,9 @@ export default function App() {
                           <GoalsProvider>
                             <ReportsProvider>
                               <NotificationsProvider>
-                                <RouterProvider router={router} />
+                                <SupportProvider>
+                                  <RouterProvider router={router} />
+                                </SupportProvider>
                               </NotificationsProvider>
                             </ReportsProvider>
                           </GoalsProvider>
