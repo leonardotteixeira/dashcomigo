@@ -56,11 +56,12 @@ export function LandingPage() {
       </nav>
 
       {/* ── Hero ────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-20" style={{ background: "#F4EFE6" }}>
+      <section className="relative min-h-screen flex flex-col overflow-hidden pt-20" style={{ background: "#F4EFE6" }}>
         <div className="absolute top-1/2 right-0 w-[700px] h-[700px] -translate-y-1/2 rounded-full opacity-20 blur-[120px]"
           style={{ background: "#7FD19F" }} />
 
-        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center py-20">
+        {/* flex-1 so this grows and the scroll indicator sits naturally below */}
+        <div className="relative flex-1 max-w-7xl mx-auto w-full px-6 grid lg:grid-cols-2 gap-20 items-center py-16">
           {/* Copy */}
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
@@ -221,7 +222,8 @@ export function LandingPage() {
           </div>
         </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+        {/* Scroll indicator — in normal flow, always below content */}
+        <div className="flex justify-center pb-10 animate-bounce">
           <div className="flex flex-col items-center gap-2" style={{ color: "rgba(14,59,46,0.4)" }}>
             <span className="text-sm font-medium">Role para descobrir</span>
             <ArrowRight className="w-5 h-5 rotate-90" />
