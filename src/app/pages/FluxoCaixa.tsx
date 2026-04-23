@@ -326,20 +326,21 @@ export function FluxoCaixa() {
       <div className="flex gap-1 bg-[#F4EFE6] rounded-xl p-1 w-fit">
         {(
           [
-            { key: "all", label: "Todos", icon: null },
-            { key: "PJ", label: "🏢 Empresa (PJ)", icon: null },
-            { key: "PF", label: "👤 Pessoal (PF)", icon: null },
+            { key: "all", label: "Todos", Icon: null },
+            { key: "PJ", label: "Empresa (PJ)", Icon: Building2 },
+            { key: "PF", label: "Pessoal (PF)", Icon: User },
           ] as const
-        ).map(({ key, label }) => (
+        ).map(({ key, label, Icon }) => (
           <button
             key={key}
             onClick={() => setActiveTab(key)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
               activeTab === key
                 ? "bg-white text-[#0E3B2E] shadow-sm"
                 : "text-[rgba(0,21,41,0.55)] hover:text-[#0E3B2E]"
             }`}
           >
+            {Icon && <Icon className="w-3.5 h-3.5 flex-shrink-0" />}
             {label}
           </button>
         ))}
@@ -599,7 +600,10 @@ export function FluxoCaixa() {
                               <div className="space-y-1 min-w-[140px]">
                                 <p className="text-xs font-semibold text-[rgba(0,21,41,0.4)] uppercase tracking-wider">Classificação</p>
                                 <p className="text-[#0E3B2E] font-medium">
-                                  {t.pfpj === "PF" ? "👤 Pessoa Física" : "🏢 Pessoa Jurídica"}
+                                  <span className="inline-flex items-center gap-1.5">
+                                    {t.pfpj === "PF" ? <User className="w-3.5 h-3.5 flex-shrink-0" /> : <Building2 className="w-3.5 h-3.5 flex-shrink-0" />}
+                                    {t.pfpj === "PF" ? "Pessoa Física" : "Pessoa Jurídica"}
+                                  </span>
                                   {(t.pfpjScore ?? 100) < 100 && (
                                     <span className={`ml-2 text-xs ${(t.pfpjScore ?? 100) < 70 ? "text-amber-500" : "text-green-600"}`}>
                                       ({(t.pfpjScore ?? 100)}% confiança)
@@ -820,7 +824,7 @@ export function FluxoCaixa() {
                       : { background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)", color: "rgba(0,21,41,0.55)" }}
                   >
                     <Building2 className="w-4 h-4" />
-                    🏢 Empresa
+                    Empresa
                   </button>
                   <button
                     type="button"
@@ -831,7 +835,7 @@ export function FluxoCaixa() {
                       : { background: "#EBE4D6", borderColor: "rgba(20,18,15,0.13)", color: "rgba(0,21,41,0.55)" }}
                   >
                     <User className="w-4 h-4" />
-                    👤 Pessoal
+                    Pessoal
                   </button>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { User, Building2, Zap } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -158,7 +159,7 @@ export function TransactionFormWithPFPJ({
                 : 'bg-[#0F0F0F] border-white/10 text-[#A1A1A1] hover:border-white/20'
             }`}
           >
-            <div className="text-xl mb-1">👤</div>
+            <User className="w-5 h-5 mb-1 mx-auto" />
             <div className="text-xs font-medium">Pessoal</div>
           </button>
 
@@ -172,7 +173,7 @@ export function TransactionFormWithPFPJ({
                 : 'bg-[#0F0F0F] border-white/10 text-[#A1A1A1] hover:border-white/20'
             }`}
           >
-            <div className="text-xl mb-1">🏢</div>
+            <Building2 className="w-5 h-5 mb-1 mx-auto" />
             <div className="text-xs font-medium">Empresa</div>
           </button>
 
@@ -186,7 +187,7 @@ export function TransactionFormWithPFPJ({
                 : 'bg-[#0F0F0F] border-white/10 text-[#A1A1A1] hover:border-white/20'
             }`}
           >
-            <div className="text-xl mb-1">⚡</div>
+            <Zap className="w-5 h-5 mb-1 mx-auto" />
             <div className="text-xs font-medium">Misto</div>
           </button>
         </div>

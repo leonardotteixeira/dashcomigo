@@ -1,3 +1,4 @@
+import { User, Building2 } from 'lucide-react';
 import { PFPJSummary } from '../../types/pfpj';
 import { formatCurrency } from '../../utils/reportCalculations';
 
@@ -29,8 +30,8 @@ export function PFPJSummaryCards({ summary, loading = false }: PFPJSummaryCardsP
             <p className="text-sm text-[#A1A1A1] mb-1">Pessoal (PF)</p>
             <h3 className="text-2xl font-bold text-[#5B5FFF]">{formatCurrency(summary.pf.balance)}</h3>
           </div>
-          <div className="w-12 h-12 bg-[#5B5FFF]/20 rounded-lg flex items-center justify-center text-xl">
-            👤
+          <div className="w-12 h-12 bg-[#5B5FFF]/20 rounded-lg flex items-center justify-center">
+            <User className="w-5 h-5 text-[#5B5FFF]" />
           </div>
         </div>
 
@@ -59,8 +60,8 @@ export function PFPJSummaryCards({ summary, loading = false }: PFPJSummaryCardsP
             <p className="text-sm text-[#A1A1A1] mb-1">Empresa (PJ)</p>
             <h3 className="text-2xl font-bold text-[#28A263]">{formatCurrency(summary.pj.balance)}</h3>
           </div>
-          <div className="w-12 h-12 bg-[#28A263]/20 rounded-lg flex items-center justify-center text-xl">
-            🏢
+          <div className="w-12 h-12 bg-[#28A263]/20 rounded-lg flex items-center justify-center">
+            <Building2 className="w-5 h-5 text-[#28A263]" />
           </div>
         </div>
 
