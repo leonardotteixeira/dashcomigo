@@ -39,6 +39,7 @@ export function useFinancialMetrics() {
   const metrics = useMemo(() => {
     const thisMonth = currentMonthKey();
     const prevMonth = prevMonthKey();
+    const thisYear = new Date().getFullYear().toString();
 
     // ── Monthly transactions ──────────────────────────────────────
     const thisTx = transactions.filter((t) => t.data.startsWith(thisMonth));
@@ -81,6 +82,11 @@ export function useFinancialMetrics() {
         : monthLucro > 0
         ? 100
         : 0;
+
+    // ── MEI annual revenue (current year, entrada only) ──────────
+    const anoReceitas = transactions
+      .filter((t) => t.tipo === "entrada" && t.data.startsWith(thisYear))
+      .reduce((s, t) => s + t.valor, 0);
 
     // ── All-time saldo ────────────────────────────────────────────
     const saldoAtual = summary.saldoAtual;
@@ -132,6 +138,8 @@ export function useFinancialMetrics() {
       .sort((a, b) => b.value - a.value);
 
     return {
+      // MEI annual
+      anoReceitas,
       // Current month
       monthReceitas,
       monthDespesas,

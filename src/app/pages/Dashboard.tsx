@@ -43,6 +43,7 @@ import OnboardingChecklist from "../components/OnboardingChecklist";
 import WelcomeBackModal from "../components/WelcomeBackModal";
 import SavingsCalculator from "../components/SavingsCalculator";
 import UsageLimitCard from "../components/UsageLimitCard";
+import MeiRevenueTracker from "../components/MeiRevenueTracker";
 import PfPjDistribution from "../components/PfPjDistribution";
 import { ProInsightsBar } from "../components/ProInsightsBar";
 // Open Finance imports kept for future integration (components not yet committed)
@@ -126,6 +127,9 @@ export function Dashboard() {
 
         {/* NOVO: Card de Limitação - Destaque no topo */}
         <UsageLimitCard />
+
+        {/* MEI Annual Revenue Tracker */}
+        <MeiRevenueTracker />
 
         {/* KPI Cards - Premium Financial Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
