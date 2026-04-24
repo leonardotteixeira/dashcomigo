@@ -467,6 +467,7 @@ export function GeradorPropostas() {
         prazo: proposal.prazo,
         condicoesPagamento: proposal.condicoes_pagamento,
         validade: proposal.validade ?? 7,
+        nomeEmpresa: user?.company || user?.name,
       });
     } else {
       generateProposalPDF({
@@ -480,6 +481,8 @@ export function GeradorPropostas() {
         prazo,
         condicoesPagamento,
         validade,
+        nomeEmpresa: user?.company || user?.name,
+        aiText: aiPreviewText || undefined,
       });
     }
   };
@@ -1093,7 +1096,7 @@ export function GeradorPropostas() {
                   size="sm"
                   className="flex-1 bg-[#0E3B2E] hover:bg-[#082219] text-white rounded-lg text-xs"
                   onClick={() => {
-                    generateProposalPDF({ tipo, template, nomeCliente, emailCliente, nomeServico, descricao, valor, prazo, condicoesPagamento, validade });
+                    generateProposalPDF({ tipo, template, nomeCliente, emailCliente, nomeServico, descricao, valor, prazo, condicoesPagamento, validade, nomeEmpresa: user?.company || user?.name, aiText: aiPreviewText || undefined });
                     toast.success("PDF gerado!");
                   }}
                 >
