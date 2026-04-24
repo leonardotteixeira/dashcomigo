@@ -951,6 +951,31 @@ export function GeradorPropostas() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-5">
+          {/* Botão Gerar com IA — topo do formulário */}
+          <Button
+            size="lg"
+            className="w-full bg-gradient-to-r from-[#0E3B2E] to-[#1F5A3A] hover:from-[#082219] hover:to-[#0E3B2E] text-white rounded-xl h-12 font-semibold shadow-md"
+            onClick={handleGenerateWithAI}
+            disabled={generatingAI || !nomeCliente || !nomeServico}
+          >
+            {generatingAI ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Gerando documento com IA...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Gerar com IA
+              </>
+            )}
+          </Button>
+          {(!nomeCliente || !nomeServico) && (
+            <p className="text-xs text-muted-foreground text-center -mt-3">
+              Preencha o nome do cliente e do serviço para habilitar
+            </p>
+          )}
+
           <div className="p-6 bg-card rounded-2xl border border-border">
             <h3 className="text-lg font-bold text-foreground mb-5">Dados do Cliente</h3>
             <div className="space-y-4">
@@ -1009,26 +1034,6 @@ export function GeradorPropostas() {
               </div>
             </div>
           </div>
-
-          {/* Botão Gerar com IA — destaque acima dos outros */}
-          <Button
-            size="lg"
-            className="w-full bg-gradient-to-r from-[#0E3B2E] to-[#1F5A3A] hover:from-[#082219] hover:to-[#0E3B2E] text-white rounded-xl h-12 font-semibold shadow-md"
-            onClick={handleGenerateWithAI}
-            disabled={generatingAI || !nomeCliente || !nomeServico}
-          >
-            {generatingAI ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Gerando documento com IA...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Gerar com IA
-              </>
-            )}
-          </Button>
 
           <div className="flex gap-3">
             <Button
