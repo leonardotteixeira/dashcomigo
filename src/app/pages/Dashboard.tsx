@@ -46,6 +46,7 @@ import UsageLimitCard from "../components/UsageLimitCard";
 import MeiRevenueTracker from "../components/MeiRevenueTracker";
 import PfPjDistribution from "../components/PfPjDistribution";
 import { ProInsightsBar } from "../components/ProInsightsBar";
+import AIInsightCard from "../components/AIInsightCard";
 // Open Finance imports kept for future integration (components not yet committed)
 // import { BankConnectionSelector } from "../components/BankConnectionSelector";
 // import { useOpenFinanceStatus } from "../hooks/useOpenFinanceStatus";
@@ -130,6 +131,9 @@ export function Dashboard() {
 
         {/* MEI Annual Revenue Tracker */}
         <MeiRevenueTracker />
+
+        {/* AI Daily Insight */}
+        <AIInsightCard />
 
         {/* KPI Cards - Premium Financial Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

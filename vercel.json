@@ -56,6 +56,14 @@
       "destination": "https://simulador-financeiro-saas-production.up.railway.app/check-payment-by-user"
     },
     {
+      "source": "/generate-proposal",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/generate-proposal"
+    },
+    {
+      "source": "/daily-insight",
+      "destination": "https://simulador-financeiro-saas-production.up.railway.app/daily-insight"
+    },
+    {
       "source": "/webhook/(.*)",
       "destination": "https://simulador-financeiro-saas-production.up.railway.app/webhook/$1"
     },

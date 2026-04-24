@@ -12,6 +12,7 @@ const webhookRouter = require("./routes/webhook");
 const verifyPaymentRouter = require("./routes/verifyPayment");
 const checkPaymentByUserRouter = require("./routes/checkPaymentByUser");
 const generateProposalRouter = require("./routes/generateProposal");
+const dailyInsightRouter = require("./routes/dailyInsight");
 
 const app = express();
 
@@ -113,6 +114,7 @@ app.use("/webhook", webhookRouter);
 app.use("/verify-payment", verifyPaymentRouter);
 app.use("/check-payment-by-user", checkPaymentByUserRouter);
 app.use("/generate-proposal", generateProposalRouter);
+app.use("/daily-insight", dailyInsightRouter);
 
 // ── Frontend estático e SPA fallback ─────────────────────────────────────────
 const frontendPath = path.join(__dirname, "../../dist");
