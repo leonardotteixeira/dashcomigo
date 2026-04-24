@@ -8,7 +8,7 @@
  * - PLAID_ENV=sandbox (or production)
  */
 
-import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
+import { Configuration, PlaidApi, PlaidEnvironments, CountryCode, Products } from 'plaid';
 import PocketBase from 'pocketbase';
 
 // Initialize PocketBase
@@ -43,8 +43,8 @@ export async function createLinkToken(req: any, res: any) {
       user: { client_user_id: userId },
       client_name: 'Dashcomigo',
       language: 'pt-BR',
-      country_codes: ['BR'],
-      products: ['auth', 'transactions'],
+      country_codes: [CountryCode.Br],
+      products: [Products.Auth, Products.Transactions],
     });
 
     console.log('[Plaid] Link token created:', response.data.link_token);

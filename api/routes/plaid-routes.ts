@@ -4,7 +4,7 @@
  */
 
 import express, { Router } from 'express';
-import * as plaidController from '../plaid.ts';
+import * as plaidController from '../plaid';
 
 export function setupPlaidRoutes(app: express.Application): void {
   const router = Router();
