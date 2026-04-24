@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   FileText, Download, Send, Eye, Info, Crown, Copy, Check, Sparkles,
   Plus, Filter, ArrowRight, MoreHorizontal, Trash2, ChevronRight,
-  TrendingUp, Clock, X
+  TrendingUp, Clock, X, Loader2
 } from "lucide-react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -87,6 +87,8 @@ export function GeradorPropostas() {
   const [condicoesPagamento, setCondicoesPagamento] = useState("50-50");
   const [validade, setValidade] = useState(7);
   const [saving, setSaving] = useState(false);
+  const [generatingAI, setGeneratingAI] = useState(false);
+  const [aiPreviewText, setAiPreviewText] = useState<string | null>(null);
 
   // Dialogs
   const [limitDialogOpen, setLimitDialogOpen] = useState(false);
@@ -479,6 +481,57 @@ export function GeradorPropostas() {
         condicoesPagamento,
         validade,
       });
+    }
+  };
+
+  const handleGenerateWithAI = async () => {
+    if (!nomeCliente || !nomeServico) {
+      toast.error("Preencha ao menos o nome do cliente e do serviço antes de gerar.");
+      return;
+    }
+    setGeneratingAI(true);
+    setAiPreviewText(null);
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || "";
+      const res = await fetch(`${API_URL}/generate-proposal`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo,
+          template,
+          nomeCliente,
+          emailCliente,
+          nomeServico,
+          descricao,
+          valor,
+          prazo,
+          condicoesPagamento,
+          validade,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Erro ao gerar com IA");
+      }
+
+      const data = await res.json();
+
+      // Preenche a descrição com a versão melhorada pela IA
+      if (data.descricaoMelhorada) {
+        setDescricao(data.descricaoMelhorada);
+      }
+
+      // Exibe o documento gerado no preview de IA
+      if (data.documentoTexto) {
+        setAiPreviewText(data.documentoTexto);
+      }
+
+      toast.success("Documento gerado com IA! Revise e salve.");
+    } catch (err: any) {
+      toast.error(err?.message || "Erro ao gerar com IA. Tente novamente.");
+    } finally {
+      setGeneratingAI(false);
     }
   };
 
@@ -957,6 +1010,26 @@ export function GeradorPropostas() {
             </div>
           </div>
 
+          {/* Botão Gerar com IA — destaque acima dos outros */}
+          <Button
+            size="lg"
+            className="w-full bg-gradient-to-r from-[#0E3B2E] to-[#1F5A3A] hover:from-[#082219] hover:to-[#0E3B2E] text-white rounded-xl h-12 font-semibold shadow-md"
+            onClick={handleGenerateWithAI}
+            disabled={generatingAI || !nomeCliente || !nomeServico}
+          >
+            {generatingAI ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Gerando documento com IA...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Gerar com IA
+              </>
+            )}
+          </Button>
+
           <div className="flex gap-3">
             <Button
               size="lg"
@@ -979,7 +1052,62 @@ export function GeradorPropostas() {
         </div>
 
         {/* Preview */}
-        <div className="lg:sticky lg:top-6 lg:self-start">
+        <div className="lg:sticky lg:top-6 lg:self-start space-y-4">
+
+          {/* Preview IA — exibido quando há documento gerado */}
+          {aiPreviewText && (
+            <div className="rounded-2xl border border-[#0E3B2E]/30 overflow-hidden shadow-sm">
+              <div className="bg-[#0E3B2E] text-white px-5 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#7FD19F]" />
+                  <span className="font-semibold text-sm">Documento Gerado pela IA</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(aiPreviewText);
+                      toast.success("Documento copiado!");
+                    }}
+                    className="text-xs text-[#7FD19F] hover:text-white flex items-center gap-1 transition-colors"
+                  >
+                    <Copy className="w-3 h-3" /> Copiar
+                  </button>
+                  <button
+                    onClick={() => setAiPreviewText(null)}
+                    className="text-white/50 hover:text-white transition-colors ml-2"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="bg-[#F4EFE6] p-5 max-h-[520px] overflow-y-auto">
+                <pre className="text-xs text-[#0E3B2E] whitespace-pre-wrap font-mono leading-relaxed">{aiPreviewText}</pre>
+              </div>
+              <div className="bg-[#EBE4D6] px-5 py-3 flex gap-2 border-t border-[#0E3B2E]/10">
+                <Button
+                  size="sm"
+                  className="flex-1 bg-[#0E3B2E] hover:bg-[#082219] text-white rounded-lg text-xs"
+                  onClick={() => {
+                    generateProposalPDF({ tipo, template, nomeCliente, emailCliente, nomeServico, descricao, valor, prazo, condicoesPagamento, validade });
+                    toast.success("PDF gerado!");
+                  }}
+                >
+                  <Download className="w-3 h-3 mr-1" /> Exportar PDF
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 border-[#0E3B2E]/20 text-[#0E3B2E] rounded-lg text-xs hover:bg-[#0E3B2E]/5"
+                  onClick={() => handleSendEmail()}
+                  disabled={!emailCliente}
+                >
+                  <Send className="w-3 h-3 mr-1" /> Enviar por e-mail
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Preview visual da proposta */}
           <div className="rounded-2xl border border-border overflow-hidden">
             <div className="bg-card text-foreground px-6 py-4 flex items-center justify-between border-b border-border">
               <div className="flex items-center gap-2">
