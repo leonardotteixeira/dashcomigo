@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { useCashFlow } from "./CashFlowContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 import { getLimit } from "../../utils/featureAccessService";
 
@@ -49,7 +48,6 @@ function getMesAtual() {
 
 export function ReceivablesProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const { addTransaction } = useCashFlow();
   const [receivables, setReceivables] = useState<Receivable[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -145,31 +143,40 @@ export function ReceivablesProvider({ children }: { children: ReactNode }) {
     if (data.dataRecebimento !== undefined) updateData.data_recebimento = data.dataRecebimento;
     if (data.anotacoes !== undefined) updateData.anotacoes = data.anotacoes;
 
-    await pb.collection("receivables").update(id, updateData, {
-      requestKey: null, // Disable auto-cancellation
-    });
+    // Ordem segura: cria transaction ANTES de atualizar o receivable.
+    let createdTxId: string | null = null;
 
-    // Cross-post to transactions when marking as received
     if (data.status === "recebido") {
       const receivable = receivables.find((r) => r.id === id);
-      if (receivable) {
+      if (receivable && receivable.status !== "recebido") {
         const receiptDate = data.dataRecebimento ?? new Date().toISOString().split("T")[0];
         const receiptValue = data.valor ?? receivable.valor;
         try {
-          await addTransaction({
+          const txRecord = await pb.collection("transactions").create({
+            user_id: user.id,
             valor: receiptValue,
             tipo: "entrada",
             categoria: receivable.categoria,
             data: receiptDate,
             descricao: `[Recebido] ${receivable.descricao}`,
             pfpj: "PJ",
-            pfpjScore: 100,
+            pfpj_score: 100,
           });
-          console.log("[ReceivablesContext] Cross-posted receipt to transactions");
-        } catch (err) {
-          console.warn("[ReceivablesContext] Could not cross-post to transactions:", err);
+          createdTxId = txRecord.id;
+        } catch (txErr) {
+          console.error("[ReceivablesContext] Erro ao criar transação de recebimento:", txErr);
+          throw new Error("Não foi possível registrar o recebimento no fluxo de caixa. Tente novamente.");
         }
       }
+    }
+
+    try {
+      await pb.collection("receivables").update(id, updateData, { requestKey: null });
+    } catch (updateErr) {
+      if (createdTxId) {
+        await pb.collection("transactions").delete(createdTxId).catch(() => {});
+      }
+      throw updateErr;
     }
 
     setReceivables(receivables.map((r) => (r.id === id ? { ...r, ...data } : r)));

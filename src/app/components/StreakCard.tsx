@@ -60,9 +60,17 @@ export default function StreakCard() {
       <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-lg p-3 border border-orange-500/20">
         <div className="flex items-center gap-2 mb-2">
           <Trophy className="w-4 h-4 text-orange-500" />
-          <span className="text-sm font-semibold text-foreground">Meta da Semana</span>
+          <span className="text-sm font-semibold text-foreground">
+            {user?.plan === "pro" ? "Consistência" : "Meta da Semana"}
+          </span>
         </div>
-        {rewardClaimed ? (
+        {user?.plan === "pro" ? (
+          <p className="text-xs text-muted-foreground mb-2">
+            {currentStreak >= GOAL
+              ? `Incrível! ${currentStreak} dias consecutivos. Continue assim! 🔥`
+              : `Acesse diariamente para manter sua sequência ativa.`}
+          </p>
+        ) : rewardClaimed ? (
           <p className="text-xs text-green-600 font-semibold mb-2">
             🎉 Recompensa ativa! Você ganhou 1 mês grátis do Premium.
           </p>

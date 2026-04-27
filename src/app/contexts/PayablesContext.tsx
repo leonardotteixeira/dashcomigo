@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
-import { useCashFlow } from "./CashFlowContext";
 import { pb, getVerifiedPlan } from "../../lib/pocketbase";
 import { getLimit } from "../../utils/featureAccessService";
 
@@ -50,7 +49,6 @@ function getMesAtual() {
 
 export function PayablesProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const { addTransaction } = useCashFlow();
   const [payables, setPayables] = useState<Payable[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -149,60 +147,59 @@ export function PayablesProvider({ children }: { children: ReactNode }) {
   async function updatePayable(id: string, payableData: Partial<Omit<Payable, "id" | "createdAt">>) {
     if (!user) throw new Error("Usuário não autenticado");
 
-    try {
-      const updateData: Record<string, unknown> = {};
+    const updateData: Record<string, unknown> = {};
+    if (payableData.descricao) updateData.descricao = payableData.descricao;
+    if (payableData.valor) updateData.valor = payableData.valor;
+    if (payableData.categoria) updateData.categoria = payableData.categoria;
+    if (payableData.dataVencimento) updateData.data_vencimento = payableData.dataVencimento;
+    if (payableData.status) updateData.status = payableData.status;
+    if (payableData.ehRecorrente !== undefined) updateData.eh_recorrente = payableData.ehRecorrente;
+    if (payableData.frequenciaRecorrencia !== undefined) updateData.frequencia_recorrencia = payableData.frequenciaRecorrencia;
+    if (payableData.dataPagamento) updateData.data_pagamento = payableData.dataPagamento;
+    if (payableData.anotacoes !== undefined) updateData.anotacoes = payableData.anotacoes;
 
-      if (payableData.descricao) updateData.descricao = payableData.descricao;
-      if (payableData.valor) updateData.valor = payableData.valor;
-      if (payableData.categoria) updateData.categoria = payableData.categoria;
-      if (payableData.dataVencimento) updateData.data_vencimento = payableData.dataVencimento;
-      if (payableData.status) updateData.status = payableData.status;
-      if (payableData.ehRecorrente !== undefined) updateData.eh_recorrente = payableData.ehRecorrente;
-      if (payableData.frequenciaRecorrencia !== undefined) updateData.frequencia_recorrencia = payableData.frequenciaRecorrencia;
-      if (payableData.dataPagamento) updateData.data_pagamento = payableData.dataPagamento;
-      if (payableData.anotacoes !== undefined) updateData.anotacoes = payableData.anotacoes;
+    // Ordem segura: cria transaction ANTES de atualizar o payable.
+    // Se a transaction falhar → payable não é alterado → estado consistente.
+    // Se o update do payable falhar → transaction é revertida via delete.
+    let createdTxId: string | null = null;
 
-      await pb.collection("payables").update(id, updateData, {
-        requestKey: null, // Disable auto-cancellation
-      });
-
-      // Cross-post to transactions when marking as paid
-      if (payableData.status === "pago") {
-        const payable = payables.find((p) => p.id === id);
-        if (payable) {
-          const paymentDate = payableData.dataPagamento ?? new Date().toISOString().split("T")[0];
-          const paymentValue = payableData.valor ?? payable.valor;
-          try {
-            await addTransaction({
-              valor: paymentValue,
-              tipo: "saida",
-              categoria: payable.categoria,
-              data: paymentDate,
-              descricao: `[Pago] ${payable.descricao}`,
-              pfpj: "PJ",
-              pfpjScore: 100,
-            });
-            console.log("[PayablesContext] Cross-posted payment to transactions");
-          } catch (err) {
-            console.warn("[PayablesContext] Could not cross-post to transactions:", err);
-          }
+    if (payableData.status === "pago") {
+      const payable = payables.find((p) => p.id === id);
+      // Evita cross-post duplicado se já estava pago
+      if (payable && payable.status !== "pago") {
+        const paymentDate = payableData.dataPagamento ?? new Date().toISOString().split("T")[0];
+        const paymentValue = payableData.valor ?? payable.valor;
+        try {
+          const txRecord = await pb.collection("transactions").create({
+            user_id: user.id,
+            valor: paymentValue,
+            tipo: "saida",
+            categoria: payable.categoria,
+            data: paymentDate,
+            descricao: `[Pago] ${payable.descricao}`,
+            pfpj: "PJ",
+            pfpj_score: 100,
+          });
+          createdTxId = txRecord.id;
+        } catch (txErr) {
+          console.error("[PayablesContext] Erro ao criar transação de pagamento:", txErr);
+          throw new Error("Não foi possível registrar o pagamento no fluxo de caixa. Tente novamente.");
         }
       }
-
-      setPayables(
-        payables.map((p) =>
-          p.id === id
-            ? {
-                ...p,
-                ...payableData,
-              }
-            : p
-        )
-      );
-    } catch (error) {
-      console.error("Erro ao atualizar conta a pagar:", error);
-      throw error;
     }
+
+    try {
+      await pb.collection("payables").update(id, updateData, { requestKey: null });
+    } catch (updateErr) {
+      // Rollback: remove a transaction criada para manter consistência
+      if (createdTxId) {
+        await pb.collection("transactions").delete(createdTxId).catch(() => {});
+      }
+      console.error("Erro ao atualizar conta a pagar:", updateErr);
+      throw updateErr;
+    }
+
+    setPayables(payables.map((p) => (p.id === id ? { ...p, ...payableData } : p)));
   }
 
   async function deletePayable(id: string) {
