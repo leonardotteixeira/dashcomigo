@@ -2,14 +2,14 @@
 
 ## Pré-requisitos
 
-1. ✅ Variáveis de ambiente carregadas (`.env`)
-2. ✅ Backend rodando (`npm run dev` ou `npx ts-node server.ts`)
-3. ✅ Frontend rodando (`npm run dev`)
-4. ✅ PocketBase com coleção `pluggy_connections` criada
+1. Variáveis de ambiente carregadas (`.env`)
+2. Backend rodando (`npm run dev` ou `npx ts-node server.ts`)
+3. Frontend rodando (`npm run dev`)
+4. PocketBase com coleção `pluggy_connections` criada
 
 ---
 
-## 1️⃣ Criar Coleção PocketBase
+## 1 Criar Coleção PocketBase
 
 **Admin:** https://pocketbase-production-d5ae.up.railway.app/_/
 
@@ -21,7 +21,7 @@
 
 ---
 
-## 2️⃣ Iniciar o Backend
+## 2 Iniciar o Backend
 
 ```bash
 # Terminal 1
@@ -31,13 +31,13 @@ npx ts-node server.ts
 
 Esperado:
 ```
-✅ Server running on http://localhost:3001
-📍 Pluggy routes at http://localhost:3001/api/pluggy
+ Server running on http://localhost:3001
+ Pluggy routes at http://localhost:3001/api/pluggy
 ```
 
 ---
 
-## 3️⃣ Iniciar o Frontend
+## 3 Iniciar o Frontend
 
 ```bash
 # Terminal 2
@@ -52,38 +52,38 @@ Local: http://localhost:5173
 
 ---
 
-## 4️⃣ Testar Fluxo Completo
+## 4 Testar Fluxo Completo
 
 ### Opção A: Via Dashboard UI
 
 1. Abrir http://localhost:5173
 2. Fazer login (ou cadastro)
 3. Ir a **Fluxo de Caixa** → botão "Conectar Banco"
-4. Escolher **"✅ Pluggy (Recomendado)"**
+4. Escolher **" Pluggy (Recomendado)"**
 5. Clicar **"Conectar Conta Pluggy"**
 6. Widget abre
 7. Selecionar um banco (ex: Itaú, Nubank, etc.)
 8. Usar credenciais **sandbox**:
-   - CPF: `12345678900` (ou qualquer válido)
-   - Senha: qualquer coisa
+ - CPF: `12345678900` (ou qualquer válido)
+ - Senha: qualquer coisa
 9. Aprovar acesso
-10. Contas importadas ✅
+10. Contas importadas
 
 ### Opção B: Via curl (Backend only)
 
 ```bash
 # 1. Create connect token
 curl -X POST http://localhost:3001/api/pluggy/create-connect-token \
-  -H "Content-Type: application/json" \
-  -d '{"userId": "seu_user_id_aqui"}'
+ -H "Content-Type: application/json" \
+ -d '{"userId": "seu_user_id_aqui"}'
 
 # Retorna:
 # {"access_token": "eyJ...", "expires_in": 3600}
 
 # 2. Sync accounts (após auth no widget)
 curl -X POST http://localhost:3001/api/pluggy/sync-accounts \
-  -H "Content-Type: application/json" \
-  -d '{"userId": "seu_user_id_aqui", "institutionId": "itau"}'
+ -H "Content-Type: application/json" \
+ -d '{"userId": "seu_user_id_aqui", "institutionId": "itau"}'
 
 # Retorna:
 # {"success": true, "message": "Accounts synced successfully"}
@@ -96,7 +96,7 @@ curl "http://localhost:3001/api/pluggy/accounts?userId=seu_user_id_aqui"
 
 ---
 
-## 🧪 Troubleshooting
+## Troubleshooting
 
 ### "Pluggy Connect widget not loaded"
 - Verificar se `https://cdn.pluggy.ai/connect/v2/index.js` está acessível
@@ -118,7 +118,7 @@ curl "http://localhost:3001/api/pluggy/accounts?userId=seu_user_id_aqui"
 
 ---
 
-## ✅ Checklist de Teste
+## Checklist de Teste
 
 - [ ] Backend inicia sem erros
 - [ ] Frontend carrega na porta 5173
@@ -132,7 +132,7 @@ curl "http://localhost:3001/api/pluggy/accounts?userId=seu_user_id_aqui"
 
 ---
 
-## 🚀 Próximo Passo
+## Próximo Passo
 
 Após validar que funciona:
 1. Integrar sincronismo de transações

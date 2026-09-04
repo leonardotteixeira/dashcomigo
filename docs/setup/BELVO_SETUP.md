@@ -1,10 +1,10 @@
-# 🏦 PocketBase Setup para Belvo Integration
+# PocketBase Setup para Belvo Integration
 
 Este guia mostra como criar as collections necessárias no PocketBase para a integração com Belvo.
 
 ---
 
-## 📋 Collections a Criar
+## Collections a Criar
 
 ### 1. **belvo_connections**
 
@@ -12,17 +12,17 @@ Armazena as conexões bancárias dos usuários via Belvo.
 
 **Campo** | **Tipo** | **Obrigatório** | **Descrição**
 ---|---|---|---
-`id` | ID (auto) | ✅ | ID único
-`user_id` | Relation | ✅ | Referência para profiles
-`link_id` | Text (único) | ✅ | ID do link no Belvo
-`connected_at` | DateTime | ✅ | Data de conexão
-`last_sync` | DateTime | ❌ | Última sincronização
-`status` | Select | ✅ | Estado: active, revoked, error
-`error_message` | Text | ❌ | Mensagem de erro (se houver)
+`id` | ID (auto) | | ID único
+`user_id` | Relation | | Referência para profiles
+`link_id` | Text (único) | | ID do link no Belvo
+`connected_at` | DateTime | | Data de conexão
+`last_sync` | DateTime | | Última sincronização
+`status` | Select | | Estado: active, revoked, error
+`error_message` | Text | | Mensagem de erro (se houver)
 
 ---
 
-## 🖱️ Como Criar via Admin PocketBase
+## Como Criar via Admin PocketBase
 
 ### **Passo 1: Acessar Admin**
 
@@ -77,7 +77,7 @@ Armazena as conexões bancárias dos usuários via Belvo.
 
 ---
 
-## 🔒 Adicionar Índices (Optional)
+## Adicionar Índices (Optional)
 
 ```sql
 -- No SQL Editor do PocketBase Admin:
@@ -88,7 +88,7 @@ CREATE INDEX idx_belvo_link_id ON belvo_connections(link_id);
 
 ---
 
-## 🔐 Rules de Acesso (RLS)
+## Rules de Acesso (RLS)
 
 ### **Create Rule:**
 ```
@@ -116,7 +116,7 @@ user_id = @request.auth.id
 
 ---
 
-## 📝 Atualizar transactions collection
+## Atualizar transactions collection
 
 Adicione estes campos (se não existir):
 
@@ -128,7 +128,7 @@ Se `plaid_id` e `belvo_id` existem, você pode ter ambas as integrações.
 
 ---
 
-## ✅ Checklist
+## Checklist
 
 - [ ] Criar collection `belvo_connections`
 - [ ] Adicionar campo `user_id` (Relation)
@@ -143,7 +143,7 @@ Se `plaid_id` e `belvo_id` existem, você pode ter ambas as integrações.
 
 ---
 
-## 🚀 Próximo Passo
+## Próximo Passo
 
 Depois de criar as collections:
 
@@ -157,4 +157,4 @@ Depois de criar as collections:
 
 ---
 
-**Está tudo pronto? Vamos testar!** 🎉
+**Está tudo pronto? Vamos testar!**

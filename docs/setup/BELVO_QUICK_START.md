@@ -1,17 +1,17 @@
-# 🚀 Belvo Integration - Quick Start
+# Belvo Integration - Quick Start
 
-## ✅ O que foi feito
+## O que foi feito
 
-- ✅ Credenciais Belvo salvas em `.env.local`
-- ✅ Backend routes criadas: `/api/belvo/*`
-- ✅ Client library criada: `src/lib/belvo.ts`
-- ✅ Componente BelvoLink criado
-- ✅ Componente selector (Belvo vs Plaid) integrado ao Dashboard
-- ✅ Server.ts atualizado para carregar rotas Belvo
+- Credenciais Belvo salvas em `.env.local`
+- Backend routes criadas: `/api/belvo/*`
+- Client library criada: `src/lib/belvo.ts`
+- Componente BelvoLink criado
+- Componente selector (Belvo vs Plaid) integrado ao Dashboard
+- Server.ts atualizado para carregar rotas Belvo
 
-## 📋 Próximos Passos
+## Próximos Passos
 
-### 1️⃣ Criar Collection no PocketBase
+### 1 Criar Collection no PocketBase
 
 **Acesse:** https://pocketbase-production-d5ae.up.railway.app/_/
 
@@ -21,7 +21,7 @@
 4. Descrição: "Conexões bancárias via Belvo"
 5. Clique "Save & continue"
 
-### 2️⃣ Adicionar Campos
+### 2 Adicionar Campos
 
 Siga o checklist em `BELVO_SETUP.md`:
 
@@ -32,7 +32,7 @@ Siga o checklist em `BELVO_SETUP.md`:
 - [ ] `status` (Select: active, revoked, error)
 - [ ] `error_message` (Text, opcional)
 
-### 3️⃣ Configurar RLS (Segurança)
+### 3 Configurar RLS (Segurança)
 
 Abra a collection `belvo_connections` e vá em "API Rules":
 
@@ -56,7 +56,7 @@ user_id = @request.auth.id
 user_id = @request.auth.id
 ```
 
-### 4️⃣ Atualizar transactions collection
+### 4 Atualizar transactions collection
 
 Adicione campo em `transactions`:
 - Campo: `belvo_id`
@@ -64,7 +64,7 @@ Adicione campo em `transactions`:
 - Único: SIM
 - Opcional: SIM
 
-### 5️⃣ Testar Localmente
+### 5 Testar Localmente
 
 ```bash
 # Terminal 1: Backend
@@ -86,7 +86,7 @@ Acesse: http://localhost:5173/app/dashboard
 
 ---
 
-## 🔑 Credenciais de Teste Belvo (Sandbox)
+## Credenciais de Teste Belvo (Sandbox)
 
 Para testar, use estas credenciais exemplos:
 
@@ -103,7 +103,7 @@ Para testar, use estas credenciais exemplos:
 
 ---
 
-## ❌ Troubleshooting
+## Troubleshooting
 
 **Problema:** "Widget do Belvo não carregou"
 - Verifique se tem permissão para carregar scripts externos
@@ -119,33 +119,33 @@ Para testar, use estas credenciais exemplos:
 
 ---
 
-## 📝 Estrutura de Dados
+## Estrutura de Dados
 
 ### Fluxo de Autenticação
 
 ```
-1. User clica "Conectar Banco" 
-   ↓
+1. User clica "Conectar Banco"
+ ↓
 2. Frontend chama POST /api/belvo/create-link-token
-   ↓
+ ↓
 3. Backend cria token via Belvo API
-   ↓
+ ↓
 4. Frontend abre Widget Belvo com token
-   ↓
+ ↓
 5. User autentica na instituição bancária
-   ↓
+ ↓
 6. Widget retorna link_id ao frontend
-   ↓
+ ↓
 7. Frontend chama POST /api/belvo/sync-accounts (salva conexão)
-   ↓
+ ↓
 8. Frontend chama POST /api/belvo/sync-transactions (importa transações)
-   ↓
+ ↓
 9. Transações aparecem no Dashboard com PF/PJ
 ```
 
 ---
 
-## 🎯 Verificação Final
+## Verificação Final
 
 - [ ] Collection `belvo_connections` criada no PocketBase
 - [ ] Todos os 6 campos adicionados
@@ -159,4 +159,4 @@ Para testar, use estas credenciais exemplos:
 
 ---
 
-**Tudo pronto? Manda a mensagem "feito" quando terminar o setup!** 🎉
+**Tudo pronto? Manda a mensagem "feito" quando terminar o setup!**

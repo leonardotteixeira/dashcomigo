@@ -1,10 +1,10 @@
 # Bloco 2 - Notificações, Email & NFS-e
 
-## Status Atual (Bloco 1 - Concluído ✅)
-- ✅ Collection "payables" com CRUD completo
-- ✅ Contas a Pagar (interface completa)
-- ✅ Propostas com status "paga" e "vencida"
-- ✅ Widget "Próximas a Vencer" no Dashboard
+## Status Atual (Bloco 1 - Concluído )
+- Collection "payables" com CRUD completo
+- Contas a Pagar (interface completa)
+- Propostas com status "paga" e "vencida"
+- Widget "Próximas a Vencer" no Dashboard
 
 ---
 
@@ -39,7 +39,7 @@
 
 ---
 
-## FASE 2: NFS-e Integrada (3 semanas) ⭐ NOVO
+## FASE 2: NFS-e Integrada (3 semanas) NOVO
 
 ### 2.1 O que é NFS-e?
 - **NFS-e** = Nota Fiscal de Serviço Eletrônica
@@ -72,28 +72,28 @@ Para suportar múltiplos municípios brasileiros, vamos usar:
 
 **Backend:**
 - [ ] Criar model `NfsEmission` no PocketBase
-  - `id, user_id, proposal_id, municipio, cnpj_tomador, valor, descricao, rps_number, nf_number, status, xml, pdf, created`
+ - `id, user_id, proposal_id, municipio, cnpj_tomador, valor, descricao, rps_number, nf_number, status, xml, pdf, created`
 
 - [ ] Edge function `emit-nfs`
-  - Conectar com API Nuvemfiscal
-  - Enviar dados da proposta
-  - Salvar NFS gerada
+ - Conectar com API Nuvemfiscal
+ - Enviar dados da proposta
+ - Salvar NFS gerada
 
 - [ ] Criar migration para tabela `nfs_emissions`
 
 **Frontend:**
 - [ ] Componente modal "Emitir NFS-e"
-  - Campos: Município, CNPJ cliente, dados obrigatórios
-  - Select de municípios brasileiros (~5500)
+ - Campos: Município, CNPJ cliente, dados obrigatórios
+ - Select de municípios brasileiros (~5500)
 
 - [ ] Button "Emitir NFS-e" em GeradorPropostas
-  - Aparecer apenas quando status = "aprovada" ou "paga"
-  - Validar dados obrigatórios
+ - Aparecer apenas quando status = "aprovada" ou "paga"
+ - Validar dados obrigatórios
 
 - [ ] Lista de NFS-e emitidas
-  - Status da emissão
-  - Download do PDF/XML
-  - Link para protocolo
+ - Status da emissão
+ - Download do PDF/XML
+ - Link para protocolo
 
 **Arquivos:**
 - `src/app/components/EmitirNfsModal.tsx`
@@ -134,10 +134,10 @@ Para suportar múltiplos municípios brasileiros, vamos usar:
 
 | Fase | Recursos | Timeline | Impacto |
 |------|----------|----------|--------|
-| **1** | Email + Scheduler | 2 sem | 🔴 Alto - automatiza cobranças |
-| **2** | NFS-e | 3 sem | 🔴 Crítico - obrigação legal |
-| **3** | Dashboard avançado | 2 sem | 🟡 Médio - insights |
-| **4** | Bancos | 4 sem | 🟡 Médio - reconciliação |
+| **1** | Email + Scheduler | 2 sem | Alto - automatiza cobranças |
+| **2** | NFS-e | 3 sem | Crítico - obrigação legal |
+| **3** | Dashboard avançado | 2 sem | Médio - insights |
+| **4** | Bancos | 4 sem | Médio - reconciliação |
 
 ---
 
@@ -145,14 +145,14 @@ Para suportar múltiplos municípios brasileiros, vamos usar:
 
 | Feature | Conta Azul | Nibo | Bling | Asaas | **Bubuya** |
 |---------|-----------|------|-------|-------|-----------|
-| Propostas | ❌ | ✅ | ❌ | ❌ | ✅ |
-| Contas a Pagar | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Email Cobrança | ✅ | ✅ | ✅ | ✅ | 🔄 Bloco 2 |
-| NFS-e | ✅ | ✅ | ✅ | ❌ | 🔄 Bloco 2 |
-| MEI → ME | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Fluxo de Caixa | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Preço Ideal | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Mobile nativo | ✅ | ✅ | ✅ | ✅ | 🔄 Futuro |
+| Propostas | | | | | |
+| Contas a Pagar | | | | | |
+| Email Cobrança | | | | | Bloco 2 |
+| NFS-e | | | | | Bloco 2 |
+| MEI → ME | | | | | |
+| Fluxo de Caixa | | | | | |
+| Preço Ideal | | | | | |
+| Mobile nativo | | | | | Futuro |
 
 ---
 

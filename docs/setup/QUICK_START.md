@@ -1,6 +1,6 @@
 # Quick Start Verification
 
-## ✅ Pre-Flight Checklist
+## Pre-Flight Checklist
 
 ### Step 1: Verify Server is Running
 ```bash
@@ -30,27 +30,27 @@ Edit `src/app/App.tsx` and confirm:
 
 ### Step 4: Verify PF/PJ Setup
 Check these files exist:
-- ✅ `src/app/contexts/PFPJContext.tsx`
-- ✅ `src/app/types/pfpj.ts`
-- ✅ `src/app/pages/FluxoCaixa.tsx` (has PF/PJ functionality)
+- `src/app/contexts/PFPJContext.tsx`
+- `src/app/types/pfpj.ts`
+- `src/app/pages/FluxoCaixa.tsx` (has PF/PJ functionality)
 
 ### Step 5: Verify Investments Setup
 Check these files exist:
-- ✅ `src/app/contexts/InvestmentsContext.tsx`
-- ✅ `src/app/types/investments.ts`
-- ✅ `src/app/pages/RecomendacoesInvestimento.tsx`
-- ✅ `src/app/components/Investments/` (has all 5 component files)
+- `src/app/contexts/InvestmentsContext.tsx`
+- `src/app/types/investments.ts`
+- `src/app/pages/RecomendacoesInvestimento.tsx`
+- `src/app/components/Investments/` (has all 5 component files)
 
 ---
 
-## 🎮 Quick Feature Test (5 minutes)
+## Quick Feature Test (5 minutes)
 
 ### Test 1: Google OAuth (1 min)
 ```
 1. Open: http://localhost:5175/login
 2. Look for: "Continuar com Google" button
 3. Expected: Button visible and clickable
-✅ PASS if button appears
+ PASS if button appears
 ```
 
 ### Test 2: PF/PJ Classification (2 min)
@@ -60,8 +60,8 @@ Check these files exist:
 3. Type Description: "salário do mês"
 4. Type Value: 5000
 5. Select Type: Entrada
-6. Expected: Form shows "👤 PF" badge auto-selected
-✅ PASS if PF badge appears automatically
+6. Expected: Form shows " PF" badge auto-selected
+ PASS if PF badge appears automatically
 ```
 
 ### Test 3: Investment Recommendations (2 min)
@@ -70,12 +70,12 @@ Check these files exist:
 2. Expected: Page loads with questionnaire visible
 3. Select answers and click "Gerar Recomendações"
 4. Expected: Shows allocation with 3 buckets and investment cards
-✅ PASS if recommendations page loads and shows data
+ PASS if recommendations page loads and shows data
 ```
 
 ---
 
-## 🔧 Troubleshooting Quick Fixes
+## Troubleshooting Quick Fixes
 
 ### Issue: "localhost:5175 connection refused"
 ```bash
@@ -110,46 +110,46 @@ npm run dev
 
 ---
 
-## 📋 What's Working
+## What's Working
 
 | Feature | Status | Evidence |
 |---------|--------|----------|
-| **Google OAuth Button** | ✅ Ready | Visible at /login |
-| **Google Login Flow** | ✅ Ready | Opens popup, redirects |
-| **PF/PJ Auto-Classification** | ✅ Ready | Auto-selects in form |
-| **PF/PJ Filtering** | ✅ Ready | Tabs appear in FluxoCaixa |
-| **PF/PJ KPI Labels** | ✅ Ready | Change based on selected tab |
-| **PF/PJ Badges** | ✅ Ready | Show 👤 or 🏢 in table |
-| **Investment Questionnaire** | ✅ Ready | Form loads and submits |
-| **Investment Allocation** | ✅ Ready | Shows 3 buckets with % |
-| **Investment Cards** | ✅ Ready | Lists Tesouro, CDB, FII |
+| **Google OAuth Button** | Ready | Visible at /login |
+| **Google Login Flow** | Ready | Opens popup, redirects |
+| **PF/PJ Auto-Classification** | Ready | Auto-selects in form |
+| **PF/PJ Filtering** | Ready | Tabs appear in FluxoCaixa |
+| **PF/PJ KPI Labels** | Ready | Change based on selected tab |
+| **PF/PJ Badges** | Ready | Show or in table |
+| **Investment Questionnaire** | Ready | Form loads and submits |
+| **Investment Allocation** | Ready | Shows 3 buckets with % |
+| **Investment Cards** | Ready | Lists Tesouro, CDB, FII |
 | **Dashboard Integration** | ⏳ Phase 2 | Cards not yet added |
 
 ---
 
-## 📞 Three Documentation Files to Read
+## Three Documentation Files to Read
 
 1. **TEST_GUIDE.md** (if you want detailed testing steps)
-   - Read this for step-by-step tests of each feature
-   - Includes expected results and troubleshooting
+ - Read this for step-by-step tests of each feature
+ - Includes expected results and troubleshooting
 
 2. **IMPLEMENTATION_STATUS.md** (if you want technical details)
-   - Read this for architecture overview
-   - Lists all files, components, and their purpose
-   - Shows database schema requirements
+ - Read this for architecture overview
+ - Lists all files, components, and their purpose
+ - Shows database schema requirements
 
 3. **README_FEATURES.md** (if you want feature overview)
-   - Read this for user-friendly explanation
-   - Shows how end users will use features
-   - Includes sample user flows
+ - Read this for user-friendly explanation
+ - Shows how end users will use features
+ - Includes sample user flows
 
 ---
 
-## 🎯 What To Do Now
+## What To Do Now
 
 ### Option A: Just Verify Everything Works (10 min)
 1. Run Quick Feature Test above
-2. Check ✅ marks for all three tests
+2. Check marks for all three tests
 3. Done! Everything is working
 
 ### Option B: Test Thoroughly (30 min)
@@ -173,7 +173,7 @@ npm run dev
 
 ---
 
-## 💾 Key Files Reference
+## Key Files Reference
 
 **Quick Lookup for Common Questions:**
 
@@ -197,18 +197,18 @@ A: Read function `getRecommendations()` in `src/app/contexts/InvestmentsContext.
 
 ---
 
-## ✨ Summary
+## Summary
 
 You now have a modern SaaS with:
-✅ Google OAuth (no password hassle)
-✅ Smart PF/PJ Separation (clear business finances)
-✅ Investment Recommendations (safe growth opportunities)
+ Google OAuth (no password hassle)
+ Smart PF/PJ Separation (clear business finances)
+ Investment Recommendations (safe growth opportunities)
 
 All implemented, tested, and ready to use!
 
 ---
 
-## 🚀 Next: The Choice is Yours
+## Next: The Choice is Yours
 
 **Option 1: Start Testing Now**
 → Go to http://localhost:5175/login and test the features
@@ -219,4 +219,4 @@ All implemented, tested, and ready to use!
 **Option 3: Deploy to Production**
 → Follow IMPLEMENTATION_STATUS.md deployment checklist
 
-**What will it be?** 🎯
+**What will it be?**

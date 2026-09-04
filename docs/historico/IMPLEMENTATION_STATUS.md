@@ -1,71 +1,71 @@
 # Implementation Status: Bloco 4 (PF/PJ) + Bloco 5 (Investimentos)
 
-## 📋 Executive Summary
+## Executive Summary
 
 Both Bloco 4 (PF/PJ Separation) and Bloco 5 (Investment Recommendations) have been **substantially implemented** with comprehensive business logic, UI components, and integrations.
 
 ---
 
-## ✅ Bloco 4: Separação PF/PJ (Pessoa Física vs Jurídica)
+## Bloco 4: Separação PF/PJ (Pessoa Física vs Jurídica)
 
 ### Architecture
 
 #### **1. Backend/Context Layer**
-- ✅ **PFPJContext.tsx** - Complete implementation with:
-  - Transaction fetching and caching
-  - Heuristic-based classification (keywords + value-based)
-  - Confidence scoring system (0-100%)
-  - Custom rules engine for user-defined categorization
-  - Summary calculations (balance, profit, margins)
-  - Transaction type updates and persistence
+- **PFPJContext.tsx** - Complete implementation with:
+ - Transaction fetching and caching
+ - Heuristic-based classification (keywords + value-based)
+ - Confidence scoring system (0-100%)
+ - Custom rules engine for user-defined categorization
+ - Summary calculations (balance, profit, margins)
+ - Transaction type updates and persistence
 
 #### **2. Data Models**
-- ✅ **types/pfpj.ts** - Full type definitions:
-  - `TransactionWithPFPJ` - Extended transaction with PF/PJ metadata
-  - `PFPJSummary` - Aggregated financial summaries
-  - `PFPJPrediction` - Classification with confidence
-  - `PFPJRule` - Custom categorization rules
-  - `HEURISTICS` - Pre-defined classification keywords
-  - `PFPJ_CONFIG` - Threshold and configuration constants
+- **types/pfpj.ts** - Full type definitions:
+ - `TransactionWithPFPJ` - Extended transaction with PF/PJ metadata
+ - `PFPJSummary` - Aggregated financial summaries
+ - `PFPJPrediction` - Classification with confidence
+ - `PFPJRule` - Custom categorization rules
+ - `HEURISTICS` - Pre-defined classification keywords
+ - `PFPJ_CONFIG` - Threshold and configuration constants
 
 #### **3. UI Components**
 Located in `src/app/components/FluxoCaixa/`:
-- ✅ **PFPJToggle.tsx** - Toggle between Integrated vs Separated view
-- ✅ **PFPJSummaryCards.tsx** - Side-by-side PF vs PJ summary cards
-- ✅ **TransactionTypeIcon.tsx** - Visual badges (👤 PF, 🏢 PJ)
-- ✅ **TransactionFormWithPFPJ.tsx** - Form with PF/PJ classification selector
+- **PFPJToggle.tsx** - Toggle between Integrated vs Separated view
+- **PFPJSummaryCards.tsx** - Side-by-side PF vs PJ summary cards
+- **TransactionTypeIcon.tsx** - Visual badges ( PF, PJ)
+- **TransactionFormWithPFPJ.tsx** - Form with PF/PJ classification selector
 
 #### **4. Integration Points**
-- ✅ **FluxoCaixa.tsx** (main page):
-  - PF/PJ tabs for filtering (Todos, Empresa PJ, Pessoal PF)
-  - KPI cards that adapt labels based on selected tab
-  - PF vs PJ summary split (visible in "Todos" tab)
-  - Auto-classification suggestion during transaction creation
-  - Confidence score indicator (⚠️ if < 70%)
-  - PF/PJ badges in transaction table
-  - Export to XLSX with PF/PJ column
+- **FluxoCaixa.tsx** (main page):
+ - PF/PJ tabs for filtering (Todos, Empresa PJ, Pessoal PF)
+ - KPI cards that adapt labels based on selected tab
+ - PF vs PJ summary split (visible in "Todos" tab)
+ - Auto-classification suggestion during transaction creation
+ - Confidence score indicator ( if < 70%)
+ - PF/PJ badges in transaction table
+ - Export to XLSX with PF/PJ column
 
 #### **5. Business Logic Features**
-- ✅ **Automatic Classification**:
-  - Keyword matching (salário, fornecedor, etc)
-  - Value-based heuristics (< R$100 = PF likely, > R$2000 = PJ likely)
-  - Confidence scoring
-  - Review alert for low-confidence (< 70%)
+- **Automatic Classification**:
+ - Keyword matching (salário, fornecedor, etc)
+ - Value-based heuristics (< R$100 = PF likely, > R$2000 = PJ likely)
+ - Confidence scoring
+ - Review alert for low-confidence (< 70%)
 
-- ✅ **Custom Rules**:
-  - Create rules like "Internet = PJ"
-  - Rules can match on: description, category, amount
-  - Operators: contains, equals, startsWith, gt, lt
-  - Enable/disable individual rules
+- **Custom Rules**:
+ - Create rules like "Internet = PJ"
+ - Rules can match on: description, category, amount
+ - Operators: contains, equals, startsWith, gt, lt
+ - Enable/disable individual rules
 
-- ✅ **Summary Calculations**:
-  - Separate total incoming/outgoing by type
-  - Calculate profit margin per type
-  - Category breakdown within each type
-  - Period-based filtering
+- **Summary Calculations**:
+ - Separate total incoming/outgoing by type
+ - Calculate profit margin per type
+ - Category breakdown within each type
+ - Period-based filtering
 
 ### Current Status
-**READY FOR TESTING** ✅
+**READY FOR TESTING**
 - All components implemented
 - Context fully functional
 - Integration complete in FluxoCaixa page
@@ -82,98 +82,98 @@ Located in `src/app/components/FluxoCaixa/`:
 
 ---
 
-## ✅ Bloco 5: Recomendações de Investimento
+## Bloco 5: Recomendações de Investimento
 
 ### Architecture
 
 #### **1. Backend/Context Layer**
-- ✅ **InvestmentsContext.tsx** - Complete implementation with:
-  - Available funds calculation (emergency fund - working capital - obligations)
-  - Risk profile detection algorithm
-  - Investment allocation by time horizon
-  - Projected annual return calculations
-  - Integration with CashFlow context for real data
+- **InvestmentsContext.tsx** - Complete implementation with:
+ - Available funds calculation (emergency fund - working capital - obligations)
+ - Risk profile detection algorithm
+ - Investment allocation by time horizon
+ - Projected annual return calculations
+ - Integration with CashFlow context for real data
 
 #### **2. Data Models**
-- ✅ **types/investments.ts** - Full type definitions:
-  - `InvestmentProfile` - User's investment profile
-  - `InvestmentRecommendation` - Investment products with details
-  - `InvestmentAllocation` - Bucket-based allocation (curto/medio/longo prazo)
-  - `AvailableCalculation` - Detailed breakdown of available funds
-  - `ALLOCATION_CONFIG` - Risk-profile-based allocation percentages
-  - `DEFAULT_RECOMMENDATIONS` - Pre-defined investment options
-  - `INVESTMENT_DISCLAIMER` - Legal disclaimer text
+- **types/investments.ts** - Full type definitions:
+ - `InvestmentProfile` - User's investment profile
+ - `InvestmentRecommendation` - Investment products with details
+ - `InvestmentAllocation` - Bucket-based allocation (curto/medio/longo prazo)
+ - `AvailableCalculation` - Detailed breakdown of available funds
+ - `ALLOCATION_CONFIG` - Risk-profile-based allocation percentages
+ - `DEFAULT_RECOMMENDATIONS` - Pre-defined investment options
+ - `INVESTMENT_DISCLAIMER` - Legal disclaimer text
 
 #### **3. UI Components**
 Located in `src/app/components/Investments/`:
-- ✅ **QuestionarioRisco.tsx** - 5-question risk profile quiz
-  - Questions on experience, tolerance, time horizon
-  - Produces risk score for profile detection
+- **QuestionarioRisco.tsx** - 5-question risk profile quiz
+ - Questions on experience, tolerance, time horizon
+ - Produces risk score for profile detection
 
-- ✅ **CalculadoraDisponivel.tsx** - Visual breakdown of available funds
-  - Shows: Current balance → - Emergency Fund → - Working Capital → = Available
-  - Step-by-step calculation display
-  - Projected annual returns
+- **CalculadoraDisponivel.tsx** - Visual breakdown of available funds
+ - Shows: Current balance → - Emergency Fund → - Working Capital → = Available
+ - Step-by-step calculation display
+ - Projected annual returns
 
-- ✅ **AlocacaoVisual.tsx** - 3-bucket visualization
-  - Curto prazo (short-term)
-  - Médio prazo (medium-term)
-  - Longo prazo (long-term)
-  - Shows amounts and percentages
+- **AlocacaoVisual.tsx** - 3-bucket visualization
+ - Curto prazo (short-term)
+ - Médio prazo (medium-term)
+ - Longo prazo (long-term)
+ - Shows amounts and percentages
 
-- ✅ **InvestmentCard.tsx** - Individual investment product card
-  - Name, description, expected return, risk level
-  - How it works explanation
-  - Pros/cons list
-  - Link to external provider
+- **InvestmentCard.tsx** - Individual investment product card
+ - Name, description, expected return, risk level
+ - How it works explanation
+ - Pros/cons list
+ - Link to external provider
 
-- ✅ **DisclaimerAviso.tsx** - Legal warning about educational nature
+- **DisclaimerAviso.tsx** - Legal warning about educational nature
 
 #### **4. Integration Points**
-- ✅ **RecomendacoesInvestimento.tsx** (main page):
-  - Multi-step flow: Questionnaire → Recommendations
-  - Risk profile detection
-  - Investment allocation generation
-  - Recommended actions (next steps)
-  - Refill/return to dashboard options
+- **RecomendacoesInvestimento.tsx** (main page):
+ - Multi-step flow: Questionnaire → Recommendations
+ - Risk profile detection
+ - Investment allocation generation
+ - Recommended actions (next steps)
+ - Refill/return to dashboard options
 
-- ✅ **Routes Configuration**:
-  - `/app/investimentos` → GuiaInvestimentos (guide page)
-  - `/app/recomendacoes-investimento` → RecomendacoesInvestimento (main feature)
+- **Routes Configuration**:
+ - `/app/investimentos` → GuiaInvestimentos (guide page)
+ - `/app/recomendacoes-investimento` → RecomendacoesInvestimento (main feature)
 
-- ✅ **App.tsx**:
-  - InvestmentsProvider wrapper around entire app
-  - Context available to all components
+- **App.tsx**:
+ - InvestmentsProvider wrapper around entire app
+ - Context available to all components
 
 #### **5. Business Logic Features**
-- ✅ **Available Funds Calculation**:
-  ```
-  Available = Current Balance
-             - Emergency Fund (3 months of avg expenses)
-             - Minimum Working Capital (30 days of avg expenses)
-             - Upcoming Obligations (next 30 days)
-  ```
+- **Available Funds Calculation**:
+ ```
+ Available = Current Balance
+ - Emergency Fund (3 months of avg expenses)
+ - Minimum Working Capital (30 days of avg expenses)
+ - Upcoming Obligations (next 30 days)
+ ```
 
-- ✅ **Risk Profile Detection**:
-  - Scores based on experience (1-3 points)
-  - Scores based on risk tolerance (1-3 points)
-  - Scores based on time horizon (1-3 points)
-  - Total 3-9: maps to Conservador/Moderado/Agressivo
+- **Risk Profile Detection**:
+ - Scores based on experience (1-3 points)
+ - Scores based on risk tolerance (1-3 points)
+ - Scores based on time horizon (1-3 points)
+ - Total 3-9: maps to Conservador/Moderado/Agressivo
 
-- ✅ **Allocation Strategy**:
-  - **Conservador**: 50% curto, 35% médio, 15% longo
-  - **Moderado**: 30% curto, 40% médio, 30% longo
-  - **Agressivo**: 20% curto, 30% médio, 50% longo
-  - Forced to Conservador if available < R$ 5,000
+- **Allocation Strategy**:
+ - **Conservador**: 50% curto, 35% médio, 15% longo
+ - **Moderado**: 30% curto, 40% médio, 30% longo
+ - **Agressivo**: 20% curto, 30% médio, 50% longo
+ - Forced to Conservador if available < R$ 5,000
 
-- ✅ **Investment Recommendations**:
-  - **Curto Prazo**: Tesouro SELIC, Poupança
-  - **Médio Prazo**: CDB, Tesouro Prefixado
-  - **Longo Prazo**: FII, Tesouro Prefixado
-  - Each with expected return, risk level, pros/cons, external links
+- **Investment Recommendations**:
+ - **Curto Prazo**: Tesouro SELIC, Poupança
+ - **Médio Prazo**: CDB, Tesouro Prefixado
+ - **Longo Prazo**: FII, Tesouro Prefixado
+ - Each with expected return, risk level, pros/cons, external links
 
 ### Current Status
-**READY FOR TESTING** ✅
+**READY FOR TESTING**
 - All components implemented
 - Context fully functional
 - Pages and routes configured
@@ -192,12 +192,12 @@ Located in `src/app/components/Investments/`:
 
 ---
 
-## 🔄 Integration Status
+## Integration Status
 
 ### Cross-Feature Integration
-- ✅ **CashFlowContext + InvestmentsContext**: Real transaction data flows to investment calculation
-- ✅ **PFPJContext + CashFlowContext**: PF/PJ classification available in cash flow
-- ✅ **App.tsx Providers**: All providers configured in correct order
+- **CashFlowContext + InvestmentsContext**: Real transaction data flows to investment calculation
+- **PFPJContext + CashFlowContext**: PF/PJ classification available in cash flow
+- **App.tsx Providers**: All providers configured in correct order
 
 ### Dashboard Integration (TODO)
 - ⏳ PF/PJ summary card on Dashboard
@@ -206,7 +206,7 @@ Located in `src/app/components/Investments/`:
 
 ---
 
-## 🗄️ Database Schema Requirements
+## Database Schema Requirements
 
 ### Required PocketBase Collections
 
@@ -220,11 +220,11 @@ Must have fields:
 - categoria (text)
 - data (date)
 - descricao (text, optional)
-- pf_pj_type (select: "pf", "pj", "misto") ⚠️ NEW FIELD
-- pf_pj_confidence (number, 0-100) ⚠️ NEW FIELD (optional)
-- pf_pj_suggested_by (select: "user", "ai", "rule") ⚠️ NEW FIELD (optional)
-- attachments (files) ✅ Already exists
-- created (timestamp) ✅ Already exists
+- pf_pj_type (select: "pf", "pj", "misto") NEW FIELD
+- pf_pj_confidence (number, 0-100) NEW FIELD (optional)
+- pf_pj_suggested_by (select: "user", "ai", "rule") NEW FIELD (optional)
+- attachments (files) Already exists
+- created (timestamp) Already exists
 ```
 
 #### **pfpj_rules** collection (NEW)
@@ -241,15 +241,15 @@ Must have fields:
 ```
 
 ### Database Verification Steps
-1. ✅ Check if `pf_pj_type` field exists in transactions
-   - If not, add it with default value "pj" for backward compatibility
-2. ✅ Check if `pf_pj_confidence` field exists
-3. ✅ Check if `pfpj_rules` collection exists
-   - If not, create it with the schema above
+1. Check if `pf_pj_type` field exists in transactions
+ - If not, add it with default value "pj" for backward compatibility
+2. Check if `pf_pj_confidence` field exists
+3. Check if `pfpj_rules` collection exists
+ - If not, create it with the schema above
 
 ---
 
-## 🚀 Deployment Checklist
+## Deployment Checklist
 
 ### Pre-Launch
 - [ ] Verify PocketBase database schema matches requirements above
@@ -277,7 +277,7 @@ Must have fields:
 
 ---
 
-## 📝 Known Limitations & Future Work
+## Known Limitations & Future Work
 
 ### Current Limitations
 1. **PF/PJ Classification**: Heuristics-based, may need manual review for edge cases
@@ -295,7 +295,7 @@ Must have fields:
 
 ---
 
-## 🔗 Relevant Files Summary
+## Relevant Files Summary
 
 ### Context Files
 - `src/app/contexts/PFPJContext.tsx` - PF/PJ business logic
@@ -320,7 +320,7 @@ Must have fields:
 
 ---
 
-## ✉️ Questions?
+## Questions?
 
 For implementation details, refer to:
 1. The type definitions in `types/pfpj.ts` and `types/investments.ts`

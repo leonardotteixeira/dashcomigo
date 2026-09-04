@@ -1,24 +1,24 @@
 # New Features Summary: Bloco 4 + Bloco 5
 
-## 🎉 What's New
+## What's New
 
 Your SaaS application now has two major features implemented and ready to test:
 
-### 1. **Google OAuth Authentication** ✅
+### 1. **Google OAuth Authentication**
 - Users can log in with Google credentials
 - No need to remember passwords
 - Automatic user account creation for new users
 - Seamless integration with existing authentication flow
 
-### 2. **PF/PJ Separation (Pessoa Física vs Jurídica)** ✅
+### 2. **PF/PJ Separation (Pessoa Física vs Jurídica)**
 - Automatically classify transactions as personal (PF) or business (PJ)
 - Filter cash flow by transaction type
 - Separate financial summaries for personal and business
-- Visual indicators (👤 for personal, 🏢 for business)
+- Visual indicators ( for personal, for business)
 - Custom rules to refine classification
 - Confidence scoring for classification accuracy
 
-### 3. **Investment Recommendations** ✅
+### 3. **Investment Recommendations**
 - Questionnaire to determine investor profile
 - Calculate how much money is safe to invest
 - Allocation strategy across short/medium/long term investments
@@ -28,7 +28,7 @@ Your SaaS application now has two major features implemented and ready to test:
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 ### For End Users
 
@@ -42,7 +42,7 @@ Your SaaS application now has two major features implemented and ready to test:
 1. Go to Fluxo de Caixa (Cash Flow)
 2. Add a transaction
 3. Description is auto-analyzed for classification
-4. Transaction shows 👤 or 🏢 badge
+4. Transaction shows or badge
 5. Use tabs to view personal-only or business-only finances
 
 #### **Get Investment Advice**
@@ -59,26 +59,26 @@ Your SaaS application now has two major features implemented and ready to test:
 ```
 Frontend:
 ├── src/app/pages/
-│   ├── Login.tsx (Google OAuth UI)
-│   ├── FluxoCaixa.tsx (PF/PJ filtering & classification)
-│   └── RecomendacoesInvestimento.tsx (Investment recommendations)
+│ ├── Login.tsx (Google OAuth UI)
+│ ├── FluxoCaixa.tsx (PF/PJ filtering & classification)
+│ └── RecomendacoesInvestimento.tsx (Investment recommendations)
 ├── src/app/contexts/
-│   ├── AuthContext.tsx (Google OAuth logic)
-│   ├── PFPJContext.tsx (PF/PJ classification logic)
-│   └── InvestmentsContext.tsx (Investment calculations)
+│ ├── AuthContext.tsx (Google OAuth logic)
+│ ├── PFPJContext.tsx (PF/PJ classification logic)
+│ └── InvestmentsContext.tsx (Investment calculations)
 ├── src/app/types/
-│   ├── pfpj.ts (PF/PJ types & constants)
-│   └── investments.ts (Investment types & constants)
+│ ├── pfpj.ts (PF/PJ types & constants)
+│ └── investments.ts (Investment types & constants)
 └── src/app/components/
-    ├── FluxoCaixa/ (PF/PJ UI components)
-    └── Investments/ (Investment UI components)
+ ├── FluxoCaixa/ (PF/PJ UI components)
+ └── Investments/ (Investment UI components)
 ```
 
 #### **Environment Setup**
 
 Make sure your `.env` has:
 ```env
-VITE_POCKETBASE_URL=http://localhost:8090  # Your PocketBase URL
+VITE_POCKETBASE_URL=http://localhost:8090 # Your PocketBase URL
 VITE_GOOGLE_CLIENT_ID=567720000578-bmu0tusp9vdd2opqvev7m5l388oit3lh.apps.googleusercontent.com
 ```
 
@@ -93,45 +93,45 @@ If missing, they need to be added for full PF/PJ functionality.
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 Three detailed guides have been created:
 
 1. **IMPLEMENTATION_STATUS.md** - Complete technical overview
-   - Architecture details
-   - Component inventory
-   - Database schema requirements
-   - Known limitations
+ - Architecture details
+ - Component inventory
+ - Database schema requirements
+ - Known limitations
 
 2. **TEST_GUIDE.md** - Step-by-step testing procedures
-   - Google OAuth testing
-   - PF/PJ classification testing
-   - Investment recommendations testing
-   - Troubleshooting tips
+ - Google OAuth testing
+ - PF/PJ classification testing
+ - Investment recommendations testing
+ - Troubleshooting tips
 
 3. **README_FEATURES.md** - This file
-   - Quick summary
-   - Getting started
-   - What's next
+ - Quick summary
+ - Getting started
+ - What's next
 
 ---
 
-## ✅ Current Status
+## Current Status
 
 | Feature | Status | Ready for Testing |
 |---------|--------|-------------------|
-| Google OAuth | ✅ Complete | Yes, ready |
-| PF/PJ Auto-Classification | ✅ Complete | Yes, ready |
-| PF/PJ Tab Filtering | ✅ Complete | Yes, ready |
-| PF/PJ Custom Rules | ✅ Complete | Yes, ready |
-| Investment Questionnaire | ✅ Complete | Yes, ready |
-| Investment Recommendations | ✅ Complete | Yes, ready |
+| Google OAuth | Complete | Yes, ready |
+| PF/PJ Auto-Classification | Complete | Yes, ready |
+| PF/PJ Tab Filtering | Complete | Yes, ready |
+| PF/PJ Custom Rules | Complete | Yes, ready |
+| Investment Questionnaire | Complete | Yes, ready |
+| Investment Recommendations | Complete | Yes, ready |
 | Dashboard Cards | ⏳ Not yet | Phase 2 |
 | Broker Integration | ⏳ Not yet | Phase 2 |
 
 ---
 
-## 🎯 Next Steps
+## Next Steps
 
 ### Immediate (This Sprint)
 1. **Test the features** using TEST_GUIDE.md
@@ -154,7 +154,7 @@ Three detailed guides have been created:
 
 ---
 
-## 🔍 Feature Highlights
+## Feature Highlights
 
 ### Google OAuth
 - **Why it matters**: Users don't need another password to remember
@@ -164,27 +164,27 @@ Three detailed guides have been created:
 
 ### PF/PJ Classification
 - **Why it matters**: MEIs mix personal and business money - this separates them
-- **How it works**: 
-  - Keyword matching (salário = personal, fornecedor = business)
-  - Amount-based logic (very small amounts likely personal)
-  - Confidence scoring (shows if classification is uncertain)
-  - User override capability (can manually correct)
+- **How it works**:
+ - Keyword matching (salário = personal, fornecedor = business)
+ - Amount-based logic (very small amounts likely personal)
+ - Confidence scoring (shows if classification is uncertain)
+ - User override capability (can manually correct)
 - **Accuracy**: Starts at ~75%, improves with use
 - **User benefit**: Clear picture of real business profitability
 
 ### Investment Recommendations
 - **Why it matters**: MEIs have idle cash earning nothing - recommendations show options
 - **How it works**:
-  - Calculates safe investment amount (after emergency fund, working capital)
-  - Detects risk tolerance from questionnaire
-  - Suggests allocation across time horizons
-  - Provides specific product recommendations with educational content
+ - Calculates safe investment amount (after emergency fund, working capital)
+ - Detects risk tolerance from questionnaire
+ - Suggests allocation across time horizons
+ - Provides specific product recommendations with educational content
 - **Educational**: Not real advice, teaches investment concepts
 - **Links**: Direct access to actual investment platforms to open accounts
 
 ---
 
-## 💡 Key Concepts Explained
+## Key Concepts Explained
 
 ### What is PF vs PJ?
 
@@ -223,15 +223,15 @@ Results in:
 Safe amount to invest without touching:
 ```
 Total Cash
-  - Emergency Fund (3 months of expenses)
-  - Working Capital (30 days of expenses)
-  - Upcoming Bills (next 30 days)
-  = Available to Invest
+ - Emergency Fund (3 months of expenses)
+ - Working Capital (30 days of expenses)
+ - Upcoming Bills (next 30 days)
+ = Available to Invest
 ```
 
 ---
 
-## 📊 Sample User Flow
+## Sample User Flow
 
 ### New MEI User
 1. Signs up with email/password
@@ -242,15 +242,15 @@ Total Cash
 6. Goes to Investment recommendations
 7. Completes questionnaire
 8. Gets recommendation showing:
-   - R$ 5,000 available to invest safely
-   - Moderate risk profile fits their needs
-   - Should invest: R$ 1,500 curto prazo, R$ 2,000 médio, R$ 1,500 longo
+ - R$ 5,000 available to invest safely
+ - Moderate risk profile fits their needs
+ - Should invest: R$ 1,500 curto prazo, R$ 2,000 médio, R$ 1,500 longo
 9. Clicks Tesouro SELIC link
 10. Opens account and makes first investment
 
 ---
 
-## 🐛 Known Issues & Workarounds
+## Known Issues & Workarounds
 
 None currently reported, but testing may reveal:
 - PF/PJ classification accuracy (will improve with use)
@@ -259,7 +259,7 @@ None currently reported, but testing may reveal:
 
 ---
 
-## 📞 Support & Questions
+## Support & Questions
 
 If you find issues or have questions:
 1. Check TEST_GUIDE.md troubleshooting section
@@ -269,7 +269,7 @@ If you find issues or have questions:
 
 ---
 
-## 🎓 Learning Resources
+## Learning Resources
 
 To understand the implementation better:
 
@@ -289,24 +289,24 @@ To understand the implementation better:
 
 ---
 
-## ✨ What Makes This Implementation Special
+## What Makes This Implementation Special
 
-✅ **Production-Ready**: All code follows React best practices
-✅ **Type-Safe**: Full TypeScript with proper interfaces
-✅ **Educational**: Includes explanations for end users
-✅ **Extensible**: Easy to add new investment products or rules
-✅ **Offline-Capable**: Works with real transaction data
-✅ **Mobile-Friendly**: Responsive design (mostly)
-✅ **Legal-Conscious**: Disclaimers on financial recommendations
+ **Production-Ready**: All code follows React best practices
+ **Type-Safe**: Full TypeScript with proper interfaces
+ **Educational**: Includes explanations for end users
+ **Extensible**: Easy to add new investment products or rules
+ **Offline-Capable**: Works with real transaction data
+ **Mobile-Friendly**: Responsive design (mostly)
+ **Legal-Conscious**: Disclaimers on financial recommendations
 
 ---
 
-## 🚀 You're Ready!
+## You're Ready!
 
 The implementation is complete and ready for:
-- ✅ Testing
-- ✅ User feedback
-- ✅ Production deployment
-- ✅ Further refinement
+- Testing
+- User feedback
+- Production deployment
+- Further refinement
 
-Start with TEST_GUIDE.md and have fun exploring your new features! 🎉
+Start with TEST_GUIDE.md and have fun exploring your new features!

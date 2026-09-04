@@ -16,16 +16,16 @@
 
 | Nome Campo | Tipo | Obrigatório | Propriedades |
 |-----------|------|-------------|-------------|
-| `descricao` | Text | ✅ | - |
-| `valor` | Number | ✅ | Min: 0.01 |
-| `categoria` | Text | ✅ | - |
-| `data_vencimento` | Date | ✅ | - |
-| `status` | Select | ✅ | Opções: `pendente`, `pago` (default: `pendente`) |
-| `eh_recorrente` | Checkbox | ❌ | (default: false) |
-| `frequencia_recorrencia` | Select | ❌ | Opções: `mensal`, `anual` |
-| `data_pagamento` | Date | ❌ | - |
-| `anotacoes` | Text | ❌ | - |
-| `user_id` | Relation | ✅ | Relation: `profiles` |
+| `descricao` | Text | | - |
+| `valor` | Number | | Min: 0.01 |
+| `categoria` | Text | | - |
+| `data_vencimento` | Date | | - |
+| `status` | Select | | Opções: `pendente`, `pago` (default: `pendente`) |
+| `eh_recorrente` | Checkbox | | (default: false) |
+| `frequencia_recorrencia` | Select | | Opções: `mensal`, `anual` |
+| `data_pagamento` | Date | | - |
+| `anotacoes` | Text | | - |
+| `user_id` | Relation | | Relation: `profiles` |
 
 ### 4. Configure as API Rules
 
@@ -58,18 +58,18 @@ user_id = @request.auth.id
 ```bash
 # Teste criando um payable via API
 curl -X POST "https://pocketbase-production-d5ae.up.railway.app/api/collections/payables/records" \
-  -H "Authorization: Bearer [TOKEN_AUTH]" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "[USER_ID]",
-    "descricao": "Aluguel",
-    "valor": 1200.00,
-    "categoria": "Aluguel",
-    "data_vencimento": "2026-04-05",
-    "status": "pendente",
-    "eh_recorrente": true,
-    "frequencia_recorrencia": "mensal"
-  }'
+ -H "Authorization: Bearer [TOKEN_AUTH]" \
+ -H "Content-Type: application/json" \
+ -d '{
+ "user_id": "[USER_ID]",
+ "descricao": "Aluguel",
+ "valor": 1200.00,
+ "categoria": "Aluguel",
+ "data_vencimento": "2026-04-05",
+ "status": "pendente",
+ "eh_recorrente": true,
+ "frequencia_recorrencia": "mensal"
+ }'
 ```
 
 ## Próximos passos:

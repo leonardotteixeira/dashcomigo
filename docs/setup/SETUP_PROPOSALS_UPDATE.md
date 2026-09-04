@@ -16,7 +16,7 @@ Vá para **Collections > proposals** e clique em **Edit**.
 #### Campo novo: `data_pagamento`
 | Nome Campo | Tipo | Obrigatório | Propriedades |
 |-----------|------|-------------|-------------|
-| `data_pagamento` | Date | ❌ | (opcional - preenchido quando proposta é marcada como "paga") |
+| `data_pagamento` | Date | | (opcional - preenchido quando proposta é marcada como "paga") |
 
 #### Modifique o campo `status`:
 - **Antes:** Select com opções: `aguardando`, `aprovada`, `recusada`
@@ -25,8 +25,8 @@ Vá para **Collections > proposals** e clique em **Edit**.
 **Passos:**
 1. Clique no campo `status` para editar
 2. Nas "Options", adicione duas novas opções:
-   - `paga` (para quando a proposta foi paga)
-   - `vencida` (para quando a validade expirou)
+ - `paga` (para quando a proposta foi paga)
+ - `vencida` (para quando a validade expirou)
 
 ### 4. Salve as mudanças
 
@@ -41,13 +41,13 @@ Clique em "Save" para confirmar as alterações.
 
 ## Mudanças no Frontend (já implementadas)
 
-- ✅ GeradorPropostas.tsx atualizado com:
-  - Novo status "paga" e "vencida"
-  - Novo campo `data_pagamento` na interface Proposal
-  - Dialog para selecionar data de pagamento ao marcar como "paga"
-  - Cores atualizadas: "paga" = verde, "vencida" = vermelho, "aprovada" = azul
-  - Filtros atualizados: tabs para "Pagas" e "Vencidas"
-  - Exibição da data de pagamento no preview da proposta
+- GeradorPropostas.tsx atualizado com:
+ - Novo status "paga" e "vencida"
+ - Novo campo `data_pagamento` na interface Proposal
+ - Dialog para selecionar data de pagamento ao marcar como "paga"
+ - Cores atualizadas: "paga" = verde, "vencida" = vermelho, "aprovada" = azul
+ - Filtros atualizados: tabs para "Pagas" e "Vencidas"
+ - Exibição da data de pagamento no preview da proposta
 
 ## Observações
 

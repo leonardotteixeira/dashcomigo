@@ -120,7 +120,11 @@ docs/                 guias de setup e histórico de decisões
 
 ## Roadmap
 
-Ver [`docs/roadmap.md`](docs/roadmap.md).
+Ver [`docs/roadmap.md`](docs/roadmap.md) para o estado real de cada funcionalidade (o que está sólido, parcial ou ainda não implementado).
+
+## Status
+
+Projeto pessoal em produção em [dashcomigo.com.br](https://www.dashcomigo.com.br), desenvolvido como parte do meu portfólio e processo de aprendizado. Várias funcionalidades listadas no roadmap ainda estão parciais ou pendentes; o roadmap é a fonte da verdade sobre o que de fato funciona hoje.
 
 ## Licença
 

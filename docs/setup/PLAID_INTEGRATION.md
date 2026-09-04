@@ -1,31 +1,31 @@
-# 🏦 Plaid Integration - Open Finance Setup
+# Plaid Integration - Open Finance Setup
 
 Este documento explica como usar a integração do Plaid para importar transações bancárias automaticamente no Dashcomigo.
 
 ---
 
-## 📋 O Que Você Ganhar
+## O Que Você Ganhar
 
-✅ **Importar transações automaticamente** do banco do usuário
-✅ **PF/PJ classificação automática** das transações importadas
-✅ **Saldo em tempo real** do banco
-✅ **Suporte para múltiplos bancos** (Itaú, Bradesco, Nubank, etc)
-✅ **Zero custo no Sandbox** (testes gratuitos)
-
----
-
-## 🔧 Arquivos Criados
-
-```
-├── src/lib/plaid.ts              # Funções de integração Plaid
-├── src/app/components/PlaidLink.tsx  # Componente React com botão
-├── api/plaid.ts                  # Backend routes
-└── PLAID_INTEGRATION.md           # Este arquivo
-```
+ **Importar transações automaticamente** do banco do usuário
+ **PF/PJ classificação automática** das transações importadas
+ **Saldo em tempo real** do banco
+ **Suporte para múltiplos bancos** (Itaú, Bradesco, Nubank, etc)
+ **Zero custo no Sandbox** (testes gratuitos)
 
 ---
 
-## 🚀 Como Usar
+## Arquivos Criados
+
+```
+├── src/lib/plaid.ts # Funções de integração Plaid
+├── src/app/components/PlaidLink.tsx # Componente React com botão
+├── api/plaid.ts # Backend routes
+└── PLAID_INTEGRATION.md # Este arquivo
+```
+
+---
+
+## Como Usar
 
 ### **1. Instalar Dependências**
 
@@ -48,22 +48,22 @@ Coloque o botão em um local da sua escolha (ex: Dashboard):
 import { PlaidLink } from './components/PlaidLink';
 
 export function Dashboard() {
-  return (
-    <div>
-      <h1>Meu Dashboard</h1>
-      
-      {/* Botão para conectar banco */}
-      <PlaidLink 
-        onSuccess={() => {
-          console.log('Banco conectado!');
-          // Recarregar transações
-        }}
-        onError={(error) => {
-          console.error('Erro:', error);
-        }}
-      />
-    </div>
-  );
+ return (
+ <div>
+ <h1>Meu Dashboard</h1>
+ 
+ {/* Botão para conectar banco */}
+ <PlaidLink 
+ onSuccess={() => {
+ console.log('Banco conectado!');
+ // Recarregar transações
+ }}
+ onError={(error) => {
+ console.error('Erro:', error);
+ }}
+ />
+ </div>
+ );
 }
 ```
 
@@ -87,33 +87,33 @@ app.post('/api/plaid/disconnect', plaid.disconnect);
 
 ---
 
-## 📊 Fluxo Completo
+## Fluxo Completo
 
 ```
 Usuário abre Dashboard
-    ↓
+ ↓
 Clica "Conectar Banco (Open Finance)"
-    ↓
+ ↓
 Plaid abre modal para selecionar banco
-    ↓
+ ↓
 Usuário escolhe seu banco e faz login
-    ↓
+ ↓
 Plaid retorna public_token
-    ↓
+ ↓
 Backend troca por access_token
-    ↓
+ ↓
 Backend sincroniza 6 meses de transações
-    ↓
+ ↓
 Transações aparecem no Fluxo de Caixa
-    ↓
+ ↓
 PF/PJ classifica automaticamente
-    ↓
+ ↓
 Dashboard atualiza em tempo real
 ```
 
 ---
 
-## 🧪 Testar no Sandbox
+## Testar no Sandbox
 
 No Plaid Sandbox, use estas credenciais de teste:
 
@@ -127,7 +127,7 @@ Isso cria contas fake com transações de exemplo.
 
 ---
 
-## 📁 Estrutura do Banco de Dados
+## Estrutura do Banco de Dados
 
 ### **Collection: plaid_connections**
 
@@ -135,7 +135,7 @@ Isso cria contas fake com transações de exemplo.
 - id (primary)
 - user_id (foreign key to profiles)
 - item_id (Plaid item ID)
-- access_token (encrypted! ⚠️)
+- access_token (encrypted! )
 - connected_at (timestamp)
 - last_sync (timestamp)
 - status (active, revoked, error)
@@ -152,79 +152,79 @@ Isso cria contas fake com transações de exemplo.
 
 ---
 
-## 🔐 Segurança
+## Segurança
 
-### **NÃO FAZER ❌**
-- ❌ Guardar access_token em localStorage
-- ❌ Enviar access_token ao cliente
-- ❌ Compartilhar credenciais Plaid publicamente
-- ❌ Usar production com sandbox keys
+### **NÃO FAZER **
+- Guardar access_token em localStorage
+- Enviar access_token ao cliente
+- Compartilhar credenciais Plaid publicamente
+- Usar production com sandbox keys
 
-### **SIM FAZER ✅**
-- ✅ Guardar access_token no servidor (encrypted)
-- ✅ Use `PLAID_SECRET` só no backend
-- ✅ Rotacione secrets regularmente
-- ✅ Use HTTPS em produção
-- ✅ Implemente rate limiting
+### **SIM FAZER **
+- Guardar access_token no servidor (encrypted)
+- Use `PLAID_SECRET` só no backend
+- Rotacione secrets regularmente
+- Use HTTPS em produção
+- Implemente rate limiting
 
 ---
 
-## 📊 Exemplo: Importação de Transações
+## Exemplo: Importação de Transações
 
 Ao importar, o sistema cria transações assim:
 
 ```javascript
 {
-  user_id: 'abc123',
-  plaid_id: 'txn_xyz789',          // ID único da Plaid
-  valor: 150.50,
-  tipo: 'saida',
-  categoria: 'Alimentação',
-  data: '2024-01-15',
-  descricao: 'MERCADO XYZ',
-  pf_pj_type: 'PF',                // Auto-classificado
-  pf_pj_confidence: 75,            // Medium confidence
-  pf_pj_suggested_by: 'plaid',    // Marca origem
+ user_id: 'abc123',
+ plaid_id: 'txn_xyz789', // ID único da Plaid
+ valor: 150.50,
+ tipo: 'saida',
+ categoria: 'Alimentação',
+ data: '2024-01-15',
+ descricao: 'MERCADO XYZ',
+ pf_pj_type: 'PF', // Auto-classificado
+ pf_pj_confidence: 75, // Medium confidence
+ pf_pj_suggested_by: 'plaid', // Marca origem
 }
 ```
 
 ---
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### **Erro: "Failed to create link token"**
-- ❌ CLIENT_ID ou SECRET incorretos
-- ✅ Verifica `.env.local`
-- ✅ Reinicia o servidor
+- CLIENT_ID ou SECRET incorretos
+- Verifica `.env.local`
+- Reinicia o servidor
 
 ### **Erro: "No Plaid connection found"**
-- ❌ Usuário não conectou banco ainda
-- ✅ Clica no botão "Conectar Banco"
-- ✅ Completa o fluxo do Plaid
+- Usuário não conectou banco ainda
+- Clica no botão "Conectar Banco"
+- Completa o fluxo do Plaid
 
 ### **Transações não sincronizam**
-- ❌ Access token expirou
-- ✅ Desconecta e conecta de novo
-- ✅ Verifica logs do backend
+- Access token expirou
+- Desconecta e conecta de novo
+- Verifica logs do backend
 
 ### **Erro 429 (Rate Limit)**
-- ❌ Muitas requisições
-- ✅ Aguarde antes de tentar novamente
-- ✅ Implemente backoff exponencial
+- Muitas requisições
+- Aguarde antes de tentar novamente
+- Implemente backoff exponencial
 
 ---
 
-## 💰 Custo
+## Custo
 
 | Cenário | Custo |
 |---------|-------|
-| **Sandbox (testes)** | **R$ 0** ✅ |
+| **Sandbox (testes)** | **R$ 0** |
 | **Production (1 conexão)** | ~R$ 1-2/mês |
 | **Production (100 conexões)** | ~R$ 200/mês |
 
 ---
 
-## 🔄 Sincronização Automática
+## Sincronização Automática
 
 Para sincronizar automaticamente a cada dia:
 
@@ -234,21 +234,21 @@ import cron from 'node-cron';
 
 // Toda noite às 02:00
 cron.schedule('0 2 * * *', async () => {
-  const users = await pb.collection('users').getFullList();
-  
-  for (const user of users) {
-    try {
-      await syncTransactions({ body: { userId: user.id } }, {});
-    } catch (error) {
-      console.error('Sync failed for user:', user.id, error);
-    }
-  }
+ const users = await pb.collection('users').getFullList();
+ 
+ for (const user of users) {
+ try {
+ await syncTransactions({ body: { userId: user.id } }, {});
+ } catch (error) {
+ console.error('Sync failed for user:', user.id, error);
+ }
+ }
 });
 ```
 
 ---
 
-## 📚 Documentação
+## Documentação
 
 - [Plaid Docs](https://plaid.com/docs)
 - [Plaid Link Guide](https://plaid.com/docs/link)
@@ -257,11 +257,11 @@ cron.schedule('0 2 * * *', async () => {
 
 ---
 
-## 🎯 Próximas Fases
+## Próximas Fases
 
 ### **Fase 1: Prototipagem** (VOCÊ ESTÁ AQUI)
-- ✅ Integração Plaid
-- ✅ Sandbox testes
+- Integração Plaid
+- Sandbox testes
 - ⏳ Sincronização manual
 
 ### **Fase 2: Automação**
@@ -293,7 +293,7 @@ cron.schedule('0 2 * * *', async () => {
 
 ---
 
-## ✅ Checklist de Implementação
+## Checklist de Implementação
 
 - [x] Criar `src/lib/plaid.ts`
 - [x] Criar `src/app/components/PlaidLink.tsx`
@@ -308,4 +308,4 @@ cron.schedule('0 2 * * *', async () => {
 
 ---
 
-**Pronto para conectar o primeiro banco? 🚀**
+**Pronto para conectar o primeiro banco? **

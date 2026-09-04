@@ -8,7 +8,9 @@
 
 ## Estado Real do Produto (auditado em 2026-04-22)
 
-### ✅ Sólido e em Produção
+> Auditoria pontual — alguns itens listados como pendentes já podem ter sido implementados depois dessa data (ex.: o export de PDF de propostas, listado abaixo como não funcional, já foi implementado via jsPDF).
+
+### Sólido e em produção
 
 | Área | Detalhe |
 |------|---------|
@@ -32,17 +34,17 @@
 | PF/PJ separation | Classificação heurística com scoring de confiança |
 | Design system | Tema warm green (#0E3B2E / #F4EFE6 / #EBE4D6) aplicado no Dashboard e Landing |
 
-### ⚠️ Parcialmente Implementado
+### Parcialmente implementado
 
 | Área | O que existe | O que falta |
 |------|--------------|-------------|
 | Email de cobrança | Toggle `receive_payment_reminders` no perfil; campos no schema | Scheduler, cron job, templates, lógica de disparo |
 | Transações recorrentes | Campos `ehRecorrente` + `frequenciaRecorrencia` no schema | Auto-geração de próximas ocorrências |
 | Bank sync (Open Finance) | Funções Pluggy + Belvo implementadas; BankConnectionSelector pronto | Feature desativada intencionalmente — backend routes precisam ser validados antes do re-enable |
-| Export PDF | Botões existem na UI (Propostas, Relatórios) | Nenhuma biblioteca de geração PDF conectada |
+| Export PDF (Relatórios) | Botão existe na UI | A verificar se está conectado a uma geração real — Propostas já usa jsPDF |
 | `pro_expires_at` | Campo existe para streak reward (30 dias trial) | Checkout Asaas não grava expiração local — depende da assinatura recorrente Asaas |
 
-### ❌ Não Implementado
+### Não implementado
 
 - NFS-e (botão existe na UI de propostas, sem backend)
 - CSV/OFX bank statement import
@@ -57,7 +59,7 @@
 - Referral program
 - NPS / feedback widget
 
-### ❗ Débito Técnico Confirmado
+### Débito técnico confirmado
 
 | Item | Risco | Ação |
 |------|-------|------|
@@ -74,7 +76,7 @@
 
 ---
 
-### 🔴 Fase 1 — Crítico (Fazer Agora)
+### Fase 1 — Crítico (fazer agora)
 **Meta:** Fechar gaps que afetam usuários pagantes e sustentabilidade do produto.
 
 #### 1.1 Email de Cobrança
@@ -95,23 +97,7 @@
 
 ---
 
-#### 1.2 PDF Export de Propostas
-**Por quê:** Feature PRO anunciada que não funciona. Destrói confiança no momento do upgrade.
-
-**Implementação:**
-- Instalar `@react-pdf/renderer`
-- Template de proposta em PDF (logo, itens, total, dados do cliente)
-- Botão "Exportar PDF" em GeradorPropostas já existe — conectar à geração real
-
-**Arquivos a modificar:**
-- `src/app/pages/GeradorPropostas.tsx`
-- `src/app/components/ProposalPDF.tsx` (novo)
-
-**Esforço:** 1 dia
-
----
-
-#### 1.3 MEI Annual Revenue Tracker no Dashboard
+#### 1.2 MEI Annual Revenue Tracker no Dashboard
 **Por quê:** Maior ansiedade do MEI. Diferencial competitivo claro.
 
 **Implementação:**
@@ -128,7 +114,7 @@
 
 ---
 
-#### 1.4 Paginação nos Contextos
+#### 1.3 Paginação nos Contextos
 **Por quê:** `getList(1, 500)` é uma time bomb. Usuários com 6+ meses de uso já sofrem.
 
 **Implementação:**
@@ -145,7 +131,7 @@
 
 ---
 
-#### 1.5 Consertar Railway Auto-Deploy
+#### 1.4 Consertar Railway Auto-Deploy
 **Por quê:** Deploy manual via `railway up` é insustentável. Cada update exige intervenção manual.
 
 **Investigação:**
@@ -157,7 +143,7 @@
 
 ---
 
-#### 1.6 Server-Side Plan Enforcement no PocketBase
+#### 1.5 Server-Side Plan Enforcement no PocketBase
 **Por quê:** Hoje qualquer usuário FREE pode abrir DevTools e criar registros ilimitados.
 
 **Implementação:**
@@ -169,7 +155,7 @@
 
 ---
 
-### 🟡 Fase 2 — Alta Prioridade (Próximas 2–3 semanas)
+### Fase 2 — Alta prioridade (próximas 2-3 semanas)
 
 #### 2.1 Cash Flow Forecast (PRO)
 Usar os últimos 3 meses de transações para projetar receitas e despesas do próximo mês. Exibir como gráfico de linha com banda de confiança. Feature sticky que traz usuários de volta semanalmente.
@@ -199,7 +185,7 @@ Gate o dashboard até o onboarding ser concluído. Personalizar experiência ini
 
 ---
 
-### 🟢 Fase 3 — Médio Prazo (Próximo mês)
+### Fase 3 — Médio prazo (próximo mês)
 
 | # | Feature | Impacto |
 |---|---------|---------|
@@ -212,7 +198,7 @@ Gate o dashboard até o onboarding ser concluído. Personalizar experiência ini
 
 ---
 
-### ⏩ Defer / Cortar
+### Adiado / cortado
 
 | Feature | Decisão | Motivo |
 |---------|---------|--------|
@@ -231,23 +217,22 @@ Gate o dashboard até o onboarding ser concluído. Personalizar experiência ini
 | # | Ação | Impacto | Esforço |
 |---|------|---------|---------|
 | **1** | Email de cobrança (scheduler + Resend) | Alto — automatiza cobranças, reduz churn | 3 dias |
-| **2** | PDF export de propostas | Alto — feature PRO que não funciona hoje | 1 dia |
-| **3** | MEI annual revenue tracker no Dashboard | Alto — resolve ansiedade principal do MEI | 1 dia |
-| **4** | Paginação nos contextos | Médio/Alto — performance para usuários maduros | 2 dias |
-| **5** | Consertar Railway auto-deploy | Operacional — sustentabilidade de deploy | 2–4 horas |
+| **2** | MEI annual revenue tracker no Dashboard | Alto — resolve ansiedade principal do MEI | 1 dia |
+| **3** | Paginação nos contextos | Médio/Alto — performance para usuários maduros | 2 dias |
+| **4** | Consertar Railway auto-deploy | Operacional — sustentabilidade de deploy | 2–4 horas |
 
 ---
 
-## O Que Aumenta Retenção
+## Hipótese sobre retenção
 
-**Alertas proativos** são o driver de retenção mais alto para ferramentas financeiras de MEI. Usuários não abrem o app por prazer — abrem quando estão preocupados. Construir os gatilhos de preocupação:
+Não há dados de uso suficientes ainda para medir isso, mas a hipótese de trabalho é que alertas proativos (não só relatórios passivos) são o que traz o usuário de volta ao app — algo como:
 
 - "Você tem 3 contas vencendo esta semana — R$1.200"
 - "Suas despesas estão 18% acima do mês passado"
 - "Você usou 78% do seu limite anual MEI"
 - "Proposta #12 está vencida há 5 dias sem confirmação"
 
-Usuários que recebem esses alertas têm 3× mais retenção em 30 dias.
+Vale validar com os próximos usuários antes de investir muito tempo nisso.
 
 **Reduzir atrito de entrada de dados:**
 - CSV/OFX import de extrato (maior pedido da categoria)

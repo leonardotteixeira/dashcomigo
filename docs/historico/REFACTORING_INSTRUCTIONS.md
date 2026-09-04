@@ -2,9 +2,9 @@
 
 ## Current Status: 3 of 25+ Pages Complete
 
-- ✅ **Metas.tsx** (Goals) - COMPLETE
-- ✅ **DASMei.tsx** (Tax Calculator) - COMPLETE
-- ✅ **ContasAPagar.tsx** (Bills to Pay) - COMPLETE
+- **Metas.tsx** (Goals) - COMPLETE
+- **DASMei.tsx** (Tax Calculator) - COMPLETE
+- **ContasAPagar.tsx** (Bills to Pay) - COMPLETE
 - ⏳ **21+ Remaining Pages** - Ready for refactoring
 
 ---
@@ -23,32 +23,32 @@ import { PremiumPageLayout } from "../components/PremiumPageLayout";
 **OLD:**
 ```tsx
 export function PageName() {
-  return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-[#001529]">Title</h1>
-        <p className="text-[rgba(0,21,41,0.6)]">Description</p>
-      </div>
-      {/* content */}
-    </div>
-  );
+ return (
+ <div className="max-w-7xl mx-auto space-y-6">
+ <div>
+ <h1 className="text-3xl font-bold text-[#001529]">Title</h1>
+ <p className="text-[rgba(0,21,41,0.6)]">Description</p>
+ </div>
+ {/* content */}
+ </div>
+ );
 }
 ```
 
 **NEW:**
 ```tsx
 export function PageName() {
-  return (
-    <PremiumPageLayout
-      title="Title"
-      description="Description"
-      actions={<button>Action</button>}  // Optional
-    >
-      <div className={spacing.sectionGap}>
-        {/* content */}
-      </div>
-    </PremiumPageLayout>
-  );
+ return (
+ <PremiumPageLayout
+ title="Title"
+ description="Description"
+ actions={<button>Action</button>} // Optional
+ >
+ <div className={spacing.sectionGap}>
+ {/* content */}
+ </div>
+ </PremiumPageLayout>
+ );
 }
 ```
 
@@ -88,8 +88,8 @@ Use Find & Replace with these mappings:
 ```tsx
 className="rounded-2xl p-6 shadow-sm border"
 style={{
-  backgroundColor: colors.bgLight,
-  borderColor: colors.borderDefault
+ backgroundColor: colors.bgLight,
+ borderColor: colors.borderDefault
 }}
 ```
 
@@ -110,9 +110,9 @@ className="text-white font-semibold px-4 py-2.5 rounded-lg hover:opacity-90 tran
 **Outline Button:**
 ```tsx
 style={{
-  backgroundColor: colors.bgLighter,
-  color: colors.textSecondary,
-  borderColor: colors.borderDefault
+ backgroundColor: colors.bgLighter,
+ color: colors.textSecondary,
+ borderColor: colors.borderDefault
 }}
 className="px-4 py-2.5 rounded-lg border transition-colors hover:opacity-80"
 ```
@@ -122,10 +122,10 @@ className="px-4 py-2.5 rounded-lg border transition-colors hover:opacity-80"
 ```tsx
 className="w-full rounded-lg px-4 py-2.5 focus:outline-none transition-colors"
 style={{
-  backgroundColor: colors.bgLighter,
-  borderColor: colors.borderDefault,
-  color: colors.textPrimary,
-  border: `1px solid ${colors.borderDefault}`
+ backgroundColor: colors.bgLighter,
+ borderColor: colors.borderDefault,
+ color: colors.textPrimary,
+ border: `1px solid ${colors.borderDefault}`
 }}
 ```
 
@@ -134,8 +134,8 @@ style={{
 **Header Row:**
 ```tsx
 style={{
-  backgroundColor: colors.bgLighter,
-  borderColor: colors.borderDefault
+ backgroundColor: colors.bgLighter,
+ borderColor: colors.borderDefault
 }}
 ```
 
@@ -143,9 +143,9 @@ style={{
 ```tsx
 className="border-b transition-colors hover:opacity-80"
 style={{
-  borderColor: colors.borderDefault,
-  backgroundColor: colors.bgLight,
-  color: colors.textPrimary
+ borderColor: colors.borderDefault,
+ backgroundColor: colors.bgLight,
+ color: colors.textPrimary
 }}
 ```
 
@@ -273,20 +273,20 @@ After refactoring, verify:
 **BEFORE:**
 ```tsx
 export function SamplePage() {
-  return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold text-[#001529]">Title</h1>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-[rgba(0,0,0,0.1)]">
-          <p className="text-[rgba(0,21,41,0.6)] text-sm">Label</p>
-          <p className="text-[#001529] text-2xl font-bold">Value</p>
-        </div>
-      </div>
-      <button className="bg-[#28A263] hover:bg-[#1f7a4a] text-white px-4 py-2 rounded-xl">
-        Click
-      </button>
-    </div>
-  );
+ return (
+ <div className="max-w-7xl mx-auto space-y-6">
+ <h1 className="text-3xl font-bold text-[#001529]">Title</h1>
+ <div className="grid grid-cols-2 gap-4">
+ <div className="bg-white rounded-xl p-5 border border-[rgba(0,0,0,0.1)]">
+ <p className="text-[rgba(0,21,41,0.6)] text-sm">Label</p>
+ <p className="text-[#001529] text-2xl font-bold">Value</p>
+ </div>
+ </div>
+ <button className="bg-[#28A263] hover:bg-[#1f7a4a] text-white px-4 py-2 rounded-xl">
+ Click
+ </button>
+ </div>
+ );
 }
 ```
 
@@ -296,24 +296,24 @@ import { colors, spacing } from "../../utils/designTokens";
 import { PremiumPageLayout } from "../components/PremiumPageLayout";
 
 export function SamplePage() {
-  return (
-    <PremiumPageLayout
-      title="Title"
-      description="Brief description"
-    >
-      <div className={spacing.sectionGap}>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
-            <p className="text-sm" style={{ color: colors.textSecondary }}>Label</p>
-            <p className="text-2xl font-bold" style={{ color: colors.textPrimary }}>Value</p>
-          </div>
-        </div>
-        <button className="text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-all" style={{ backgroundColor: colors.primary }}>
-          Click
-        </button>
-      </div>
-    </PremiumPageLayout>
-  );
+ return (
+ <PremiumPageLayout
+ title="Title"
+ description="Brief description"
+ >
+ <div className={spacing.sectionGap}>
+ <div className="grid grid-cols-2 gap-6">
+ <div className="rounded-2xl p-6 shadow-sm border" style={{ backgroundColor: colors.bgLight, borderColor: colors.borderDefault }}>
+ <p className="text-sm" style={{ color: colors.textSecondary }}>Label</p>
+ <p className="text-2xl font-bold" style={{ color: colors.textPrimary }}>Value</p>
+ </div>
+ </div>
+ <button className="text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-all" style={{ backgroundColor: colors.primary }}>
+ Click
+ </button>
+ </div>
+ </PremiumPageLayout>
+ );
 }
 ```
 

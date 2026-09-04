@@ -1,15 +1,15 @@
 # Bloco 2 Revisado - Email + Relatórios + Estoque + Orçamentos
 
-## 🎯 Visão Geral
+## Visão Geral
 
 Implementar as funcionalidades que os concorrentes (Conta Azul, Nibo, Bling) têm, focando em **valor imediato** para o MEI/Freelancer.
 
 | Funcionalidade | Timeline | Impacto |
 |----------------|----------|---------|
-| **Email de Cobrança** | 2 sem | 🔴 Alto - automatiza cobranças |
-| **Relatórios Financeiros** | 2 sem | 🔴 Alto - insights de negócio |
-| **Gestão de Estoque** | 2 sem | 🟡 Médio - para quem vende produtos |
-| **Orçamentos & Metas** | 2 sem | 🟡 Médio - planejamento |
+| **Email de Cobrança** | 2 sem | Alto - automatiza cobranças |
+| **Relatórios Financeiros** | 2 sem | Alto - insights de negócio |
+| **Gestão de Estoque** | 2 sem | Médio - para quem vende produtos |
+| **Orçamentos & Metas** | 2 sem | Médio - planejamento |
 
 **Total: 8 semanas (2 meses)**
 
@@ -21,16 +21,16 @@ Implementar as funcionalidades que os concorrentes (Conta Azul, Nibo, Bling) tê
 
 ### Backend
 - [ ] Criar tabela `payment_reminders` no PocketBase
-  - Fields: `id, user_id, proposal_id, payable_id, sent_date, reminder_count, status`
+ - Fields: `id, user_id, proposal_id, payable_id, sent_date, reminder_count, status`
 
 - [ ] Edge Function `send-payment-reminders`
-  - Verificar propostas com status="aprovada" e `validade < hoje`
-  - Verificar contas com `status="pendente"` e `data_vencimento <= hoje + 3 dias`
-  - Enviar email via Resend
-  - Limitar a 3 lembretes por conta
+ - Verificar propostas com status="aprovada" e `validade < hoje`
+ - Verificar contas com `status="pendente"` e `data_vencimento <= hoje + 3 dias`
+ - Enviar email via Resend
+ - Limitar a 3 lembretes por conta
 
 - [ ] Cron job (executar 1x/dia às 08:00)
-  - Usar PocketBase job scheduler ou Edge Function schedule
+ - Usar PocketBase job scheduler ou Edge Function schedule
 
 ### Frontend
 - [ ] Toggle "Receber lembretes por email" em Profile
@@ -99,30 +99,30 @@ RESULTADO
 
 ### Backend
 - [ ] Context `ReportsContext.tsx`
-  - Functions: `getFluxoCaixa()`, `getReceitas()`, `getDespesas()`, `getPropostas()`, `getPayables()`
-  - Caching por período
+ - Functions: `getFluxoCaixa()`, `getReceitas()`, `getDespesas()`, `getPropostas()`, `getPayables()`
+ - Caching por período
 
 - [ ] Utils `reportCalculations.ts`
-  - Funções de cálculo
-  - Formatação de datas/períodos
+ - Funções de cálculo
+ - Formatação de datas/períodos
 
 ### Frontend
 - [ ] Nova página `/app/relatorios`
 - [ ] Componentes:
-  - `RelatorioPrincipal.tsx` (Fluxo de Caixa)
-  - `RelatorioReceitas.tsx`
-  - `RelatorioDespesas.tsx`
-  - `RelatorioPropostas.tsx`
-  - `RelatorioPayables.tsx`
-  - `PeriodSelector.tsx` (dropdown Mês/Ano)
+ - `RelatorioPrincipal.tsx` (Fluxo de Caixa)
+ - `RelatorioReceitas.tsx`
+ - `RelatorioDespesas.tsx`
+ - `RelatorioPropostas.tsx`
+ - `RelatorioPayables.tsx`
+ - `PeriodSelector.tsx` (dropdown Mês/Ano)
 
 - [ ] Gráficos (Recharts):
-  - BarChart (fluxo mensal)
-  - PieChart (categorias)
-  - LineChart (tendência)
+ - BarChart (fluxo mensal)
+ - PieChart (categorias)
+ - LineChart (tendência)
 
 - [ ] Export (future):
-  - Button para exportar PDF/Excel
+ - Button para exportar PDF/Excel
 
 **Arquivos:**
 - `src/app/contexts/ReportsContext.tsx`
@@ -200,18 +200,18 @@ Collection: estoque_movimentacoes
 
 ### Backend
 - [ ] Context `EstoqueContext.tsx`
-  - CRUD de produtos
-  - Registrar movimentações
-  - Cálculos de estoque
+ - CRUD de produtos
+ - Registrar movimentações
+ - Cálculos de estoque
 
 ### Frontend
 - [ ] Página `/app/estoque`
 - [ ] Componentes:
-  - `DashboardEstoque.tsx`
-  - `ListaProdutos.tsx`
-  - `ModalProduto.tsx`
-  - `ModalMovimentacao.tsx`
-  - `HistoricoEstoque.tsx`
+ - `DashboardEstoque.tsx`
+ - `ListaProdutos.tsx`
+ - `ModalProduto.tsx`
+ - `ModalMovimentacao.tsx`
+ - `HistoricoEstoque.tsx`
 
 **Arquivos:**
 - `src/app/contexts/EstoqueContext.tsx`
@@ -303,12 +303,12 @@ Collection: metas_receita
 ### Frontend
 - [ ] Página `/app/orcamentos`
 - [ ] Componentes:
-  - `DashboardOrcamentos.tsx`
-  - `TabelaOrcamentos.tsx`
-  - `ModalOrcamento.tsx`
-  - `DashboardMetas.tsx`
-  - `CardsMetasHistorico.tsx`
-  - `ModalMeta.tsx`
+ - `DashboardOrcamentos.tsx`
+ - `TabelaOrcamentos.tsx`
+ - `ModalOrcamento.tsx`
+ - `DashboardMetas.tsx`
+ - `CardsMetasHistorico.tsx`
+ - `ModalMeta.tsx`
 
 **Arquivos:**
 - `src/app/contexts/OrcamentosContext.tsx`
@@ -317,7 +317,7 @@ Collection: metas_receita
 
 ---
 
-# 📋 Roadmap Visual
+# Roadmap Visual
 
 ```
 Semana 1-2: Email de Cobrança
@@ -348,19 +348,19 @@ TOTAL: 8 semanas = 2 meses
 
 ---
 
-# 🎯 Priorizações por Tipo de Usuário
+# Priorizações por Tipo de Usuário
 
 ## MEI Serviços (Freelancer/Consultor)
-1. ✅ Email de Cobrança (CRÍTICO)
-2. ✅ Relatórios (importante)
+1. Email de Cobrança (CRÍTICO)
+2. Relatórios (importante)
 3. ⏩ Estoque (não relevante)
-4. ✅ Metas (importante para crescimento)
+4. Metas (importante para crescimento)
 
 ## MEI Comércio (Vende produtos)
-1. ✅ Email de Cobrança (CRÍTICO)
-2. ✅ Relatórios (importante)
-3. ✅ Estoque (CRÍTICO)
-4. ✅ Metas (importante)
+1. Email de Cobrança (CRÍTICO)
+2. Relatórios (importante)
+3. Estoque (CRÍTICO)
+4. Metas (importante)
 
 ## Recomendação
 Implementar **todas as 4** mas com **toggle no onboarding**:

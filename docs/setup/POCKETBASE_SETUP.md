@@ -1,10 +1,10 @@
-# 🏦 PocketBase Setup for Plaid Integration
+# PocketBase Setup for Plaid Integration
 
 Este guia mostra como criar as collections necessárias no PocketBase para a integração com Plaid.
 
 ---
 
-## 📋 Collections a Criar
+## Collections a Criar
 
 ### 1. **plaid_connections**
 
@@ -12,20 +12,20 @@ Armazena as conexões bancárias dos usuários.
 
 **Campo** | **Tipo** | **Obrigatório** | **Descrição**
 ---|---|---|---
-`id` | ID (auto) | ✅ | ID único
-`user_id` | Relation | ✅ | Referência para profiles
-`item_id` | Text (único) | ✅ | ID do item no Plaid
-`access_token` | Text (encriptado) | ✅ | Token de acesso Plaid
-`institution_name` | Text | ❌ | Nome do banco (ex: "Nubank")
-`institution_id` | Text | ❌ | ID da instituição no Plaid
-`connected_at` | DateTime | ✅ | Data de conexão
-`last_sync` | DateTime | ❌ | Última sincronização
-`status` | Select | ✅ | Estado: active, revoked, error
-`error_message` | Text | ❌ | Mensagem de erro (se houver)
+`id` | ID (auto) | | ID único
+`user_id` | Relation | | Referência para profiles
+`item_id` | Text (único) | | ID do item no Plaid
+`access_token` | Text (encriptado) | | Token de acesso Plaid
+`institution_name` | Text | | Nome do banco (ex: "Nubank")
+`institution_id` | Text | | ID da instituição no Plaid
+`connected_at` | DateTime | | Data de conexão
+`last_sync` | DateTime | | Última sincronização
+`status` | Select | | Estado: active, revoked, error
+`error_message` | Text | | Mensagem de erro (se houver)
 
 ---
 
-## 🖱️ Como Criar via Admin PocketBase
+## Como Criar via Admin PocketBase
 
 ### **Passo 1: Acessar Admin**
 
@@ -61,7 +61,7 @@ Clique em cada campo abaixo e configure:
 - Campo: `access_token`
 - Tipo: Text
 - Obrigatório: SIM
-- Encrypt: SIM ⚠️ (importante!)
+- Encrypt: SIM (importante!)
 
 #### **4. institution_name** (Text)
 - Campo: `institution_name`
@@ -100,7 +100,7 @@ Clique em cada campo abaixo e configure:
 
 ---
 
-## 🔒 Adicionar Índices (Optional)
+## Adicionar Índices (Optional)
 
 No PocketBase, você pode criar índices para melhor performance:
 
@@ -113,7 +113,7 @@ CREATE INDEX idx_plaid_item_id ON plaid_connections(item_id);
 
 ---
 
-## 🔐 Rules de Acesso (RLS)
+## Rules de Acesso (RLS)
 
 ### **Create Rule:**
 ```
@@ -141,7 +141,7 @@ user_id = @request.auth.id
 
 ---
 
-## 📝 Também Precisa Atualizar
+## Também Precisa Atualizar
 
 ### **transactions collection**
 
@@ -156,7 +156,7 @@ Campo | Tipo | Descrição
 
 ---
 
-## ✅ Checklist
+## Checklist
 
 - [ ] Criar collection `plaid_connections`
 - [ ] Adicionar campo `user_id` (Relation)
@@ -174,27 +174,27 @@ Campo | Tipo | Descrição
 
 ---
 
-## 🧪 Teste
+## Teste
 
 Após criar, teste assim:
 
 ```bash
 # Via cURL
 curl -X POST http://localhost:8090/api/collections/plaid_connections/records \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{
-    "user_id": "user123",
-    "item_id": "item_xyz",
-    "access_token": "access_xyz",
-    "institution_name": "Nubank",
-    "status": "active"
-  }'
+ -H "Content-Type: application/json" \
+ -H "Authorization: Bearer YOUR_TOKEN" \
+ -d '{
+ "user_id": "user123",
+ "item_id": "item_xyz",
+ "access_token": "access_xyz",
+ "institution_name": "Nubank",
+ "status": "active"
+ }'
 ```
 
 ---
 
-## 🚀 Próximo Passo
+## Próximo Passo
 
 Depois de criar as collections, você pode:
 
@@ -206,4 +206,4 @@ Depois de criar as collections, você pode:
 
 ---
 
-**Está tudo pronto? Vamos testar!** 🎉
+**Está tudo pronto? Vamos testar!** 
