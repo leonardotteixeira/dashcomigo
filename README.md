@@ -118,12 +118,6 @@ api/                  API Express (checkout, webhooks, IA, contato)
 docs/                 guias de setup e histórico de decisões
 ```
 
-## Desenvolvimento com IA
-
-Este projeto foi construído com **Claude Code** no fluxo diário: geração de componentes a partir do layout do Figma, refatorações grandes (unificação de páginas, extração do serviço de feature gating), revisão de código e correção de bugs de build na Vercel. Cerca de 200 dos commits carregam `Co-Authored-By: Claude`. As convenções que o agente segue estão em [`CLAUDE.md`](CLAUDE.md).
-
-O que aprendi nesse processo: a IA acelera muito a *produção* de código, mas não substitui o *critério* — os maiores retrabalhos vieram de aceitar sugestões sem entender o contexto (duplicação de limites de plano em vários componentes, depois centralizados em `featureAccessService`). Hoje trato o agente como par de programação: ele escreve, eu reviso, testo e decido.
-
 ## Roadmap
 
 Ver [`docs/roadmap.md`](docs/roadmap.md).
