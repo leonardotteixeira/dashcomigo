@@ -416,7 +416,7 @@ export function ContasAPagar() {
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
         >
-          <div className="rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(20,18,15,0.13)]">
               <h2 className="text-lg font-bold text-[#0E3B2E]">Nova Conta a Pagar</h2>
               <button
@@ -435,7 +435,7 @@ export function ContasAPagar() {
                   value={form.descricao}
                   onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
                   placeholder="Ex: Aluguel Escritório"
-                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                   required
                 />
               </div>
@@ -450,7 +450,7 @@ export function ContasAPagar() {
                     value={form.valor}
                     onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
                     placeholder="0,00"
-                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
@@ -460,7 +460,7 @@ export function ContasAPagar() {
                     type="date"
                     value={form.dataVencimento}
                     onChange={(e) => setForm((f) => ({ ...f, dataVencimento: e.target.value }))}
-                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
@@ -471,7 +471,7 @@ export function ContasAPagar() {
                 <select
                   value={form.categoria}
                   onChange={(e) => setForm((f) => ({ ...f, categoria: e.target.value }))}
-                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] bg-white transition-all"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] bg-white transition-all"
                   required
                 >
                   <option value="">Selecionar...</option>
@@ -488,7 +488,7 @@ export function ContasAPagar() {
                   onChange={(e) => setForm((f) => ({ ...f, anotacoes: e.target.value }))}
                   placeholder="Informações adicionais..."
                   rows={2}
-                  className="w-full px-4 py-2.5 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all resize-none"
+                  className="w-full px-4 py-2.5 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] placeholder:text-[#0E3B2E]/40 outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all resize-none"
                 />
               </div>
 
@@ -508,7 +508,7 @@ export function ContasAPagar() {
                   <select
                     value={form.frequenciaRecorrencia}
                     onChange={(e) => setForm((f) => ({ ...f, frequenciaRecorrencia: e.target.value as "mensal" | "anual" }))}
-                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] bg-white"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] bg-white"
                   >
                     <option value="mensal">Mensal</option>
                     <option value="anual">Anual</option>

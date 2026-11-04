@@ -736,7 +736,7 @@ export function FluxoCaixa() {
                   value={formData.descricao}
                   onChange={(e) => setFormData((f) => ({ ...f, descricao: e.target.value }))}
                   placeholder="Ex: Pagamento Cliente X"
-                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                   required
                 />
               </div>
@@ -752,7 +752,7 @@ export function FluxoCaixa() {
                     value={formData.valor}
                     onChange={(e) => setFormData((f) => ({ ...f, valor: e.target.value }))}
                     placeholder="0,00"
-                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] placeholder:text-[rgba(0,21,41,0.4)] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
@@ -762,7 +762,7 @@ export function FluxoCaixa() {
                     type="date"
                     value={formData.data}
                     onChange={(e) => setFormData((f) => ({ ...f, data: e.target.value }))}
-                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
+                    className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all"
                     required
                   />
                 </div>
@@ -774,7 +774,7 @@ export function FluxoCaixa() {
                 <select
                   value={formData.categoria}
                   onChange={(e) => setFormData((f) => ({ ...f, categoria: e.target.value }))}
-                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.13)] rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all bg-white"
+                  className="w-full h-11 px-4 border border-[rgba(20,18,15,0.3)] bg-white rounded-xl text-sm text-[#0E3B2E] outline-none focus:border-[#7FD19F] focus:ring-2 focus:ring-[#7FD19F]/15 transition-all bg-white"
                   required
                 >
                   <option value="">Selecionar...</option>

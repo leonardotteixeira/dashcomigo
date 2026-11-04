@@ -293,45 +293,8 @@ export function Dashboard() {
         {/* Daily Insights */}
         <DailyInsights />
 
-        {/* Row: Investment Guide + Achievements */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Investment guide */}
-          <div className="bg-gradient-to-br from-[#0E3B2E] via-[#0E3B2E] to-[#0E3B2E] text-white rounded-2xl p-7 shadow-md">
-            <div className="flex items-start gap-3 mb-5">
-              <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg mb-1">Guia de Investimentos</h3>
-                <p className="text-sm text-white/90">
-                  Aprenda a fazer seu dinheiro trabalhar por você
-                </p>
-              </div>
-            </div>
-            <div className="space-y-3 mb-5">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold">Reserva de Emergência</span>
-                  <span className="text-sm font-medium">6 meses</span>
-                </div>
-                <p className="text-xs text-white/80">Proteja seu negócio de imprevistos</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold">Investimento Curto Prazo</span>
-                  <span className="text-sm font-medium">~110% CDI</span>
-                </div>
-                <p className="text-xs text-white/80">Liquidez diária com rendimento</p>
-              </div>
-            </div>
-            <button
-              className="w-full bg-white text-[#0E3B2E] font-semibold py-3 rounded-xl hover:bg-white/95 transition-all shadow-sm"
-              onClick={() => navigate("/app/investimentos")}
-            >
-              Ver Guia Completo
-            </button>
-          </div>
-
+        {/* Row: Achievements */}
+        <div className="grid grid-cols-1 gap-6">
           {/* Achievements */}
           <AchievementCard />
         </div>

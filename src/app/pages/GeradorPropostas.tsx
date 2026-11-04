@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   FileText, Download, Send, Eye, Info, Crown, Copy, Check, Sparkles,
   Plus, Filter, ArrowRight, MoreHorizontal, Trash2, ChevronRight,
-  TrendingUp, Clock, X, Loader2
+  TrendingUp, Clock, X
 } from "lucide-react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -34,7 +34,7 @@ interface Proposal {
   valor: number;
   prazo: string;
   condicoes_pagamento: string;
-  validade: number;
+  validade: number | string | null;
   data_pagamento?: string;
   template: Template;
   created: string;
@@ -87,8 +87,6 @@ export function GeradorPropostas() {
   const [condicoesPagamento, setCondicoesPagamento] = useState("50-50");
   const [validade, setValidade] = useState(7);
   const [saving, setSaving] = useState(false);
-  const [generatingAI, setGeneratingAI] = useState(false);
-  const [aiPreviewText, setAiPreviewText] = useState<string | null>(null);
 
   // Dialogs
   const [limitDialogOpen, setLimitDialogOpen] = useState(false);
@@ -203,6 +201,15 @@ export function GeradorPropostas() {
     return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
   };
 
+  const validityDays = (v: unknown): number => {
+    if (typeof v === "number" && v > 0) return v;
+    if (typeof v === "string" && v) {
+      const t = new Date(v.replace(" ", "T")).getTime();
+      if (!isNaN(t)) return Math.max(1, Math.ceil((t - Date.now()) / 86400000));
+    }
+    return 7;
+  };
+
   const getPagamentoText = (cond: string, val: number) => {
     if (cond === "integral") return `À vista: ${formatCurrency(val)}`;
     if (cond === "50-50") return `50%/50%: ${formatCurrency(val / 2)} + ${formatCurrency(val / 2)}`;
@@ -218,7 +225,7 @@ export function GeradorPropostas() {
     const v = p?.valor || valor;
     const pr = p?.prazo || prazo;
     const cp = p?.condicoes_pagamento || condicoesPagamento;
-    const val = p?.validade || validade;
+    const val = p ? validityDays(p.validade) : validade;
     const tmpl = p?.template || template;
 
     const lines = [
@@ -466,7 +473,7 @@ export function GeradorPropostas() {
         valor: Number(proposal.valor),
         prazo: proposal.prazo,
         condicoesPagamento: proposal.condicoes_pagamento,
-        validade: proposal.validade ?? 7,
+        validade: validityDays(proposal.validade),
         nomeEmpresa: user?.company || user?.name,
       });
     } else {
@@ -482,59 +489,7 @@ export function GeradorPropostas() {
         condicoesPagamento,
         validade,
         nomeEmpresa: user?.company || user?.name,
-        aiText: aiPreviewText || undefined,
       });
-    }
-  };
-
-  const handleGenerateWithAI = async () => {
-    if (!nomeCliente || !nomeServico) {
-      toast.error("Preencha ao menos o nome do cliente e do serviço antes de gerar.");
-      return;
-    }
-    setGeneratingAI(true);
-    setAiPreviewText(null);
-    try {
-      const API_URL = import.meta.env.VITE_API_URL || "";
-      const res = await fetch(`${API_URL}/generate-proposal`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tipo,
-          template,
-          nomeCliente,
-          emailCliente,
-          nomeServico,
-          descricao,
-          valor,
-          prazo,
-          condicoesPagamento,
-          validade,
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Erro ao gerar com IA");
-      }
-
-      const data = await res.json();
-
-      // Preenche a descrição com a versão melhorada pela IA
-      if (data.descricaoMelhorada) {
-        setDescricao(data.descricaoMelhorada);
-      }
-
-      // Exibe o documento gerado no preview de IA
-      if (data.documentoTexto) {
-        setAiPreviewText(data.documentoTexto);
-      }
-
-      toast.success("Documento gerado com IA! Revise e salve.");
-    } catch (err: any) {
-      toast.error(err?.message || "Erro ao gerar com IA. Tente novamente.");
-    } finally {
-      setGeneratingAI(false);
     }
   };
 
@@ -954,31 +909,6 @@ export function GeradorPropostas() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-5">
-          {/* Botão Gerar com IA — topo do formulário */}
-          <Button
-            size="lg"
-            className="w-full bg-gradient-to-r from-[#0E3B2E] to-[#1F5A3A] hover:from-[#082219] hover:to-[#0E3B2E] text-white rounded-xl h-12 font-semibold shadow-md"
-            onClick={handleGenerateWithAI}
-            disabled={generatingAI || !nomeCliente || !nomeServico}
-          >
-            {generatingAI ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Gerando documento com IA...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Gerar com IA
-              </>
-            )}
-          </Button>
-          {(!nomeCliente || !nomeServico) && (
-            <p className="text-xs text-muted-foreground text-center -mt-3">
-              Preencha o nome do cliente e do serviço para habilitar
-            </p>
-          )}
-
           <div className="p-6 bg-card rounded-2xl border border-border">
             <h3 className="text-lg font-bold text-foreground mb-5">Dados do Cliente</h3>
             <div className="space-y-4">
@@ -1047,7 +977,7 @@ export function GeradorPropostas() {
             >
               {saving ? "Salvando..." : "Salvar Proposta"}
             </Button>
-            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl h-12" onClick={handleDownloadPDF} disabled={!nomeCliente}>
+            <Button size="lg" className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl h-12" onClick={() => handleDownloadPDF()} disabled={!nomeCliente}>
               <Download className="w-4 h-4 mr-2" /> PDF
             </Button>
             <Button size="lg" className="bg-white/5 hover:bg-white/10 text-foreground border border-border rounded-xl h-12" onClick={() => handleCopyText()}>
@@ -1061,59 +991,6 @@ export function GeradorPropostas() {
 
         {/* Preview */}
         <div className="lg:sticky lg:top-6 lg:self-start space-y-4">
-
-          {/* Preview IA — exibido quando há documento gerado */}
-          {aiPreviewText && (
-            <div className="rounded-2xl border border-[#0E3B2E]/30 overflow-hidden shadow-sm">
-              <div className="bg-[#0E3B2E] text-white px-5 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#7FD19F]" />
-                  <span className="font-semibold text-sm">Documento Gerado pela IA</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(aiPreviewText);
-                      toast.success("Documento copiado!");
-                    }}
-                    className="text-xs text-[#7FD19F] hover:text-white flex items-center gap-1 transition-colors"
-                  >
-                    <Copy className="w-3 h-3" /> Copiar
-                  </button>
-                  <button
-                    onClick={() => setAiPreviewText(null)}
-                    className="text-white/50 hover:text-white transition-colors ml-2"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-              <div className="bg-[#F4EFE6] p-5 max-h-[520px] overflow-y-auto">
-                <pre className="text-xs text-[#0E3B2E] whitespace-pre-wrap font-mono leading-relaxed">{aiPreviewText}</pre>
-              </div>
-              <div className="bg-[#EBE4D6] px-5 py-3 flex gap-2 border-t border-[#0E3B2E]/10">
-                <Button
-                  size="sm"
-                  className="flex-1 bg-[#0E3B2E] hover:bg-[#082219] text-white rounded-lg text-xs"
-                  onClick={() => {
-                    generateProposalPDF({ tipo, template, nomeCliente, emailCliente, nomeServico, descricao, valor, prazo, condicoesPagamento, validade, nomeEmpresa: user?.company || user?.name, aiText: aiPreviewText || undefined });
-                    toast.success("PDF gerado!");
-                  }}
-                >
-                  <Download className="w-3 h-3 mr-1" /> Exportar PDF
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 border-[#0E3B2E]/20 text-[#0E3B2E] rounded-lg text-xs hover:bg-[#0E3B2E]/5"
-                  onClick={() => handleSendEmail()}
-                  disabled={!emailCliente}
-                >
-                  <Send className="w-3 h-3 mr-1" /> Enviar por e-mail
-                </Button>
-              </div>
-            </div>
-          )}
 
           {/* Preview visual da proposta */}
           <div className="rounded-2xl border border-border overflow-hidden">

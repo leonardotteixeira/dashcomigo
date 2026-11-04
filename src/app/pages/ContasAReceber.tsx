@@ -444,7 +444,7 @@ export function ContasAReceber() {
       {/* Nova Conta Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="rounded-2xl shadow-2xl w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-[rgba(20,18,15,0.13)]">
               <h2 className="text-lg font-bold text-[#0E3B2E]">Nova Conta a Receber</h2>
               <button

@@ -85,23 +85,6 @@ export default function PrioridadesDoDia() {
       });
     }
 
-    // 4. Revenue growth opportunity
-    if (monthReceitas > 0 && monthDespesas < monthReceitas * 0.7) {
-      const availableForInvestment = monthReceitas - monthDespesas;
-      suggestions.push({
-        id: "investment-opportunity",
-        title: "Sua receita cresceu — considere investir",
-        subtitle: `Você tem ~${fmt(availableForInvestment)} disponível`,
-        icon: DollarSign,
-        color: "text-green-600",
-        bgColor: "bg-green-50",
-        iconBg: "bg-green-100",
-        action: "Ver investimentos",
-        onClick: () => navigate("/app/investimentos"),
-        priority: "low",
-      });
-    }
-
     // 5. Reports not created (PRO feature)
     const hasReports = false; // This would need to be checked from context
     if (!hasReports && isPro) {
