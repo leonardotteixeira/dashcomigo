@@ -300,9 +300,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (authData.record) {
         setUser(mapProfile(authData.record));
-        try {
-          await pb.collection("profiles").requestVerification(email);
-        } catch (_) {}
         return true;
       }
       return false;

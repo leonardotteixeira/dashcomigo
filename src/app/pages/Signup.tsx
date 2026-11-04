@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import {
   Mail, Lock, User, Eye, EyeOff,
-  MailCheck, Zap, Shield,
+  Zap, Shield,
 } from "lucide-react";
 import { Logo } from "../components/ui/Logo";
 import { useAuth } from "../contexts/AuthContext";
@@ -22,66 +22,6 @@ function applyCnpjMask(raw: string): string {
 function isValidCnpj(cnpj: string): boolean {
   const digits = cnpj.replace(/\D/g, "");
   return digits.length === 14;
-}
-
-// ─── Google SVG icon ────────────────────────────────────────────────────────
-
-function GoogleIcon() {
-  return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24">
-      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-    </svg>
-  );
-}
-
-// ─── Email verification screen ───────────────────────────────────────────────
-
-function EmailSentScreen({ email, onBack }: { email: string; onBack: () => void }) {
-  const navigate = useNavigate();
-  return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-      {/* Left */}
-      <LeftPanel />
-
-      {/* Right */}
-      <div className="flex items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-md text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-2xl mb-8">
-            <MailCheck className="w-10 h-10 text-[#0B2A4A]" />
-          </div>
-          <h1 className="text-3xl font-bold text-[#0B2A4A] mb-4">Confirme seu email</h1>
-          <p className="text-[#0B2A4A]/60 mb-2">Enviamos um link de confirmação para:</p>
-          <p className="font-semibold text-[#0B2A4A] text-lg mb-6">{email}</p>
-          <p className="text-[#0B2A4A]/60 mb-8">
-            Clique no link do email para ativar sua conta e acessar todas as ferramentas gratuitamente.
-          </p>
-
-          <div className="bg-gray-50 rounded-xl p-6 mb-8 text-left space-y-3">
-            <p className="font-semibold text-[#0B2A4A] mb-3">Não recebeu o email?</p>
-            {["Verifique a pasta de spam/lixo eletrônico", "Aguarde alguns minutos para receber", "Verifique se o email está correto"].map((tip) => (
-              <div key={tip} className="flex items-start gap-2 text-sm text-[#0B2A4A]/70">
-                <span className="text-[#0B2A4A] mt-0.5">•</span>
-                <span>{tip}</span>
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={() => navigate("/login")}
-            className="w-full h-12 bg-[#0B2A4A] text-white font-semibold rounded-lg hover:bg-[#0A2540] transition-colors mb-4"
-          >
-            Já confirmei meu email
-          </button>
-          <button onClick={onBack} className="text-sm text-[#0B2A4A]/60 hover:text-[#0B2A4A] transition-colors">
-            Voltar para o formulário
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 // ─── Left value panel ─────────────────────────────────────────────────────────
@@ -222,10 +162,8 @@ export function Signup() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
 
-  const { signup, loginWithGoogle } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   // Derived validation
@@ -261,12 +199,8 @@ export function Signup() {
 
     setLoading(true);
     try {
-      const loggedIn = await signup(name.trim(), email.trim(), password);
-      if (loggedIn) {
-        navigate("/app");
-      } else {
-        setEmailSent(true);
-      }
+      await signup(name.trim(), email.trim(), password);
+      navigate("/app");
     } catch (error: any) {
       const msg = (error?.message ?? "").toLowerCase();
       if (msg.includes("already registered") || msg.includes("already exists")) {
@@ -282,23 +216,6 @@ export function Signup() {
       setLoading(false);
     }
   };
-
-  const handleGoogleSignup = async () => {
-    setGoogleLoading(true);
-    try {
-      const { onboardingCompleted } = await loginWithGoogle();
-      navigate(onboardingCompleted ? "/app/dashboard" : "/app/onboarding");
-    } catch (error: any) {
-      const msg = error?.message ?? "";
-      toast.error(msg || "Erro ao continuar com Google. Tente novamente.");
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
-
-  if (emailSent) {
-    return <EmailSentScreen email={email} onBack={() => setEmailSent(false)} />;
-  }
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
@@ -480,28 +397,6 @@ export function Signup() {
               )}
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-4 my-5">
-            <div className="flex-1 h-px bg-[rgba(20,18,15,0.13)]" />
-            <span className="text-xs text-[#1a1a2e]/40 whitespace-nowrap">ou continue com</span>
-            <div className="flex-1 h-px bg-[rgba(20,18,15,0.13)]" />
-          </div>
-
-          {/* Google button — full width, only relevant social option for MEIs */}
-          <button
-            type="button"
-            onClick={handleGoogleSignup}
-            disabled={googleLoading || loading}
-            className="w-full h-12 flex items-center justify-center gap-3 border border-[rgba(20,18,15,0.13)] rounded-lg text-sm font-medium text-[#1a1a2e] hover:bg-gray-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {googleLoading ? (
-              <span className="w-4 h-4 border-2 border-[#1a1a2e]/30 border-t-[#1a1a2e] rounded-full animate-spin" />
-            ) : (
-              <GoogleIcon />
-            )}
-            {googleLoading ? "Conectando com Google..." : "Continuar com Google"}
-          </button>
 
           {/* Login link */}
           <p className="text-center text-sm text-[#1a1a2e]/55 mt-6">
